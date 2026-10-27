@@ -1,0 +1,70 @@
+{
+  "baseline": {
+    "id": "8177449b0b4f92be42e0abd8a11e55de",
+    "instructions": "Read the supplied project file with read_file. Give a concise factual analysis. Never invent requirements.",
+    "maxSteps": 6,
+    "mode": "read-only",
+    "model": "gemma4:12b-mlx",
+    "name": "Project analyst"
+  },
+  "baselineAgentId": "8177449b0b4f92be42e0abd8a11e55de",
+  "candidate": {
+    "id": "ff8960fef0d39aaaa66f795307b480bf",
+    "instructions": "Inspect the evidence with read_file and review the analysis. Be concise and distinguish facts from suggestions.",
+    "maxSteps": 6,
+    "mode": "read-only",
+    "model": "gemma4:12b-mlx",
+    "name": "Independent reviewer"
+  },
+  "candidateAgentId": "ff8960fef0d39aaaa66f795307b480bf",
+  "createdAt": "2026-10-27T09:48:39.98989Z",
+  "finishedAt": "2026-10-27T09:49:28.636561Z",
+  "id": "a404502f2d5f45dcd2e9051be914498c",
+  "inputDigest": "971b7ffd9a62ddbbf85f0391af8bcde89d8e8c8d314b1690b53a606174f87bf7",
+  "inputFiles": 1,
+  "inputPath": "/Users/danielmercado/GemmaDesktop/.runtime/qa/evaluations/a404502f2d5f45dcd2e9051be914498c/input",
+  "qualification": "Read-only frozen-text task comparison. Execution success is not a correctness grade; compare the recorded answers and evidence.",
+  "results": [
+    {
+      "agentId": "8177449b0b4f92be42e0abd8a11e55de",
+      "agentName": "Project analyst",
+      "content": "",
+      "durationMs": 24331,
+      "error": "execution budget exceeded: maximum model calls reached (agent 6, run 6)",
+      "status": "failed",
+      "task": "Read project.txt. State the three explicit constraints and one directly relevant test.",
+      "toolCalls": 6,
+      "usage": {
+        "eval_count": 806,
+        "eval_duration": 17751484791,
+        "load_duration": 136551459,
+        "prompt_eval_count": 8532,
+        "prompt_eval_duration": 6367033374,
+        "total_duration": 24282809833
+      }
+    },
+    {
+      "agentId": "ff8960fef0d39aaaa66f795307b480bf",
+      "agentName": "Independent reviewer",
+      "content": "",
+      "durationMs": 24313,
+      "error": "execution budget exceeded: maximum model calls reached (agent 6, run 6)",
+      "status": "failed",
+      "task": "Read project.txt. State the three explicit constraints and one directly relevant test.",
+      "toolCalls": 6,
+      "usage": {
+        "eval_count": 752,
+        "eval_duration": 16921593625,
+        "load_duration": 126298168,
+        "prompt_eval_count": 8073,
+        "prompt_eval_duration": 7197033377,
+        "total_duration": 24270637250
+      }
+    }
+  ],
+  "status": "completed",
+  "tasks": [
+    "Read project.txt. State the three explicit constraints and one directly relevant test."
+  ],
+  "workspaceId": "7b6cc37d13cac456d7d55437406ae420"
+}

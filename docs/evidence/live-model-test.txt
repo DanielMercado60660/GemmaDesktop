@@ -1,0 +1,6 @@
+=== RUN   TestLiveOllamaToolAndSnapshot
+    live_test.go:34: Ollama 0.32.3; model gemma4:12b-mlx; capabilities [completion tools thinking]
+    live_test.go:68: verified tool calls=1; first model calls=2; first answer="EMBER-7429"; continuation="EMBER-7429"; snapshot bytes=3112; generated tokens=26
+--- PASS: TestLiveOllamaToolAndSnapshot (3.93s)
+PASS
+ok  	gemmadesktop.local/app/internal/engine	4.154s

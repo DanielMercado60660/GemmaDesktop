@@ -1,0 +1,346 @@
+{
+  "recordedAt": "2026-10-27T13:23:08.520312+00:00",
+  "command": "GEMMA_TEST_SANDBOX=1 GEMMA_TEST_BROWSER=1 GEMMA_TEST_TERMINAL=1 go test -race -count=1 -json ./internal/...",
+  "results": [
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestApprovalFailClosed",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestOutputBoundAndDrain",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestEndpointRules",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestEndpointRedirectAndBodyBound",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestRejectRemoteOrigins",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/browser",
+      "Test": "TestProxyOriginBoundary",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/browser",
+      "Test": "TestBrowserFailsClosedWithoutApproval",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestFragmentedStreamRequiresTerminalMarker/complete",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestFragmentedStreamRequiresTerminalMarker/truncated",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestFragmentedStreamRequiresTerminalMarker/error",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestFragmentedStreamRequiresTerminalMarker",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestCloudAliasIsBlockedBeforeChat",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestCancellationClosesStreamAndReleasesAdmission",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/inference",
+      "Test": "TestPullMustFinishSuccessfully",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/store",
+      "Test": "TestVulnerableWALEngineIsRejected",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/store",
+      "Test": "TestRecoveryPreservesEvidenceAndExpiresApproval",
+      "Action": "pass",
+      "Elapsed": 0.04
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/tools",
+      "Test": "TestApprovalDenialAndReadOnly",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/mcp",
+      "Test": "TestRealSDKDiscoverySchemaApprovalAndWorkspaceBoundary",
+      "Action": "pass",
+      "Elapsed": 0.05
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workspace",
+      "Test": "TestPathBoundary",
+      "Action": "pass",
+      "Elapsed": 0.03
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/tools",
+      "Test": "TestRevisionChangeDuringApprovalAndCheckpoint",
+      "Action": "pass",
+      "Elapsed": 0.06
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workspace",
+      "Test": "TestHashAndAtomicCreate",
+      "Action": "pass",
+      "Elapsed": 0.02
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workspace",
+      "Test": "TestHardLinksAndBinary",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workspace",
+      "Test": "TestSearchLimitCancelAndProtectedPaths",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestADKToolRoundTripAndSnapshotContinuation",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestRunBudgetStopsToolLoop",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestMalformedToolArgumentsNeverReachExecutor",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/tools",
+      "Test": "TestValidationAndArtifactBoundary",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestCancellationExportsNoPartialModelTurn",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workspace",
+      "Test": "TestMoveDeleteRevisionAndDestination",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestFailedToolOutputIsPreservedForDiagnosis",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestLiveOllamaToolAndSnapshot",
+      "Action": "skip",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/engine",
+      "Test": "TestSkillsAreBoundedSnapshotsWithoutFilesystemAuthority",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestApprovalIsDurableAndSingleUse",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestSkillImportValidatesBeforePersisting",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestApprovalSnapshotResumeAndStaleReply",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestJoinResumeRestoresCompletedPredecessors",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestApprovalRejectsWithoutExecutingSuccessor",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestConditionalRoutingAndJoinRejection",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestDynamicFanoutAndSharedBudget",
+      "Action": "pass",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestNodeBudgetCannotBeResetByLargerWorkflowBudget",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestParallelTerminalsRejectedBeforeExecution",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestAgentConfigurationRetainsReadOnlyToolAndSkillPolicy",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/workflow",
+      "Test": "TestSeparateRepliesToParallelApprovalsResumeJoin",
+      "Action": "pass",
+      "Elapsed": 0
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationApprovedToolJournalAndConversationContinuation",
+      "Action": "pass",
+      "Elapsed": 0.13
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationCancellationExpiresApprovalWithoutFileEffect",
+      "Action": "pass",
+      "Elapsed": 0.06
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode",
+      "Action": "pass",
+      "Elapsed": 0.1
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationConsumedCheckpointCannotReplayAfterRestart",
+      "Action": "pass",
+      "Elapsed": 0.09
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationReadOnlyAgentCannotGainWriteTool",
+      "Action": "pass",
+      "Elapsed": 0.06
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationEvaluationFreezesInputAndRuntime",
+      "Action": "pass",
+      "Elapsed": 0.05
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestSeatbeltQualification",
+      "Action": "pass",
+      "Elapsed": 0.71
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/app",
+      "Test": "TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference",
+      "Action": "pass",
+      "Elapsed": 0.06
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestSandboxGitProtectedDiff",
+      "Action": "pass",
+      "Elapsed": 0.34
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/execution",
+      "Test": "TestRealUserTerminal",
+      "Action": "pass",
+      "Elapsed": 0.03
+    },
+    {
+      "Package": "gemmadesktop.local/app/internal/browser",
+      "Test": "TestLiveChrome",
+      "Action": "pass",
+      "Elapsed": 1.06
+    }
+  ],
+  "counts": {
+    "pass": 54,
+    "skip": 1
+  },
+  "liveModelTest": "live-model-test.txt",
+  "frontend": {
+    "command": "npm --prefix frontend test",
+    "passed": 3,
+    "failed": 0
+  }
+}

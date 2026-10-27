@@ -1,0 +1,68 @@
+{
+  "baseline": {
+    "id": "fb3b1ccd8781c022a0bf3c033646bd0b",
+    "instructions": "Read the supplied project file with read_file. Give a concise factual analysis. Never invent requirements.",
+    "maxSteps": 6,
+    "mode": "read-only",
+    "model": "gemma4:12b-mlx",
+    "name": "Project analyst"
+  },
+  "baselineAgentId": "fb3b1ccd8781c022a0bf3c033646bd0b",
+  "candidate": {
+    "id": "e7f3ab4af2e43a1fccace655eca23b62",
+    "instructions": "Inspect the evidence with read_file and review the analysis. Be concise and distinguish facts from suggestions.",
+    "maxSteps": 6,
+    "mode": "read-only",
+    "model": "gemma4:12b-mlx",
+    "name": "Independent reviewer"
+  },
+  "candidateAgentId": "e7f3ab4af2e43a1fccace655eca23b62",
+  "createdAt": "2026-10-27T13:14:17.744463Z",
+  "finishedAt": "2026-10-27T13:14:42.18287Z",
+  "id": "b834273c86f7a3da88c75952912d4e0c",
+  "inputDigest": "971b7ffd9a62ddbbf85f0391af8bcde89d8e8c8d314b1690b53a606174f87bf7",
+  "inputFiles": 1,
+  "inputPath": "/Users/danielmercado/GemmaDesktop/.runtime/qa/evaluations/b834273c86f7a3da88c75952912d4e0c/input",
+  "qualification": "Read-only frozen-text task comparison. Execution success is not a correctness grade; compare the recorded answers and evidence.",
+  "results": [
+    {
+      "agentId": "fb3b1ccd8781c022a0bf3c033646bd0b",
+      "agentName": "Project analyst",
+      "content": "The three explicit constraints are:\n1. offline operation\n2. plain-text export\n3. keyboard navigation\n\n**Proposed New Test for Offline Operation:**\nVerify that a user can create, save, and retrieve a note while the device's network connection is completely disabled (e.g., Airplane Mode).",
+      "durationMs": 10827,
+      "status": "completed",
+      "task": "Read project.txt exactly once. Then answer from that evidence: list the three explicit constraints and propose one NEW test for offline operation. Do not search for existing tests; none are needed for this analysis.",
+      "toolCalls": 2,
+      "usage": {
+        "eval_count": 314,
+        "eval_duration": 6641437459,
+        "load_duration": 82586416,
+        "prompt_eval_count": 2839,
+        "prompt_eval_duration": 4075701000,
+        "total_duration": 10807182541
+      }
+    },
+    {
+      "agentId": "e7f3ab4af2e43a1fccace655eca23b62",
+      "agentName": "Independent reviewer",
+      "content": "Based on the content of `project.txt`, here are the three explicit constraints and a proposed new test for offline operation:\n\n**Explicit Constraints:**\n1. Offline operation\n2. Plain-text export\n3. Keyboard navigation\n\n**Proposed New Test for Offline Operation:**\nVerify that the application allows users to create, edit, and save notes successfully when the device's network connection is completely disabled (e.g., Airplane Mode).",
+      "durationMs": 13609,
+      "status": "completed",
+      "task": "Read project.txt exactly once. Then answer from that evidence: list the three explicit constraints and propose one NEW test for offline operation. Do not search for existing tests; none are needed for this analysis.",
+      "toolCalls": 2,
+      "usage": {
+        "eval_count": 403,
+        "eval_duration": 9352417500,
+        "load_duration": 112771875,
+        "prompt_eval_count": 2909,
+        "prompt_eval_duration": 4112637332,
+        "total_duration": 13585870041
+      }
+    }
+  ],
+  "status": "completed",
+  "tasks": [
+    "Read project.txt exactly once. Then answer from that evidence: list the three explicit constraints and propose one NEW test for offline operation. Do not search for existing tests; none are needed for this analysis."
+  ],
+  "workspaceId": "ea6c28181f4a6fb8ca3bfe4dccb9f3c0"
+}
