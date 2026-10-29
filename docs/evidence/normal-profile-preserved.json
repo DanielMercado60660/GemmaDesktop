@@ -1,0 +1,14 @@
+{
+  "path": "/Users/danielmercado/Library/Application Support/Gemma Desktop/gemma.db",
+  "settings": {
+    "contextSize": 46080,
+    "defaultModel": "gemma4:12b-mlx",
+    "id": "default",
+    "maxSteps": 30,
+    "mode": "approval",
+    "ollamaUrl": "http://127.0.0.1:11434",
+    "theme": "dark"
+  },
+  "sha256": "a5897e0409c9c61ae74648af632bc9a4e9bdce73549f37b639d2af87a63b1927",
+  "action": "Read only; preserved during validation"
+}

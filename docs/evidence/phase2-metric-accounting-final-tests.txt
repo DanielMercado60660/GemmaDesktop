@@ -1,0 +1,694 @@
+=== RUN   TestExplicitLoadUsesRequestedContext
+--- PASS: TestExplicitLoadUsesRequestedContext (0.00s)
+=== RUN   TestRejectRemoteOrigins
+--- PASS: TestRejectRemoteOrigins (0.00s)
+=== RUN   TestFragmentedStreamRequiresTerminalMarker
+=== RUN   TestFragmentedStreamRequiresTerminalMarker/complete
+=== RUN   TestFragmentedStreamRequiresTerminalMarker/truncated
+=== RUN   TestFragmentedStreamRequiresTerminalMarker/error
+--- PASS: TestFragmentedStreamRequiresTerminalMarker (0.00s)
+    --- PASS: TestFragmentedStreamRequiresTerminalMarker/complete (0.00s)
+    --- PASS: TestFragmentedStreamRequiresTerminalMarker/truncated (0.00s)
+    --- PASS: TestFragmentedStreamRequiresTerminalMarker/error (0.00s)
+=== RUN   TestCloudAliasIsBlockedBeforeChat
+--- PASS: TestCloudAliasIsBlockedBeforeChat (0.00s)
+=== RUN   TestCancellationClosesStreamAndReleasesAdmission
+--- PASS: TestCancellationClosesStreamAndReleasesAdmission (0.00s)
+=== RUN   TestPullMustFinishSuccessfully
+--- PASS: TestPullMustFinishSuccessfully (0.00s)
+=== RUN   TestBackgroundModelResidencyHasFiniteDeadline
+=== RUN   TestBackgroundModelResidencyHasFiniteDeadline/load=false
+=== RUN   TestBackgroundModelResidencyHasFiniteDeadline/load=true
+--- PASS: TestBackgroundModelResidencyHasFiniteDeadline (0.00s)
+    --- PASS: TestBackgroundModelResidencyHasFiniteDeadline/load=false (0.00s)
+    --- PASS: TestBackgroundModelResidencyHasFiniteDeadline/load=true (0.00s)
+=== RUN   TestContextOverflowIsNotSilentlyTruncatedOrRetried
+=== RUN   TestContextOverflowIsNotSilentlyTruncatedOrRetried/streamed=false
+=== RUN   TestContextOverflowIsNotSilentlyTruncatedOrRetried/streamed=true
+--- PASS: TestContextOverflowIsNotSilentlyTruncatedOrRetried (0.00s)
+    --- PASS: TestContextOverflowIsNotSilentlyTruncatedOrRetried/streamed=false (0.00s)
+    --- PASS: TestContextOverflowIsNotSilentlyTruncatedOrRetried/streamed=true (0.00s)
+=== RUN   TestTextRequestLimitRejectsBeforeDispatchAndExcludesImages
+--- PASS: TestTextRequestLimitRejectsBeforeDispatchAndExcludesImages (0.07s)
+=== RUN   TestInferenceHeadersUseCallerDeadline
+=== RUN   TestInferenceHeadersUseCallerDeadline/chat
+=== RUN   TestInferenceHeadersUseCallerDeadline/load
+=== RUN   TestInferenceHeadersUseCallerDeadline/pull
+--- PASS: TestInferenceHeadersUseCallerDeadline (0.37s)
+    --- PASS: TestInferenceHeadersUseCallerDeadline/chat (0.12s)
+    --- PASS: TestInferenceHeadersUseCallerDeadline/load (0.12s)
+    --- PASS: TestInferenceHeadersUseCallerDeadline/pull (0.12s)
+=== RUN   TestCancellationBeforeInferenceHeadersReleasesAdmission
+=== RUN   TestCancellationBeforeInferenceHeadersReleasesAdmission/load=false
+=== RUN   TestCancellationBeforeInferenceHeadersReleasesAdmission/load=true
+--- PASS: TestCancellationBeforeInferenceHeadersReleasesAdmission (0.00s)
+    --- PASS: TestCancellationBeforeInferenceHeadersReleasesAdmission/load=false (0.00s)
+    --- PASS: TestCancellationBeforeInferenceHeadersReleasesAdmission/load=true (0.00s)
+=== RUN   TestLiveOllamaRejectsContextOverflow
+    context_policy_test.go:242: set GEMMA_LIVE_CONTEXT_OVERFLOW_MODEL for exclusive overflow qualification
+--- SKIP: TestLiveOllamaRejectsContextOverflow (0.00s)
+=== RUN   TestEmbedMixedInputsPreserveOrderAndIdentity
+--- PASS: TestEmbedMixedInputsPreserveOrderAndIdentity (0.00s)
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/large_batch
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/empty_input
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/large_text
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/large_image
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/invalid_UTF8
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/invalid_digest
+=== RUN   TestEmbedBoundsFailBeforeAdmissionOrHTTP/empty_batch
+--- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/large_batch (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/empty_input (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/large_text (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/large_image (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/invalid_UTF8 (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/invalid_digest (0.00s)
+    --- PASS: TestEmbedBoundsFailBeforeAdmissionOrHTTP/empty_batch (0.00s)
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/cloud_name
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/remote_show
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/remote_tag
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/unknown_capabilities
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/completion_only
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/no_vision
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/not_installed
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/no_digest
+=== RUN   TestEmbedRequiresInstalledLocalCapablePinnedModel/different_digest
+--- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel (0.01s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/cloud_name (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/remote_show (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/remote_tag (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/unknown_capabilities (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/completion_only (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/no_vision (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/not_installed (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/no_digest (0.00s)
+    --- PASS: TestEmbedRequiresInstalledLocalCapablePinnedModel/different_digest (0.00s)
+=== RUN   TestEmbedRejectsTagDriftDuringInference
+--- PASS: TestEmbedRejectsTagDriftDuringInference (0.00s)
+=== RUN   TestEmbedRejectsMalformedResponses
+=== RUN   TestEmbedRejectsMalformedResponses/trailing_JSON
+=== RUN   TestEmbedRejectsMalformedResponses/oversized
+=== RUN   TestEmbedRejectsMalformedResponses/wrong_model
+=== RUN   TestEmbedRejectsMalformedResponses/zero_norm
+=== RUN   TestEmbedRejectsMalformedResponses/nonunit_norm
+=== RUN   TestEmbedRejectsMalformedResponses/NaN
+=== RUN   TestEmbedRejectsMalformedResponses/null_component
+=== RUN   TestEmbedRejectsMalformedResponses/bad_JSON
+=== RUN   TestEmbedRejectsMalformedResponses/wrong_count
+=== RUN   TestEmbedRejectsMalformedResponses/wrong_dimensions
+=== RUN   TestEmbedRejectsMalformedResponses/overflow
+=== RUN   TestEmbedRejectsMalformedResponses/application_error
+--- PASS: TestEmbedRejectsMalformedResponses (0.03s)
+    --- PASS: TestEmbedRejectsMalformedResponses/trailing_JSON (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/oversized (0.01s)
+    --- PASS: TestEmbedRejectsMalformedResponses/wrong_model (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/zero_norm (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/nonunit_norm (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/NaN (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/null_component (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/bad_JSON (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/wrong_count (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/wrong_dimensions (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/overflow (0.00s)
+    --- PASS: TestEmbedRejectsMalformedResponses/application_error (0.00s)
+=== RUN   TestEmbedOverflowIsNotRetriedOrTruncated
+--- PASS: TestEmbedOverflowIsNotRetriedOrTruncated (0.00s)
+=== RUN   TestEmbeddingOnlyModelLoadsThroughEmbedAndCannotChat
+--- PASS: TestEmbeddingOnlyModelLoadsThroughEmbedAndCannotChat (0.00s)
+=== RUN   TestEmbedSharesChatAdmissionAndCancelsQueuedWork
+--- PASS: TestEmbedSharesChatAdmissionAndCancelsQueuedWork (0.04s)
+=== RUN   TestEmbedCancellationDuringHTTPReleasesAdmission
+=== RUN   TestEmbedCancellationDuringHTTPReleasesAdmission/false
+=== RUN   TestEmbedCancellationDuringHTTPReleasesAdmission/true
+--- PASS: TestEmbedCancellationDuringHTTPReleasesAdmission (0.01s)
+    --- PASS: TestEmbedCancellationDuringHTTPReleasesAdmission/false (0.00s)
+    --- PASS: TestEmbedCancellationDuringHTTPReleasesAdmission/true (0.00s)
+=== RUN   TestEmbedHasFiniteInferenceDeadlineAndSeparateMetadataTransport
+--- PASS: TestEmbedHasFiniteInferenceDeadlineAndSeparateMetadataTransport (0.00s)
+=== RUN   TestTokenAccountingValidatesReceiptsAndLegacyUnknown
+--- PASS: TestTokenAccountingValidatesReceiptsAndLegacyUnknown (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/inference	1.760s
+=== RUN   TestCompactionRetainsToolPairsAndRestoresDurableSummary
+--- PASS: TestCompactionRetainsToolPairsAndRestoresDurableSummary (0.02s)
+=== RUN   TestCompactionUsesTheRunModelBudget
+--- PASS: TestCompactionUsesTheRunModelBudget (0.00s)
+=== RUN   TestIncompleteCompactionPreservesRawHistoryAndReportsFailure
+2026/10/27 22:07:07 adk: context compaction failed: token-threshold: tail-retention summarization failed: summarizer stopped before finishing (finish reason "MAX_TOKENS"), so the summary is incomplete; continuing with an uncompacted prompt
+--- PASS: TestIncompleteCompactionPreservesRawHistoryAndReportsFailure (0.01s)
+=== RUN   TestCompactionCancellationClosesItsModelStream
+2026/10/27 22:07:08 adk: context compaction failed: token-threshold: tail-retention summarization failed: summarizer model call failed: Ollama request: Post "http://127.0.0.1:57351/api/chat": context canceled; continuing with an uncompacted prompt
+--- PASS: TestCompactionCancellationClosesItsModelStream (0.00s)
+=== RUN   TestCompactionPreservesLongConstraintsAndPriorSummary
+--- PASS: TestCompactionPreservesLongConstraintsAndPriorSummary (0.01s)
+=== RUN   TestCompactionBeyondFourSummariesStillSharesRunBudget
+--- PASS: TestCompactionBeyondFourSummariesStillSharesRunBudget (0.00s)
+=== RUN   TestEmptyOrThinkingOnlyStopIsNotCompleted
+=== RUN   TestEmptyOrThinkingOnlyStopIsNotCompleted/{"message":{},"done":true,"done_reason":"stop","eval_count":1146}
+=== RUN   TestEmptyOrThinkingOnlyStopIsNotCompleted/{"message":{"content":"__\n\t"},"done":true,"done_reason":"stop","eval_count":1146}
+=== RUN   TestEmptyOrThinkingOnlyStopIsNotCompleted/{"message":{"thinking":"private_reasoning_without_an_answer"},"done":true,"done_reason":"stop","eval_count":1146}
+--- PASS: TestEmptyOrThinkingOnlyStopIsNotCompleted (0.01s)
+    --- PASS: TestEmptyOrThinkingOnlyStopIsNotCompleted/{"message":{},"done":true,"done_reason":"stop","eval_count":1146} (0.00s)
+    --- PASS: TestEmptyOrThinkingOnlyStopIsNotCompleted/{"message":{"content":"__\n\t"},"done":true,"done_reason":"stop","eval_count":1146} (0.00s)
+    --- PASS: TestEmptyOrThinkingOnlyStopIsNotCompleted/{"message":{"thinking":"private_reasoning_without_an_answer"},"done":true,"done_reason":"stop","eval_count":1146} (0.00s)
+=== RUN   TestEmptyRetryPreservesHistoryAndExecutesOnlyNewTool
+--- PASS: TestEmptyRetryPreservesHistoryAndExecutesOnlyNewTool (0.01s)
+=== RUN   TestEmptyRetrySecondFailurePreservesAllObservedUsage
+=== RUN   TestEmptyRetrySecondFailurePreservesAllObservedUsage/empty
+=== RUN   TestEmptyRetrySecondFailurePreservesAllObservedUsage/length
+=== RUN   TestEmptyRetrySecondFailurePreservesAllObservedUsage/transport
+=== RUN   TestEmptyRetrySecondFailurePreservesAllObservedUsage/cancel
+--- PASS: TestEmptyRetrySecondFailurePreservesAllObservedUsage (0.01s)
+    --- PASS: TestEmptyRetrySecondFailurePreservesAllObservedUsage/empty (0.00s)
+    --- PASS: TestEmptyRetrySecondFailurePreservesAllObservedUsage/length (0.00s)
+    --- PASS: TestEmptyRetrySecondFailurePreservesAllObservedUsage/transport (0.00s)
+    --- PASS: TestEmptyRetrySecondFailurePreservesAllObservedUsage/cancel (0.00s)
+=== RUN   TestEmptyRetryHonorsSharedModelBudget
+--- PASS: TestEmptyRetryHonorsSharedModelBudget (0.00s)
+=== RUN   TestEmptyRetryHonorsSharedOutputBudget
+--- PASS: TestEmptyRetryHonorsSharedOutputBudget (0.00s)
+=== RUN   TestNonemptyFailureAndSummaryNeverRetry
+=== RUN   TestNonemptyFailureAndSummaryNeverRetry/length
+=== RUN   TestNonemptyFailureAndSummaryNeverRetry/transport
+=== RUN   TestNonemptyFailureAndSummaryNeverRetry/cancel
+=== RUN   TestNonemptyFailureAndSummaryNeverRetry/summary
+--- PASS: TestNonemptyFailureAndSummaryNeverRetry (0.00s)
+    --- PASS: TestNonemptyFailureAndSummaryNeverRetry/length (0.00s)
+    --- PASS: TestNonemptyFailureAndSummaryNeverRetry/transport (0.00s)
+    --- PASS: TestNonemptyFailureAndSummaryNeverRetry/cancel (0.00s)
+    --- PASS: TestNonemptyFailureAndSummaryNeverRetry/summary (0.00s)
+=== RUN   TestStructuredToolSourceHasOneExactJSONRoundTrip
+--- PASS: TestStructuredToolSourceHasOneExactJSONRoundTrip (0.01s)
+=== RUN   TestADKToolRoundTripAndSnapshotContinuation
+--- PASS: TestADKToolRoundTripAndSnapshotContinuation (0.01s)
+=== RUN   TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools
+=== RUN   TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools/tool=false
+=== RUN   TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools/tool=true
+--- PASS: TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools (0.00s)
+    --- PASS: TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools/tool=false (0.00s)
+    --- PASS: TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools/tool=true (0.00s)
+=== RUN   TestRunBudgetStopsToolLoop
+--- PASS: TestRunBudgetStopsToolLoop (0.00s)
+=== RUN   TestMalformedToolArgumentsNeverReachExecutor
+--- PASS: TestMalformedToolArgumentsNeverReachExecutor (0.00s)
+=== RUN   TestCancellationExportsNoPartialModelTurn
+--- PASS: TestCancellationExportsNoPartialModelTurn (0.00s)
+=== RUN   TestFailedToolOutputIsPreservedForDiagnosis
+--- PASS: TestFailedToolOutputIsPreservedForDiagnosis (0.00s)
+=== RUN   TestGenerationControlsReachOllamaWire
+=== RUN   TestGenerationControlsReachOllamaWire/automatic_default
+=== RUN   TestGenerationControlsReachOllamaWire/thinking_on
+=== RUN   TestGenerationControlsReachOllamaWire/thinking_off
+--- PASS: TestGenerationControlsReachOllamaWire (0.00s)
+    --- PASS: TestGenerationControlsReachOllamaWire/automatic_default (0.00s)
+    --- PASS: TestGenerationControlsReachOllamaWire/thinking_on (0.00s)
+    --- PASS: TestGenerationControlsReachOllamaWire/thinking_off (0.00s)
+=== RUN   TestADKOutputLimitCanTightenButNotRaiseAgentLimit
+--- PASS: TestADKOutputLimitCanTightenButNotRaiseAgentLimit (0.00s)
+=== RUN   TestThinkingAtOutputLimitCannotExecuteTools
+--- PASS: TestThinkingAtOutputLimitCannotExecuteTools (0.00s)
+=== RUN   TestIncompleteGenerationRecordsLimitsAndObservedUsageWithoutContent
+--- PASS: TestIncompleteGenerationRecordsLimitsAndObservedUsageWithoutContent (0.00s)
+=== RUN   TestOversizeSummaryDeclinesBeforeInference
+--- PASS: TestOversizeSummaryDeclinesBeforeInference (0.00s)
+=== RUN   TestLiveOllamaToolAndSnapshot
+    live_test.go:18: set GEMMA_LIVE_MODEL to test the installed Ollama model
+--- SKIP: TestLiveOllamaToolAndSnapshot (0.00s)
+=== RUN   TestFrozenSkillPackageSurvivesSourceDeletionAndRejectsMutation
+--- PASS: TestFrozenSkillPackageSurvivesSourceDeletionAndRejectsMutation (0.00s)
+=== RUN   TestDeadlineCannotBeRenewedByRestoration
+--- PASS: TestDeadlineCannotBeRenewedByRestoration (0.00s)
+=== RUN   TestFrozenSourcesKeepNativeUserAndToolContinuation
+--- PASS: TestFrozenSourcesKeepNativeUserAndToolContinuation (0.00s)
+=== RUN   TestSkillResourcesShareToolBudgetAndEmitScopedActivity
+--- PASS: TestSkillResourcesShareToolBudgetAndEmitScopedActivity (0.01s)
+=== RUN   TestSkillSnapshotRejectsLinkedResource
+--- PASS: TestSkillSnapshotRejectsLinkedResource (0.00s)
+=== RUN   TestNestedInvocationUsageCountsOnceWithoutChangingADKPrompt
+--- PASS: TestNestedInvocationUsageCountsOnceWithoutChangingADKPrompt (0.00s)
+=== RUN   TestGenerationContextAuditNeverCopiesMessageContent
+--- PASS: TestGenerationContextAuditNeverCopiesMessageContent (0.00s)
+=== RUN   TestSkillsAreBoundedSnapshotsWithoutFilesystemAuthority
+--- PASS: TestSkillsAreBoundedSnapshotsWithoutFilesystemAuthority (0.00s)
+=== RUN   TestStructuredActionObservationsSurviveGemmaContentRendering
+--- PASS: TestStructuredActionObservationsSurviveGemmaContentRendering (0.00s)
+=== RUN   TestStructuredActionsPreserveMultipleADKToolCycles
+--- PASS: TestStructuredActionsPreserveMultipleADKToolCycles (0.00s)
+=== RUN   TestStructuredActionArgumentsRemainExact
+--- PASS: TestStructuredActionArgumentsRemainExact (0.00s)
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/extra_envelope
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/trailing_garbage
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/duplicate_action
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/escaped_duplicate
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/wrong_case
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/unknown_action
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/missing_field
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/null_arguments
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/fractional_integer
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/fence
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/blank_final
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/unpaired_low
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/unknown_tool
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/two_variants
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/two_values
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/array_actions
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/duplicate_arg
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/invalid_UTF8
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/wrong_type
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/extra_argument
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/truncated
+=== RUN   TestStructuredActionRejectsInvalidProposalsWithoutAResult/unpaired_high
+--- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult (0.01s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/extra_envelope (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/trailing_garbage (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/duplicate_action (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/escaped_duplicate (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/wrong_case (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/unknown_action (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/missing_field (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/null_arguments (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/fractional_integer (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/fence (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/blank_final (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/unpaired_low (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/unknown_tool (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/two_variants (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/two_values (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/array_actions (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/duplicate_arg (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/invalid_UTF8 (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/wrong_type (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/extra_argument (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/truncated (0.00s)
+    --- PASS: TestStructuredActionRejectsInvalidProposalsWithoutAResult/unpaired_high (0.00s)
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/invalid_type
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/reference
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/remote_reference
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/schema_dialect
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/unknown_constraint
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/nested_unsupported
+=== RUN   TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/nonobject_root
+--- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/invalid_type (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/reference (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/remote_reference (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/schema_dialect (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/unknown_constraint (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/nested_unsupported (0.00s)
+    --- PASS: TestStructuredActionPreparationRejectsUnsupportedSchemasAndConflicts/nonobject_root (0.00s)
+=== RUN   TestStructuredActionHistoryKeepsParallelCallsAndRetiredTools
+--- PASS: TestStructuredActionHistoryKeepsParallelCallsAndRetiredTools (0.00s)
+=== RUN   TestStructuredActionNumbersRejectLossInsteadOfCoercing
+--- PASS: TestStructuredActionNumbersRejectLossInsteadOfCoercing (0.00s)
+=== RUN   TestStructuredActionProtocolIsDetachedAndFinalOnlyWithoutTools
+--- PASS: TestStructuredActionProtocolIsDetachedAndFinalOnlyWithoutTools (0.00s)
+=== RUN   TestStructuredActionLimitsAndSchemaDiscrimination
+--- PASS: TestStructuredActionLimitsAndSchemaDiscrimination (0.01s)
+=== RUN   TestStructuredAdapterPreservesGovernedToolCycle
+--- PASS: TestStructuredAdapterPreservesGovernedToolCycle (0.01s)
+=== RUN   TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions
+=== RUN   TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/truncated
+=== RUN   TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/badJSON
+=== RUN   TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/unknown
+=== RUN   TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/mixed
+--- PASS: TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions (0.01s)
+    --- PASS: TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/truncated (0.00s)
+    --- PASS: TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/badJSON (0.00s)
+    --- PASS: TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/unknown (0.00s)
+    --- PASS: TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions/mixed (0.00s)
+=== RUN   TestStructuredAdapterCountsRawEnvelopeBudgetAndLeavesSummaryProse
+=== RUN   TestStructuredAdapterCountsRawEnvelopeBudgetAndLeavesSummaryProse/false
+=== RUN   TestStructuredAdapterCountsRawEnvelopeBudgetAndLeavesSummaryProse/true
+--- PASS: TestStructuredAdapterCountsRawEnvelopeBudgetAndLeavesSummaryProse (0.00s)
+    --- PASS: TestStructuredAdapterCountsRawEnvelopeBudgetAndLeavesSummaryProse/false (0.00s)
+    --- PASS: TestStructuredAdapterCountsRawEnvelopeBudgetAndLeavesSummaryProse/true (0.00s)
+=== RUN   TestUnknownToolProtocolRejectsBeforeInference
+--- PASS: TestUnknownToolProtocolRejectsBeforeInference (0.00s)
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/normal
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/explicit_zero
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_prompt
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_output
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/negative_prompt
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/length
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/duplicate_id
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_tool_name
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/malformed_tool_arguments
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/provider_terminal_error
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/data_after_terminal
+--- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads (0.02s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/normal (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/explicit_zero (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_prompt (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_output (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/negative_prompt (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/length (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/duplicate_id (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_tool_name (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/malformed_tool_arguments (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/provider_terminal_error (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/data_after_terminal (0.00s)
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete/eof
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete/cancel
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete/deadline
+--- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete (2.01s)
+    --- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete/eof (0.00s)
+    --- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete/cancel (0.00s)
+    --- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete/deadline (2.00s)
+=== RUN   TestTerminalReceiptRetainedWhenConsumerCancels
+--- PASS: TestTerminalReceiptRetainedWhenConsumerCancels (0.00s)
+=== RUN   TestEmptyRetryReceiptsAreCountedOnce
+--- PASS: TestEmptyRetryReceiptsAreCountedOnce (0.00s)
+=== RUN   TestCancelledParentCannotClaimCompleteBeforeNestedUsageReturns
+--- PASS: TestCancelledParentCannotClaimCompleteBeforeNestedUsageReturns (0.10s)
+=== RUN   TestToolCompletionEventIdentityDoesNotChangeModelResult
+=== RUN   TestToolCompletionEventIdentityDoesNotChangeModelResult/failed=false
+=== RUN   TestToolCompletionEventIdentityDoesNotChangeModelResult/failed=true
+--- PASS: TestToolCompletionEventIdentityDoesNotChangeModelResult (0.01s)
+    --- PASS: TestToolCompletionEventIdentityDoesNotChangeModelResult/failed=false (0.00s)
+    --- PASS: TestToolCompletionEventIdentityDoesNotChangeModelResult/failed=true (0.00s)
+=== RUN   TestReadFilePresentationEndsAtExactSourceEOF
+=== RUN   TestReadFilePresentationEndsAtExactSourceEOF/"value_=_'\\n'\nlabel_=_\"日本語\""
+=== RUN   TestReadFilePresentationEndsAtExactSourceEOF/"value_=_'\\n'\r\nlabel_=_\"日本語\"\r\n"
+=== RUN   TestReadFilePresentationEndsAtExactSourceEOF/"#_BEGIN_GEMMA_DATA_actual_source\n#_END_GEMMA_DATA_actual_source\n"
+=== RUN   TestReadFilePresentationEndsAtExactSourceEOF/""
+--- PASS: TestReadFilePresentationEndsAtExactSourceEOF (0.00s)
+    --- PASS: TestReadFilePresentationEndsAtExactSourceEOF/"value_=_'\\n'\nlabel_=_\"日本語\"" (0.00s)
+    --- PASS: TestReadFilePresentationEndsAtExactSourceEOF/"value_=_'\\n'\r\nlabel_=_\"日本語\"\r\n" (0.00s)
+    --- PASS: TestReadFilePresentationEndsAtExactSourceEOF/"#_BEGIN_GEMMA_DATA_actual_source\n#_END_GEMMA_DATA_actual_source\n" (0.00s)
+    --- PASS: TestReadFilePresentationEndsAtExactSourceEOF/"" (0.00s)
+=== RUN   TestProcessPresentationPreservesLiteralOutputAndFailureStatus
+=== RUN   TestProcessPresentationPreservesLiteralOutputAndFailureStatus/run_command
+=== RUN   TestProcessPresentationPreservesLiteralOutputAndFailureStatus/git_diff
+--- PASS: TestProcessPresentationPreservesLiteralOutputAndFailureStatus (0.00s)
+    --- PASS: TestProcessPresentationPreservesLiteralOutputAndFailureStatus/run_command (0.00s)
+    --- PASS: TestProcessPresentationPreservesLiteralOutputAndFailureStatus/git_diff (0.00s)
+=== RUN   TestRejectedToolArgumentsEmitBoundedValidationActivityWithoutExecution
+--- PASS: TestRejectedToolArgumentsEmitBoundedValidationActivityWithoutExecution (0.01s)
+=== RUN   TestOriginalUsersSurviveLossySnapshotToolCycleAndRepeatedCompaction
+--- PASS: TestOriginalUsersSurviveLossySnapshotToolCycleAndRepeatedCompaction (0.01s)
+=== RUN   TestOriginalUserArchiveBoundRejectsWithoutTruncationOrInference
+--- PASS: TestOriginalUserArchiveBoundRejectsWithoutTruncationOrInference (0.01s)
+=== RUN   TestUserArchiveDoesNotDuplicateVisibleOriginalOrRunWithoutCompaction
+=== RUN   TestUserArchiveDoesNotDuplicateVisibleOriginalOrRunWithoutCompaction/compaction=false
+=== RUN   TestUserArchiveDoesNotDuplicateVisibleOriginalOrRunWithoutCompaction/compaction=true
+--- PASS: TestUserArchiveDoesNotDuplicateVisibleOriginalOrRunWithoutCompaction (0.01s)
+    --- PASS: TestUserArchiveDoesNotDuplicateVisibleOriginalOrRunWithoutCompaction/compaction=false (0.00s)
+    --- PASS: TestUserArchiveDoesNotDuplicateVisibleOriginalOrRunWithoutCompaction/compaction=true (0.00s)
+=== RUN   TestOriginalUserRepeatedTextKeepsExcludedOccurrenceChronology
+=== RUN   TestOriginalUserRepeatedTextKeepsExcludedOccurrenceChronology/excluded=0
+=== RUN   TestOriginalUserRepeatedTextKeepsExcludedOccurrenceChronology/excluded=2
+--- PASS: TestOriginalUserRepeatedTextKeepsExcludedOccurrenceChronology (0.00s)
+    --- PASS: TestOriginalUserRepeatedTextKeepsExcludedOccurrenceChronology/excluded=0 (0.00s)
+    --- PASS: TestOriginalUserRepeatedTextKeepsExcludedOccurrenceChronology/excluded=2 (0.00s)
+=== RUN   TestOriginalCurrentUserRemainsNativeAcrossActiveToolLoopCompaction
+--- PASS: TestOriginalCurrentUserRemainsNativeAcrossActiveToolLoopCompaction (0.02s)
+=== RUN   TestOriginalUserArchiveKeepsImageOnlyCurrentInputNative
+--- PASS: TestOriginalUserArchiveKeepsImageOnlyCurrentInputNative (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/engine	3.717s
+=== RUN   TestFanoutChildEventsCarryExplicitParentAndIndex
+=== RUN   TestFanoutChildEventsCarryExplicitParentAndIndex/failed=false
+=== RUN   TestFanoutChildEventsCarryExplicitParentAndIndex/failed=true
+--- PASS: TestFanoutChildEventsCarryExplicitParentAndIndex (0.01s)
+    --- PASS: TestFanoutChildEventsCarryExplicitParentAndIndex/failed=false (0.01s)
+    --- PASS: TestFanoutChildEventsCarryExplicitParentAndIndex/failed=true (0.00s)
+=== RUN   TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown
+=== RUN   TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_false
+=== RUN   TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_true
+--- PASS: TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown (0.01s)
+    --- PASS: TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_false (0.01s)
+    --- PASS: TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_true (0.00s)
+=== RUN   TestApprovalSnapshotResumeAndStaleReply
+--- PASS: TestApprovalSnapshotResumeAndStaleReply (0.00s)
+=== RUN   TestJoinResumeRestoresCompletedPredecessors
+--- PASS: TestJoinResumeRestoresCompletedPredecessors (0.00s)
+=== RUN   TestApprovalRejectsWithoutExecutingSuccessor
+--- PASS: TestApprovalRejectsWithoutExecutingSuccessor (0.00s)
+=== RUN   TestConditionalRoutingAndJoinRejection
+--- PASS: TestConditionalRoutingAndJoinRejection (0.00s)
+=== RUN   TestDynamicFanoutAndSharedBudget
+--- PASS: TestDynamicFanoutAndSharedBudget (0.01s)
+=== RUN   TestFanoutFailureCancelsActiveChildrenAndNeverStartsQueuedItems
+--- PASS: TestFanoutFailureCancelsActiveChildrenAndNeverStartsQueuedItems (0.01s)
+=== RUN   TestNodeBudgetCannotBeResetByLargerWorkflowBudget
+--- PASS: TestNodeBudgetCannotBeResetByLargerWorkflowBudget (0.00s)
+=== RUN   TestParallelTerminalsRejectedBeforeExecution
+--- PASS: TestParallelTerminalsRejectedBeforeExecution (0.00s)
+=== RUN   TestAgentConfigurationRetainsReadOnlyToolAndSkillPolicy
+--- PASS: TestAgentConfigurationRetainsReadOnlyToolAndSkillPolicy (0.00s)
+=== RUN   TestSeparateRepliesToParallelApprovalsResumeJoin
+--- PASS: TestSeparateRepliesToParallelApprovalsResumeJoin (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/workflow	1.323s
+=== RUN   TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity
+--- PASS: TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity (0.01s)
+=== RUN   TestLessonVersionsCompatibilityAndPacketSnapshot
+--- PASS: TestLessonVersionsCompatibilityAndPacketSnapshot (0.01s)
+=== RUN   TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets
+--- PASS: TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets (0.03s)
+=== RUN   TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted
+--- PASS: TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted (0.03s)
+=== RUN   TestDeepFixturesRequireMultipleSourceFeatures
+--- PASS: TestDeepFixturesRequireMultipleSourceFeatures (0.01s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestSubmittedReflectionRetryRepairsMissingLessonHead
+--- PASS: TestSubmittedReflectionRetryRepairsMissingLessonHead (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.14s)
+=== RUN   TestImmutablePermissionSurfaceAndAuthorSeparation
+--- PASS: TestImmutablePermissionSurfaceAndAuthorSeparation (0.01s)
+=== RUN   TestFixtureSplitAndOracleSeparation
+--- PASS: TestFixtureSplitAndOracleSeparation (0.01s)
+=== RUN   TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement
+--- PASS: TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement (0.00s)
+=== RUN   TestHeldoutExposureAcrossExperiments
+--- PASS: TestHeldoutExposureAcrossExperiments (0.01s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+=== RUN   TestEvaluationProgressFreezesScheduleAndQualifiesLegacyFallback
+--- PASS: TestEvaluationProgressFreezesScheduleAndQualifiesLegacyFallback (0.01s)
+=== RUN   TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures
+--- PASS: TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures (0.00s)
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete
+--- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords (0.10s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete (0.02s)
+=== RUN   TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals
+--- PASS: TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.681s
+=== RUN   TestAgentGenerationControlsValidateBeforePersisting
+--- PASS: TestAgentGenerationControlsValidateBeforePersisting (0.03s)
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/legacy
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/auto
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/on
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/off
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/structured
+--- PASS: TestIntegrationAgentGenerationControlsReachPlainChat (0.65s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/legacy (0.13s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/auto (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/on (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/off (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/structured (0.15s)
+=== RUN   TestIntegrationWorkflowFreezesReferencedGenerationControls
+--- PASS: TestIntegrationWorkflowFreezesReferencedGenerationControls (0.20s)
+=== RUN   TestIntegrationEvaluationFreezesGenerationControlsAndRequest
+--- PASS: TestIntegrationEvaluationFreezesGenerationControlsAndRequest (0.10s)
+=== RUN   TestApprovalIsDurableAndSingleUse
+--- PASS: TestApprovalIsDurableAndSingleUse (0.01s)
+=== RUN   TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks
+--- PASS: TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks (0.00s)
+=== RUN   TestSkillImportValidatesBeforePersisting
+--- PASS: TestSkillImportValidatesBeforePersisting (0.03s)
+=== RUN   TestCapabilityPublicListsNormalizeOmittedAndHistoricalNullArrays
+--- PASS: TestCapabilityPublicListsNormalizeOmittedAndHistoricalNullArrays (0.01s)
+=== RUN   TestGeneralSettingsKeepNewerToolchainConfiguration
+--- PASS: TestGeneralSettingsKeepNewerToolchainConfiguration (0.01s)
+=== RUN   TestExecutionStatusShowsNewRecoveryRequirement
+--- PASS: TestExecutionStatusShowsNewRecoveryRequirement (0.01s)
+=== RUN   TestDockerRecoveryReceiptRetainsUncertaintyAndProvenance
+--- PASS: TestDockerRecoveryReceiptRetainsUncertaintyAndProvenance (0.05s)
+=== RUN   TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs
+--- PASS: TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs (0.44s)
+=== RUN   TestIntegrationCancelledProposalIsNotExecutedOnNewTurn
+2026/10/27 22:07:10 adk: dropping function calls with no matching function response: ["write_once"]
+2026/10/27 22:07:10 adk: dropping function calls with no matching function response: ["write_once"]
+--- PASS: TestIntegrationCancelledProposalIsNotExecutedOnNewTurn (0.25s)
+=== RUN   TestConversationSnapshotEligibility
+=== RUN   TestConversationSnapshotEligibility/active
+=== RUN   TestConversationSnapshotEligibility/workflow_run
+=== RUN   TestConversationSnapshotEligibility/workflow_checkpoint
+=== RUN   TestConversationSnapshotEligibility/pending_approval
+=== RUN   TestConversationSnapshotEligibility/invalid_pending
+=== RUN   TestConversationSnapshotEligibility/missing_snapshot
+=== RUN   TestConversationSnapshotEligibility/unsupported_version
+=== RUN   TestConversationSnapshotEligibility/empty_snapshot
+=== RUN   TestConversationSnapshotEligibility/invalid_events
+--- PASS: TestConversationSnapshotEligibility (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/active (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/workflow_run (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/workflow_checkpoint (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/pending_approval (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/invalid_pending (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/missing_snapshot (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/unsupported_version (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/empty_snapshot (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/invalid_events (0.00s)
+=== RUN   TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches
+--- PASS: TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches (0.02s)
+=== RUN   TestHarnessCacheFailureIsDurableAndCannotQualify
+--- PASS: TestHarnessCacheFailureIsDurableAndCannotQualify (0.01s)
+=== RUN   TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials
+--- PASS: TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials (0.02s)
+=== RUN   TestHarnessWorkflowCapabilitiesCannotExpandParentOrModel
+--- PASS: TestHarnessWorkflowCapabilitiesCannotExpandParentOrModel (0.00s)
+=== RUN   TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt
+--- PASS: TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt (0.00s)
+=== RUN   TestHarnessSolverExistingEditHasDurableCheckpoint
+--- PASS: TestHarnessSolverExistingEditHasDurableCheckpoint (0.04s)
+=== RUN   TestLegacyComparisonPersistsFinalBoundCapabilityDigest
+--- PASS: TestLegacyComparisonPersistsFinalBoundCapabilityDigest (0.09s)
+=== RUN   TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire
+    harness_instruction_wire_test.go:114: Both serialized /api/chat system messages contained the exact revision Instructions, ToolGuidance, Lessons and appended readOnly:true verification guidance once, before and after the real read_file callback; native user/tool content remained separate.
+--- PASS: TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire (0.03s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.54s)
+=== RUN   TestHarnessLiveDockerFixtureReferences
+    harness_integration_test.go:124: opt-in installed immutable toolchain; no inference
+--- SKIP: TestHarnessLiveDockerFixtureReferences (0.00s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.03s)
+=== RUN   TestHarnessRunCommandReadOnlySchemaAndNativeTransport
+    harness_readonly_wire_test.go:177: Actual Harness outbound schema contains optional readOnly with exact casing and boolean type. A native fake-model readOnly:true survives ADK, frozen authorization, manager approval, typed executor request, completion receipt/event and next Ollama tool message; recording executor only, no Docker/process execution.
+--- PASS: TestHarnessRunCommandReadOnlySchemaAndNativeTransport (0.04s)
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+--- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (2.58s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (1.40s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (1.17s)
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet
+--- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit (0.24s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver (0.11s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet (0.13s)
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=false
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=true
+--- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed (0.46s)
+    --- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=false (0.23s)
+    --- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=true (0.23s)
+=== RUN   TestIntegrationApprovedToolJournalAndConversationContinuation
+--- PASS: TestIntegrationApprovedToolJournalAndConversationContinuation (0.26s)
+=== RUN   TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay
+--- PASS: TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay (0.31s)
+=== RUN   TestIntegrationCancellationExpiresApprovalWithoutFileEffect
+--- PASS: TestIntegrationCancellationExpiresApprovalWithoutFileEffect (0.13s)
+=== RUN   TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode
+--- PASS: TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode (0.19s)
+=== RUN   TestIntegrationConsumedCheckpointCannotReplayAfterRestart
+--- PASS: TestIntegrationConsumedCheckpointCannotReplayAfterRestart (0.17s)
+=== RUN   TestIntegrationReadOnlyAgentCannotGainWriteTool
+--- PASS: TestIntegrationReadOnlyAgentCannotGainWriteTool (0.11s)
+=== RUN   TestIntegrationEvaluationFreezesInputAndRuntime
+--- PASS: TestIntegrationEvaluationFreezesInputAndRuntime (0.10s)
+=== RUN   TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference
+--- PASS: TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference (0.14s)
+=== RUN   TestCapabilityRevisionAndSkillBundleRemainFrozen
+--- PASS: TestCapabilityRevisionAndSkillBundleRemainFrozen (0.03s)
+=== RUN   TestHierarchicalContextAndPlanCAS
+--- PASS: TestHierarchicalContextAndPlanCAS (0.01s)
+=== RUN   TestDurableReadOnlyDelegateCannotReplayOrEscapeBudget
+--- PASS: TestDurableReadOnlyDelegateCannotReplayOrEscapeBudget (0.05s)
+=== RUN   TestPrivateExecutionPathsAndLegacySelectorsFreeze
+--- PASS: TestPrivateExecutionPathsAndLegacySelectorsFreeze (0.01s)
+=== RUN   TestWorkflowUsesFrozenReferencedCapabilities
+--- PASS: TestWorkflowUsesFrozenReferencedCapabilities (0.12s)
+=== RUN   TestContextInspectorSeparatesAdmissionAndRuntime
+--- PASS: TestContextInspectorSeparatesAdmissionAndRuntime (0.14s)
+=== RUN   TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision
+--- PASS: TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision (0.09s)
+=== RUN   TestPhase2LivePilot
+    phase2_live_test.go:20: opt-in live Gemma/Docker qualification
+--- SKIP: TestPhase2LivePilot (0.00s)
+=== RUN   TestDurableToolReceiptsReachModelAndLinkPlanWithoutReplayingTools
+--- PASS: TestDurableToolReceiptsReachModelAndLinkPlanWithoutReplayingTools (0.23s)
+=== RUN   TestPlanReceiptScopeAndPayloadPreservation
+--- PASS: TestPlanReceiptScopeAndPayloadPreservation (0.02s)
+=== RUN   TestReceiptKeepsLatestEntriesAndExactOmissionFlag
+--- PASS: TestReceiptKeepsLatestEntriesAndExactOmissionFlag (0.38s)
+=== RUN   TestRecoveryHasTotalByteBoundAndRetainsOmittedUncertainty
+--- PASS: TestRecoveryHasTotalByteBoundAndRetainsOmittedUncertainty (0.76s)
+=== RUN   TestSnapshotArtifactMetadataAndExplicitFullGet
+--- PASS: TestSnapshotArtifactMetadataAndExplicitFullGet (0.04s)
+=== RUN   TestReceiptUsesOwnedToolOutcomesNotModelClaims
+--- PASS: TestReceiptUsesOwnedToolOutcomesNotModelClaims (0.05s)
+=== RUN   TestReceiptDoesNotInventVerificationForPlainAnswer
+--- PASS: TestReceiptDoesNotInventVerificationForPlainAnswer (0.04s)
+=== RUN   TestReceiptPreservesPublicationConflictSeparateFromProcessExit
+--- PASS: TestReceiptPreservesPublicationConflictSeparateFromProcessExit (0.02s)
+=== RUN   TestReceiptIncludesGovernedSetupAndBinaryMaterialization
+--- PASS: TestReceiptIncludesGovernedSetupAndBinaryMaterialization (0.03s)
+=== RUN   TestUnknownMCPOutcomeCannotBecomeVerifiedCompletion
+--- PASS: TestUnknownMCPOutcomeCannotBecomeVerifiedCompletion (0.04s)
+=== RUN   TestRunGraphFacadeIsReadOnlyAndRequiresAnExistingRun
+--- PASS: TestRunGraphFacadeIsReadOnlyAndRequiresAnExistingRun (0.01s)
+=== RUN   TestSkillImportResumesAfterPublicationAndDatabaseFailure
+--- PASS: TestSkillImportResumesAfterPublicationAndDatabaseFailure (0.03s)
+=== RUN   TestSkillImportRejectsConflictingUnrecordedDirectory
+--- PASS: TestSkillImportRejectsConflictingUnrecordedDirectory (0.01s)
+=== RUN   TestLegacySkillFreezesDigestAndPreservesSelectedID
+--- PASS: TestLegacySkillFreezesDigestAndPreservesSelectedID (0.02s)
+=== RUN   TestVideoMediaCapabilityRangesAndGuards
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/full
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/range
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/suffix
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/head
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/invalid
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/method
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/foreign-origin
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/foreign-host
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/cross-site
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/query
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/native
+--- PASS: TestVideoMediaCapabilityRangesAndGuards (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/full (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/range (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/suffix (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/head (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/invalid (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/method (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/foreign-origin (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/foreign-host (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/cross-site (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/query (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/native (0.00s)
+=== RUN   TestVideoMediaBoundAndCancelledReads
+--- PASS: TestVideoMediaBoundAndCancelledReads (0.00s)
+=== RUN   TestCompletionSelectionsRejectEmbeddingOnlyModels
+--- PASS: TestCompletionSelectionsRejectEmbeddingOnlyModels (0.00s)
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only
+--- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues (0.05s)
+    --- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval (0.04s)
+    --- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	12.933s

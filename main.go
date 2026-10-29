@@ -35,6 +35,9 @@ func main() {
 		log.Fatal(e)
 	}
 	defer core.Close()
+	core.OpenURL = func(url string) error {
+		return exec.Command("/usr/bin/open", url).Run()
+	}
 	assets, e := fs.Sub(frontend, "frontend/dist")
 	if e != nil {
 		log.Fatal(e)
@@ -46,7 +49,10 @@ func main() {
 		return
 	}
 	service := desktop.New(core)
-	native := application.New(application.Options{Name: "Gemma Desktop", Description: "A local workspace for thoughtful agents", Services: []application.Service{application.NewService(service)}, Assets: application.AssetOptions{Handler: secureAssets(application.AssetFileServerFS(assets))}, Mac: application.MacOptions{ApplicationShouldTerminateAfterLastWindowClosed: false}})
+	nativeAssets := http.NewServeMux()
+	nativeAssets.Handle("/api/media/", core.VideoMediaHandler())
+	nativeAssets.Handle("/", application.AssetFileServerFS(assets))
+	native := application.New(application.Options{Name: "Gemma Desktop", Description: "A local workspace for thoughtful agents", Services: []application.Service{application.NewService(service)}, Assets: application.AssetOptions{Handler: secureAssets(nativeAssets)}, Mac: application.MacOptions{ApplicationShouldTerminateAfterLastWindowClosed: false}})
 	core.PickFolder = func() (string, error) {
 		return native.Dialog.OpenFile().CanChooseFiles(false).CanChooseDirectories(true).SetTitle("Choose a workspace").PromptForSingleSelection()
 	}
@@ -118,6 +124,7 @@ func serveDev(core *app.Core, assets fs.FS, addr string) error {
 		}
 		json.NewEncoder(w).Encode(v)
 	})
+	mux.Handle("/api/media/", core.VideoMediaHandler())
 	mux.Handle("/", secureAssets(http.FileServerFS(assets)))
 	server := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 5 * time.Second, IdleTimeout: 60 * time.Second}
 	done := make(chan os.Signal, 1)
@@ -139,7 +146,7 @@ func serveDev(core *app.Core, assets fs.FS, addr string) error {
 
 func secureAssets(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		next.ServeHTTP(w, r)

@@ -1,0 +1,25 @@
+{
+  "createdAt": "2026-10-27T20:01:51.773761+00:00",
+  "applicationBinarySHA256": "b9e8be0cb1484a64557985855f23015ac36feb6b2e8b7bcd834e59bd67afc6e3",
+  "buildInfo": "docs/evidence/context-graph-build-info.json",
+  "browserURL": "http://127.0.0.1:8788",
+  "profile": ".runtime/graph-review-20261027",
+  "runId": "6a3550878e375141c54f2d3b91bafb0b",
+  "checks": {
+    "freshPageGraphBeforeWorkflowEditor": true,
+    "savedDefinitionRetainedAfterWorkflowRename": true,
+    "nodeModalShowsRecordedToolContentAndTimestamp": true,
+    "nodeCount": 12,
+    "edgeCount": 10,
+    "reactFlowViewportPosition": "absolute"
+  },
+  "screenshots": [
+    "screenshots/graph-saved-run.png",
+    "screenshots/graph-node-activity.png"
+  ],
+  "scope": "Real packaged frontend/backend in in-app browser using a copied historical profile; no new model inference. Old events without call IDs remain explicitly unlinked. Native window behavior is not requalified by this browser check.",
+  "console": {
+    "errors": 0,
+    "warnings": "Wails browser-preview notice only; native OS actions are outside this browser check."
+  }
+}

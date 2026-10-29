@@ -1,0 +1,5 @@
+ok  	gemmadesktop.local/app/internal/inference	1.755s
+ok  	gemmadesktop.local/app/internal/engine	1.532s
+ok  	gemmadesktop.local/app/internal/workflow	1.280s
+ok  	gemmadesktop.local/app/internal/harness	1.548s
+ok  	gemmadesktop.local/app/internal/app	11.841s

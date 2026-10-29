@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-10-28T04:29:52.691231+00:00",
+  "scope": "Test-only opt-in provenance logging; no production, fixture, dist, runtime or campaign changes.",
+  "change": "After Docker executor construction succeeds, the 18-reference test logs the selected immutable image, effective default private paths (no additional paths configured), and readOnly=true. No reference repairs or hidden assertion values are logged.",
+  "source": "internal/app/harness_integration_test.go",
+  "beforeSha256": "63bb63952b92a5c74fe4da02f8692babf087f7118ba0fc774d7ee776dbbd0207",
+  "afterSha256": "6d97976b98313f2c8d1886cf45a1b5e6b163813a8eecd89f658b29ee6eae284b",
+  "patchSha256": "4555fa31641887f01341255ef23c1102f8e8d8d21a023dcd1bcf6c034875541c",
+  "verification": {
+    "command": "env -u GEMMA_TEST_DOCKER_IMAGE GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test ./internal/app -run '^TestHarnessLiveDockerFixtureReferences$' -count=1 -v",
+    "exitCode": 0,
+    "outcome": "Package compiled; opt-in test skipped as expected. No Docker commands, candidate execution or model calls.",
+    "log": "docs/evidence/phase2-fixture-provenance/compile-skip.txt",
+    "logSha256": "232aa300f007d39e7655f859ed0a334b58aabe6e4c5c938b03885f668082bcd6"
+  },
+  "limits": [
+    "The new opt-in logging branch has not executed in this turn; its real Docker run remains deferred until the post-campaign rerun.",
+    "This note does not retroactively add image identity to the prior 18-reference proof."
+  ]
+}

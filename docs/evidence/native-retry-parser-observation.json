@@ -1,0 +1,10 @@
+{
+  "runId": "b286d7aba377fd26ab6ae8edcee51860",
+  "observations": [
+    {
+      "message": "time=2026-10-27T14:55:13.588-05:00 level=WARN source=gemma4.go:329 msg=\"gemma4 tool call parsing failed\" error=\"invalid character 'n' looking for beginning of object key string\\nrepair failed to produce valid JSON arguments\"",
+      "fullLogLineSHA256": "2b5a1924338b02de7c3ccc7489ea082048a4922d1ce84a731ebe1ae43c1ba249",
+      "rawBodyOmitted": true
+    }
+  ]
+}

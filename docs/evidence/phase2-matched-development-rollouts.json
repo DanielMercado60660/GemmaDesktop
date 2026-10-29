@@ -1,0 +1,159 @@
+{
+  "observedAt": "2026-10-28T01:02:40.878318+00:00",
+  "scope": "Development rollouts only; solver completion and public command results are not independent task grades or promotion evidence.",
+  "primaryCandidate": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+  "qualificationBuildBinarySHA256": "42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+  "rollouts": [
+    {
+      "method": "native",
+      "trialId": "3ebb61ddd33a6dfd426ee4090b2f67e7",
+      "label": "base",
+      "status": "failed",
+      "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+      "durationMs": 342272,
+      "promptTokens": 47276,
+      "generatedTokens": 19818,
+      "toolCalls": 8,
+      "lastPrescribedCommand": {
+        "exitCode": 1,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "d2d49dec7a5954351ee18c71627202a06206302faf6577155000066046c2eaae",
+      "incomplete": true
+    },
+    {
+      "method": "native",
+      "trialId": "1d271c8c0d97b1490ab6869873e578ae",
+      "label": "inv",
+      "status": "completed",
+      "revisionId": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+      "durationMs": 218237,
+      "promptTokens": 135267,
+      "generatedTokens": 9095,
+      "toolCalls": 17,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "caa51ac3b1f4c1ad0c1a150c3f423f3df476353fd6ef88a4f2563e6b9296e085",
+      "incomplete": false
+    },
+    {
+      "method": "native",
+      "trialId": "6275aefd7125eeb031ce669a461dac69",
+      "label": "dom",
+      "status": "completed",
+      "revisionId": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+      "durationMs": 342798,
+      "promptTokens": 303836,
+      "generatedTokens": 14359,
+      "toolCalls": 24,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "8a2265d9d272afd91fd1a316e3e881780367de978747dd666799121dfd1352ee",
+      "incomplete": false
+    },
+    {
+      "method": "native",
+      "trialId": "f0e7550ec9dd1ff9af94e40707bbce02",
+      "label": "final",
+      "status": "completed",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "durationMs": 241756,
+      "promptTokens": 213700,
+      "generatedTokens": 10217,
+      "toolCalls": 20,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "d586b5c34e787c6a027a2029680a430242e6a815c089190829ef502179011501",
+      "incomplete": false
+    },
+    {
+      "method": "upstream",
+      "trialId": "0616cce51aee60eb179a6f2b05f89a42",
+      "label": "base",
+      "status": "completed",
+      "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+      "durationMs": 352274,
+      "promptTokens": 242767,
+      "generatedTokens": 14377,
+      "toolCalls": 21,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "5c61724ecda93153ff12587ea053ea69f0e607f5ba3725cb0f3460aa1f6376f4",
+      "incomplete": false
+    },
+    {
+      "method": "upstream",
+      "trialId": "02bfb1715c09d58da2d687a607302c38",
+      "label": "inv",
+      "status": "completed",
+      "revisionId": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+      "durationMs": 267094,
+      "promptTokens": 180588,
+      "generatedTokens": 10248,
+      "toolCalls": 20,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "36f01ec9430bcfe1734d6cebbe113f07b2ddc116a276ee957435394106150cbb",
+      "incomplete": false
+    },
+    {
+      "method": "upstream",
+      "trialId": "0ab545ed63ee51b28a74fb2f8da295a0",
+      "label": "dom",
+      "status": "completed",
+      "revisionId": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+      "durationMs": 220561,
+      "promptTokens": 134387,
+      "generatedTokens": 8855,
+      "toolCalls": 17,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "adbb1b8845d01947d5b8f6f27c755788bce60d2df0c2843e9347b1f12ece08bb",
+      "incomplete": false
+    },
+    {
+      "method": "upstream",
+      "trialId": "7b982f89d283bcef6d6e007b8ba0bdb5",
+      "label": "final",
+      "status": "completed",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "durationMs": 298581,
+      "promptTokens": 112798,
+      "generatedTokens": 12736,
+      "toolCalls": 14,
+      "lastPrescribedCommand": {
+        "exitCode": 0,
+        "readOnly": false,
+        "publication": "applied"
+      },
+      "recordSHA256": "ee54642d34412fc8956e3021b742e2fc229432f1e14e0d6b9f7d836a25928ef2",
+      "incomplete": false
+    }
+  ],
+  "limits": [
+    "Single stochastic trajectory per stage; no causal method advantage established.",
+    "Both methods used identical baseline, INV, DOM and composed candidate content; actual trajectories differ.",
+    "All failures remain recorded.",
+    "Every completed final prescribed command omitted readOnly:true.",
+    "No held-out evaluation has started."
+  ]
+}

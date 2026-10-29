@@ -14,6 +14,79 @@ import (
 	"gemmadesktop.local/app/internal/inference"
 )
 
+func TestStructuredToolSourceHasOneExactJSONRoundTrip(t *testing.T) {
+	source := "def render(value):\n    return '\\n'.join([value, 'café,\\\"quoted\\\"'])"
+	toolCalls := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/show" {
+			fmt.Fprint(w, `{}`)
+			return
+		}
+		var req inference.ChatRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			t.Error(err)
+		}
+		for _, message := range req.Messages {
+			if message.Role != "tool" {
+				continue
+			}
+			if message.ToolName == "edit_file" {
+				fmt.Fprintln(w, `{"message":{"content":"Exact source received and edited."},"done":true}`)
+				return
+			}
+			quoted, _ := json.Marshal(source)
+			if !strings.HasSuffix(message.Content, source) || strings.Count(message.Content, source) != 1 || strings.Contains(message.Content, string(quoted)) || strings.Contains(message.Content, "GEMMA_DATA_") || !strings.Contains(message.Content, "fresh-hash") || !strings.Contains(message.Content, "Untrusted evidence") {
+				t.Errorf("source changed or JSON-escaped in model presentation: %s", message.Content)
+			}
+		}
+		if len(req.Messages) > 2 {
+			response := inference.ChatChunk{Done: true, Message: inference.Message{ToolCalls: []inference.ToolCall{{ID: "edit", Function: inference.ToolFunction{Name: "edit_file", Arguments: map[string]any{"old": source, "expectedHash": "fresh-hash"}}}}}}
+			_ = json.NewEncoder(w).Encode(response)
+			return
+		}
+		fmt.Fprintln(w, `{"message":{"tool_calls":[{"id":"read","function":{"name":"read_file","arguments":{}}}]},"done":true}`)
+	}))
+	defer srv.Close()
+	c, _ := inference.NewClient(srv.URL)
+	result, err := New(c).Run(t.Context(), Request{Model: "fixture", Prompt: "Read then edit exact source", Tools: []ToolDefinition{{Name: "read_file"}, {Name: "edit_file"}}}, nil, func(_ context.Context, call ToolCall) (ToolResult, error) {
+		toolCalls++
+		if call.Name == "read_file" {
+			data := map[string]any{"content": source, "hash": "fresh-hash", "startLine": 1, "endLine": 2, "totalLines": 2, "truncated": false}
+			encoded, _ := json.Marshal(data)
+			return ToolResult{Content: string(encoded), Data: data}, nil
+		}
+		if call.Arguments["old"] != source || call.Arguments["expectedHash"] != "fresh-hash" {
+			t.Errorf("exact edit mutated by transport: %#v", call.Arguments)
+		}
+		return ToolResult{Content: "Updated exact match"}, nil
+	})
+	if err != nil || toolCalls != 2 || result.Steps != 3 {
+		t.Fatalf("roundtrip failed: err=%v calls=%d steps=%d", err, toolCalls, result.Steps)
+	}
+	var snapshot sessionSnapshot
+	_ = json.Unmarshal(result.Snapshot, &snapshot)
+	structured := false
+	for _, event := range snapshot.Events {
+		if event.Content == nil {
+			continue
+		}
+		for _, part := range event.Content.Parts {
+			if part.FunctionResponse == nil || part.FunctionResponse.Name != "read_file" {
+				continue
+			}
+			data, _ := part.FunctionResponse.Response["data"].(map[string]any)
+			structured = data["content"] == source && data["hash"] == "fresh-hash"
+		}
+	}
+	if !structured {
+		t.Fatal("model presentation replaced the structured ADK audit record")
+	}
+	continued, err := New(c).Run(t.Context(), Request{Model: "fixture", Prompt: "Confirm the prior edit", Snapshot: result.Snapshot}, nil, nil)
+	if err != nil || continued.Content != "Exact source received and edited." || toolCalls != 2 {
+		t.Fatalf("persisted source continuation failed: result=%+v err=%v calls=%d", continued, err, toolCalls)
+	}
+}
+
 func TestADKToolRoundTripAndSnapshotContinuation(t *testing.T) {
 	var mu sync.Mutex
 	requests := []inference.ChatRequest{}
@@ -95,6 +168,38 @@ func TestADKToolRoundTripAndSnapshotContinuation(t *testing.T) {
 	}
 	if !history {
 		t.Fatal("snapshot history not restored")
+	}
+}
+
+func TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools(t *testing.T) {
+	for _, withTool := range []bool{false, true} {
+		t.Run(fmt.Sprintf("tool=%v", withTool), func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path == "/api/show" {
+					fmt.Fprint(w, `{}`)
+					return
+				}
+				message := inference.Message{Content: "Unfinished draft before limit"}
+				if withTool {
+					message.ToolCalls = []inference.ToolCall{{ID: "unsafe_partial", Function: inference.ToolFunction{Name: "edit", Arguments: map[string]any{}}}}
+				}
+				_ = json.NewEncoder(w).Encode(inference.ChatChunk{Message: message, Done: true, DoneReason: "length", Metrics: inference.Metrics{EvalCount: 17}})
+			}))
+			defer srv.Close()
+			c, _ := inference.NewClient(srv.URL)
+			calls, draftEvents := 0, 0
+			result, err := New(c).Run(t.Context(), Request{Model: "fixture", Prompt: "finish", Tools: []ToolDefinition{{Name: "edit"}}}, func(event Event) {
+				if event.Type == "text" && strings.Contains(event.Detail, "Unfinished draft") {
+					draftEvents++
+				}
+			}, func(context.Context, ToolCall) (ToolResult, error) { calls++; return ToolResult{}, nil })
+			if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || calls != 0 || draftEvents == 0 || result.Content != "Unfinished draft before limit" || result.Usage.EvalCount != 17 {
+				t.Fatalf("truncation treated as success: err=%v result=%+v calls=%d drafts=%d", err, result, calls, draftEvents)
+			}
+			if strings.Contains(string(result.Snapshot), "Unfinished draft") || strings.Contains(string(result.Snapshot), "unsafe_partial") {
+				t.Fatal("incomplete model turn entered durable conversation history")
+			}
+		})
 	}
 }
 

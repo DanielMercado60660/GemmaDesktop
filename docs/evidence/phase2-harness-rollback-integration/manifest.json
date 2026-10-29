@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T03:29:10.906213+00:00",
+  "command": "GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race ./internal/app -run '^TestHarnessRollback' -count=1 -v",
+  "cwd": "/Users/danielmercado/GemmaDesktop",
+  "exitCode": 0,
+  "log": {
+    "path": "docs/evidence/phase2-harness-rollback-integration/focused-test.stdout.txt",
+    "sha256": "ebc2e52d1345afcafd648971b6f81547c2aed70be47aa17f8cfdfaf7aecb4281",
+    "provenance": "Verbatim stdout copied from completed exec session64634, chunk617270; passing test not rerun."
+  },
+  "source": {
+    "path": "internal/app/harness_rollback_integration_test.go",
+    "sha256": "b25b38245c663465e30ddeabdd3d230318db501cd281f3f18e4d24fa1059456c",
+    "changeType": "new test file only"
+  },
+  "testsPassed": [
+    "TestHarnessRollbackRestoresPersistedBindingAndIsolatesTargets",
+    "TestHarnessRollbackRejectsStaleActivationWithoutPersistingSuccess"
+  ],
+  "chain": [
+    "Core.Call(harness.rollback)",
+    "Core.harnessCall",
+    "harness.Manager.Rollback",
+    "Core.activateHarnessRevision (real Config.Activate callback)",
+    "real SQLite Store.Get/Put(harness_binding/harness_promotion)",
+    "store and manager close/reopen",
+    "Core.applyHarnessBinding resolves restored immutable revision"
+  ],
+  "setup": "Actual native packet stages, twelve synthetic paired evaluation trials, current cost/integrity/improvement gates, separate reviewer identity, then real app promotion. No eligible gate or promotion record seeded; test also verifies promotion is refused before independent review.",
+  "assertions": [
+    "Previous revision, target and evidence IDs retained in persisted rollback receipt",
+    "Restored binding survives reopen and ordinary admission selects baseline instructions",
+    "Other workspace with same agent and other agent with same workspace remain byte-equivalent documents",
+    "Global agent and original promotion remain unchanged",
+    "Idempotent rollback retry cannot overwrite a later activation",
+    "First stale rollback rejects newer activation both before and after reopen; no successful rollback receipt written"
+  ],
+  "syntheticBoundary": "Only solver/grader callbacks use three test-owned tiny synthetic tasks and local temporary files. This is deterministic wiring/persistence proof, not live model behavior, Docker execution, campaign grading or performance qualification.",
+  "exclusions": [
+    "No model/provider request",
+    "No Docker operation",
+    "No campaign data/held-out grader source read or mutation",
+    "No production source change",
+    "No binary/dist rebuild"
+  ],
+  "productionSourceHashes": {
+    "internal/app/core.go": "de40aa0d186dfeb34cc9c5398efa81ed47840756cec5a34c729efc2ff8fdd81a",
+    "internal/app/harness.go": "ef6c709bca9c44223a7eb861221e204303d6513b5781fea505f2e07f58fb4a82",
+    "internal/app/harness_binding.go": "a93511474afd024f946ba20b347634fd653bde4389cdbac781b09706572aae72",
+    "internal/harness/evaluation.go": "f0337b75641d85a1bd50e78c624109e49f5f85738a8f3d132034bfd94d8c601e"
+  }
+}

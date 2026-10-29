@@ -1,0 +1,21 @@
+{
+  "id": "277f7139830e8696eec17adbe11d0a45",
+  "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+  "taskId": "go-config",
+  "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-2",
+  "status": "failed",
+  "error": "context deadline exceeded",
+  "createdAt": "2026-10-28T01:30:33.815113Z",
+  "finishedAt": "2026-10-28T01:50:33.970853Z",
+  "inputHash": "277f7139830e8696eec17adbe11d0a459e0c50e008e242ff9f41257d60e07dc3",
+  "outputHash": "d6ce2132abf8ef7c44054e14786a35da386fd485a1bb8e95e4ff77e3bf27fbc3",
+  "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+  "observedAt": "2026-10-28T01:54:07.990099+00:00",
+  "durationMs": 1200116,
+  "frozenTrialBudgetSeconds": 1200,
+  "limits": [
+    "Deadline outcome is recorded as failed; result.incomplete is a separate model-output flag.",
+    "This records a live model deadline, not a new container-descendant cancellation test.",
+    "No timeout retry or replacement trial was initiated."
+  ]
+}

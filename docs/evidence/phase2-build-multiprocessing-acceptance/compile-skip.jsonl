@@ -1,0 +1,9 @@
+{"Time":"2026-10-28T01:29:09.576591-05:00","Action":"start","Package":"gemmadesktop.local/app/internal/execution"}
+{"Time":"2026-10-28T01:29:09.777112-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/execution","Test":"TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite"}
+{"Time":"2026-10-28T01:29:09.777181-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/execution","Test":"TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite","Output":"=== RUN   TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite\n"}
+{"Time":"2026-10-28T01:29:09.777249-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/execution","Test":"TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite","Output":"    docker_workflows_test.go:20: opt-in: installed immutable GEMMA_TEST_DOCKER_IMAGE; no downloads\n"}
+{"Time":"2026-10-28T01:29:09.777276-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/execution","Test":"TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite","Output":"--- SKIP: TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite (0.00s)\n"}
+{"Time":"2026-10-28T01:29:09.777286-05:00","Action":"skip","Package":"gemmadesktop.local/app/internal/execution","Test":"TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite","Elapsed":0}
+{"Time":"2026-10-28T01:29:09.777313-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/execution","Output":"PASS\n"}
+{"Time":"2026-10-28T01:29:10.783022-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/execution","Output":"ok  \tgemmadesktop.local/app/internal/execution\t1.206s\n"}
+{"Time":"2026-10-28T01:29:10.783122-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/execution","Elapsed":1.207}

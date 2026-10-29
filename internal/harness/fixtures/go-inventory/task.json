@@ -1,0 +1,169 @@
+{
+  "id": "go-inventory",
+  "name": "Go inventory HTTP service",
+  "stack": "go",
+  "split": "development",
+  "prompt": "Read README.md, repair calculate available inventory, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport \"sort\"\nvar _ = sort.Strings\nfunc solve(x map[string]any) any {out:=map[string]float64{};for k,v:=range x[\"stock\"].(map[string]any){out[k]=v.(float64)};for _,raw:=range x[\"reservations\"].([]any){r:=raw.(map[string]any);k:=r[\"sku\"].(string);if _,ok:=out[k];ok&&false{out[k]-=r[\"quantity\"].(float64)}};for k,v:=range out{if v<0{out[k]=0}};return out}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/go-inventory\n\ngo 1.23\n",
+    "logic_test.go": "package main\nimport(\"testing\";\"encoding/json\";\"reflect\")\nfunc TestPublic(t *testing.T){var inputs []map[string]any;_ = json.Unmarshal([]byte(`[{\"stock\": {}, \"reservations\": [], \"now\": 10}, {\"stock\": {\"a\": 8}, \"reservations\": [], \"now\": 10}]`),&inputs);var expected []any;_ = json.Unmarshal([]byte(`[{}, {\"a\": 8}]`),&expected);for i,x:=range inputs{b,_:=json.Marshal(solve(x));var actual any;_ = json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected[i]){t.Fatalf(\"case %d: got %v want %v\",i,actual,expected[i])}}}\n",
+    "README.md": "# Calculate available inventory\n\nRepair this go service module and add regression tests.\n\nReturn an object containing every stock SKU. Available = max(0, stock minus active reservations). A reservation is active only when expires > now. Unknown SKUs do not create stock. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `go test ./...` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"stock\": {\n    \"a\": 8,\n    \"b\": 2\n  },\n  \"reservations\": [\n    {\n      \"sku\": \"a\",\n      \"quantity\": 3,\n      \"expires\": 11\n    },\n    {\n      \"sku\": \"b\",\n      \"quantity\": 9,\n      \"expires\": 20\n    }\n  ],\n  \"now\": 10\n}\n```\nExpected result:\n```json\n{\n  \"a\": 5,\n  \"b\": 0\n}\n```\n\n## Feature work: local HTTP API\n\nImplement NewHandler in server.go for POST /availability. It accepts one input object and returns the same result as solve, with application/json content type. Unknown paths return404, non-POST methods return405, malformed JSON and multiple trailing JSON values return400. Handle simultaneous requests without sharing mutable result maps. The supplied HTTP test uses an actual temporary server and client. Keep the CLI and original README.md, main.go, logic_test.go, server_test.go and go.mod. Add a new Go *_test.go regression file; `go test ./...` discovers it. Use only the standard library.\n",
+    "server.go": "package main\nimport(\"encoding/json\";\"net/http\")\n// NewHandler must expose POST /availability with the same object contract as solve.\n// Other paths return404; other methods return405; malformed JSON returns400.\nfunc NewHandler()http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){\n _=json.NewEncoder;http.Error(w,\"not implemented\",http.StatusNotImplemented)\n})}\n",
+    "server_test.go": "package main\nimport(\"testing\";\"net/http/httptest\";\"net/http\";\"strings\";\"encoding/json\")\nfunc TestPublicHTTP(t *testing.T){server:=httptest.NewServer(NewHandler());defer server.Close();resp,e:=http.Post(server.URL+\"/availability\",\"application/json\",strings.NewReader(`{\"stock\":{\"a\":8},\"reservations\":[],\"now\":10}`));if e!=nil{t.Fatal(e)};defer resp.Body.Close();var out map[string]int;_ =json.NewDecoder(resp.Body).Decode(&out);if resp.StatusCode!=200||out[\"a\"]!=8{t.Fatalf(\"status %d result%v\",resp.StatusCode,out)}}\n"
+  },
+  "cases": [
+    {
+      "name": "inventory-1",
+      "input": {
+        "stock": {},
+        "reservations": [],
+        "now": 10
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "inventory-2",
+      "input": {
+        "stock": {
+          "a": 8
+        },
+        "reservations": [],
+        "now": 10
+      },
+      "expected": {
+        "a": 8
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-3",
+      "input": {
+        "stock": {
+          "a": 8,
+          "b": 2
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 3,
+            "expires": 11
+          },
+          {
+            "sku": "b",
+            "quantity": 9,
+            "expires": 20
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 5,
+        "b": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-4",
+      "input": {
+        "stock": {
+          "a": 8
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 4,
+            "expires": 10
+          },
+          {
+            "sku": "a",
+            "quantity": 1,
+            "expires": 9
+          },
+          {
+            "sku": "ghost",
+            "quantity": 3,
+            "expires": 30
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 8
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-5",
+      "input": {
+        "stock": {
+          "a": 5,
+          "b": 0
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 2,
+            "expires": 20
+          },
+          {
+            "sku": "a",
+            "quantity": 2,
+            "expires": 20
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 1,
+        "b": 0
+      },
+      "critical": false
+    }
+  ],
+  "probe": {
+    "name": "independent Go HTTP process, routing and malformed-request observations",
+    "command": [
+      "python3",
+      "_harness_probe.py"
+    ],
+    "files": {
+      "harness_probe_test.go": "package main\nimport(\"testing\";\"net/http/httptest\";\"net/http\";\"strings\";\"encoding/json\";\"fmt\")\nfunc TestHarnessObserve(t *testing.T){s:=httptest.NewServer(NewHandler());defer s.Close();statuses:=[]int{};bodies:=[]any{};for _,v:=range []struct{method,path,body string}{{\"GET\",\"/availability\",\"\"},{\"POST\",\"/missing\",\"{}\"},{\"POST\",\"/availability\",\"bad\"},{\"POST\",\"/availability\",\"{} {}\"},{\"POST\",\"/availability\",`{\"stock\":{\"a\":8,\"b\":2},\"reservations\":[{\"sku\":\"a\",\"quantity\":4,\"expires\":10},{\"sku\":\"b\",\"quantity\":9,\"expires\":11}],\"now\":10}`}}{req,_:=http.NewRequest(v.method,s.URL+v.path,strings.NewReader(v.body));resp,e:=http.DefaultClient.Do(req);if e!=nil{t.Fatal(e)};statuses=append(statuses,resp.StatusCode);if resp.StatusCode==200{var out any;_ =json.NewDecoder(resp.Body).Decode(&out);bodies=append(bodies,out)};resp.Body.Close()};b,_:=json.Marshal(map[string]any{\"statuses\":statuses,\"bodies\":bodies});fmt.Println(\"HARNESS_OBSERVATION:\"+string(b))}\n",
+      "_harness_probe.py": "import subprocess,json\np=subprocess.run([\"go\",\"test\",\"-run\",\"^TestHarnessObserve$\",\"-v\",\".\"],text=True,capture_output=True)\nif p.returncode:raise RuntimeError(p.stdout+p.stderr)\nlines=[x.split(\"HARNESS_OBSERVATION:\",1)[1] for x in p.stdout.splitlines() if x.startswith(\"HARNESS_OBSERVATION:\")]\nif len(lines)!=1:raise RuntimeError(\"missing observation\")\nprint(lines[0])\n"
+    },
+    "expected": {
+      "statuses": [
+        405,
+        404,
+        400,
+        400,
+        200
+      ],
+      "bodies": [
+        {
+          "a": 8,
+          "b": 0
+        }
+      ]
+    }
+  },
+  "protectedFiles": [
+    "README.md",
+    "main.go",
+    "logic_test.go",
+    "server_test.go",
+    "go.mod"
+  ]
+}

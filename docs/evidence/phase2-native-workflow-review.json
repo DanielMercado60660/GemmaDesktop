@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "binaryIdentity": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+  "profile": ".runtime/phase2-ui/data",
+  "nativeScheme": "wails://localhost/",
+  "observations": [
+    {
+      "feature": "Durable plan",
+      "result": "Verified completed plan with expanded real command receipt: python3, exit 0, publication read_only; UI distinguishes progress from correctness.",
+      "image": "phase2-native-plan-final.png"
+    },
+    {
+      "feature": "Context inspector",
+      "result": "38 admission/runtime sources, separate heuristic source estimate and measured aggregate input; scoped AGENTS.md shown as untrusted_source with hash.",
+      "image": "phase2-native-context-final.png"
+    },
+    {
+      "feature": "Saved video answer",
+      "result": "Retained two-purple-circles answer with F002/F003 source citations and visible retrieved frames.",
+      "image": "phase2-native-video-answer-final.png"
+    },
+    {
+      "feature": "Video playback",
+      "result": "Citation sought to 21 seconds, showing two purple circles. Play control advanced to 30 seconds, showing final orange rectangle, then returned to Play at end.",
+      "image": "phase2-native-video-playback-final.png"
+    }
+  ],
+  "personalSettingsChanged": false
+}

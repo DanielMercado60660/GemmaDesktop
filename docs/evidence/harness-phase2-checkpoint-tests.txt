@@ -1,0 +1,4 @@
+=== RUN   TestHarnessSolverExistingEditHasDurableCheckpoint
+--- PASS: TestHarnessSolverExistingEditHasDurableCheckpoint (0.05s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	1.376s

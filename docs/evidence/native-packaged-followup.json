@@ -1,0 +1,15 @@
+{
+  "recordedAt": "2026-10-27T17:41:58.929762+00:00",
+  "bundle": ".runtime/Gemma Desktop QA.app",
+  "sourceBundle": "dist/Gemma Desktop.app",
+  "binarySHA256": "9ca8f079a91051ecd10e2a6bf36f00963b6489dea39849a504ba16c73c1da780",
+  "buildManifest": "docs/evidence/followup-build-info.json",
+  "profile": ".runtime/native-realistic-qa",
+  "checks": [
+    "Native wails://localhost view rendered after quit/relaunch using rebuilt binary",
+    "Saved QA-only agent thinking Off and output limit1024 restored after restart",
+    "Execution mode still Ask before changes"
+  ],
+  "screenshot": "docs/evidence/screenshots/native-model-controls-restart.png",
+  "scope": "Native launch and persistence smoke test. Not a realistic coding acceptance result. Normal user application and profile left running unchanged."
+}

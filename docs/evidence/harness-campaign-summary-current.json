@@ -1,0 +1,519 @@
+{
+  "observedAt": "2026-10-28T03:28:17.736466+00:00",
+  "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+  "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+  "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+  "status": "running",
+  "fixtureIdentityMatches": true,
+  "progress": {
+    "recorded": 15,
+    "expected": 72,
+    "passed": 0,
+    "notPassed": 15,
+    "infrastructureOrIntegrityFailures": 2,
+    "solverStatuses": {
+      "completed": 11,
+      "failed": 4
+    },
+    "medianRecordedSeconds": 446.361,
+    "medianRecordedTokens": 256788,
+    "nonpositiveOrMissingDuration": 0,
+    "nonpositiveOrMissingTokens": 0
+  },
+  "duplicateRecordedKeys": 0,
+  "byArm": [
+    {
+      "arm": "baseline",
+      "recorded": 7,
+      "expected": 36,
+      "passed": 0,
+      "notPassed": 7,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 5,
+        "failed": 2
+      },
+      "medianRecordedSeconds": 478.738,
+      "medianRecordedTokens": 286683,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "arm": "candidate",
+      "recorded": 8,
+      "expected": 36,
+      "passed": 0,
+      "notPassed": 8,
+      "infrastructureOrIntegrityFailures": 2,
+      "solverStatuses": {
+        "completed": 6,
+        "failed": 2
+      },
+      "medianRecordedSeconds": 435.5145,
+      "medianRecordedTokens": 252616.5,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    }
+  ],
+  "byPartitionArm": [
+    {
+      "partition": "heldout",
+      "arm": "baseline",
+      "recorded": 6,
+      "expected": 18,
+      "passed": 0,
+      "notPassed": 6,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 4,
+        "failed": 2
+      },
+      "medianRecordedSeconds": 536.4805,
+      "medianRecordedTokens": 314121.0,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "arm": "candidate",
+      "recorded": 6,
+      "expected": 18,
+      "passed": 0,
+      "notPassed": 6,
+      "infrastructureOrIntegrityFailures": 1,
+      "solverStatuses": {
+        "completed": 4,
+        "failed": 2
+      },
+      "medianRecordedSeconds": 387.7375,
+      "medianRecordedTokens": 266213.5,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "arm": "baseline",
+      "recorded": 1,
+      "expected": 18,
+      "passed": 0,
+      "notPassed": 1,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 1
+      },
+      "medianRecordedSeconds": 368.184,
+      "medianRecordedTokens": 159912,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "arm": "candidate",
+      "recorded": 2,
+      "expected": 18,
+      "passed": 0,
+      "notPassed": 2,
+      "infrastructureOrIntegrityFailures": 1,
+      "solverStatuses": {
+        "completed": 2
+      },
+      "medianRecordedSeconds": 461.2445,
+      "medianRecordedTokens": 181658.0,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    }
+  ],
+  "byTaskArm": [
+    {
+      "partition": "heldout",
+      "taskId": "go-config",
+      "arm": "baseline",
+      "recorded": 3,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 3,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 1,
+        "failed": 2
+      },
+      "medianRecordedSeconds": 594.223,
+      "medianRecordedTokens": 215826,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "go-config",
+      "arm": "candidate",
+      "recorded": 3,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 3,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 2,
+        "failed": 1
+      },
+      "medianRecordedSeconds": 342.508,
+      "medianRecordedTokens": 248445,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "go-intervals",
+      "arm": "baseline",
+      "recorded": 3,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 3,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 3
+      },
+      "medianRecordedSeconds": 478.738,
+      "medianRecordedTokens": 341559,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "go-intervals",
+      "arm": "candidate",
+      "recorded": 3,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 3,
+      "infrastructureOrIntegrityFailures": 1,
+      "solverStatuses": {
+        "completed": 2,
+        "failed": 1
+      },
+      "medianRecordedSeconds": 554.535,
+      "medianRecordedTokens": 401128,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "node-config",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "node-config",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "node-intervals",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "node-intervals",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "python-config",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "python-config",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "python-intervals",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "heldout",
+      "taskId": "python-intervals",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "go-orders",
+      "arm": "baseline",
+      "recorded": 1,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 1,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {
+        "completed": 1
+      },
+      "medianRecordedSeconds": 368.184,
+      "medianRecordedTokens": 159912,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "go-orders",
+      "arm": "candidate",
+      "recorded": 2,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 2,
+      "infrastructureOrIntegrityFailures": 1,
+      "solverStatuses": {
+        "completed": 2
+      },
+      "medianRecordedSeconds": 461.2445,
+      "medianRecordedTokens": 181658.0,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "go-usage",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "go-usage",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "node-orders",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "node-orders",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "node-usage",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "node-usage",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "python-orders",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "python-orders",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "python-usage",
+      "arm": "baseline",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    },
+    {
+      "partition": "validation",
+      "taskId": "python-usage",
+      "arm": "candidate",
+      "recorded": 0,
+      "expected": 3,
+      "passed": 0,
+      "notPassed": 0,
+      "infrastructureOrIntegrityFailures": 0,
+      "solverStatuses": {},
+      "medianRecordedSeconds": null,
+      "medianRecordedTokens": null,
+      "nonpositiveOrMissingDuration": 0,
+      "nonpositiveOrMissingTokens": 0
+    }
+  ],
+  "activeTrials": [
+    {
+      "id": "51c4e964edf9047e5aa5027b442334b5",
+      "taskId": "go-orders",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-1",
+      "status": "running"
+    }
+  ],
+  "recordedPromotionGate": null,
+  "reviewPacketId": null,
+  "notes": [
+    "Progress counts every recorded attempt, including failed/incomplete solver outcomes; no failed row is removed.",
+    "Medians include every recorded attempt, including zero/missing measurements as zero, matching the gate policy. Tokens are recorded prompt plus generated tokens.",
+    "Gate is the application's saved result, shown only after completion; eligibility is not activation or independent review approval.",
+    "API reads are separate snapshots. Grader diagnostics/check names, expected values, traces and model output are omitted."
+  ]
+}

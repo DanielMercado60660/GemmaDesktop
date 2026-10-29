@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "batch": 2,
+  "recordedAt": "2026-10-28T04:45:04.983266+00:00",
+  "reviewedTrialIds": [
+    "97b1e933d011bc05ce7ea38919e09f23"
+  ],
+  "trials": [
+    {
+      "taskId": "node-config",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-1",
+      "status": "completed",
+      "inputHash": "97b1e933d011bc05ce7ea38919e09f23889a5619975850be20ebe5f73a6f5813",
+      "outputHash": "0575f83099d1cda3f62eab44143fb263e5f661081244f93088e0060d84b39c1b",
+      "createdAt": "2026-10-28T04:35:11.40465Z",
+      "finishedAt": "2026-10-28T04:38:09.238779Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/97b1e933d011bc05ce7ea38919e09f23/workspace",
+      "trialId": "97b1e933d011bc05ce7ea38919e09f23",
+      "split": "heldout",
+      "repeat": 1,
+      "arm": "candidate",
+      "terminalStatusObservedBeforeWorkspaceRead": "completed",
+      "terminalObservationAt": "2026-10-28T04:44:11.432309+00:00",
+      "solverIncomplete": false,
+      "solverError": "",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 917,
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 320,
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1386,
+          "sha256": "358d39db28fbd45088cfe5bc135fc10c09e55e6201317e6feb1c6cf2b2a42978",
+          "role": "added-regression-test"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossPreviouslyReviewedTrials": true
+        },
+        {
+          "path": "main.cjs",
+          "firstRecordedReadHash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossPreviouslyReviewedTrials": true
+        },
+        {
+          "path": "package.json",
+          "firstRecordedReadHash": null,
+          "matchesFirstRecordedRead": null,
+          "identicalAcrossPreviouslyReviewedTrials": true
+        },
+        {
+          "path": "public_test.cjs",
+          "firstRecordedReadHash": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossPreviouslyReviewedTrials": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of all six files listed in fileManifest; no candidate import/execution.",
+        "assessment": "Logic bytes equal candidate repeat 0: null deletion repaired, ordinary recursive merge and scalar/array replacement preserved. Same static special JSON object-key defect remains.",
+        "sameLogicAsTrialId": "1bdc643edafa0698ed402be4aa3c3a1e",
+        "substantiveBugsFound": [
+          {
+            "severity": "medium",
+            "path": "logic.cjs",
+            "line": 1,
+            "finding": "Object-key assignment to a normal {} result invokes the inherited __proto__ setter, losing an own JSON configuration key. Object spread on a later layer does not preserve the changed prototype as a key.",
+            "publicContractBasis": "README.md:5 says objects merge recursively and other values replace; it excludes no JSON property names.",
+            "counterexample": {
+              "layers": [
+                {
+                  "__proto__": {
+                    "mode": "local"
+                  }
+                }
+              ]
+            },
+            "expectedByPublicContract": {
+              "__proto__": {
+                "mode": "local"
+              }
+            },
+            "predictedActualSerializedResult": {},
+            "validation": "Static reasoning only; not executed against the candidate or any runtime. Does not assert global prototype pollution."
+          }
+        ],
+        "bypassFound": false,
+        "bypassAssessment": "No test bypass, hard-coded input dispatch, test/source writes, conditional test detection, or answer lookup observed. Original README/main/public_test bytes match first recorded read hashes and previous terminal trials; package.json equals prior terminal trials.",
+        "testAssessment": {
+          "path": "regression.test.cjs",
+          "addedCaseCount": 5,
+          "assertions": "Calls the real CLI subprocess on five cases and deep-compares decoded results to public-contract literal expectations.",
+          "covered": [
+            "README recursive merge with retained sibling key",
+            "zero and empty-array replacements",
+            "nested null deletion",
+            "recursive object merge",
+            "scalar-to-object replacement",
+            "object-to-scalar replacement"
+          ],
+          "gaps": [
+            "No direct before/after input immutability assertion; subprocess serialization cannot detect caller mutation.",
+            "No explicit false or empty-string replacement cases.",
+            "No unusual JSON property-name case."
+          ],
+          "lines": [
+            7,
+            24,
+            30,
+            36,
+            42,
+            75,
+            76
+          ]
+        },
+        "scopeNote": "No unstated deep-clone/isolation promise is imposed for later caller mutation of returned arrays."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Read-only harness.trials.get historical solver receipts. Full grading details not fetched; no command independently rerun.",
+        "commands": [
+          {
+            "callId": "call_7xw99djs",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-yejusxgz3hmku6bpzdeefujzq2",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_y5n1qvys",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "node",
+            "argv": [
+              "regression.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-tqen6mxdbvaya4aqwnrysq4oai",
+            "recordedChanges": [],
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_owmguaxg",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "node",
+            "argv": [
+              "regression.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-mryl6sbefvibpcb3ieevjuiu2c",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_9uzuq8h9",
+            "sequence": 22,
+            "startSequence": 21,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-kf3wplexh7dx7ll2wcy273aif7",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_jcydwg81",
+            "sequence": 24,
+            "startSequence": 23,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-vpole2dqire32b6cc3q5dym6pl",
+            "recordedChanges": null,
+            "error": ""
+          }
+        ],
+        "lastSuccessfulExplicitWriteSequence": 18,
+        "lastPotentiallyMutatingWritableCommandSequence": 22,
+        "successfulExactPublicCommandAfterLastExplicitWriteCallIds": [
+          "call_9uzuq8h9",
+          "call_jcydwg81"
+        ],
+        "readonlyVerificationPresent": true,
+        "qualifyingReadOnlyCallIds": [
+          "call_jcydwg81"
+        ],
+        "readonlyVerificationAssessment": "Final exact node public_test.cjs call has explicit readOnly:true, receipt readOnly:true/publication read_only, exitCode0, no cancellation/truncation/error. Its startSequence23 follows explicit edit completion18 and the last writable command completion22. No later calls are recorded.",
+        "qualificationLimitation": "This supports the mandatory exact final read-only receipt condition only, not the full independent grade or exhaustive public-contract correctness. The earlier writable success remains separately labeled.",
+        "fullIndependentGrade": "Not read for this public-only source review."
+      },
+      "postReviewFileHashCheck": {
+        "files": 6,
+        "allUnchanged": true
+      }
+    }
+  ],
+  "activeExcludedAtListSnapshot": [
+    {
+      "trialId": "628c152edbb93639be63baed99f94cfc",
+      "taskId": "node-config",
+      "arm": "baseline",
+      "repeat": 1,
+      "status": "running"
+    }
+  ],
+  "limitations": [
+    "Public-only static review. No hidden assertions, expected answers, grades, candidate execution, imports, Docker/model/build or campaign edits.",
+    "Counterexample remains static and unexecuted; not used to draft optimization lessons."
+  ]
+}

@@ -1,0 +1,352 @@
+{
+  "createdAt": "2026-10-27T20:13:03.712308+00:00",
+  "report": "docs/evidence/realistic-followup-20261027-150130-b6e818e0.json",
+  "runId": "fb27b23696d40d334aa4e4b5e72a68a7",
+  "durationSeconds": 692.72,
+  "publicTests": {
+    "count": 14,
+    "exitCode": 1,
+    "failure": "new ASCII test searches a but expects two, while both \u00c9clair and \u00e9clair also contain a"
+  },
+  "independentTests": {
+    "count": 9,
+    "exitCode": 0
+  },
+  "integrityProblems": [],
+  "generationMetrics": [
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 3362,
+      "promptTokens": 27436,
+      "rawResponseCharacters": 12,
+      "step": 1,
+      "summary": false,
+      "thinkingCharacters": 11130,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 12
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 4406,
+      "promptTokens": 31597,
+      "rawResponseCharacters": 0,
+      "step": 2,
+      "summary": false,
+      "thinkingCharacters": 12106,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 2972,
+      "promptTokens": 36163,
+      "rawResponseCharacters": 0,
+      "step": 3,
+      "summary": false,
+      "thinkingCharacters": 80,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 47,
+      "promptTokens": 39172,
+      "rawResponseCharacters": 0,
+      "step": 4,
+      "summary": false,
+      "thinkingCharacters": 99,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 3072,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 162,
+      "promptTokens": 41589,
+      "rawResponseCharacters": 512,
+      "step": 5,
+      "summary": true,
+      "thinkingCharacters": 0,
+      "toolCalls": 0,
+      "toolProtocol": "",
+      "visibleCharacters": 512
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 2977,
+      "promptTokens": 15187,
+      "rawResponseCharacters": 0,
+      "step": 6,
+      "summary": false,
+      "thinkingCharacters": 51,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 318,
+      "promptTokens": 18201,
+      "rawResponseCharacters": 0,
+      "step": 7,
+      "summary": false,
+      "thinkingCharacters": 886,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 3226,
+      "promptTokens": 20708,
+      "rawResponseCharacters": 0,
+      "step": 8,
+      "summary": false,
+      "thinkingCharacters": 629,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 51,
+      "promptTokens": 24098,
+      "rawResponseCharacters": 0,
+      "step": 9,
+      "summary": false,
+      "thinkingCharacters": 25,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 333,
+      "promptTokens": 24179,
+      "rawResponseCharacters": 0,
+      "step": 10,
+      "summary": false,
+      "thinkingCharacters": 1099,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 234,
+      "promptTokens": 24542,
+      "rawResponseCharacters": 0,
+      "step": 11,
+      "summary": false,
+      "thinkingCharacters": 756,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 62,
+      "promptTokens": 25041,
+      "rawResponseCharacters": 0,
+      "step": 12,
+      "summary": false,
+      "thinkingCharacters": 58,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 99,
+      "promptTokens": 25133,
+      "rawResponseCharacters": 0,
+      "step": 13,
+      "summary": false,
+      "thinkingCharacters": 241,
+      "toolCalls": 1,
+      "toolProtocol": "native",
+      "visibleCharacters": 0
+    },
+    {
+      "attempt": 1,
+      "contextSize": 65536,
+      "doneReason": "stop",
+      "maxOutputTokens": 16384,
+      "model": "gemma4:26b-mlx",
+      "outputTokens": 903,
+      "promptTokens": 25262,
+      "rawResponseCharacters": 1852,
+      "step": 14,
+      "summary": false,
+      "thinkingCharacters": 1576,
+      "toolCalls": 0,
+      "toolProtocol": "native",
+      "visibleCharacters": 1852
+    }
+  ],
+  "compactions": [
+    {
+      "createdAt": "2026-10-27T20:08:58.28045Z",
+      "data": {
+        "actions": {
+          "compaction": {
+            "compactedContent": {
+              "parts": [
+                {
+                  "text": "Handoff marker: FIELDNOTE-1079EFB14795\n\nDefects fixed:\n1. Status changes persist after reopening the database.\n2. Filter logic uses `AND` instead of `OR` when combining `status` and `query` and uses literal substring matching.\n3. Pagination order is `created_at DESC, id DESC` and `TaskPage.total` is correct.\n\nCSV feature entry points:\n- `tracker.csv_export.serialize`\n- `tracker.csv_export.write_tasks`\n- `tracker.TaskService.export_csv`\n- `tracker.cli.main`\n\nTest outcome observed:\nRan 12 tests in 0.062s (OK)"
+                }
+              ],
+              "role": "model"
+            },
+            "endTimestamp": "2026-10-27T14:59:04.071486-05:00",
+            "startTimestamp": "2026-10-27T13:54:31.720641-05:00"
+          }
+        },
+        "author": "user",
+        "id": "c068b7e7-db63-4a19-baec-c105e152a21f",
+        "invocationId": "e-504f44bb-27c1-4f46-8384-21b161442fd7",
+        "timestamp": "2026-10-27T15:08:58.280305-05:00",
+        "usageMetadata": {
+          "candidatesTokenCount": 162,
+          "promptTokenCount": 41589,
+          "totalTokenCount": 41751
+        }
+      },
+      "id": "49675795e60554d21160020af5759c64",
+      "runId": "fb27b23696d40d334aa4e4b5e72a68a7",
+      "title": "Context summary checkpoint",
+      "type": "adk_event"
+    }
+  ],
+  "toolOutcomes": [
+    {
+      "type": "tool_completed",
+      "tool": "read_file",
+      "detail": null,
+      "at": "2026-10-27T20:03:40.060399Z"
+    },
+    {
+      "type": "tool_completed",
+      "tool": "edit_file",
+      "detail": null,
+      "at": "2026-10-27T20:06:07.322482Z"
+    },
+    {
+      "type": "tool_failed",
+      "tool": "write_file",
+      "detail": "file changed since it was read; read it again before editing",
+      "at": "2026-10-27T20:07:36.864355Z"
+    },
+    {
+      "type": "tool_completed",
+      "tool": "read_file",
+      "detail": null,
+      "at": "2026-10-27T20:07:39.669773Z"
+    },
+    {
+      "type": "tool_failed",
+      "tool": "write_file",
+      "detail": "file changed since it was read; read it again before editing",
+      "at": "2026-10-27T20:10:32.017888Z"
+    },
+    {
+      "type": "tool_completed",
+      "tool": "read_file",
+      "detail": null,
+      "at": "2026-10-27T20:10:41.924532Z"
+    },
+    {
+      "type": "tool_completed",
+      "tool": "write_file",
+      "detail": null,
+      "at": "2026-10-27T20:11:57.451696Z"
+    },
+    {
+      "type": "tool_failed",
+      "tool": "run_command",
+      "detail": "The user denied this operation",
+      "at": "2026-10-27T20:12:00.56685Z"
+    },
+    {
+      "type": "tool_failed",
+      "tool": "run_command",
+      "detail": "The user denied this operation",
+      "at": "2026-10-27T20:12:13.910478Z"
+    },
+    {
+      "type": "tool_completed",
+      "tool": "list_files",
+      "detail": null,
+      "at": "2026-10-27T20:12:22.730674Z"
+    },
+    {
+      "type": "tool_failed",
+      "tool": "run_command",
+      "detail": "The user denied this operation",
+      "at": "2026-10-27T20:12:26.470126Z"
+    },
+    {
+      "type": "tool_failed",
+      "tool": "run_command",
+      "detail": "The user denied this operation",
+      "at": "2026-10-27T20:12:31.185663Z"
+    }
+  ],
+  "passed": false,
+  "finding": "Compaction omitted the original exact process policy. Subsequent commands were denied by harness policy; no successful test receipt after edits. Earlier completed pass remains separate."
+}

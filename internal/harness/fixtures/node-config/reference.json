@@ -1,0 +1,4 @@
+{
+  "logic.cjs": "exports.solve=function(x){function merge(a,b){const out={...a};for(const [k,v] of Object.entries(b)){if(v===null)delete out[k];else if(typeof v==='object'&&!Array.isArray(v))out[k]=merge(out[k]&&typeof out[k]==='object'&&!Array.isArray(out[k])?out[k]:{},v);else out[k]=v;}return out;}return x.layers.reduce(merge,{});};\n",
+  "regression.test.cjs": "const assert=require(\"node:assert/strict\"),{solve}=require(\"./logic.cjs\");assert.deepEqual(solve({\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}),{\"service\": {\"port\": 0, \"tls\": true}, \"tags\": []});\n"
+}

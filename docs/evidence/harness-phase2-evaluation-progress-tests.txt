@@ -1,0 +1,30 @@
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/experiment
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/revision
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/packet
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/trial
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/lesson
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/evaluation
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/promotion
+--- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder (2.12s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/experiment (0.30s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/revision (0.30s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/packet (0.29s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/trial (0.29s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/lesson (0.30s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/evaluation (0.30s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/promotion (0.29s)
+=== RUN   TestHarnessMetadataRemovesPayloadBeforeGoDecode
+--- PASS: TestHarnessMetadataRemovesPayloadBeforeGoDecode (0.01s)
+=== RUN   TestHarnessEvaluationProgressIsProjectedWithoutResultPayloads
+--- PASS: TestHarnessEvaluationProgressIsProjectedWithoutResultPayloads (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/store	3.324s
+=== RUN   TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets
+--- PASS: TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets (0.02s)
+=== RUN   TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted
+--- PASS: TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted (0.03s)
+=== RUN   TestEvaluationProgressFreezesScheduleAndQualifiesLegacyFallback
+--- PASS: TestEvaluationProgressFreezesScheduleAndQualifiesLegacyFallback (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.224s

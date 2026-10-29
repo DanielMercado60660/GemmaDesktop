@@ -1,0 +1,33 @@
+{
+  "reviewer": "/root/ollama_model_research",
+  "reviewedAt": "2026-10-28T00:08:50.145301+00:00",
+  "capability": {
+    "supported": true,
+    "verified": [
+      "Exact imported and materialized resource bytes and hashes",
+      "Separate frozen child digest and list/read-only tool events",
+      "Read-only successful verifier and unchanged source",
+      "Final plan links actual command receipt"
+    ],
+    "cautions": [
+      "One plan_update rejection was recovered; the run was not error-free.",
+      "Model prose includes GEMMA_DATA formatter delimiters absent from raw stdout."
+    ]
+  },
+  "video": {
+    "supported": true,
+    "scope": "Six synthetic sampled visual scenes plus negative control and transport",
+    "verified": [
+      "6/6 retrieval intervals",
+      "Seven completed answers",
+      "Cited frames visually inspected; frame hashes and PTS checked against media DB",
+      "Six answers match shapes/counts and negative control limits its claim to supplied frames"
+    ],
+    "excludes": [
+      "Continuous video understanding",
+      "Audio understanding",
+      "Native playback, which is reviewed separately by root"
+    ]
+  },
+  "blockingIssues": []
+}

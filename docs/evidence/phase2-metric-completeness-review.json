@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "reviewer": "/root/ollama_model_research",
+  "reviewedAt": "2026-10-28T02:43:24.186286+00:00",
+  "scope": "Read-only production accounting/gate source review plus terminal-trial metadata. No hidden assertions, candidate code execution/imports, inference, trial mutation, campaign restart or binary change. This audit does not predict the unfinished evaluation result.",
+  "frozenCampaignPolicy": "Positive partial token totals are observed totals/lower bounds. Neither the saved old gate nor a positive count establishes complete cost. Independent promotion must not approve an unsupported complete-cost claim. Existing frozen campaign/binary remains intact; any source fix is a separate product revision, not candidate tuning.",
+  "sourceSnapshot": {
+    "internal/engine/adapter.go": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9",
+    "internal/engine/engine.go": "0d4dee27cddef5bcdeb31b64417605a6ced8b359f553fce42d445c4a499434d3",
+    "internal/inference/types.go": "7d1f63e68adcfda52aa7e61bd8394cf3a9dedbb998346d8daa743b766fbd4102",
+    "internal/inference/client.go": "7aecb5d0e3fee7da57a8ca41b844c3feabf2ce0ba98ba1f2d4390c6a6e61ef1c",
+    "internal/harness/evaluation.go": "8f21b524fb72b98d020f6508beff36c7c42ab7a796f6a2263cd802b055efafb8",
+    "internal/harness/manager.go": "40315abc61c81afbfd7a419ea9f869d92cb7a251418e2d43226df6a44f34712d",
+    "internal/app/harness_solver.go": "3a259e0d36c40bb9d85fd83d83b4af7baf83726cf2af995ddd944d8ea8800ef6"
+  },
+  "findings": [
+    {
+      "id": "partial-positive-token-total",
+      "severity": "blocking for complete-cost promotion claims",
+      "claim": "Deadline/cancellation/transport failures can leave positive prior-generation usage without an availability/completeness flag, and the gate accepts that positive total as a valid measurement.",
+      "mechanism": "Adapter copies counters only from chunk.Done, then returns immediately on Chat errors. Ordinary engine result usage comes from completed ADK response metrics or explicit incompleteResponseError usage. EvalResult stores a scalar Tokens sum. Gate rejects nonpositive totals but does not know whether an in-flight generation was aborted.",
+      "source": [
+        {
+          "path": "internal/engine/adapter.go",
+          "lines": [
+            235
+          ],
+          "match": "if chunk.Done {",
+          "fileSHA256": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9"
+        },
+        {
+          "path": "internal/engine/adapter.go",
+          "lines": [
+            73,
+            90,
+            142,
+            160,
+            170,
+            245
+          ],
+          "match": "yield(nil, err)",
+          "fileSHA256": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9"
+        },
+        {
+          "path": "internal/engine/engine.go",
+          "lines": [
+            451
+          ],
+          "match": "if errors.As(err, &incomplete) {",
+          "fileSHA256": "0d4dee27cddef5bcdeb31b64417605a6ced8b359f553fce42d445c4a499434d3"
+        },
+        {
+          "path": "internal/harness/evaluation.go",
+          "lines": [
+            155
+          ],
+          "match": "tokens := metric(",
+          "fileSHA256": "8f21b524fb72b98d020f6508beff36c7c42ab7a796f6a2263cd802b055efafb8"
+        },
+        {
+          "path": "internal/harness/evaluation.go",
+          "lines": [
+            243
+          ],
+          "match": "if r.DurationMS <= 0 || r.Tokens <= 0 {",
+          "fileSHA256": "8f21b524fb72b98d020f6508beff36c7c42ab7a796f6a2263cd802b055efafb8"
+        }
+      ],
+      "impact": "The median token ratio can contain lower bounds treated as complete costs. Actual missing token count cannot be reconstructed from character counts or elapsed time. The direction or magnitude of ratio distortion is not established by this audit."
+    },
+    {
+      "id": "received-metrics-lost-on-duplicate-id",
+      "severity": "accounting correctness",
+      "claim": "An ordinary generation with received terminal counters can lose those counters when duplicate tool IDs are rejected.",
+      "mechanism": "Adapter increments its local usage, then returns a plain duplicate-tool-ID error before a completed LLMResponse. RunAgent only adds usage from completed events, summary-model counters, discarded-attempt ledger, or incompleteResponseError. Ordinary model local usage is not otherwise aggregated.",
+      "source": [
+        {
+          "path": "internal/engine/adapter.go",
+          "lines": [
+            251
+          ],
+          "match": "m.usage.PromptEvalCount += metric.PromptEvalCount",
+          "fileSHA256": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9"
+        },
+        {
+          "path": "internal/engine/adapter.go",
+          "lines": [
+            319
+          ],
+          "match": "duplicate tool call ID",
+          "fileSHA256": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9"
+        },
+        {
+          "path": "internal/engine/engine.go",
+          "lines": [
+            509
+          ],
+          "match": "if raw, ok := ev.CustomMetadata[\"ollama_metrics\"]; ok {",
+          "fileSHA256": "0d4dee27cddef5bcdeb31b64417605a6ced8b359f553fce42d445c4a499434d3"
+        }
+      ],
+      "qualification": "Source-path finding; no claim this error occurred in the frozen campaign."
+    }
+  ],
+  "observedDeadlineTrial": {
+    "id": "277f7139830e8696eec17adbe11d0a45",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "taskId": "go-config",
+    "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-2",
+    "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+    "status": "failed",
+    "error": "context deadline exceeded",
+    "createdAt": "2026-10-28T01:30:33.815113Z",
+    "finishedAt": "2026-10-28T01:50:33.970853Z",
+    "outputHash": "d6ce2132abf8ef7c44054e14786a35da386fd485a1bb8e95e4ff77e3bf27fbc3",
+    "progress": {
+      "title": "Generation context prepared",
+      "toolCount": 44,
+      "type": "context_prepared",
+      "updatedAt": "2026-10-28T01:50:31.012678Z"
+    },
+    "result": {
+      "durationMs": 1200116,
+      "incomplete": false,
+      "usage": {
+        "eval_count": 34777,
+        "eval_duration": 987486767210,
+        "load_duration": 733461671,
+        "prompt_eval_count": 951428,
+        "prompt_eval_duration": 195280146708,
+        "total_duration": 1183891547380
+      },
+      "reportedPromptPlusOutputTokens": 986205
+    }
+  },
+  "observationQualification": "The deadline trial has positive prior metrics, failed status and result.incomplete=false; last progress is context_prepared. Incomplete is a response-protocol field, not a measurement-completeness flag. The final in-flight cost is unavailable. The difference between wall time and reported generation durations also includes tool/host/cleanup overhead and is not a token estimate.",
+  "confirmedLimits": [
+    {
+      "topic": "Zero and missing metrics",
+      "detail": "Metrics fields use omitempty and metric() maps absent/unrecognized fields to0. Entirely missing/zero total tokens or nonpositive duration marks the gate critical/incomplete, so zero does not accidentally make eligibility true. A missing prompt or output component can still be hidden by a positive other component; the schema does not retain presence."
+    },
+    {
+      "topic": "Generation limits and empty retry",
+      "detail": "Terminal Done/done_reason=length counters are wrapped in incompleteResponseError and retained by RunAgent. Completed empty-response attempts are retained once through the discarded-usage ledger; aborted retry cost remains unavailable."
+    },
+    {
+      "topic": "Duration provenance",
+      "detail": "SolveTrial uses monotonic time.Since around the solver invocation. This includes deferred solver cache cleanup/session export and failed/deadline time, but excludes environment validation, fixture creation, post-solver output-tree hashing and independent grading. Zero duration is encoded as0, not null."
+    },
+    {
+      "topic": "Abrupt process interruption",
+      "detail": "Running rows persisted during execution contain progress metadata, not cumulative result usage; startup marks them interrupted without replay. Unavailable/zero measurements must not be represented as observed zero consumption."
+    },
+    {
+      "topic": "Gate display",
+      "detail": "Ratios are still calculated even if measurement checks fail; baseline nonpositive median uses sentinel999. Displayed ratios on incomplete measurement sets are not promotion evidence."
+    }
+  ],
+  "futureFixReview": "Awaiting independent review of a separately versioned source-only fix. This evidence records the old-source behavior and must not be retroactively treated as corrected campaign measurements."
+}

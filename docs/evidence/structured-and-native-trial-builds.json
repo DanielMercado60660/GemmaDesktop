@@ -1,0 +1,36 @@
+{
+  "binarySHA256": "34b4c7875b372e77598790a889451110cc12ddcaeb7f1b6555db4238d8356e09",
+  "buildInfoSHA256": "f42c91db9882ee397eb10bfdab46593b37c9a5c88dfd995279635b042192aceb",
+  "trials": [
+    {
+      "runId": "de1f673ddf42fac2b60152e00d61cfbe",
+      "report": "realistic-20261027-140444-98d7c9.json",
+      "protocol": "structured_json",
+      "thinking": "off",
+      "result": "failed task gate; no tool actions"
+    },
+    {
+      "runId": "9c670a39d6ea21d7ec1d8344275f53c0",
+      "report": "realistic-20261027-145144-aabad6.json",
+      "protocol": "structured_json",
+      "thinking": "on",
+      "result": "failed task gate; two reads, no edits or commands"
+    },
+    {
+      "runId": "b286d7aba377fd26ab6ae8edcee51860",
+      "protocol": "native",
+      "thinking": "on",
+      "promptPath": ".runtime/realistic-20261027-135431-ae475d/FOLLOWUP-EXPORT-IMPLEMENT.txt",
+      "result": "Automated gates passed after native empty retry; public source review still found ASCII-only search defect",
+      "report": "realistic-followup-20261027-145302-338fad1a.json"
+    }
+  ],
+  "commonSettings": {
+    "contextSize": 65536,
+    "maxOutputTokens": 16384,
+    "temperature": 1,
+    "model": "gemma4:26b-mlx",
+    "runtime": "0.40.11"
+  },
+  "scope": "App binary fixed at this build for all listed trials; later source graph changes do not affect the running process."
+}

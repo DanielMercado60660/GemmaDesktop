@@ -198,6 +198,7 @@ export function friendlyStatus(s: string) {
     (
       {
         waiting_approval: "Needs approval",
+        approval_requested: "Approval requested",
         queued: "Queued",
         running: "Working",
         cancelling: "Stopping",

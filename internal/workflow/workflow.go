@@ -254,16 +254,17 @@ func asText(v any) string {
 }
 
 type checkpoint struct {
-	Version        int                   `json:"version"`
-	DefinitionHash string                `json:"definitionHash"`
-	Session        json.RawMessage       `json:"session"`
-	Interrupts     map[string]string     `json:"interrupts"`
-	Pending        []engine.PendingInput `json:"pending"`
-	Completed      map[string]any        `json:"completed"`
-	ModelCalls     int                   `json:"modelCalls"`
-	ToolCalls      int                   `json:"toolCalls"`
-	OutputBytes    int                   `json:"outputBytes"`
-	Usage          inference.Metrics     `json:"usage"`
+	Version         int                        `json:"version"`
+	DefinitionHash  string                     `json:"definitionHash"`
+	Session         json.RawMessage            `json:"session"`
+	Interrupts      map[string]string          `json:"interrupts"`
+	Pending         []engine.PendingInput      `json:"pending"`
+	Completed       map[string]any             `json:"completed"`
+	ModelCalls      int                        `json:"modelCalls"`
+	ToolCalls       int                        `json:"toolCalls"`
+	OutputBytes     int                        `json:"outputBytes"`
+	Usage           inference.Metrics          `json:"usage"`
+	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
 }
 
 // Run pauses durably at approval nodes. Resume must provide the same definition
@@ -283,8 +284,9 @@ func (r *Runtime) Run(ctx context.Context, d Definition, request engine.Request,
 	encoded, _ := json.Marshal(identity)
 	sum := sha256.Sum256(encoded)
 	hash := hex.EncodeToString(sum[:])
-	cp := checkpoint{Version: 1, DefinitionHash: hash, Interrupts: map[string]string{}, Completed: map[string]any{}}
+	cp := checkpoint{TokenAccounting: inference.NewTokenAccounting(0, 0, 0), Version: 1, DefinitionHash: hash, Interrupts: map[string]string{}, Completed: map[string]any{}}
 	if len(request.Snapshot) > 0 {
+		cp.TokenAccounting = nil // Missing legacy checkpoint accounting stays unknown.
 		if err := json.Unmarshal(request.Snapshot, &cp); err != nil {
 			return result, fmt.Errorf("invalid workflow checkpoint: %w", err)
 		}
@@ -330,9 +332,10 @@ func (r *Runtime) Run(ctx context.Context, d Definition, request engine.Request,
 	ctx = engine.WithBudget(ctx, budget)
 	var mu sync.Mutex
 	var usageMu sync.Mutex
-	recordUsage := func(usage inference.Metrics) {
+	recordUsage := func(usage inference.Metrics, accounting *inference.TokenAccounting) {
 		usageMu.Lock()
 		defer usageMu.Unlock()
+		cp.TokenAccounting = inference.MergeTokenAccounting(cp.TokenAccounting, accounting)
 		cp.Usage.TotalDuration += usage.TotalDuration
 		cp.Usage.LoadDuration += usage.LoadDuration
 		cp.Usage.PromptEvalCount += usage.PromptEvalCount
@@ -376,7 +379,7 @@ func (r *Runtime) Run(ctx context.Context, d Definition, request engine.Request,
 				req := base
 				req.Prompt = nodePrompt(n, input)
 				out, err := r.engine.Run(ac, req, send, execute)
-				recordUsage(out.Usage)
+				recordUsage(out.Usage, out.TokenAccounting)
 				if err != nil {
 					send(engine.Event{Type: "node_failed", Title: n.Label, NodeID: n.ID, Detail: err.Error()})
 					return "", err
@@ -407,6 +410,15 @@ func (r *Runtime) Run(ctx context.Context, d Definition, request engine.Request,
 				}
 				outputs := make([]string, len(items))
 				errs := make([]error, len(items))
+				groupCtx, cancelGroup := context.WithCancel(ac)
+				defer cancelGroup()
+				var firstFailure error
+				var failOnce sync.Once
+				fail := func(err error) {
+					if err != nil {
+						failOnce.Do(func() { firstFailure = err; cancelGroup() })
+					}
+				}
 				var wg sync.WaitGroup
 				slots := make(chan struct{}, 4)
 				for index, item := range items {
@@ -417,38 +429,57 @@ func (r *Runtime) Run(ctx context.Context, d Definition, request engine.Request,
 						select {
 						case slots <- struct{}{}:
 							defer func() { <-slots }()
-						case <-ac.Done():
-							errs[index] = ac.Err()
+						case <-groupCtx.Done():
+							errs[index] = groupCtx.Err()
+							return
+						}
+						if err := groupCtx.Err(); err != nil {
+							errs[index] = err
 							return
 						}
 						childID := fmt.Sprintf("%s_item_%d", n.ID, index)
 						var childErr error
 						child := adkw.NewFunctionNode(childID, func(childCtx agent.Context, item string) (string, error) {
-							send(engine.Event{Type: "node_started", Title: n.Label, NodeID: childID})
+							send(engine.Event{Type: "node_started", Title: n.Label, NodeID: childID, Data: map[string]any{"parentNodeId": n.ID, "childIndex": index}})
 							req := base
 							req.NodeID = childID
 							req.Prompt = nodePrompt(n, item)
-							out, err := r.engine.Run(childCtx, req, send, execute)
-							recordUsage(out.Usage)
+							// RunNode's sub-scheduler retains its original parent
+							// context. Bridge group cancellation explicitly to each
+							// child while preserving ADK child identity and metadata.
+							runCtx, cancelChild := context.WithCancel(childCtx)
+							stop := context.AfterFunc(groupCtx, cancelChild)
+							defer stop()
+							defer cancelChild()
+							if groupCtx.Err() != nil {
+								cancelChild()
+							}
+							out, err := r.engine.Run(runCtx, req, send, execute)
+							recordUsage(out.Usage, out.TokenAccounting)
 							childErr = err
+							fail(err)
 							kind := "node_completed"
 							detail := out.Content
 							if err != nil {
 								kind = "node_failed"
 								detail = err.Error()
 							}
-							send(engine.Event{Type: kind, Title: n.Label, NodeID: childID, Detail: detail})
+							send(engine.Event{Type: kind, Title: n.Label, NodeID: childID, Detail: detail, Data: map[string]any{"parentNodeId": n.ID, "childIndex": index}})
 							return out.Content, err
 						}, adkw.NodeConfig{})
 						out, err := adkw.RunNode[string](ac, child, item, adkw.WithRunID(fmt.Sprintf("item_%d", index)), adkw.WithUseSubBranch())
 						if childErr != nil {
 							err = errors.Join(err, childErr)
 						}
+						fail(err)
 						errs[index] = err
 						outputs[index] = asText(out)
 					}()
 				}
 				wg.Wait()
+				if firstFailure != nil {
+					return nil, firstFailure
+				}
 				for _, err := range errs {
 					if err != nil {
 						return nil, err
@@ -531,7 +562,8 @@ func (r *Runtime) Run(ctx context.Context, d Definition, request engine.Request,
 	request.Snapshot = cp.Session
 	priorPending := cp.Pending
 	result, runErr = r.engine.RunAgent(ctx, workflowAgent, request, send, budget)
-	result.Usage = cp.Usage
+	recordUsage(result.Usage, result.TokenAccounting) // Includes outer workflow summary calls once.
+	result.Usage, result.TokenAccounting = cp.Usage, cp.TokenAccounting
 	result.Pending = append(cpPendingUnanswered(priorPending, request.Resume), result.Pending...)
 	cp.Session = result.Snapshot
 	cp.Pending = result.Pending
@@ -583,6 +615,9 @@ func nodeRequest(base engine.Request, n Node, resolve AgentResolver) (engine.Req
 		if specific.MaxToolCalls > 0 {
 			base.MaxToolCalls = specific.MaxToolCalls
 		}
+		if specific.MaxOutputTokens > 0 {
+			base.MaxOutputTokens = specific.MaxOutputTokens
+		}
 		if specific.ContextSize > 0 {
 			base.ContextSize = specific.ContextSize
 		}
@@ -590,10 +625,19 @@ func nodeRequest(base engine.Request, n Node, resolve AgentResolver) (engine.Req
 			base.Timeout = specific.Timeout
 		}
 		base.Temperature = specific.Temperature
-		if specific.Think != nil {
-			base.Think = specific.Think
-		}
+		// A resolved profile's automatic setting deliberately clears a base
+		// override; nil means let the runtime/model choose, not inherit on/off.
+		base.Think = specific.Think
+		// A legacy profile with an empty protocol chooses native operation;
+		// it must not inherit an experimental protocol from the parent.
+		base.ToolProtocol = specific.ToolProtocol
 		base.ReadOnly = base.ReadOnly || specific.ReadOnly
+		base.CapabilityID = specific.CapabilityID
+		base.SkillPackages = specific.SkillPackages
+		base.ContextSources = specific.ContextSources
+		if !specific.Deadline.IsZero() {
+			base.Deadline = specific.Deadline
+		}
 		if specific.Tools != nil {
 			base.Tools = specific.Tools
 		}

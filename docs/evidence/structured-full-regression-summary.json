@@ -1,0 +1,30 @@
+{
+  "testsPassed": 240,
+  "topLevelTestsPassed": 134,
+  "packagesPassed": [
+    "gemmadesktop.local/app/internal/browser",
+    "gemmadesktop.local/app/internal/workspace",
+    "gemmadesktop.local/app/internal/mcp",
+    "gemmadesktop.local/app/internal/workflow",
+    "gemmadesktop.local/app/internal/engine",
+    "gemmadesktop.local/app/internal/tools",
+    "gemmadesktop.local/app/internal/inference",
+    "gemmadesktop.local/app/internal/execution",
+    "gemmadesktop.local/app/internal/app",
+    "gemmadesktop.local/app/internal/store"
+  ],
+  "skippedTests": [
+    "TestLiveChrome",
+    "TestLiveOllamaToolAndSnapshot",
+    "TestLiveOllamaRejectsContextOverflow",
+    "TestRealUserTerminal"
+  ],
+  "failures": [],
+  "additionalCatalogueTests": {
+    "testsPassed": 3,
+    "topLevelTestsPassed": 1,
+    "evidence": "structured-catalogue-regression.jsonl"
+  },
+  "combinedDistinctTestsPassed": 243,
+  "combinedDistinctTopLevelTestsPassed": 135
+}

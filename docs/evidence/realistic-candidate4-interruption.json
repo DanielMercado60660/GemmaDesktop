@@ -1,0 +1,6 @@
+{
+  "runId": "10f7905a0e5a5d0cb731028743bbebbf",
+  "at": "2026-10-27T17:17:17.740662+00:00",
+  "reason": "Harness operator stopped repeated new-file creation failures after finding manager preflight omitted the existing required-hash diagnostic. Preserve source edits, repair app validation, then continue via a new app turn.",
+  "noCandidateFilesEditedByOperator": true
+}

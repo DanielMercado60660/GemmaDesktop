@@ -1,0 +1,4 @@
+{
+  "logic.cjs": "exports.solve=function(x){const latest=new Map();for(const o of x.orders){if(!latest.has(o.id)||o.updatedAt>=latest.get(o.id).updatedAt)latest.set(o.id,o);}return [...latest].filter(([k,v])=>v.status!=='cancelled').map(([k])=>k).sort();};\n",
+  "regression.test.cjs": "const assert=require(\"node:assert/strict\"),{solve}=require(\"./logic.cjs\");assert.deepEqual(solve({\"orders\": [{\"id\": \"b\", \"updatedAt\": 3, \"status\": \"cancelled\"}, {\"id\": \"b\", \"updatedAt\": 1, \"status\": \"open\"}, {\"id\": \"a\", \"updatedAt\": 2, \"status\": \"open\"}]}),[\"a\"]);\n"
+}

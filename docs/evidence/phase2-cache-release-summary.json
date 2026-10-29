@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "recordedAt": "2026-10-27T23:45:19.003269+00:00",
+  "scope": "Explicit app-only release of completed disposable fixture cache; no general pruning or ordinary project cache changes.",
+  "api": "DockerExecutor.ReleaseWorkspaceCache(ctx, canonicalWorkspace) (CacheRelease, error)",
+  "resultFields": [
+    "cacheKey",
+    "removed",
+    "entries",
+    "logicalBytes"
+  ],
+  "qualified": {
+    "topLevelPassed": 4,
+    "includingSubtestsPassed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "race": true,
+    "realDockerFixture": true,
+    "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+    "observedReleaseLogicalBytes": 16384,
+    "observedReleaseEntries": 12
+  },
+  "checks": [
+    "Exact workspace/image cache only; source/journal/other cache preserved",
+    "Absent cache is local-only idempotent success",
+    "Pending recovery blocks release",
+    "Canonical workspace lease and global executor guest slot block release until available; cancellation respected",
+    "Cache-parent and cache-key symlinks rejected; descendant symlinks unlinked without following",
+    "Guest read-only directory permissions handled inside opened cache root",
+    "Real Docker cache written, explicitly released, then next command observes cold state"
+  ],
+  "evidence": {
+    "path": "docs/evidence/phase2-cache-release-regression.jsonl",
+    "sha256": "f8542fd8eef972f572a4c37720ce07273b1d6e79c6b6284d5f8a62cc06f3fd95"
+  },
+  "limits": [
+    "Only configured-image key released; other image caches remain",
+    "Work bounded to100000 removed entries per call (retryable after partial progress). Depth greater than128 requires explicit maintenance; retries cannot progress through a single overdeep chain.",
+    "Logical bytes count is not allocated-block reclamation",
+    "Application caller must restrict use to completed disposable fixtures; no model tool exposure"
+  ],
+  "sourceSHA256": {
+    "internal/execution/cache_cleanup.go": "44d2642271b314d3f25051619b115d1041ef3ae2bf00f7e53a70f7ec8b824676",
+    "internal/execution/cache_cleanup_test.go": "755b709518d0097db7b07d4d93b4a7ce3c691d5a4cd0db447aa1ef3b9a559903"
+  },
+  "depthDiagnosticFollowup": {
+    "evidence": "docs/evidence/phase2-cache-depth-diagnostic-regression.jsonl",
+    "sha256": "56d98e9bbbd0c1567b6027c09e42d96c97987636328300ad9dfe0bb2be980085",
+    "topLevelPassed": 4,
+    "sourceSHA256": {
+      "internal/execution/cache_cleanup.go": "80e0a131da3b0409ccf2817ac81d3469e0f62a1254bc6642283a3cf6abab83ce",
+      "internal/execution/cache_cleanup_test.go": "236948af1442a77a63987ec0ffca68818eda697f2fc61b3e0430972647a3b85c"
+    },
+    "qualification": "Diagnostic and documentation only; cleanup authority and limits unchanged. Real Docker evidence above predates this diagnostic-only change."
+  }
+}

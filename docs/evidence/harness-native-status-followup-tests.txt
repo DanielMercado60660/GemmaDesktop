@@ -1,0 +1,14 @@
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.02s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.14s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.464s
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.53s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.04s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	3.926s

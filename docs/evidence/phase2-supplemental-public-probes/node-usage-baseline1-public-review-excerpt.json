@@ -1,0 +1,387 @@
+{
+  "status": "source-review-provenance-only-unexecuted",
+  "sourceReport": "docs/evidence/phase2-node-paired-source-review.json",
+  "sourceReportSHA256": "fa7e2114954d82c3f01db6e4d4b36ad0505a7226d5781e9db6f1c9531f8439d5",
+  "trial": {
+    "taskId": "node-usage",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+    "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-1",
+    "status": "completed",
+    "inputHash": "27a20d6b163b76460ec594ae04021c9009583833232f3ea92c6ee46f105ecbd7",
+    "outputHash": "95bdd01b460f19fef9cab6cca15090235013bf7f87f60ae308706437dc9f1c1c",
+    "createdAt": "2026-10-28T05:56:43.908793Z",
+    "finishedAt": "2026-10-28T05:59:39.072904Z",
+    "workspace": ".runtime/phase2-campaign-20261027/harness/trials/27a20d6b163b76460ec594ae04021c90/workspace",
+    "trialId": "27a20d6b163b76460ec594ae04021c90",
+    "split": "validation",
+    "repeat": 1,
+    "arm": "baseline",
+    "terminalStatusObservedBeforeWorkspaceRead": "completed",
+    "terminalObservationAt": "2026-10-28T06:10:26.656134+00:00",
+    "solverIncomplete": false,
+    "solverError": "",
+    "fileManifest": [
+      {
+        "path": "README.md",
+        "bytes": 894,
+        "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+        "role": "public-contract"
+      },
+      {
+        "path": "logic.cjs",
+        "bytes": 153,
+        "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+        "role": "solver-source"
+      },
+      {
+        "path": "main.cjs",
+        "bytes": 106,
+        "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+        "role": "solver-source"
+      },
+      {
+        "path": "package.json",
+        "bytes": 62,
+        "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+        "role": "solver-source"
+      },
+      {
+        "path": "public_test.cjs",
+        "bytes": 527,
+        "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+        "role": "original-public-test"
+      },
+      {
+        "path": "regression_tests.test.cjs",
+        "bytes": 1087,
+        "sha256": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+        "role": "added-regression-test"
+      },
+      {
+        "path": "reproduce_issue.cjs",
+        "bytes": 629,
+        "sha256": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+        "role": "added-diagnostic-script"
+      }
+    ],
+    "publicFileComparison": [
+      {
+        "path": "README.md",
+        "firstRecordedReadHash": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+        "matchesFirstRecordedRead": true,
+        "identicalAcrossPreviousUsageTrials": true
+      },
+      {
+        "path": "main.cjs",
+        "firstRecordedReadHash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+        "matchesFirstRecordedRead": true,
+        "identicalAcrossPreviousUsageTrials": true
+      },
+      {
+        "path": "package.json",
+        "firstRecordedReadHash": null,
+        "matchesFirstRecordedRead": null,
+        "identicalAcrossPreviousUsageTrials": true
+      },
+      {
+        "path": "public_test.cjs",
+        "firstRecordedReadHash": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+        "matchesFirstRecordedRead": true,
+        "identicalAcrossPreviousUsageTrials": true
+      }
+    ],
+    "sourceReview": {
+      "basis": "Static review of all listed public/source/test files and historical receipts.",
+      "assessment": "Closed bounds, ordinary-key accumulation, zero-unit inclusion and input preservation are correct; same inherited-user-key defect remains.",
+      "logicLocations": [
+        {
+          "path": "logic.cjs",
+          "line": 1
+        }
+      ],
+      "substantiveBugsFound": [
+        {
+          "severity": "medium",
+          "path": "logic.cjs",
+          "line": 1,
+          "finding": "The accumulator is a normal object; reading out[e.user] includes inherited Object.prototype properties. Prototype-name user strings therefore do not begin with numeric zero. __proto__ assignment also invokes the inherited setter rather than creating an own numeric bucket.",
+          "publicContractBasis": "README.md:5 requires per-user totals and does not exclude these user strings.",
+          "counterexamples": [
+            {
+              "input": {
+                "events": [
+                  {
+                    "user": "__proto__",
+                    "at": 100,
+                    "units": 1
+                  }
+                ],
+                "now": 100,
+                "window": 10
+              },
+              "expectedByPublicContract": {
+                "__proto__": 1
+              },
+              "predictedActualSerializedResult": {}
+            },
+            {
+              "input": {
+                "events": [
+                  {
+                    "user": "constructor",
+                    "at": 100,
+                    "units": 1
+                  }
+                ],
+                "now": 100,
+                "window": 10
+              },
+              "expectedByPublicContract": {
+                "constructor": 1
+              },
+              "predictedActualBehavior": "constructor is an own string containing the inherited function coercion plus 1, rather than numeric total1."
+            }
+          ],
+          "validation": "Static/unexecuted. No candidate import, runtime probe or hidden assertion consulted. Does not assert global prototype pollution."
+        }
+      ],
+      "bypassFound": false,
+      "bypassAssessment": "No test disabling or answer lookup found. Original public file content is unchanged.",
+      "testAssessment": {
+        "path": "regression_tests.test.cjs",
+        "totalCaseCount": 7,
+        "duplicatedOriginalPublicCases": 1,
+        "assertions": "Full CLI result array deep-compared to literal expected totals.",
+        "covered": [
+          "both inclusive boundaries individually",
+          "same-user accumulation across boundaries",
+          "zero-unit inclusion",
+          "future exclusion",
+          "older exclusion",
+          "empty input"
+        ],
+        "gaps": [
+          "No multiple qualifying users in one input.",
+          "No zero-width window, inherited user keys or direct input immutability assertion."
+        ],
+        "defects": [],
+        "discoveredByPublicCommand": true,
+        "lines": [
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          31
+        ],
+        "diagnosticScriptAssessment": [
+          {
+            "path": "reproduce_issue.cjs",
+            "lines": [
+              24,
+              28,
+              31
+            ],
+            "finding": "Calls actual solve but only prints SUCCESS/FAILURE; does not fail on mismatch, so exit0 is not an assertion."
+          }
+        ]
+      },
+      "scopeNote": "Counterexamples remain static/unexecuted; no global prototype pollution claim."
+    },
+    "recordedDynamicEvidence": {
+      "source": "Historical solver receipts only. No full grades fetched or independent execution.",
+      "commands": [
+        {
+          "callId": "call_qvnj6oxh",
+          "sequence": 12,
+          "startSequence": 11,
+          "executable": "node",
+          "argv": [
+            "public_test.cjs"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-l4n2w7qv5l5bjukarvfvwhegke",
+          "recordedChanges": [],
+          "error": ""
+        },
+        {
+          "callId": "call_pnfguyh2",
+          "sequence": 18,
+          "startSequence": 17,
+          "executable": "bash",
+          "argv": [
+            "-c",
+            "cat << 'EOF' > reproduce_issue.cjs\nconst {solve} = require(\"./logic.cjs\");\nconst input = {\n  \"events\": [\n    {\n      \"user\": \"a\",\n      \"at\": 90,\n      \"units\": 3\n    },\n    {\n      \"user\": \"a\",\n      \"at\": 100,\n      \"units\": 2\n    },\n    {\n      \"user\": \"b\",\n      \"at\": 101,\n      \"units\": 9\n    }\n  ],\n  \"now\": 100,\n  \"window\": 10\n};\nconst expected = { \"a\": 5 };\nconst result = solve(input);\nconsole.log(\"Input:\", JSON.stringify(input));\nconsole.log(\"Expected:\", JSON.stringify(expected));\nconsole.log(\"Result:\", JSON.stringify(result));\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"SUCCESS\");\n} else {\n  console.log(\"FAILURE\");\n}\nEOF\n"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-ywzaqywbq2k2v2cmezciz72kcn",
+          "recordedChanges": [
+            {
+              "afterHash": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+              "path": "reproduce_issue.cjs",
+              "size": 629
+            }
+          ],
+          "error": ""
+        },
+        {
+          "callId": "call_r3jkv0kh",
+          "sequence": 20,
+          "startSequence": 19,
+          "executable": "node",
+          "argv": [
+            "reproduce_issue.cjs"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-mfdfx3b5qfecgmwhqnxe4yg3o3",
+          "recordedChanges": [],
+          "error": ""
+        },
+        {
+          "callId": "call_mrljgayf",
+          "sequence": 26,
+          "startSequence": 25,
+          "executable": "node",
+          "argv": [
+            "reproduce_issue.cjs"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-frtxjvmbuhtoivlpdrvfl24t4w",
+          "recordedChanges": [],
+          "error": ""
+        },
+        {
+          "callId": "call_lcdvmrbq",
+          "sequence": 28,
+          "startSequence": 27,
+          "executable": "node",
+          "argv": [
+            "public_test.cjs"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-vgwysk2dlq2j2jlju6rxxq46hg",
+          "recordedChanges": [],
+          "error": ""
+        },
+        {
+          "callId": "call_n3esl7y5",
+          "sequence": 32,
+          "startSequence": 31,
+          "executable": "bash",
+          "argv": [
+            "-c",
+            "cat << 'EOF' > regression_tests.test.cjs\nconst assert=require(\"node:assert/strict\");\nconst {execFileSync}=require(\"node:child_process\");\n\nconst cases=[\n  // Boundary: start of window\n  {\"events\": [{\"user\": \"a\", \"at\": 90, \"units\": 1}], \"now\": 100, \"window\": 10},\n  // Boundary: end of window\n  {\"events\": [{\"user\": \"a\", \"at\": 100, \"units\": 1}], \"now\": 100, \"window\": 10},\n  // Both boundaries\n  {\"events\": [{\"user\": \"a\", \"at\": 90, \"units\": 1}, {\"user\": \"a\", \"at\": 100, \"units\": 2}], \"now\": 100, \"window\": 10},\n  // Zero unit event in window\n  {\"events\": [{\"user\": \"b\", \"at\": 95, \"units\": 0}], \"now\": 100, \"window\": 10},\n  // Future event\n  {\"events\": [{\"user\": \"c\", \"at\": 101, \"units\": 5}], \"now\": 100, \"window\": 10},\n  // Older event\n  {\"e\": [{\"user\": \"d\", \"at\": 89, \"units\": 5}], \"now\": 100, \"window\": 10},\n  // Empty events\n  {\"events\": [], \"now\": 100, \"window\": 10}\n];\n\nconst expected=[\n  {\"a\": 1},\n  {\"a\": 1},\n  {\"a\": 3},\n  {\"b\": 0},\n  {},\n  {},\n  {}\n];\n\nassert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"main.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);\nconsole.log(\"Regression tests passed\");\nEOF\n"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-ubzmwjamydujtr44tcmmtozwg7",
+          "recordedChanges": [
+            {
+              "afterHash": "f7bd8c56f85db814a16c36d88ab01b284f17c41ef4673b400345cd9d8807ea62",
+              "path": "regression_tests.test.cjs",
+              "size": 1082
+            }
+          ],
+          "error": ""
+        },
+        {
+          "callId": "call_lxyob7ni",
+          "sequence": 34,
+          "startSequence": 33,
+          "executable": "bash",
+          "argv": [
+            "-c",
+            "cat << 'EOF' > regression_tests.test.cjs\nconst assert=require(\"node:assert/strict\");\nconst {execFileSync}=require(\"node:child_process\");\n\nconst cases=[\n  // Boundary: start of window\n  {\"events\": [{\"user\": \"a\", \"at\": 90, \"units\": 1}], \"now\": 100, \"window\": 10},\n  // Boundary: end of window\n  {\"events\": [{\"user\": \"a\", \"at\": 100, \"units\": 1}], \"now\": 100, \"window\": 10},\n  // Both boundaries\n  {\"events\": [{\"user\": \"a\", \"at\": 90, \"units\": 1}, {\"user\": \"a\", \"at\": 100, \"units\": 2}], \"now\": 100, \"window\": 10},\n  // Zero unit event in window\n  {\"events\": [{\"user\": \"b\", \"at\": 95, \"units\": 0}], \"now\": 100, \"window\": 10},\n  // Future event\n  {\"events\": [{\"user\": \"c\", \"at\": 101, \"units\": 5}], \"now\": 100, \"window\": 10},\n  // Older event\n  {\"events\": [{\"user\": \"d\", \"at\": 89, \"units\": 5}], \"now\": 100, \"window\": 10},\n  // Empty events\n  {\"events\": [], \"now\": 100, \"window\": 10}\n];\n\nconst expected=[\n  {\"a\": 1},\n  {\"a\": 1},\n  {\"a\": 3},\n  {\"b\": 0},\n  {},\n  {},\n  {}\n];\n\nassert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"main.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);\nconsole.log(\"Regression tests passed\");\nEOF\n"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-um2sfxgizlvmqty5lom6cffx4j",
+          "recordedChanges": [
+            {
+              "afterHash": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+              "beforeHash": "f7bd8c56f85db814a16c36d88ab01b284f17c41ef4673b400345cd9d8807ea62",
+              "path": "regression_tests.test.cjs",
+              "size": 1087
+            }
+          ],
+          "error": ""
+        },
+        {
+          "callId": "call_vxpqclwn",
+          "sequence": 36,
+          "startSequence": 35,
+          "executable": "node",
+          "argv": [
+            "public_test.cjs"
+          ],
+          "readOnlyArgumentPresent": false,
+          "readOnlyArgument": null,
+          "exitCode": 0,
+          "readOnlyReceipt": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-nrh3rsfufuldalwb7idxs4h4tw",
+          "recordedChanges": [],
+          "error": ""
+        }
+      ],
+      "lastSuccessfulExplicitWriteSequence": 24,
+      "lastRecordedCommandPublicationSequence": 34,
+      "lastPotentiallyMutatingWritableCommandSequence": 36,
+      "successfulExactPublicCommandAfterLastExplicitWriteCallIds": [
+        "call_vxpqclwn"
+      ],
+      "readonlyVerificationPresent": false,
+      "qualificationLimitation": "All commands omit readOnly and receive false. Final public success36 follows final shell test-file publication34, but remains writable.",
+      "fullIndependentGrade": "Not inspected."
+    },
+    "postReviewFileHashCheck": {
+      "files": 7,
+      "allUnchanged": true
+    }
+  }
+}

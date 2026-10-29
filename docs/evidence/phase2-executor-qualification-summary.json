@@ -1,0 +1,44 @@
+{
+  "suite": "executor/workspace/tools race with actual Seatbelt, Docker and public dependency qualification",
+  "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+  "evidence": "docs/evidence/phase2-executor-qualification.jsonl",
+  "testCounts": {
+    "pass": 90,
+    "skip": 1
+  },
+  "topLevelCounts": {
+    "pass": 59,
+    "skip": 1
+  },
+  "packages": [
+    {
+      "package": "gemmadesktop.local/app/internal/workspace",
+      "action": "pass",
+      "elapsed": 1.5150000000000001
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/tools",
+      "action": "pass",
+      "elapsed": 1.77
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/execution",
+      "action": "pass",
+      "elapsed": 22.306
+    }
+  ],
+  "skips": [
+    {
+      "package": "gemmadesktop.local/app/internal/execution",
+      "test": "TestRealUserTerminal"
+    }
+  ],
+  "failures": [],
+  "qualificationLimits": [
+    "No model inference performed.",
+    "Docker storage is monitored at 2 GiB, not a hard filesystem quota.",
+    "Native macOS executor remains restricted to qualified single-process execution.",
+    "Source writeback is journaled with full-manifest preflight; external editor changes can still race a multi-file commit and produce explicit recovery conflict.",
+    "Dependency setup uses public hash-locked packages with scripts disabled; separately approved offline lifecycle commands use ordinary governed run_command."
+  ]
+}

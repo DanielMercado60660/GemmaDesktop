@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-28T08:22:29.414927+00:00",
+  "status": "passed",
+  "ownedBundleProcesses": [],
+  "qaPorts": [
+    8788,
+    8797,
+    8798,
+    8799,
+    57181
+  ],
+  "qaListeners": [],
+  "dockerOwnershipLabel": "com.gemmadesktop.owner",
+  "remainingOwnedContainers": [],
+  "actions": "Read-only process, listener and owned-container inventory after graceful test-server interruption and native quit.",
+  "preserved": [
+    "User Ollama service and installed models",
+    "User Docker Desktop service and images",
+    "Personal app settings",
+    "Original campaign and all failed/incomplete attempts",
+    "Current source including pre-existing uncommitted changes"
+  ],
+  "boundaries": [
+    "No broad process termination, Docker pruning, model unloading or service shutdown was performed.",
+    "This is final-point inventory of known QA endpoints and the executor ownership label, not a whole-machine audit."
+  ]
+}

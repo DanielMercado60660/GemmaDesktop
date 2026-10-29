@@ -1,0 +1,15 @@
+{
+  "verifiedAt": "2026-10-27T20:55:00.023441+00:00",
+  "archive": "/Users/danielmercado/GemmaDesktop/dist/GemmaDesktop-local.zip",
+  "archiveSHA256": "3448b0249979b09dffee015ce39c597af3abba5b8612c190a963526c230e4080",
+  "binarySHA256": "2d7f71b332a41020481ba1b10855d51df505f89e93515981ec138b9c8da9fa82",
+  "archiveBinarySHA256": "2d7f71b332a41020481ba1b10855d51df505f89e93515981ec138b9c8da9fa82",
+  "binaryMatchesBuild": true,
+  "sourceFingerprint": "eba46c8d7006450402a93934750af2f5017c8c6d05a53c15e5f25561504bea54",
+  "frontendFingerprint": "8f450ef60a4bce10c9f6c5409934f2de42e1ef415fdc7e1664c0798738856539",
+  "backendChangesSinceLiveVideoQualification": [],
+  "signature": "codesign --verify --deep --strict passed; local ad-hoc, not notarized",
+  "coreCheckpoint": "dist/GemmaDesktop-core-20261027.zip",
+  "liveWorkflow": "docs/evidence/video-workflow-final.json",
+  "nativeWorkflow": "docs/evidence/video-native-workflow.json"
+}

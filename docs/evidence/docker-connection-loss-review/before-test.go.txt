@@ -1,0 +1,244 @@
+package execution
+
+import (
+	"context"
+	"errors"
+	"io"
+	"net"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+)
+
+// This proxy interrupts only the test executor's connection to Docker. It does
+// not stop Docker Desktop or change its socket, settings, or other clients.
+type dockerTestSocketProxy struct {
+	listener net.Listener
+	upstream string
+	mu       sync.Mutex
+	closed   bool
+	conns    map[net.Conn]struct{}
+	wg       sync.WaitGroup
+	once     sync.Once
+}
+
+func newDockerTestSocketProxy(t *testing.T, upstream string) (*dockerTestSocketProxy, string) {
+	t.Helper()
+	// Keep the Unix socket below macOS's path-length limit.
+	dir, err := os.MkdirTemp("/tmp", "gemma-daemon-proof-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(dir) })
+	path := filepath.Join(dir, "docker.sock")
+	listener, err := net.Listen("unix", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := &dockerTestSocketProxy{listener: listener, upstream: upstream, conns: map[net.Conn]struct{}{}}
+	p.wg.Add(1)
+	go func() {
+		defer p.wg.Done()
+		for {
+			client, err := listener.Accept()
+			if err != nil {
+				return
+			}
+			p.mu.Lock()
+			if p.closed {
+				p.mu.Unlock()
+				_ = client.Close()
+				return
+			}
+			p.conns[client] = struct{}{}
+			p.wg.Add(1)
+			p.mu.Unlock()
+			go p.forward(client)
+		}
+	}()
+	t.Cleanup(p.close)
+	return p, "unix://" + path
+}
+
+func (p *dockerTestSocketProxy) forward(client net.Conn) {
+	defer p.wg.Done()
+	defer func() {
+		_ = client.Close()
+		p.mu.Lock()
+		delete(p.conns, client)
+		p.mu.Unlock()
+	}()
+	server, err := net.DialTimeout("unix", p.upstream, time.Second)
+	if err != nil {
+		return
+	}
+	p.mu.Lock()
+	if p.closed {
+		p.mu.Unlock()
+		_ = server.Close()
+		return
+	}
+	p.conns[server] = struct{}{}
+	p.mu.Unlock()
+	defer func() {
+		_ = server.Close()
+		p.mu.Lock()
+		delete(p.conns, server)
+		p.mu.Unlock()
+	}()
+	upstreamDone := make(chan struct{})
+	go func() {
+		_, _ = io.Copy(server, client)
+		// Preserve the attach protocol's half-close semantics.
+		if c, ok := server.(*net.UnixConn); ok {
+			_ = c.CloseWrite()
+		}
+		close(upstreamDone)
+	}()
+	_, _ = io.Copy(client, server)
+	_ = client.Close()
+	_ = server.Close()
+	<-upstreamDone
+}
+
+func (p *dockerTestSocketProxy) close() {
+	p.once.Do(func() {
+		p.mu.Lock()
+		p.closed = true
+		_ = p.listener.Close()
+		for connection := range p.conns {
+			_ = connection.Close()
+		}
+		p.mu.Unlock()
+		p.wg.Wait()
+	})
+}
+
+func TestDockerLiveConnectionLossDiscardsAndRecoversOwnedGuest(t *testing.T) {
+	d, root := liveDocker(t)
+	root, err := filepath.EvalSymlinks(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(filepath.Join(root, "source.txt"), []byte("original"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	direct, err := NewDockerExecutor(d.config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		if _, err := direct.Reconcile(ctx); err != nil {
+			t.Errorf("owned guest recovery cleanup: %v", err)
+		}
+	})
+	proxy, endpoint := newDockerTestSocketProxy(t, strings.TrimPrefix(d.host, "unix://"))
+	d.host = endpoint
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+	type outcome struct {
+		result Result
+		err    error
+	}
+	done := make(chan outcome, 1)
+	go func() {
+		result, err := d.Run(ctx, Request{Workspace: root, Executable: "python3", Timeout: 2 * time.Minute, Args: []string{"-c", `import os,pathlib,time
+pathlib.Path('source.txt').write_text('unpublished edit')
+pathlib.Path('new-source.txt').write_text('unpublished addition')
+if os.fork()==0:
+ os.setsid()
+ while True:
+  pathlib.Path('/cache/heartbeat').write_text(str(time.monotonic_ns()))
+  time.sleep(.05)
+pathlib.Path('/cache/ready').write_text('ready')
+while True: time.sleep(1)`}})
+		done <- outcome{result, err}
+	}()
+	ready := filepath.Join(d.dependencyCache(root), "ready")
+	deadline := time.Now().Add(20 * time.Second)
+	for {
+		if _, err = os.Stat(ready); err == nil {
+			break
+		}
+		select {
+		case out := <-done:
+			t.Fatalf("guest ended before connectivity loss: %+v %v", out.result, out.err)
+		default:
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("guest did not reach ready state")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	proxy.close()
+	var out outcome
+	select {
+	case out = <-done:
+	case <-time.After(55 * time.Second):
+		t.Fatal("executor did not return after daemon connectivity loss")
+	}
+	if out.err == nil || out.result.Publication != "recovery_required" {
+		t.Fatalf("uncertain guest not retained for recovery: %+v %v", out.result, out.err)
+	}
+	assertOriginal := func() {
+		t.Helper()
+		data, err := os.ReadFile(filepath.Join(root, "source.txt"))
+		if err != nil || string(data) != "original" {
+			t.Fatalf("uncertain edit reached original: %q %v", data, err)
+		}
+		if _, err := os.Stat(filepath.Join(root, "new-source.txt")); !errors.Is(err, os.ErrNotExist) {
+			t.Fatal("uncertain addition reached original", err)
+		}
+	}
+	assertOriginal()
+	// A fresh executor must recover from durable ownership records, without
+	// relying on the original executor object or an in-memory cleanup callback.
+	restarted, err := NewDockerExecutor(d.config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if state, err := restarted.RecoveryStatus(); state != "blocked" || err == nil {
+		t.Fatalf("restart lost uncertain ownership: %s %v", state, err)
+	}
+	ids, err := restarted.cli(t.Context(), 4096, "ps", "-q", "--filter", "label=com.gemmadesktop.owner="+d.owner)
+	if err != nil || len(strings.Fields(ids)) != 1 {
+		t.Fatalf("expected the real owned guest to survive lost connectivity: %q %v", ids, err)
+	}
+	if result, err := restarted.Run(t.Context(), Request{Workspace: root, Executable: "true"}); err == nil || result.CommandID != "" {
+		t.Fatalf("new command admitted before recovery: %+v %v", result, err)
+	}
+	if _, err := restarted.Reconcile(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	ids, err = restarted.cli(t.Context(), 4096, "ps", "-aq", "--filter", "label=com.gemmadesktop.owner="+d.owner)
+	if err != nil || strings.TrimSpace(ids) != "" {
+		t.Fatalf("owned guest survived reconciliation: %q %v", ids, err)
+	}
+	heartbeat := filepath.Join(d.dependencyCache(root), "heartbeat")
+	before, err := os.ReadFile(heartbeat)
+	if err != nil {
+		t.Fatal("child heartbeat missing", err)
+	}
+	time.Sleep(200 * time.Millisecond)
+	after, err := os.ReadFile(heartbeat)
+	if err != nil || string(before) != string(after) {
+		t.Fatal("descendant continued after reconciliation", err)
+	}
+	assertOriginal()
+	if _, err := os.Stat(filepath.Join(d.config.StateDir, "commands", out.result.CommandID, "source")); !errors.Is(err, os.ErrNotExist) {
+		t.Fatal("uncertain private source was retained after recovery", err)
+	}
+	if state, err := restarted.RecoveryStatus(); state != "ready" || err != nil {
+		t.Fatalf("reconciled executor not ready: %s %v", state, err)
+	}
+	result, err := restarted.Run(t.Context(), Request{Workspace: root, Executable: "cat", Args: []string{"source.txt"}, ReadOnly: true})
+	if err != nil || result.ExitCode != 0 || result.Publication != "read_only" || result.Stdout != "original" {
+		t.Fatalf("fresh command did not recover: %+v %v", result, err)
+	}
+	t.Log("real guest survived test-owned socket loss; restart blocked work, stopped guest and descendants, discarded private edits, then resumed")
+}

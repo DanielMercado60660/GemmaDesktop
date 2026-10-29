@@ -1,0 +1,8 @@
+{
+  "runId": "fb27b23696d40d334aa4e4b5e72a68a7",
+  "binarySHA256": "b9e8be0cb1484a64557985855f23015ac36feb6b2e8b7bcd834e59bd67afc6e3",
+  "buildInfo": "docs/evidence/context-graph-build-info.json",
+  "buildInfoSHA256": "6806cdb9cb195fd1a1c9a9fd3c550395285c9e3f526d0e7e199b994c21b16cde",
+  "harnessSHA256": "8bcefe1c8b3bf9001469ab501b8820b9858d055bec0a44bda6268def2de7f2cc",
+  "scope": "Same packaged application; continuity-driver-only fix after binary capture. Independent source/harness identities recorded. No gate or fixture changes."
+}

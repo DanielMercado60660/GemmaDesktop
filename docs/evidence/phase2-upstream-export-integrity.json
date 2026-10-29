@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-28T01:06:17.480581+00:00",
+  "experimentId": "e3f1b402a830bf8d04efbf45f55ee3ae",
+  "payloadHash": "e089b7a9dfa517a258f5a77c89db6a76572809d27eed4e2e1f58302d3edda2f1",
+  "repeatPayloadHash": "e089b7a9dfa517a258f5a77c89db6a76572809d27eed4e2e1f58302d3edda2f1",
+  "stable": true,
+  "artifact": {
+    "createdAt": "2026-10-28T01:05:30.36313Z",
+    "experimentId": "e3f1b402a830bf8d04efbf45f55ee3ae",
+    "id": "5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0",
+    "mediaType": "application/json",
+    "name": "Harness experiment e3f1b402a830bf8d04efbf45f55ee3ae.json",
+    "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/artifacts/harness/5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0.json",
+    "sha256": "5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0",
+    "size": 345787,
+    "source": "harness_export",
+    "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+  },
+  "actualSHA256": "5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0",
+  "actualBytes": 345787,
+  "mode": "0o400",
+  "semanticCandidateMatchesNative": true,
+  "rollouts": 4,
+  "improvementStages": 3
+}

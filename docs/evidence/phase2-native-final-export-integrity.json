@@ -1,0 +1,28 @@
+{
+  "format": "gemma-harness-export-v1",
+  "payloadHash": "b87e272616fabbd88e0d0c9713f23a6e399cf6753084e066bbcbd7b8a04b0be3",
+  "repeatExportStable": true,
+  "artifactSHA256": "9e6d953c4348f41cbc0cb67dade009d52c6f2b1f4c7f64d0ab6060ade1b315ae",
+  "artifactBytes": 4601043,
+  "artifactMode": "0o400",
+  "artifactPath": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/artifacts/harness/9e6d953c4348f41cbc0cb67dade009d52c6f2b1f4c7f64d0ab6060ade1b315ae.json",
+  "reportCopy": "/Users/danielmercado/GemmaDesktop/docs/evidence/phase2-native-final-export.json",
+  "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+  "trialCount": 76,
+  "pairedResultCount": 72,
+  "packetCount": 5,
+  "lessonCount": 2,
+  "promotionCount": 0,
+  "reviewPacketId": "3626b735b6eb018dbbb8863015a5b864",
+  "reviewVerdict": "rejected",
+  "decodedFileCount": 448,
+  "decodedFileBytes": 286002,
+  "allDecodedFileHashesVerified": true,
+  "hiddenGraderPayloadsExcluded": true,
+  "cacheCleanup": {
+    "failed": 0,
+    "pending": 0
+  },
+  "boundary": "Payload equality is checked excluding export createdAt. The application supplied payload hash is retained; file and artifact byte hashes are independently recomputed. Old campaign costs remain unknown; no promotion or grade rewrite.",
+  "upstreamPayloadHashUnchanged": "e089b7a9dfa517a258f5a77c89db6a76572809d27eed4e2e1f58302d3edda2f1"
+}

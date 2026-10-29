@@ -1,0 +1,302 @@
+{
+  "createdAt": "2026-10-27T19:49:28.265615+00:00",
+  "passed": true,
+  "agent": {
+    "id": "7e4f089b26df3837739af021972a052b",
+    "instructions": "Use tool observations as evidence. Finish after the requested reads.",
+    "maxOutputTokens": 1024,
+    "maxSteps": 8,
+    "mode": "read-only",
+    "model": "gemma4:26b-mlx",
+    "name": "Structured JSON read qualification",
+    "temperature": 0,
+    "thinking": "off",
+    "toolProtocol": "structured_json"
+  },
+  "workspace": {
+    "createdAt": "2026-10-27T19:49:21.859888Z",
+    "id": "be78963e025b1b3e7313ac6b8a742c1b",
+    "name": "Structured protocol read qualification",
+    "path": "/Users/danielmercado/GemmaDesktop/.runtime/structured-read-20261027-144921"
+  },
+  "session": {
+    "createdAt": "2026-10-27T19:49:21.8604Z",
+    "id": "98a95204cc70da7d3c19c2a2420fb1ef",
+    "title": "Two sequential governed file reads",
+    "updatedAt": "2026-10-27T19:49:21.860401Z",
+    "workspaceId": "be78963e025b1b3e7313ac6b8a742c1b"
+  },
+  "run": {
+    "agentId": "7e4f089b26df3837739af021972a052b",
+    "finishedAt": "2026-10-27T19:49:27.620598Z",
+    "id": "9b2422fde6d428a732bce0e410367082",
+    "incomplete": false,
+    "model": "gemma4:26b-mlx",
+    "prompt": "Read first.txt using read_file. Then read the file named in its next_file field. Report the two observed code values in your final answer. Do not infer the codes from filenames. Do not run processes or edit files.",
+    "receipt": {
+      "changes": [],
+      "commands": [],
+      "entriesLimited": false,
+      "failedTools": 0,
+      "note": "Observed actions only. Limited receipts omit older entries or argument detail. An exit code of zero does not independently verify the model's claims or task correctness.",
+      "source": "durable tool journal",
+      "toolCalls": 2,
+      "unresolvedTools": 0
+    },
+    "resumable": false,
+    "sessionId": "98a95204cc70da7d3c19c2a2420fb1ef",
+    "startedAt": "2026-10-27T19:49:21.861124Z",
+    "status": "completed",
+    "summary": "The code value in first.txt is FIRST-c2ac7e01be5c6282 and the code value in second-43a4813134.txt is SECOND-5b60e70bee1ecbf5.",
+    "usage": {
+      "eval_count": 122,
+      "eval_duration": 2797765791,
+      "load_duration": 11692582,
+      "prompt_eval_count": 4490,
+      "prompt_eval_duration": 2844828583,
+      "total_duration": 5670781333
+    },
+    "workflowId": "",
+    "workspaceId": "be78963e025b1b3e7313ac6b8a742c1b"
+  },
+  "runtime": {
+    "available": true,
+    "memoryBytes": 68719476736,
+    "models": [
+      {
+        "context_length": 65536,
+        "details": {
+          "family": "",
+          "format": "safetensors",
+          "parameter_size": "",
+          "quantization_level": "nvfp4"
+        },
+        "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "expires_at": "2026-10-27T14:52:23.566749-05:00",
+        "model": "gemma4:26b-mlx",
+        "name": "gemma4:26b-mlx",
+        "size": 22575126244,
+        "size_vram": 22575126244
+      }
+    ],
+    "policy": "Local inference only",
+    "pulls": [],
+    "version": "0.40.11"
+  },
+  "prompt": "Read first.txt using read_file. Then read the file named in its next_file field. Report the two observed code values in your final answer. Do not infer the codes from filenames. Do not run processes or edit files.",
+  "expectedCodes": [
+    "FIRST-c2ac7e01be5c6282",
+    "SECOND-5b60e70bee1ecbf5"
+  ],
+  "filesSHA256": {
+    "second-43a4813134.txt": "1fc89ede1033cb82d145f72ecf6aadc9745064e4ff2627d15283a2b934f80a92",
+    "first.txt": "fb54ef14812c45efe42c2dd593158082baef80904ffbca0867fd08bc2d7e51f2"
+  },
+  "filesUnchanged": true,
+  "durationSeconds": 6.404,
+  "conversation": {
+    "eventCursor": 39994,
+    "events": [
+      {
+        "createdAt": "2026-10-27T19:49:21.864708Z",
+        "data": {
+          "model": "gemma4:26b-mlx",
+          "step": 1
+        },
+        "id": "42390f3d1cd3d19a9128f4e49db6a7ba",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39979,
+        "title": "Generating",
+        "type": "status"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:24.456513Z",
+        "data": {
+          "arguments": {
+            "path": "first.txt"
+          },
+          "id": "call_2b461651f75b67e9c47345e1",
+          "name": "read_file",
+          "readOnly": true
+        },
+        "id": "da3b899b5aba51a37ee1a139a0e844dd",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39982,
+        "title": "read_file",
+        "tool": "read_file",
+        "type": "tool_started"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:24.457494Z",
+        "data": {
+          "data": {
+            "content": "{\"code\": \"FIRST-c2ac7e01be5c6282\", \"next_file\": \"second-43a4813134.txt\"}\n",
+            "endLine": 2,
+            "hash": "fb54ef14812c45efe42c2dd593158082baef80904ffbca0867fd08bc2d7e51f2",
+            "path": "first.txt",
+            "size": 73,
+            "startLine": 1,
+            "totalLines": 2,
+            "truncated": false
+          },
+          "isError": false
+        },
+        "id": "2e0a5fc864052179036ac5987b6027ad",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39983,
+        "title": "read_file",
+        "tool": "read_file",
+        "type": "tool_completed"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:24.45834Z",
+        "data": {
+          "model": "gemma4:26b-mlx",
+          "step": 2
+        },
+        "id": "1a7d693a44058ad91e20ea8ad5dbe9c1",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39985,
+        "title": "Generating",
+        "type": "status"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:25.682619Z",
+        "data": {
+          "arguments": {
+            "path": "second-43a4813134.txt"
+          },
+          "id": "call_a2e48d5b7208a9012d0ee57c",
+          "name": "read_file",
+          "readOnly": true
+        },
+        "id": "2d02c3535106e8f9c133e22b7d8fb903",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39988,
+        "title": "read_file",
+        "tool": "read_file",
+        "type": "tool_started"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:25.683185Z",
+        "data": {
+          "data": {
+            "content": "SECOND-5b60e70bee1ecbf5\n",
+            "endLine": 2,
+            "hash": "1fc89ede1033cb82d145f72ecf6aadc9745064e4ff2627d15283a2b934f80a92",
+            "path": "second-43a4813134.txt",
+            "size": 24,
+            "startLine": 1,
+            "totalLines": 2,
+            "truncated": false
+          },
+          "isError": false
+        },
+        "id": "d02320ec8458365b89ac6586378066b6",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39989,
+        "title": "read_file",
+        "tool": "read_file",
+        "type": "tool_completed"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:25.683574Z",
+        "data": {
+          "model": "gemma4:26b-mlx",
+          "step": 3
+        },
+        "id": "0e32f8da19a3b80d8643c5d81d4749f2",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39991,
+        "title": "Generating",
+        "type": "status"
+      },
+      {
+        "createdAt": "2026-10-27T19:49:27.620921Z",
+        "data": {
+          "incomplete": false,
+          "status": "completed",
+          "steps": 3,
+          "usage": {
+            "eval_count": 122,
+            "eval_duration": 2797765791,
+            "load_duration": 11692582,
+            "prompt_eval_count": 4490,
+            "prompt_eval_duration": 2844828583,
+            "total_duration": 5670781333
+          }
+        },
+        "detail": "",
+        "id": "1673aad48a0dd876420a4f12597d9647",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "seq": 39994,
+        "title": "Run completed",
+        "type": "run_completed"
+      }
+    ],
+    "hasMore": false,
+    "messages": [
+      {
+        "content": "Read first.txt using read_file. Then read the file named in its next_file field. Report the two observed code values in your final answer. Do not infer the codes from filenames. Do not run processes or edit files.",
+        "createdAt": "2026-10-27T19:49:21.861341Z",
+        "id": "cd8dd0f844fe3bd7d1396e49207b86f9",
+        "role": "user",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "sessionId": "98a95204cc70da7d3c19c2a2420fb1ef"
+      },
+      {
+        "content": "The code value in first.txt is FIRST-c2ac7e01be5c6282 and the code value in second-43a4813134.txt is SECOND-5b60e70bee1ecbf5.",
+        "createdAt": "2026-10-27T19:49:27.620207Z",
+        "id": "d442e749652a4ad5d2437c6ca9032a61",
+        "incomplete": false,
+        "role": "assistant",
+        "runId": "9b2422fde6d428a732bce0e410367082",
+        "sessionId": "98a95204cc70da7d3c19c2a2420fb1ef"
+      }
+    ],
+    "session": {
+      "createdAt": "2026-10-27T19:49:21.8604Z",
+      "id": "98a95204cc70da7d3c19c2a2420fb1ef",
+      "title": "Two sequential governed file reads",
+      "updatedAt": "2026-10-27T19:49:21.861462Z",
+      "workspaceId": "be78963e025b1b3e7313ac6b8a742c1b"
+    }
+  },
+  "observedReads": [
+    {
+      "createdAt": "2026-10-27T19:49:24.456513Z",
+      "data": {
+        "arguments": {
+          "path": "first.txt"
+        },
+        "id": "call_2b461651f75b67e9c47345e1",
+        "name": "read_file",
+        "readOnly": true
+      },
+      "id": "da3b899b5aba51a37ee1a139a0e844dd",
+      "runId": "9b2422fde6d428a732bce0e410367082",
+      "seq": 39982,
+      "title": "read_file",
+      "tool": "read_file",
+      "type": "tool_started"
+    },
+    {
+      "createdAt": "2026-10-27T19:49:25.682619Z",
+      "data": {
+        "arguments": {
+          "path": "second-43a4813134.txt"
+        },
+        "id": "call_a2e48d5b7208a9012d0ee57c",
+        "name": "read_file",
+        "readOnly": true
+      },
+      "id": "2d02c3535106e8f9c133e22b7d8fb903",
+      "runId": "9b2422fde6d428a732bce0e410367082",
+      "seq": 39988,
+      "title": "read_file",
+      "tool": "read_file",
+      "type": "tool_started"
+    }
+  ],
+  "qualification": "Actual local Ollama 0.40.11 through app, ADK and governed read-only executor; no mock or manual execution substitute."
+}

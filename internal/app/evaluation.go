@@ -20,6 +20,17 @@ import (
 // Evaluation freezes bounded text inputs and both configurations. It deliberately
 // grants no write, shell, MCP or browser capability to either candidate.
 func (c *Core) startEval(p Doc) (any, error) {
+	c.videoGuard.Lock()
+	defer c.videoGuard.Unlock()
+	if c.videoBusy() {
+		return nil, errors.New("Wait for the current video job before starting a comparison")
+	}
+	c.mu.Lock()
+	busy := len(c.runs) > 0 || len(c.evals) > 0 || (c.harness != nil && c.harness.Active())
+	c.mu.Unlock()
+	if busy {
+		return nil, errors.New("Wait for active runs and harness experiments before starting a comparison")
+	}
 	w, e := c.Store.Get("workspace", str(p, "workspaceId"))
 	if e != nil {
 		return nil, e
@@ -34,6 +45,39 @@ func (c *Core) startEval(p Doc) (any, error) {
 	}
 	if baseline["id"] == candidate["id"] {
 		return nil, errors.New("Choose two different agent configurations")
+	}
+	// Freeze and validate effective controls before copying inputs or starting
+	// any candidate. Later profile edits cannot change this experiment.
+	controls := make(map[string]generationControls, 2)
+	frozenAgents := make(map[string]FrozenAgent, 2)
+	frozenRequests := make(map[string]engine.Request, 2)
+	for _, config := range []Doc{baseline, candidate} {
+		value, err := agentGenerationControls(config)
+		if err != nil {
+			return nil, err
+		}
+		controls[str(config, "id")] = value
+		config["thinking"], config["maxOutputTokens"] = value.thinking, value.maxOutputTokens
+		config["temperature"] = value.temperature
+		config["toolProtocol"] = value.toolProtocol
+		frozen, err := c.FreezeAgent(config)
+		if err != nil {
+			return nil, err
+		}
+		request := engine.Request{Instructions: defaultInstructions + "\n\n" + str(config, "instructions")}
+		frozen.Configure(&request)
+		binding, err := c.applyHarnessBinding(str(w, "id"), config, &request, &frozen)
+		if err != nil {
+			return nil, err
+		}
+		frozen.HarnessBinding = binding
+		frozen.HarnessInstructions = request.Instructions
+		frozen.Skills = request.SkillPackages
+		frozen.Digest = ""
+		frozen.Digest = contentDigest(frozen)
+		frozen.Configure(&request)
+		frozenAgents[str(config, "id")] = frozen
+		frozenRequests[str(config, "id")] = request
 	}
 	var tasks []string
 	b, _ := json.Marshal(p["tasks"])
@@ -55,7 +99,7 @@ func (c *Core) startEval(p Doc) (any, error) {
 	if e != nil {
 		return nil, e
 	}
-	experiment := Doc{"id": id, "workspaceId": w["id"], "baselineAgentId": baseline["id"], "candidateAgentId": candidate["id"], "baseline": baseline, "candidate": candidate, "tasks": tasks, "status": "running", "createdAt": store.Now(), "inputDigest": digest, "inputFiles": count, "inputPath": root, "results": []Doc{}, "qualification": "Read-only frozen-text task comparison. Execution success is not a correctness grade; compare the recorded answers and evidence."}
+	experiment := Doc{"id": id, "workspaceId": w["id"], "baselineAgentId": baseline["id"], "candidateAgentId": candidate["id"], "baseline": baseline, "candidate": candidate, "frozenCapabilities": frozenAgents, "tasks": tasks, "status": "running", "createdAt": store.Now(), "inputDigest": digest, "inputFiles": count, "inputPath": root, "results": []Doc{}, "qualification": "Read-only frozen-text task comparison. Execution success is not a correctness grade; compare the recorded answers and evidence."}
 	if e = c.Store.Put("experiment", experiment); e != nil {
 		return nil, e
 	}
@@ -84,7 +128,15 @@ func (c *Core) startEval(p Doc) (any, error) {
 				if model == "" {
 					model = str(settings, "defaultModel")
 				}
-				req := engine.Request{Model: model, Instructions: defaultInstructions + "\n" + str(config, "instructions"), Prompt: task, MaxSteps: number(config, "maxSteps", 24), ContextSize: number(settings, "contextSize", 32768), Temperature: 0.2}
+				req := frozenRequests[str(config, "id")]
+				req.Model = model
+				req.Prompt = task
+				req.MaxSteps = number(config, "maxSteps", 24)
+				req.ContextSize = number(settings, "contextSize", 32768)
+				frozen := frozenAgents[str(config, "id")]
+				controls[str(config, "id")].apply(&req)
+				req.ReadOnly = true
+				req.ContextPolicy = &engine.ContextPolicy{Enabled: true}
 				mgr, err := tools.New(root, tools.Options{Mode: "read-only"})
 				calls := 0
 				trace := []Doc{}
@@ -92,13 +144,19 @@ func (c *Core) startEval(p Doc) (any, error) {
 				var result engine.Result
 				if err == nil {
 					for _, d := range mgr.List() {
-						req.Tools = append(req.Tools, engine.ToolDefinition{Name: d.Name, Description: d.Description, Parameters: d.Parameters})
+						if contains(frozen.Profile.Tools, d.Name) {
+							req.Tools = append(req.Tools, engine.ToolDefinition{Name: d.Name, Description: d.Description, Parameters: d.Parameters})
+						}
 					}
 					result, err = engine.New(client).Run(ctx, req, nil, func(ctx context.Context, call engine.ToolCall) (engine.ToolResult, error) {
 						traceMu.Lock()
 						calls++
 						traceMu.Unlock()
-						r, e := mgr.Execute(ctx, call.Name, call.Arguments)
+						authorized, authErr := frozen.Authorize(ctx, call)
+						if authErr != nil {
+							return engine.ToolResult{IsError: true}, authErr
+						}
+						r, e := mgr.Execute(authorized, call.Name, call.Arguments)
 						entry := Doc{"tool": call.Name, "arguments": call.Arguments, "content": r.Content, "data": r.Data}
 						if e != nil {
 							entry["error"] = e.Error()
@@ -114,7 +172,7 @@ func (c *Core) startEval(p Doc) (any, error) {
 					})
 					mgr.Close()
 				}
-				r := Doc{"agentId": config["id"], "agentName": config["name"], "task": task, "status": "completed", "content": result.Content, "durationMs": time.Since(started).Milliseconds(), "usage": result.Usage, "toolCalls": calls}
+				r := Doc{"agentId": config["id"], "agentName": config["name"], "task": task, "status": "completed", "content": result.Content, "durationMs": time.Since(started).Milliseconds(), "usage": result.Usage, "toolCalls": calls, "request": req}
 				r["toolTrace"] = trace
 				if err != nil {
 					r["status"] = "failed"

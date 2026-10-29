@@ -1,0 +1,81 @@
+# gemmadesktop.local/app/internal/app [gemmadesktop.local/app/internal/app.test]
+internal/app/harness_choices_test.go:128:83: undefined: num
+=== RUN   TestTokenAccountingValidatesReceiptsAndLegacyUnknown
+--- PASS: TestTokenAccountingValidatesReceiptsAndLegacyUnknown (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/inference	1.218s
+=== RUN   TestCompactionRetainsToolPairsAndRestoresDurableSummary
+--- PASS: TestCompactionRetainsToolPairsAndRestoresDurableSummary (0.02s)
+=== RUN   TestCompactionUsesTheRunModelBudget
+--- PASS: TestCompactionUsesTheRunModelBudget (0.00s)
+=== RUN   TestCompactionCancellationClosesItsModelStream
+2026/10/27 22:01:46 adk: context compaction failed: token-threshold: tail-retention summarization failed: summarizer model call failed: Ollama request: Post "http://127.0.0.1:56557/api/chat": context canceled; continuing with an uncompacted prompt
+--- PASS: TestCompactionCancellationClosesItsModelStream (0.00s)
+=== RUN   TestCompactionPreservesLongConstraintsAndPriorSummary
+--- PASS: TestCompactionPreservesLongConstraintsAndPriorSummary (0.01s)
+=== RUN   TestCompactionBeyondFourSummariesStillSharesRunBudget
+--- PASS: TestCompactionBeyondFourSummariesStillSharesRunBudget (0.00s)
+=== RUN   TestNestedInvocationUsageCountsOnceWithoutChangingADKPrompt
+--- PASS: TestNestedInvocationUsageCountsOnceWithoutChangingADKPrompt (0.00s)
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/normal
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/explicit_zero
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_prompt
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_output
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/negative_prompt
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/length
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/duplicate_id
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_tool_name
+=== RUN   TestProviderTerminalAccountingSurvivesRejectedPayloads/data_after_terminal
+--- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads (0.02s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/normal (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/explicit_zero (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_prompt (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_output (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/negative_prompt (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/length (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/duplicate_id (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/missing_tool_name (0.00s)
+    --- PASS: TestProviderTerminalAccountingSurvivesRejectedPayloads/data_after_terminal (0.00s)
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete/eof
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete/cancel
+=== RUN   TestAbortedGenerationKeepsObservedLowerBoundNotComplete/deadline
+--- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete (2.01s)
+    --- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete/eof (0.00s)
+    --- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete/cancel (0.00s)
+    --- PASS: TestAbortedGenerationKeepsObservedLowerBoundNotComplete/deadline (2.00s)
+=== RUN   TestTerminalReceiptRetainedWhenConsumerCancels
+--- PASS: TestTerminalReceiptRetainedWhenConsumerCancels (0.00s)
+=== RUN   TestEmptyRetryReceiptsAreCountedOnce
+--- PASS: TestEmptyRetryReceiptsAreCountedOnce (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/engine	3.343s
+=== RUN   TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown
+=== RUN   TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_false
+=== RUN   TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_true
+--- PASS: TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown (0.01s)
+    --- PASS: TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_false (0.01s)
+    --- PASS: TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown/legacy_true (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/workflow	1.272s
+=== RUN   TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures
+--- PASS: TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures (0.00s)
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete
+--- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords (0.10s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete (0.02s)
+=== RUN   TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals
+--- PASS: TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.316s
+FAIL	gemmadesktop.local/app/internal/app [build failed]
+FAIL

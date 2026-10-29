@@ -1,0 +1,30 @@
+=== RUN   TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures
+--- PASS: TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures (0.00s)
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete
+--- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords (0.10s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both (0.03s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete (0.02s)
+=== RUN   TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals
+--- PASS: TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals (0.00s)
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/partial
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/legacy
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_accounting
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_usage
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_output
+--- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost (0.02s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/partial (0.01s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/legacy (0.00s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_accounting (0.00s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_usage (0.00s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_output (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.421s

@@ -1,0 +1,478 @@
+package execution
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+)
+
+// This proxy interrupts only the test executor's connection to Docker. It does
+// not stop Docker Desktop or change its socket, settings, or other clients.
+type dockerTestSocketProxy struct {
+	listener net.Listener
+	upstream string
+	mu       sync.Mutex
+	closed   bool
+	conns    map[net.Conn]struct{}
+	wg       sync.WaitGroup
+	once     sync.Once
+}
+
+func newDockerTestSocketProxy(t *testing.T, upstream string) (*dockerTestSocketProxy, string) {
+	t.Helper()
+	// Keep the Unix socket below macOS's path-length limit.
+	dir, err := os.MkdirTemp("/tmp", "gemma-daemon-proof-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(dir) })
+	path := filepath.Join(dir, "docker.sock")
+	listener, err := net.Listen("unix", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := &dockerTestSocketProxy{listener: listener, upstream: upstream, conns: map[net.Conn]struct{}{}}
+	p.wg.Add(1)
+	go func() {
+		defer p.wg.Done()
+		for {
+			client, err := listener.Accept()
+			if err != nil {
+				return
+			}
+			p.mu.Lock()
+			if p.closed {
+				p.mu.Unlock()
+				_ = client.Close()
+				return
+			}
+			p.conns[client] = struct{}{}
+			p.wg.Add(1)
+			p.mu.Unlock()
+			go p.forward(client)
+		}
+	}()
+	t.Cleanup(p.close)
+	return p, "unix://" + path
+}
+
+func (p *dockerTestSocketProxy) forward(client net.Conn) {
+	defer p.wg.Done()
+	defer func() {
+		_ = client.Close()
+		p.mu.Lock()
+		delete(p.conns, client)
+		p.mu.Unlock()
+	}()
+	server, err := net.DialTimeout("unix", p.upstream, time.Second)
+	if err != nil {
+		return
+	}
+	p.mu.Lock()
+	if p.closed {
+		p.mu.Unlock()
+		_ = server.Close()
+		return
+	}
+	p.conns[server] = struct{}{}
+	p.mu.Unlock()
+	defer func() {
+		_ = server.Close()
+		p.mu.Lock()
+		delete(p.conns, server)
+		p.mu.Unlock()
+	}()
+	upstreamDone := make(chan struct{})
+	go func() {
+		_, _ = io.Copy(server, client)
+		// Preserve the attach protocol's half-close semantics.
+		if c, ok := server.(*net.UnixConn); ok {
+			_ = c.CloseWrite()
+		}
+		close(upstreamDone)
+	}()
+	_, _ = io.Copy(client, server)
+	// A peer may finish sending while still consuming the other direction.
+	// Closing both sockets here would discard that final request/attach input.
+	if c, ok := client.(*net.UnixConn); ok {
+		_ = c.CloseWrite()
+	}
+	<-upstreamDone
+}
+
+func (p *dockerTestSocketProxy) close() {
+	p.once.Do(func() {
+		p.mu.Lock()
+		p.closed = true
+		_ = p.listener.Close()
+		for connection := range p.conns {
+			_ = connection.Close()
+		}
+		p.mu.Unlock()
+		p.wg.Wait()
+	})
+}
+
+// These local Unix-socket fixtures qualify the proxy itself without Docker.
+func newDockerTestUpstream(t *testing.T) (*net.UnixListener, string) {
+	t.Helper()
+	dir, err := os.MkdirTemp("/tmp", "gemma-proxy-upstream-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(dir) })
+	path := filepath.Join(dir, "upstream.sock")
+	listener, err := net.ListenUnix("unix", &net.UnixAddr{Name: path, Net: "unix"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = listener.Close() })
+	return listener, path
+}
+
+func TestDockerSocketProxyPreservesBothHalfCloses(t *testing.T) {
+	for _, serverFirst := range []bool{false, true} {
+		t.Run(fmt.Sprintf("server_first_%v", serverFirst), func(t *testing.T) {
+			upstream, path := newDockerTestUpstream(t)
+			proxy, endpoint := newDockerTestSocketProxy(t, path)
+			serverDone := make(chan error, 1)
+			go func() {
+				server, err := upstream.AcceptUnix()
+				if err != nil {
+					serverDone <- err
+					return
+				}
+				defer server.Close()
+				_ = server.SetDeadline(time.Now().Add(5 * time.Second))
+				respond := func() error {
+					if _, err := io.WriteString(server, "response"); err != nil {
+						return err
+					}
+					return server.CloseWrite()
+				}
+				if serverFirst {
+					if err = respond(); err != nil {
+						serverDone <- err
+						return
+					}
+				}
+				request, err := io.ReadAll(server)
+				if err == nil && string(request) != "request" {
+					err = fmt.Errorf("upstream received %q, want request", request)
+				}
+				if err == nil && !serverFirst {
+					err = respond()
+				}
+				serverDone <- err
+			}()
+			client, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: strings.TrimPrefix(endpoint, "unix://"), Net: "unix"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer client.Close()
+			_ = client.SetDeadline(time.Now().Add(5 * time.Second))
+			readResponse := func() {
+				t.Helper()
+				body, err := io.ReadAll(client)
+				if err != nil || string(body) != "response" {
+					t.Fatalf("response across half-close: %q %v", body, err)
+				}
+			}
+			if serverFirst {
+				readResponse()
+			}
+			if _, err = io.WriteString(client, "request"); err != nil {
+				t.Fatal(err)
+			}
+			if err = client.CloseWrite(); err != nil {
+				t.Fatal(err)
+			}
+			if !serverFirst {
+				readResponse()
+			}
+			if err = <-serverDone; err != nil {
+				t.Fatal(err)
+			}
+			proxy.close()
+		})
+	}
+}
+
+func TestDockerSocketProxyCloseJoinsActiveStreams(t *testing.T) {
+	upstream, path := newDockerTestUpstream(t)
+	proxy, endpoint := newDockerTestSocketProxy(t, path)
+	accepted := make(chan struct{})
+	serverDone := make(chan error, 1)
+	go func() {
+		server, err := upstream.AcceptUnix()
+		if err != nil {
+			serverDone <- err
+			return
+		}
+		defer server.Close()
+		_ = server.SetDeadline(time.Now().Add(5 * time.Second))
+		close(accepted)
+		_, err = io.Copy(io.Discard, server)
+		serverDone <- err
+	}()
+	client, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: strings.TrimPrefix(endpoint, "unix://"), Net: "unix"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer client.Close()
+	select {
+	case <-accepted:
+	case <-time.After(5 * time.Second):
+		t.Fatal("proxy did not connect upstream")
+	}
+	var closers sync.WaitGroup
+	for range 8 {
+		closers.Go(proxy.close)
+	}
+	closed := make(chan struct{})
+	go func() { closers.Wait(); close(closed) }()
+	select {
+	case <-closed:
+	case <-time.After(5 * time.Second):
+		t.Fatal("proxy close did not join active streams")
+	}
+	if err = <-serverDone; err != nil {
+		t.Fatal("upstream socket did not close cleanly", err)
+	}
+	proxy.mu.Lock()
+	defer proxy.mu.Unlock()
+	if !proxy.closed || len(proxy.conns) != 0 {
+		t.Fatal("proxy retained active sockets")
+	}
+}
+
+func TestDockerLiveConnectionLossDiscardsAndRecoversOwnedGuest(t *testing.T) {
+	image := os.Getenv("GEMMA_TEST_DOCKER_IMAGE")
+	if image == "" {
+		t.Skip("opt-in: GEMMA_TEST_DOCKER_IMAGE must name installed immutable linux/arm64 toolchain image")
+	}
+	// Unlike ordinary TempDir fixtures, retain these ownership records if the
+	// worker cannot be joined or direct recovery fails. Never delete a possibly
+	// active guest's mounts/journals during testing.T cleanup.
+	stateDir, err := os.MkdirTemp("/tmp", "gemma-loss-state-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := ""
+	retainEvidence := false
+	t.Cleanup(func() {
+		if retainEvidence {
+			t.Logf("cleanup incomplete; retained test-owned recovery state=%s workspace=%s", stateDir, root)
+			return
+		}
+		if err := os.RemoveAll(stateDir); err != nil {
+			t.Errorf("remove recovered test state: %v", err)
+		}
+		if root != "" {
+			if err := os.RemoveAll(root); err != nil {
+				t.Errorf("remove recovered test workspace: %v", err)
+			}
+		}
+	})
+	root, err = os.MkdirTemp("/tmp", "gemma-loss-workspace-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, err := NewDockerExecutor(DockerConfig{StateDir: stateDir, Image: image})
+	if err != nil {
+		t.Fatal(err)
+	}
+	status, err := d.Status(t.Context())
+	if err != nil {
+		t.Fatalf("Docker qualification unavailable: %+v %v", status, err)
+	}
+	t.Logf("runtime=%s image=%s imageID=%s", status.Version, status.Image, status.ImageID)
+	root, err = filepath.EvalSymlinks(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(filepath.Join(root, "source.txt"), []byte("original"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	direct, err := NewDockerExecutor(d.config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	proxy, endpoint := newDockerTestSocketProxy(t, strings.TrimPrefix(d.host, "unix://"))
+	d.host = endpoint
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+	type outcome struct {
+		result Result
+		err    error
+	}
+	done := make(chan outcome, 1)
+	runFinished := make(chan struct{})
+	retainEvidence = true
+	t.Cleanup(func() {
+		cancel()
+		proxy.close()
+		select {
+		case <-runFinished:
+		case <-time.After(55 * time.Second):
+			// Do not reconcile journals concurrently with a still-running Run.
+			// Stop only this test's labelled guests as an emergency fallback.
+			t.Error("executor did not unwind during cleanup; attempting owned guest removal before journal recovery")
+			cleanupCtx, stop := context.WithTimeout(context.Background(), 30*time.Second)
+			ids, listErr := direct.cli(cleanupCtx, 8192, "ps", "-aq", "--filter", "label=com.gemmadesktop.owner="+direct.owner)
+			if listErr != nil {
+				t.Errorf("list owned guests during cleanup: %v", listErr)
+			}
+			for _, id := range strings.Fields(ids) {
+				if removeErr := direct.removeOwned(cleanupCtx, id); removeErr != nil {
+					t.Errorf("remove owned guest during cleanup: %v", removeErr)
+				}
+			}
+			stop()
+			select {
+			case <-runFinished:
+			case <-time.After(10 * time.Second):
+				t.Error("executor still active after owned guest removal; journal reconciliation skipped to avoid concurrent recovery")
+				return
+			}
+		}
+		cleanupCtx, stop := context.WithTimeout(context.Background(), 30*time.Second)
+		defer stop()
+		if _, err := direct.Reconcile(cleanupCtx); err != nil {
+			t.Errorf("owned guest recovery cleanup: %v", err)
+			return
+		}
+		retainEvidence = false
+	})
+	go func() {
+		defer close(runFinished)
+		result, err := d.Run(ctx, Request{Workspace: root, Executable: "python3", Timeout: 2 * time.Minute, Args: []string{"-c", `import os,pathlib,time
+pathlib.Path('source.txt').write_text('unpublished edit')
+pathlib.Path('new-source.txt').write_text('unpublished addition')
+if os.fork()==0:
+ os.setsid()
+ while True:
+  pathlib.Path('/cache/heartbeat').write_text(str(time.monotonic_ns()))
+  time.sleep(.05)
+deadline=time.monotonic()+10
+while not pathlib.Path('/cache/heartbeat').exists():
+ if time.monotonic()>deadline: raise RuntimeError('child did not signal readiness')
+ time.sleep(.01)
+pathlib.Path('/cache/ready').write_text('ready')
+while True: time.sleep(1)`}})
+		done <- outcome{result, err}
+	}()
+	ready := filepath.Join(d.dependencyCache(root), "ready")
+	deadline := time.Now().Add(20 * time.Second)
+	for {
+		if _, err = os.Stat(ready); err == nil {
+			break
+		}
+		select {
+		case out := <-done:
+			t.Fatalf("guest ended before connectivity loss: %+v %v", out.result, out.err)
+		default:
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("guest did not reach ready state")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	proxy.close()
+	var out outcome
+	select {
+	case out = <-done:
+	case <-time.After(55 * time.Second):
+		t.Fatal("executor did not return after daemon connectivity loss")
+	}
+	if out.err == nil || out.result.Publication != "recovery_required" {
+		t.Fatalf("uncertain guest not retained for recovery: %+v %v", out.result, out.err)
+	}
+	assertOriginal := func() {
+		t.Helper()
+		data, err := os.ReadFile(filepath.Join(root, "source.txt"))
+		if err != nil || string(data) != "original" {
+			t.Fatalf("uncertain edit reached original: %q %v", data, err)
+		}
+		if _, err := os.Stat(filepath.Join(root, "new-source.txt")); !errors.Is(err, os.ErrNotExist) {
+			t.Fatal("uncertain addition reached original", err)
+		}
+	}
+	assertOriginal()
+	// A fresh executor must recover from durable ownership records, without
+	// relying on the original executor object or an in-memory cleanup callback.
+	restarted, err := NewDockerExecutor(d.config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	recoveryCtx, recoveryCancel := context.WithTimeout(t.Context(), time.Minute)
+	defer recoveryCancel()
+	if state, err := restarted.RecoveryStatus(); state != "blocked" || err == nil {
+		t.Fatalf("restart lost uncertain ownership: %s %v", state, err)
+	}
+	ids, err := restarted.cli(recoveryCtx, 4096, "ps", "-q", "--filter", "label=com.gemmadesktop.owner="+d.owner)
+	if err != nil || len(strings.Fields(ids)) != 1 {
+		t.Fatalf("expected the real owned guest to survive lost connectivity: %q %v", ids, err)
+	}
+	if result, err := restarted.Run(recoveryCtx, Request{Workspace: root, Executable: "true"}); err == nil || result.CommandID != "" {
+		t.Fatalf("new command admitted before recovery: %+v %v", result, err)
+	}
+	// Establish that the detached child survived the socket loss, rather than
+	// merely observing a stale heartbeat from before the interruption.
+	heartbeat := filepath.Join(d.dependencyCache(root), "heartbeat")
+	previous := ""
+	heartbeatDeadline := time.Now().Add(5 * time.Second)
+	for {
+		value, readErr := os.ReadFile(heartbeat)
+		if readErr != nil {
+			t.Fatal("child heartbeat missing before recovery", readErr)
+		}
+		current := string(value)
+		if current != "" && previous != "" && current != previous {
+			break
+		}
+		if current != "" {
+			previous = current
+		}
+		if time.Now().After(heartbeatDeadline) {
+			t.Fatal("detached child did not remain active after socket loss")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if _, err := restarted.Reconcile(recoveryCtx); err != nil {
+		t.Fatal(err)
+	}
+	ids, err = restarted.cli(recoveryCtx, 4096, "ps", "-aq", "--filter", "label=com.gemmadesktop.owner="+d.owner)
+	if err != nil || strings.TrimSpace(ids) != "" {
+		t.Fatalf("owned guest survived reconciliation: %q %v", ids, err)
+	}
+	before, err := os.ReadFile(heartbeat)
+	if err != nil {
+		t.Fatal("child heartbeat missing", err)
+	}
+	time.Sleep(200 * time.Millisecond)
+	after, err := os.ReadFile(heartbeat)
+	if err != nil || string(before) != string(after) {
+		t.Fatal("descendant continued after reconciliation", err)
+	}
+	assertOriginal()
+	if _, err := os.Stat(filepath.Join(d.config.StateDir, "commands", out.result.CommandID, "source")); !errors.Is(err, os.ErrNotExist) {
+		t.Fatal("uncertain private source was retained after recovery", err)
+	}
+	if state, err := restarted.RecoveryStatus(); state != "ready" || err != nil {
+		t.Fatalf("reconciled executor not ready: %s %v", state, err)
+	}
+	result, err := restarted.Run(recoveryCtx, Request{Workspace: root, Executable: "cat", Args: []string{"source.txt"}, ReadOnly: true})
+	if err != nil || result.ExitCode != 0 || result.Publication != "read_only" || result.Stdout != "original" {
+		t.Fatalf("fresh command did not recover: %+v %v", result, err)
+	}
+	t.Log("real guest survived test-owned socket loss; restart blocked work, stopped guest and descendants, discarded private edits, then resumed")
+}

@@ -1,0 +1,760 @@
+{
+  "createdAt": "2026-10-28T08:07:46.720362+00:00",
+  "scope": "Actual local visual frame-RAG, synthetic six-scene clip; separate from general video or audio capability.",
+  "manifest": {
+    "version": 1,
+    "createdAt": "2026-10-27T20:43:33.149290+00:00",
+    "workspace": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input",
+    "clip": "visual-scenes.mp4",
+    "clipSHA256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+    "durationSeconds": 30,
+    "fps": 24,
+    "events": [
+      {
+        "query": "a red circle",
+        "fromSeconds": 0,
+        "toSeconds": 5,
+        "sceneSHA256": "768ec5c6af1524caf45cea6a34b9227d64520da971a20452c7fdac617118996b"
+      },
+      {
+        "query": "a blue square",
+        "fromSeconds": 5,
+        "toSeconds": 10,
+        "sceneSHA256": "65436a7bda0d62e43bd2c4c8e82e58549dce7895d4efc3efc48c2d063adabbbb"
+      },
+      {
+        "query": "a green triangle",
+        "fromSeconds": 10,
+        "toSeconds": 15,
+        "sceneSHA256": "888fe4f2bdea6b595e14dc0a9bd1ac931358b7563f6b673707ffbd12cfec1a67"
+      },
+      {
+        "query": "a yellow star",
+        "fromSeconds": 15,
+        "toSeconds": 20,
+        "sceneSHA256": "0b70cb787826c59f8ea0a05b0c4ee3bfd9a35e02ead9931e7abec071c3244636"
+      },
+      {
+        "query": "two purple circles",
+        "fromSeconds": 20,
+        "toSeconds": 25,
+        "sceneSHA256": "ea762d3df5a57fc006c629b1c93737226381d8a1b4b86b51878a6545a500603b"
+      },
+      {
+        "query": "an orange rectangle",
+        "fromSeconds": 25,
+        "toSeconds": 30,
+        "sceneSHA256": "b7cdab51846203a155f0a3029014ae99cf733e4d0961783c94492d4c8dbdfca4"
+      }
+    ],
+    "acceptance": "At least five of six text queries retrieve an overlapping interval among the top three evidence frames. Answer grounding and native playback are separately checked. Ground truth is not passed to the model."
+  },
+  "model": "gemma4:26b-mlx",
+  "harnessSHA256": "c7387a411e59527fc909279268f0be5d89c4061ed3eb91a0023198ba00988978",
+  "answers": [
+    {
+      "question": "What shape is the red object?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "66a7cbe8261110e21ee1fc429450772b",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "59c44d30ca7c7f7c2c7b86fa339c2d42",
+        "question": "What shape is the red object?",
+        "text": "The red object is a circle [F001, F002].",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "da3d6a161bfb8ea4a6249d24ce48c38c",
+            "timeSeconds": 1,
+            "score": 0.672049537834522,
+            "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+            "label": "F001"
+          },
+          {
+            "frameId": "fcc819af2f7881c50a77492d81871361",
+            "timeSeconds": 3,
+            "score": 0.672049537834522,
+            "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+            "label": "F002"
+          },
+          {
+            "frameId": "75afabf8d07e709a35e55b13732f8269",
+            "timeSeconds": 10,
+            "score": 0.6451033105546128,
+            "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "da3d6a161bfb8ea4a6249d24ce48c38c",
+            "timeSeconds": 1,
+            "label": "F001"
+          },
+          {
+            "frameId": "fcc819af2f7881c50a77492d81871361",
+            "timeSeconds": 3,
+            "label": "F002"
+          }
+        ],
+        "createdAt": "2026-10-28T08:07:57.817218Z"
+      },
+      "retrievalHit": true,
+      "expectedInterval": [
+        0,
+        5
+      ]
+    },
+    {
+      "question": "What shape is the blue object?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "44bd580db3460d1065fa15eb6b2d696c",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "8d503ade8acd162c8a1251ac25063edd",
+        "question": "What shape is the blue object?",
+        "text": "Based on the provided frames, the blue object is a square [F001, F002].",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "c662969a9c981af837b6feac825fd9ff",
+            "timeSeconds": 6,
+            "score": 0.711308745311604,
+            "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+            "label": "F001"
+          },
+          {
+            "frameId": "b6b4fc2dbea1c03294dfbf438ae3771e",
+            "timeSeconds": 8,
+            "score": 0.711308745311604,
+            "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+            "label": "F002"
+          },
+          {
+            "frameId": "75afabf8d07e709a35e55b13732f8269",
+            "timeSeconds": 10,
+            "score": 0.6464368606021548,
+            "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "c662969a9c981af837b6feac825fd9ff",
+            "timeSeconds": 6,
+            "label": "F001"
+          },
+          {
+            "frameId": "b6b4fc2dbea1c03294dfbf438ae3771e",
+            "timeSeconds": 8,
+            "label": "F002"
+          }
+        ],
+        "createdAt": "2026-10-28T08:08:01.853484Z"
+      },
+      "retrievalHit": true,
+      "expectedInterval": [
+        5,
+        10
+      ]
+    },
+    {
+      "question": "What shape is the green object?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "fc25173a16a04f9c5a99124f08eaab02",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "3ee3a74377911f7dd15c6e9fcdd0ee52",
+        "question": "What shape is the green object?",
+        "text": "The green object is a triangle [F001, F002, F003].",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "75afabf8d07e709a35e55b13732f8269",
+            "timeSeconds": 10,
+            "score": 0.7218999324840474,
+            "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+            "label": "F001"
+          },
+          {
+            "frameId": "69507c0ef7d2e98f47f53c78467f8e78",
+            "timeSeconds": 12,
+            "score": 0.7214770829111277,
+            "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+            "label": "F002"
+          },
+          {
+            "frameId": "823085515adc26b0688b6f81b6da576d",
+            "timeSeconds": 14,
+            "score": 0.7214770829111277,
+            "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "75afabf8d07e709a35e55b13732f8269",
+            "timeSeconds": 10,
+            "label": "F001"
+          },
+          {
+            "frameId": "69507c0ef7d2e98f47f53c78467f8e78",
+            "timeSeconds": 12,
+            "label": "F002"
+          },
+          {
+            "frameId": "823085515adc26b0688b6f81b6da576d",
+            "timeSeconds": 14,
+            "label": "F003"
+          }
+        ],
+        "createdAt": "2026-10-28T08:08:05.898252Z"
+      },
+      "retrievalHit": true,
+      "expectedInterval": [
+        10,
+        15
+      ]
+    },
+    {
+      "question": "What shape is the yellow object?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "a9a4072d92f55f60aebf745bd1ae2e82",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "bb0e867708441f2b6bc59c37e9ef2f49",
+        "question": "What shape is the yellow object?",
+        "text": "The yellow object is a five-pointed star shape [F001, F002, F003].",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "cad9e7d00c5fd710ede1e226b2d86d90",
+            "timeSeconds": 15,
+            "score": 0.673781105624323,
+            "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+            "label": "F001"
+          },
+          {
+            "frameId": "16443c03f7f355596d31bb8c15b946aa",
+            "timeSeconds": 17,
+            "score": 0.673781105624323,
+            "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+            "label": "F002"
+          },
+          {
+            "frameId": "35dc34e981cc1669497be25f2a0058af",
+            "timeSeconds": 19,
+            "score": 0.673781105624323,
+            "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "cad9e7d00c5fd710ede1e226b2d86d90",
+            "timeSeconds": 15,
+            "label": "F001"
+          },
+          {
+            "frameId": "16443c03f7f355596d31bb8c15b946aa",
+            "timeSeconds": 17,
+            "label": "F002"
+          },
+          {
+            "frameId": "35dc34e981cc1669497be25f2a0058af",
+            "timeSeconds": 19,
+            "label": "F003"
+          }
+        ],
+        "createdAt": "2026-10-28T08:08:09.938212Z"
+      },
+      "retrievalHit": true,
+      "expectedInterval": [
+        15,
+        20
+      ]
+    },
+    {
+      "question": "How many purple objects are visible, and what shape are they?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "f192baebe45b37e9bc3a97c8f7a90d46",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "d9f5557ee3bf29a3e7b3ed10f9030199",
+        "question": "How many purple objects are visible, and what shape are they?",
+        "text": "There are two purple objects visible, and they are circles [F002, F003].",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "57dd7acd9c12259206db05d32ad3cddd",
+            "timeSeconds": 5,
+            "score": 0.5966930545998816,
+            "sha256": "ea93afd361b138f6bee991612b4f83921f49e086a0f5f891ae67f3efa8f00b71",
+            "label": "F001"
+          },
+          {
+            "frameId": "01130402a4a2a3c25147f6686499ef05",
+            "timeSeconds": 21,
+            "score": 0.6983843492287857,
+            "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+            "label": "F002"
+          },
+          {
+            "frameId": "e08120c3ac0cf53d7724dddf7f603bc4",
+            "timeSeconds": 23,
+            "score": 0.6983843492287857,
+            "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "01130402a4a2a3c25147f6686499ef05",
+            "timeSeconds": 21,
+            "label": "F002"
+          },
+          {
+            "frameId": "e08120c3ac0cf53d7724dddf7f603bc4",
+            "timeSeconds": 23,
+            "label": "F003"
+          }
+        ],
+        "createdAt": "2026-10-28T08:08:13.987235Z"
+      },
+      "retrievalHit": true,
+      "expectedInterval": [
+        20,
+        25
+      ]
+    },
+    {
+      "question": "What shape is the orange object?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "3f8ed48468e5f6d6c0b40d20093bcd2e",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "9f161a818a8c878737444a086f724b55",
+        "question": "What shape is the orange object?",
+        "text": "The orange object is a rectangle [F001, F002, F003].",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "d4e2976288edb7299990a292b6fc933a",
+            "timeSeconds": 25,
+            "score": 0.7044429986005721,
+            "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+            "label": "F001"
+          },
+          {
+            "frameId": "1d2714e7b97982c26a693dbf491268a4",
+            "timeSeconds": 27,
+            "score": 0.7044429986005721,
+            "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+            "label": "F002"
+          },
+          {
+            "frameId": "3d55d30e7f14da746e6011b367e27e8a",
+            "timeSeconds": 29,
+            "score": 0.7044429986005721,
+            "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "d4e2976288edb7299990a292b6fc933a",
+            "timeSeconds": 25,
+            "label": "F001"
+          },
+          {
+            "frameId": "1d2714e7b97982c26a693dbf491268a4",
+            "timeSeconds": 27,
+            "label": "F002"
+          },
+          {
+            "frameId": "3d55d30e7f14da746e6011b367e27e8a",
+            "timeSeconds": 29,
+            "label": "F003"
+          }
+        ],
+        "createdAt": "2026-10-28T08:08:18.032322Z"
+      },
+      "retrievalHit": true,
+      "expectedInterval": [
+        25,
+        30
+      ]
+    },
+    {
+      "question": "What color is the dog in the clip?",
+      "jobStatus": "completed",
+      "answer": {
+        "id": "8aad602d41e99a2d631bb58900634c40",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "jobId": "4f89a2e9f9338627e6551cb6948b7e51",
+        "question": "What color is the dog in the clip?",
+        "text": "The provided video frames do not contain a dog; they consist of a single orange rectangle on a light gray background [F001, F002, F003]. Therefore, the color of the dog cannot be determined.",
+        "model": "gemma4:26b-mlx",
+        "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "runtimeVersion": "0.40.11",
+        "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+        "status": "completed",
+        "evidence": [
+          {
+            "frameId": "d4e2976288edb7299990a292b6fc933a",
+            "timeSeconds": 25,
+            "score": 0.6108373452851622,
+            "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+            "label": "F001"
+          },
+          {
+            "frameId": "1d2714e7b97982c26a693dbf491268a4",
+            "timeSeconds": 27,
+            "score": 0.6108373452851622,
+            "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+            "label": "F002"
+          },
+          {
+            "frameId": "3d55d30e7f14da746e6011b367e27e8a",
+            "timeSeconds": 29,
+            "score": 0.6108373452851622,
+            "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+            "label": "F003"
+          }
+        ],
+        "citations": [
+          {
+            "frameId": "d4e2976288edb7299990a292b6fc933a",
+            "timeSeconds": 25,
+            "label": "F001"
+          },
+          {
+            "frameId": "1d2714e7b97982c26a693dbf491268a4",
+            "timeSeconds": 27,
+            "label": "F002"
+          },
+          {
+            "frameId": "3d55d30e7f14da746e6011b367e27e8a",
+            "timeSeconds": 29,
+            "label": "F003"
+          }
+        ],
+        "createdAt": "2026-10-28T08:08:22.067969Z"
+      },
+      "negativeControl": true
+    }
+  ],
+  "jobs": [
+    {
+      "id": "d49b377fc932c5b3d0b0bd3212aea977",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "kind": "import",
+      "status": "completed",
+      "stage": "imported",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:07:46.733257Z",
+      "finishedAt": "2026-10-28T08:07:46.955379Z"
+    },
+    {
+      "id": "51970a2f2bd7acb417cccf6e1ba71b37",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "kind": "index",
+      "status": "completed",
+      "stage": "ready",
+      "completed": 30,
+      "total": 30,
+      "createdAt": "2026-10-28T08:07:47.747256Z",
+      "finishedAt": "2026-10-28T08:07:56.977878Z"
+    },
+    {
+      "id": "59c44d30ca7c7f7c2c7b86fa339c2d42",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "66a7cbe8261110e21ee1fc429450772b",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:07:57.817199Z",
+      "finishedAt": "2026-10-28T08:08:01.462171Z"
+    },
+    {
+      "id": "8d503ade8acd162c8a1251ac25063edd",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "44bd580db3460d1065fa15eb6b2d696c",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:08:01.85348Z",
+      "finishedAt": "2026-10-28T08:08:05.593494Z"
+    },
+    {
+      "id": "3ee3a74377911f7dd15c6e9fcdd0ee52",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "fc25173a16a04f9c5a99124f08eaab02",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:08:05.898247Z",
+      "finishedAt": "2026-10-28T08:08:09.490088Z"
+    },
+    {
+      "id": "bb0e867708441f2b6bc59c37e9ef2f49",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "a9a4072d92f55f60aebf745bd1ae2e82",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:08:09.938207Z",
+      "finishedAt": "2026-10-28T08:08:13.558471Z"
+    },
+    {
+      "id": "d9f5557ee3bf29a3e7b3ed10f9030199",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "f192baebe45b37e9bc3a97c8f7a90d46",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:08:13.987231Z",
+      "finishedAt": "2026-10-28T08:08:17.687267Z"
+    },
+    {
+      "id": "9f161a818a8c878737444a086f724b55",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "3f8ed48468e5f6d6c0b40d20093bcd2e",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:08:18.03232Z",
+      "finishedAt": "2026-10-28T08:08:21.631726Z"
+    },
+    {
+      "id": "4f89a2e9f9338627e6551cb6948b7e51",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "clipId": "ffc16ca136043d07638e177acc1f20ec",
+      "answerId": "8aad602d41e99a2d631bb58900634c40",
+      "kind": "answer",
+      "status": "completed",
+      "stage": "completed",
+      "completed": 1,
+      "total": 1,
+      "createdAt": "2026-10-28T08:08:22.067967Z",
+      "finishedAt": "2026-10-28T08:08:26.300195Z"
+    }
+  ],
+  "runtimeBefore": {
+    "available": true,
+    "memoryBytes": 68719476736,
+    "models": [
+      {
+        "context_length": 65536,
+        "details": {
+          "family": "",
+          "format": "safetensors",
+          "parameter_size": "",
+          "quantization_level": "nvfp4"
+        },
+        "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "expires_at": "2026-10-28T03:10:59.864934-05:00",
+        "model": "gemma4:26b-mlx",
+        "name": "gemma4:26b-mlx",
+        "size": 18702751460,
+        "size_vram": 18702751460
+      }
+    ],
+    "policy": "Local inference only",
+    "pulls": [],
+    "version": "0.40.11"
+  },
+  "models": [
+    {
+      "capabilities": [
+        "embedding",
+        "vision"
+      ],
+      "contextLength": 262144,
+      "digest": "fc94c176e27b3109d869852b27871835b890dcc6742b1ef3d0fb2341f61e1263",
+      "family": "",
+      "loaded": false,
+      "name": "embeddinggemma-2:440m-mxfp8-text-vision",
+      "parameterSize": "",
+      "quantization": "mxfp8",
+      "remote": false,
+      "size": 777763070
+    },
+    {
+      "capabilities": [
+        "completion",
+        "vision",
+        "tools",
+        "thinking"
+      ],
+      "contextLength": 262144,
+      "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+      "family": "",
+      "loaded": true,
+      "loadedContextLength": 65536,
+      "memoryBytes": 18702751460,
+      "name": "gemma4:26b-mlx",
+      "parameterSize": "",
+      "quantization": "nvfp4",
+      "remote": false,
+      "size": 18334412658
+    },
+    {
+      "capabilities": [
+        "completion",
+        "vision",
+        "audio",
+        "tools",
+        "thinking"
+      ],
+      "contextLength": 262144,
+      "digest": "ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+      "family": "",
+      "loaded": false,
+      "name": "gemma4:12b-mlx",
+      "parameterSize": "",
+      "quantization": "",
+      "remote": false,
+      "size": 7714091504
+    }
+  ],
+  "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+  "clipId": "ffc16ca136043d07638e177acc1f20ec",
+  "import": {
+    "clip": {
+      "id": "ffc16ca136043d07638e177acc1f20ec",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "name": "visual-scenes.mp4",
+      "sha256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+      "bytes": 42086,
+      "durationSeconds": 30,
+      "status": "imported",
+      "frameCount": 30,
+      "embeddingModel": "",
+      "createdAt": "2026-10-28T08:07:46.733257Z"
+    },
+    "jobs": [
+      {
+        "id": "d49b377fc932c5b3d0b0bd3212aea977",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "kind": "import",
+        "status": "completed",
+        "stage": "imported",
+        "completed": 1,
+        "total": 1,
+        "createdAt": "2026-10-28T08:07:46.733257Z",
+        "finishedAt": "2026-10-28T08:07:46.955379Z"
+      }
+    ],
+    "recentAnswers": []
+  },
+  "range": {
+    "status": 206,
+    "contentRange": "bytes 0-31/42086",
+    "contentType": "video/mp4",
+    "bytes": 32,
+    "matchesSourcePrefix": true
+  },
+  "indexed": {
+    "clip": {
+      "id": "ffc16ca136043d07638e177acc1f20ec",
+      "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+      "name": "visual-scenes.mp4",
+      "sha256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+      "bytes": 42086,
+      "durationSeconds": 30,
+      "status": "ready",
+      "frameCount": 30,
+      "embeddingModel": "embeddinggemma-2:440m-mxfp8-text-vision",
+      "createdAt": "2026-10-28T08:07:46.733257Z",
+      "indexId": "c686e80d65707a2cafb7d1c8844e2cd4"
+    },
+    "jobs": [
+      {
+        "id": "51970a2f2bd7acb417cccf6e1ba71b37",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "kind": "index",
+        "status": "completed",
+        "stage": "ready",
+        "completed": 30,
+        "total": 30,
+        "createdAt": "2026-10-28T08:07:47.747256Z",
+        "finishedAt": "2026-10-28T08:07:56.977878Z"
+      },
+      {
+        "id": "d49b377fc932c5b3d0b0bd3212aea977",
+        "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+        "clipId": "ffc16ca136043d07638e177acc1f20ec",
+        "kind": "import",
+        "status": "completed",
+        "stage": "imported",
+        "completed": 1,
+        "total": 1,
+        "createdAt": "2026-10-28T08:07:46.733257Z",
+        "finishedAt": "2026-10-28T08:07:46.955379Z"
+      }
+    ],
+    "recentAnswers": []
+  },
+  "retrievalHits": 6,
+  "sourceUnchanged": true,
+  "harnessUnchanged": true,
+  "transportAndRetrievalPassed": true,
+  "answerReview": "Pending independent comparison with the synthetic scene manifest; citation validation is not a semantic correctness judge.",
+  "durationSeconds": 40.382,
+  "finishedAt": "2026-10-28T08:08:27.105964+00:00"
+}

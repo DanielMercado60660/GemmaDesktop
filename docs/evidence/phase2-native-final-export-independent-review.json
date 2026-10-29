@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-28T08:08:36.625351+00:00",
+  "reviewer": "/root/desktop_research",
+  "verdict": "verified_with_explicit_limits",
+  "blockingFindings": [],
+  "scope": "Independent read-only final native export audit; no candidate execution, hidden oracle inspection, API mutation, inference, Docker or build.",
+  "identity": {
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+    "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+    "baselineId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+    "frozenAppVersion": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+    "artifactSHA256": "9e6d953c4348f41cbc0cb67dade009d52c6f2b1f4c7f64d0ab6060ade1b315ae",
+    "artifactBytes": 4601043,
+    "artifactAndCopyMode": "0o400",
+    "artifactAndCopyEqual": true,
+    "payloadHashRecomputed": "b87e272616fabbd88e0d0c9713f23a6e399cf6753084e066bbcbd7b8a04b0be3",
+    "payloadHashMatches": true
+  },
+  "hashContract": {
+    "payload": "SHA256 of compact encoding/json-compatible sorted-key JSON after removing top-level createdAt and payloadHash; numbers follow Go float64 JSON formatting, strings retain Go HTML and U+2028/U+2029 escaping. Independently reconstructed in Python; exact recorded hash matched.",
+    "trialOutput": "For each public output path, SHA256(JSON(base64(file bytes))), then SHA256(sorted-key JSON of that path-to-digest map), matching internal/harness/manager.go treeHash.",
+    "noBuildOrCandidateImport": true
+  },
+  "counts": {
+    "nativeTrials": 76,
+    "optimizationTrials": 4,
+    "pairedTrials": 72,
+    "uniquePairedTrialIds": 72,
+    "uniquePairedKeys": 72,
+    "fullThreeRepeatTwoArmGrid": true,
+    "pairedTasks": 12,
+    "byPartitionArm": [
+      {
+        "split": "validation",
+        "arm": "baseline",
+        "attempts": 18,
+        "automatedPasses": 0
+      },
+      {
+        "split": "validation",
+        "arm": "candidate",
+        "attempts": 18,
+        "automatedPasses": 2
+      },
+      {
+        "split": "heldout",
+        "arm": "baseline",
+        "attempts": 18,
+        "automatedPasses": 0
+      },
+      {
+        "split": "heldout",
+        "arm": "candidate",
+        "attempts": 18,
+        "automatedPasses": 1
+      }
+    ],
+    "nativeStatuses": {
+      "completed": 65,
+      "failed": 11
+    },
+    "pairedStatuses": {
+      "completed": 62,
+      "failed": 10
+    },
+    "automatedPasses": [
+      {
+        "taskId": "node-config",
+        "trialId": "97b1e933d011bc05ce7ea38919e09f23",
+        "split": "heldout",
+        "arm": "candidate",
+        "repeat": 1
+      },
+      {
+        "taskId": "node-usage",
+        "trialId": "2b3d280e7299c221a83542e524c5ee7d",
+        "split": "validation",
+        "arm": "candidate",
+        "repeat": 1
+      },
+      {
+        "taskId": "python-usage",
+        "trialId": "fc47edcd321ec9d99f1c14b3be446b2e",
+        "split": "validation",
+        "arm": "candidate",
+        "repeat": 0
+      }
+    ],
+    "protectedViolations": [
+      {
+        "trialId": "19f287bcd7043fcb435c71dfe2fdd1d5",
+        "taskId": "go-orders",
+        "path": "logic_test.go",
+        "beforeSHA256": "f2a06ff99b96a635f75dce16dc568711e33cea9b462f119193cd70ec8f9d7dc6",
+        "afterSHA256": "bd2505383fdcbd7dd11ee37254dda6036b06fdba92eacb558df14d9fcd2a4389"
+      },
+      {
+        "trialId": "5dc0cf5aad774592fbcde3dbd34f3744",
+        "taskId": "go-intervals",
+        "path": "logic_test.go",
+        "beforeSHA256": "4448204baf881d80779047b2394afad2a282d3ff3b75e7e94443ecba283ab14a",
+        "afterSHA256": "b8f645feecd926036c8e9b90fe2739aa842bdac5ed785f75a702734147b31cd1"
+      },
+      {
+        "trialId": "7e88ecb6d1280438635f72692c5559b0",
+        "taskId": "go-usage",
+        "path": "logic_test.go",
+        "beforeSHA256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+        "afterSHA256": "a14fdba5eb60ef75b1d2a48e05c266203d6e4eae9e220be8e8c150e7b0e845b4"
+      },
+      {
+        "trialId": "8a263433251e8aa38ce765a0e7b5ac88",
+        "taskId": "python-usage",
+        "path": "public_test.py",
+        "beforeSHA256": "d0f0c81e708f7e3563cb3d6b29aaf3462ab7320ed4ee06b4bcb02bf4542bdb69",
+        "afterSHA256": "ccd1f4ce9b4ba10228c6e04f5e2d677913a5a62ad35bcd1348c716fcf1eb278b"
+      },
+      {
+        "trialId": "e2fed027b609eb35fc88095d27925e9b",
+        "taskId": "node-usage",
+        "path": "public_test.cjs",
+        "beforeSHA256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+        "afterSHA256": "4cedda885825a5b412f6f57ad79ac1b8969bc0b282eee09a215864c9a5a5c164"
+      }
+    ],
+    "packetCount": 5,
+    "promotionCount": 0,
+    "activeBindingCount": 0,
+    "provisionalLessonCount": 2
+  },
+  "publicSourceIntegrity": {
+    "decodedFiles": 448,
+    "decodedBytes": 286002,
+    "decodedHashAndSizeMatches": 448,
+    "originalStoppedWorkspaceByteMatches": 448,
+    "reconstructedOutputTreeHashMatches": 76,
+    "independentSourceReviewTrialMatches": 72,
+    "independentSourceReviewFileHashMatches": 420,
+    "protectedDifferencesRecomputedFromExportedPublicOriginals": true,
+    "protectedDifferencesMatchSanitizedGradeFlags": true,
+    "trialIdentitiesAndOutputHashesMatchReadOnlyDB": true,
+    "sanitizedEvaluationRowsExactlyMatchReadOnlyDBProjection": true
+  },
+  "reviewAndRetention": {
+    "packetId": "3626b735b6eb018dbbb8863015a5b864",
+    "status": "submitted",
+    "verdict": "rejected",
+    "reviewer": {
+      "identity": "/root/ollama_model_research",
+      "kind": "codex"
+    },
+    "requestHash": "46358b1772d944f566169c2180cb62aab7f813d98bb6613d88652c0da159cb0d",
+    "responseMatchesIndependentReview": true,
+    "normalization": "Submit replaces response.createdAt with its server timestamp; empty lessons is omitted by Go omitempty. All other submitted semantic fields match.",
+    "savedGateEligible": false,
+    "evaluationEvidenceHash": "39bb275aa68d022fb18987689e02149346791061c16fef457d952606f4e1bead",
+    "evaluationEvidenceHashMatchesIndependentReview": true,
+    "noPromotionOrBindingRowsInCampaignDB": true,
+    "lessons": [
+      {
+        "id": "bd8df569c17b4f130549cb934c7f44db",
+        "version": 1,
+        "status": "provisional",
+        "taskId": "python-ledger",
+        "createdAt": "2026-10-28T00:36:45.364324Z"
+      },
+      {
+        "id": "bf403dca1ae335988cda5597551b3569",
+        "version": 1,
+        "status": "provisional",
+        "taskId": "python-ledger",
+        "createdAt": "2026-10-28T00:36:45.364324Z"
+      }
+    ],
+    "lessonsPredateEvaluation": true,
+    "lessonsDevelopmentOnly": true
+  },
+  "redaction": {
+    "publicFixtures": 13,
+    "casesOrProbePayloadsPresent": false,
+    "rawGradeOrCheckDiagnosticsPresent": false,
+    "packetContextsPresent": false,
+    "forbiddenCredentialPrivatePathOrRawThinkingKeysPresent": false,
+    "knownAppDataOrHostHomePathStringsPresent": false,
+    "strongCredentialSignatureMatchesInMetadataAndDecodedSource": 0,
+    "credentialRecordsLoaded": false,
+    "sqlProjection": "Selected terminal trial identity and scalar metrics plus grade/check names, passed and critical flags. Did not select raw grade/check errors, cases, probe source, expected values or credentials.",
+    "limit": "Structural exclusion and focused credential-signature checks are not proof that arbitrary candidate-authored bytes contain no possible secret; exact public artifact bytes remain intentionally preserved."
+  },
+  "upstreamPreservation": {
+    "artifactSHA256": "5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0",
+    "artifactBytes": 345787,
+    "payloadHashRecomputed": "e089b7a9dfa517a258f5a77c89db6a76572809d27eed4e2e1f58302d3edda2f1",
+    "matchesPreviouslyRecordedPayloadHash": true,
+    "savedExportAndArtifactEqualExcludingCreatedAt": true,
+    "newExportRequested": false
+  },
+  "limits": [
+    "Three automated passes remain automated results, not independent public-contract correctness. The separate review records reproduced defects in two of them; export verification does not change grades.",
+    "All 72 paired legacy rows lack explicit tokenAccounting. Cost remains unknown/lower-bound; historical ratios are preserved and were not requalified.",
+    "Evaluation gate evidenceHash is compared with the independent review, not rederived from this sanitized export because hidden error diagnostics were intentionally removed.",
+    "Current source reviewed only to establish serialization/redaction/normalization contracts. No claim that post-freeze accounting corrections ran in this frozen campaign.",
+    "No lessons, candidates, campaign records, exports or original trial files were modified."
+  ],
+  "sources": [
+    {
+      "path": "docs/evidence/phase2-native-final-export.json",
+      "sha256": "9e6d953c4348f41cbc0cb67dade009d52c6f2b1f4c7f64d0ab6060ade1b315ae"
+    },
+    {
+      "path": "docs/evidence/phase2-native-final-export-integrity.json",
+      "sha256": "60424a1911c02680135da6f6f1029669cdf0f06a8d6cc81df7c718b36ad51cfe"
+    },
+    {
+      "path": "docs/evidence/phase2-independent-promotion-review.json",
+      "sha256": "291d32f69bbb7593862548a0dda32c64cc90dbafb905975c8dc20130c29b5304"
+    },
+    {
+      "path": ".runtime/phase2-campaign-20261027/3626b735b6eb018dbbb8863015a5b864-response.json",
+      "sha256": "0f4c95bbb9d49427cfbdec4944c6e6f76b8e422c972ef040a53a97c927a685b8"
+    },
+    {
+      "path": "docs/evidence/phase2-go-paired-source-review.json",
+      "sha256": "50cf4b5e60d6804e732526981bb0494cbcd82854d425f1a0459f4c746965b181"
+    },
+    {
+      "path": "docs/evidence/phase2-node-paired-source-review.json",
+      "sha256": "fa7e2114954d82c3f01db6e4d4b36ad0505a7226d5781e9db6f1c9531f8439d5"
+    },
+    {
+      "path": "docs/evidence/phase2-python-paired-source-review.json",
+      "sha256": "496516e9ee8836313033eca5dd231cab5b5e0b6322013e3a287b1a0de7122bfb"
+    },
+    {
+      "path": "docs/evidence/phase2-upstream-export-integrity.json",
+      "sha256": "333c8568106fe49d2f71f20738902a8ead28d52d24dd3fb65ee80e517d23aa00"
+    },
+    {
+      "path": ".runtime/phase2-campaign-20261027/upstream-export.json",
+      "sha256": "4a50485fcdf52bb0accdaff4b85e92f094c2397cc880ab6139f695ac7b8834ff"
+    },
+    {
+      "path": ".runtime/phase2-campaign-20261027/artifacts/harness/5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0.json",
+      "sha256": "5f8aab765b7a47a6439d514ad44b955b2352901d9d35e4b56bd676c899ccd7a0"
+    },
+    {
+      "path": "internal/harness/export.go",
+      "sha256": "764e20d2d135d26001ba8fc86f59bf38413fe691e8bfd568c9b2f822910d7956"
+    },
+    {
+      "path": "internal/harness/manager.go",
+      "sha256": "40315abc61c81afbfd7a419ea9f869d92cb7a251418e2d43226df6a44f34712d"
+    },
+    {
+      "path": "internal/harness/packets.go",
+      "sha256": "9e777a8df435eabfd9245e250d30ef3ffe718cc1df6f6b9436a0a05d786e07be"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-28T06:34:01.342212+00:00",
+  "reviewer": "/root",
+  "author": "/root/ollama_model_research",
+  "source": "internal/execution/docker_workflows_test.go",
+  "sha256": "498062f30cbb0d0ccf399ed79211b41328fc820d16eb3dcf65c40c0262ef3f2a",
+  "verdict": "no_blocking_source_issue",
+  "executionStatus": "not_run_pending_active_campaign_completion",
+  "observations": [
+    "Uses application DockerExecutor.Run with ReadOnly:true and immutable selected image; test inputs are authored fixtures, not candidate or hidden grader source.",
+    "Runs literal npm lifecycle build with installed tsc; asserts two compiled modules, a separate worker thread and a guest-loopback HTTP exchange.",
+    "Uses explicit spawn multiprocessing, distinct child PIDs and SQLite WAL writes; a fresh subprocess reopens the database and checks rows/integrity.",
+    "Finite child/command deadlines, bounded output, successful read-only publication receipts, unchanged original-source manifest and no owned containers are checked.",
+    "Synchronous executor completion precedes reconcile/cache cleanup; recovery failure retains the owned state instead of deleting mounts."
+  ],
+  "boundaries": [
+    "Source review and prior compile/skip results do not establish live runtime success.",
+    "These are bounded Linux execution acceptance fixtures; network/credential isolation is covered separately, not newly certified here.",
+    "No candidate code imported or executed on host; no Docker, inference or campaign records changed by this review."
+  ]
+}

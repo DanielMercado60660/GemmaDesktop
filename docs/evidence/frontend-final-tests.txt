@@ -1,0 +1,260 @@
+
+> gemma-desktop-frontend@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: legacy profiles retain model-default thinking and persist displayed defaults
+ok 1 - legacy profiles retain model-default thinking and persist displayed defaults
+  ---
+  duration_ms: 1.340959
+  type: 'test'
+  ...
+# Subtest: explicit saved choices survive reopen/save without switching thinking off
+ok 2 - explicit saved choices survive reopen/save without switching thinking off
+  ---
+  duration_ms: 0.205792
+  type: 'test'
+  ...
+# Subtest: explicit zero and saved temperature choices round-trip without changing thinking
+ok 3 - explicit zero and saved temperature choices round-trip without changing thinking
+  ---
+  duration_ms: 0.065792
+  type: 'test'
+  ...
+# Subtest: invalid temperatures produce a field-specific error instead of a silent default
+ok 4 - invalid temperatures produce a field-specific error instead of a silent default
+  ---
+  duration_ms: 0.200666
+  type: 'test'
+  ...
+# Subtest: invalid token limits and thinking modes cannot become saved defaults
+ok 5 - invalid token limits and thinking modes cannot become saved defaults
+  ---
+  duration_ms: 0.181166
+  type: 'test'
+  ...
+# Subtest: successful domain failure metadata remains inspectable
+ok 6 - successful domain failure metadata remains inspectable
+  ---
+  duration_ms: 1.249
+  type: 'test'
+  ...
+# Subtest: real HTTP failures preserve useful errors and distinguish origin failures
+ok 7 - real HTTP failures preserve useful errors and distinguish origin failures
+  ---
+  duration_ms: 0.247458
+  type: 'test'
+  ...
+# Subtest: artifact contents load only on selection; switching cannot display a late previous response
+ok 8 - artifact contents load only on selection; switching cannot display a late previous response
+  ---
+  duration_ms: 1.498084
+  type: 'test'
+  ...
+# Subtest: closing or unmounting invalidates in-flight artifact responses
+ok 9 - closing or unmounting invalidates in-flight artifact responses
+  ---
+  duration_ms: 0.108292
+  type: 'test'
+  ...
+# Subtest: fetch errors are explicit and retry can load a real empty file snapshot
+ok 10 - fetch errors are explicit and retry can load a real empty file snapshot
+  ---
+  duration_ms: 0.126166
+  type: 'test'
+  ...
+# Subtest: metadata and missing before images never fabricate an empty diff
+ok 11 - metadata and missing before images never fabricate an empty diff
+  ---
+  duration_ms: 0.166791
+  type: 'test'
+  ...
+# Subtest: drafts and attachments belong to each workspace, conversation, and new-chat composer
+ok 12 - drafts and attachments belong to each workspace, conversation, and new-chat composer
+  ---
+  duration_ms: 1.567708
+  type: 'test'
+  ...
+# Subtest: late run admission remains bound to its captured session and cannot clear another draft
+ok 13 - late run admission remains bound to its captured session and cannot clear another draft
+  ---
+  duration_ms: 0.219667
+  type: 'test'
+  ...
+# Subtest: navigation away and back invalidates automatic new-chat selection
+ok 14 - navigation away and back invalidates automatic new-chat selection
+  ---
+  duration_ms: 0.107292
+  type: 'test'
+  ...
+# Subtest: typing during admission is preserved even when it returns to the submitted text
+ok 15 - typing during admission is preserved even when it returns to the submitted text
+  ---
+  duration_ms: 0.120667
+  type: 'test'
+  ...
+# Subtest: the selected new-chat draft adopts its admitted session and preserves newer typing
+ok 16 - the selected new-chat draft adopts its admitted session and preserves newer typing
+  ---
+  duration_ms: 0.100542
+  type: 'test'
+  ...
+# Subtest: failed admission preserves the source draft and synchronous locking prevents duplicate submits
+ok 17 - failed admission preserves the source draft and synchronous locking prevents duplicate submits
+  ---
+  duration_ms: 0.299542
+  type: 'test'
+  ...
+# Subtest: deleting a different conversation cannot change the current selection
+ok 18 - deleting a different conversation cannot change the current selection
+  ---
+  duration_ms: 0.065417
+  type: 'test'
+  ...
+# Subtest: confirmation waits for the matching explicit answer before a destructive action
+ok 19 - confirmation waits for the matching explicit answer before a destructive action
+  ---
+  duration_ms: 0.568333
+  type: 'test'
+  ...
+# Subtest: dialog dismissal, Escape-style cancel, and owner unmount keep draft content
+ok 20 - dialog dismissal, Escape-style cancel, and owner unmount keep draft content
+  ---
+  duration_ms: 0.186
+  type: 'test'
+  ...
+# Subtest: an overlapping navigation request cannot reuse another dialog's consent
+ok 21 - an overlapping navigation request cannot reuse another dialog's consent
+  ---
+  duration_ms: 0.065458
+  type: 'test'
+  ...
+# Subtest: a stale response cannot authorize a later question
+ok 22 - a stale response cannot authorize a later question
+  ---
+  duration_ms: 0.064292
+  type: 'test'
+  ...
+# Subtest: discard consent cannot erase typing or a different editor selected during the wait
+ok 23 - discard consent cannot erase typing or a different editor selected during the wait
+  ---
+  duration_ms: 0.163042
+  type: 'test'
+  ...
+# Subtest: confirmed unchanged draft can reload; a dead owner never opens a question
+ok 24 - confirmed unchanged draft can reload; a dead owner never opens a question
+  ---
+  duration_ms: 0.080833
+  type: 'test'
+  ...
+# Subtest: saved incomplete replies retain their own outcome after a later turn
+ok 25 - saved incomplete replies retain their own outcome after a later turn
+  ---
+  duration_ms: 0.719667
+  type: 'test'
+  ...
+# Subtest: a failed run is distinct from an incomplete answer or an ordinary recovered tool failure
+ok 26 - a failed run is distinct from an incomplete answer or an ordinary recovered tool failure
+  ---
+  duration_ms: 0.075042
+  type: 'test'
+  ...
+# Subtest: restores only a session belonging to the loaded workspace
+ok 27 - restores only a session belonging to the loaded workspace
+  ---
+  duration_ms: 0.075208
+  type: 'test'
+  ...
+# Subtest: merges overlapping cursor pages without losing old text or duplicating it
+ok 28 - merges overlapping cursor pages without losing old text or duplicating it
+  ---
+  duration_ms: 0.113542
+  type: 'test'
+  ...
+# Subtest: selects active continuation and separates model turns without inventing text
+ok 29 - selects active continuation and separates model turns without inventing text
+  ---
+  duration_ms: 0.104583
+  type: 'test'
+  ...
+# Subtest: a post-mutation refresh waits for a fresh snapshot after an in-flight poll
+ok 30 - a post-mutation refresh waits for a fresh snapshot after an in-flight poll
+  ---
+  duration_ms: 0.100375
+  type: 'test'
+  ...
+# Subtest: save acknowledgement updates the baseline without erasing typing during save
+ok 31 - save acknowledgement updates the baseline without erasing typing during save
+  ---
+  duration_ms: 0.133
+  type: 'test'
+  ...
+# Subtest: cursor pages advance and retain earlier events; legacy pages still load
+ok 32 - cursor pages advance and retain earlier events; legacy pages still load
+  ---
+  duration_ms: 0.21025
+  type: 'test'
+  ...
+# Subtest: observed command outcome cannot invent an exit or correctness grade
+ok 33 - observed command outcome cannot invent an exit or correctness grade
+  ---
+  duration_ms: 0.366458
+  type: 'test'
+  ...
+# Subtest: converts Ollama nanoseconds and separates decode from task wall time
+ok 34 - converts Ollama nanoseconds and separates decode from task wall time
+  ---
+  duration_ms: 8.56975
+  type: 'test'
+  ...
+# Subtest: does not invent metrics, divide by zero, or accept invalid measurements
+ok 35 - does not invent metrics, divide by zero, or accept invalid measurements
+  ---
+  duration_ms: 0.426459
+  type: 'test'
+  ...
+# Subtest: weights guidance depends on real host capacity and does not imply utilization
+ok 36 - weights guidance depends on real host capacity and does not imply utilization
+  ---
+  duration_ms: 0.115709
+  type: 'test'
+  ...
+# Subtest: loading, editing unrelated fields, and saving preserves backend fan-out items
+ok 37 - loading, editing unrelated fields, and saving preserves backend fan-out items
+  ---
+  duration_ms: 0.937459
+  type: 'test'
+  ...
+# Subtest: fan-out JSON editing changes exact item values and accepts the backend maximum
+ok 38 - fan-out JSON editing changes exact item values and accepts the backend maximum
+  ---
+  duration_ms: 0.098416
+  type: 'test'
+  ...
+# Subtest: omitted and explicit empty item arrays survive round-trip; clearing uses runtime input
+ok 39 - omitted and explicit empty item arrays survive round-trip; clearing uses runtime input
+  ---
+  duration_ms: 0.073625
+  type: 'test'
+  ...
+# Subtest: invalid or excessive fan-out input rejects serialization rather than silently dropping items
+ok 40 - invalid or excessive fan-out input rejects serialization rather than silently dropping items
+  ---
+  duration_ms: 0.266833
+  type: 'test'
+  ...
+# Subtest: ordinary node fields retain their wire representation across editor round-trip
+ok 41 - ordinary node fields retain their wire representation across editor round-trip
+  ---
+  duration_ms: 0.086875
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.283542

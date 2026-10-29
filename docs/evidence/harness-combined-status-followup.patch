@@ -1,0 +1,419 @@
+--- a/internal/harness/manager.go
++++ b/internal/harness/manager.go
+@@ -331,11 +331,17 @@
+ 	}
+ 	e := m.launch(id, func(ctx context.Context) {
+ 		if x.Spec.Mode == "upstream" {
++			active := x // Advance returns its admission snapshot concurrently.
++			active.Status = "running"
++			if err := m.putActiveExperiment(active); err != nil {
++				m.failExperiment(id, err)
++				return
++			}
+ 			if m.config.Upstream == nil {
+ 				m.failExperiment(id, errors.New("upstream adapter is unavailable"))
+ 				return
+ 			}
+-			if err := m.config.Upstream(ctx, m, x); err != nil {
++			if err := m.config.Upstream(ctx, m, active); err != nil {
+ 				m.failExperiment(id, err)
+ 			}
+ 		} else {
+@@ -347,6 +353,10 @@
+ 	return x, e
+ }
+ func (m *Manager) failExperiment(id string, e error) {
++	// Serialize terminal metadata with Cancel; a late adapter/solver error must
++	// never overwrite an explicit cancellation from a stale experiment snapshot.
++	m.mu.Lock()
++	defer m.mu.Unlock()
+ 	var x Experiment
+ 	if m.get("experiment", id, &x) != nil {
+ 		return
+@@ -356,11 +366,9 @@
+ 		x.Error = e.Error()
+ 		if errors.Is(e, context.Canceled) {
+ 			x.Status = "cancelled"
+-			m.mu.Lock()
+ 			if m.closed {
+ 				x.Status = "interrupted"
+ 			}
+-			m.mu.Unlock()
+ 		}
+ 		x.FinishedAt = m.now()
+ 		_ = m.put("experiment", x)
+--- a/internal/harness/packets.go
++++ b/internal/harness/packets.go
+@@ -178,7 +178,11 @@
+ }
+ func (m *Manager) recordPacket(x *Experiment, p Packet) error {
+ 	x.PacketIDs = appendID(x.PacketIDs, p.ID)
+-	x.Status = "awaiting_codex"
++	// Revisited packets are durable provenance, not a new wait. Keep running
++	// while their submitted responses are being probed.
++	if p.Response == nil {
++		x.Status = "awaiting_codex"
++	}
+ 	return m.putActiveExperiment(*x)
+ }
+ func (m *Manager) native(ctx context.Context, id string) error {
+@@ -321,6 +325,13 @@
+ 	if label != "base" && label != "inv" && label != "dom" && label != "final" {
+ 		return Trial{}, errors.New("invalid upstream rollout label")
+ 	}
++	if err := ctx.Err(); err != nil {
++		return Trial{}, err
++	}
++	x.Status = "running"
++	if err := m.putActiveExperiment(x); err != nil {
++		return Trial{}, err
++	}
+ 	t, e := m.SolveTrial(ctx, x, task, label, revision)
+ 	if e == nil {
+ 		if err := ctx.Err(); err != nil {
+@@ -364,7 +375,20 @@
+ 	if e = m.recordPacket(&x, p); e != nil {
+ 		return p, e
+ 	}
+-	return m.WaitPacket(ctx, p)
++	p, e = m.WaitPacket(ctx, p)
++	if e != nil {
++		return p, e
++	}
++	if e = ctx.Err(); e != nil {
++		return p, e
++	}
++	// Submission may have updated stage counts while this RPC was waiting.
++	// Refresh metadata, then use the same cancellation-protected writer.
++	if e = m.get("experiment", id, &x); e != nil {
++		return p, e
++	}
++	x.Status = "running"
++	return p, m.putActiveExperiment(x)
+ }
+ func (m *Manager) FinishUpstream(id, candidate string, rollouts, stages int) error {
+ 	var x Experiment
+--- /dev/null
++++ b/internal/harness/native_status_test.go
+@@ -0,0 +1,133 @@
++package harness
++
++import (
++	"context"
++	"sync/atomic"
++	"testing"
++	"time"
++)
++
++func TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets(t *testing.T) {
++	entered := make(chan SolveRequest)
++	release := make(chan struct{})
++	var calls atomic.Int32
++	m, err := Open(Config{Root: t.TempDir(), Store: &memoryStore{}, Tasks: []Task{{ID: "public-status-task", Split: "development", Public: map[string]string{"README.md": "Public status-only test fixture.", "source.txt": "unchanged"}, PublicHash: "public-fixture", GraderHash: "no-grader-invoked"}}, Solve: func(ctx context.Context, r SolveRequest, _ func(Event)) (SolveResult, error) {
++		calls.Add(1)
++		select {
++		case entered <- r:
++		case <-ctx.Done():
++			return SolveResult{}, ctx.Err()
++		}
++		select {
++		case <-release:
++			return SolveResult{Content: "Deterministic test output", Usage: Doc{"eval_count": 1}}, nil
++		case <-ctx.Done():
++			return SolveResult{}, ctx.Err()
++		}
++	}})
++	if err != nil {
++		t.Fatal(err)
++	}
++	t.Cleanup(func() { m.Close() })
++	x, err := m.Start(Spec{Mode: "native", WorkspaceID: "workspace", AgentID: "agent", TaskIDs: []string{"public-status-task"}, ModelDigest: "fixture", RuntimeVersion: "fixture", ExecutorIdentity: "sha256:fixture"}, Content{Instructions: "baseline"}, Author{})
++	if err != nil {
++		t.Fatal(err)
++	}
++	status := func(want string) {
++		t.Helper()
++		current, e := m.Get("experiment", x.ID)
++		if e != nil || current["status"] != want {
++			t.Fatalf("status=%v, want %s: %v", current["status"], want, e)
++		}
++	}
++	advance := func() {
++		t.Helper()
++		if _, e := m.Advance(x.ID); e != nil {
++			t.Fatal(e)
++		}
++	}
++	probe := func(want string) {
++		t.Helper()
++		select {
++		case r := <-entered:
++			if r.Revision.Content.Instructions != want {
++				t.Fatalf("probe order %q, want %q", r.Revision.Content.Instructions, want)
++			}
++		case <-time.After(5 * time.Second):
++			t.Fatal("expected probe did not start")
++		}
++		status("running")
++		if !m.Active() {
++			t.Fatal("active probe missing from worker registry")
++		}
++		if _, e := m.Advance(x.ID); e == nil {
++			t.Fatal("duplicate execution admitted")
++		}
++	}
++	submit := func(stage string) {
++		t.Helper()
++		rows, e := m.config.Store.List("harness_packet")
++		if e != nil {
++			t.Fatal(e)
++		}
++		for _, row := range rows {
++			p, e := decode[Packet](row)
++			if e != nil {
++				t.Fatal(e)
++			}
++			if p.Stage != stage {
++				continue
++			}
++			response := PacketResponse{ID: p.ID, RequestHash: p.RequestHash, AuthoredBy: Author{Kind: "codex", Identity: "test-proposer"}, Content: &Content{Instructions: stage}, Notes: "status-only fixture"}
++			if stage == "reflection" {
++				response.Content = nil
++				response.Verdict = "approved"
++				response.AuthoredBy.Identity = "independent-test-reviewer"
++				response.Evidence = p.Evidence
++			}
++			if _, e = m.Submit(response); e != nil {
++				t.Fatal(e)
++			}
++			return
++		}
++		t.Fatal("missing packet", stage)
++	}
++	advance()
++	probe("baseline")
++	release <- struct{}{}
++	waitIdle(t, m)
++	status("awaiting_codex")
++	// A submitted DOM packet must not mask an unanswered INV packet.
++	submit("proposal_dom")
++	advance()
++	waitIdle(t, m)
++	status("awaiting_codex")
++	if calls.Load() != 1 {
++		t.Fatal("probe ran before both proposals arrived")
++	}
++	submit("proposal_inv")
++	advance()
++	probe("proposal_inv")
++	release <- struct{}{}
++	probe("proposal_dom")
++	release <- struct{}{}
++	waitIdle(t, m)
++	status("awaiting_codex")
++	submit("compose")
++	advance()
++	probe("compose")
++	release <- struct{}{}
++	waitIdle(t, m)
++	status("awaiting_codex")
++	submit("reflection")
++	advance()
++	waitIdle(t, m)
++	status("completed")
++	var final Experiment
++	if err = m.get("experiment", x.ID, &final); err != nil {
++		t.Fatal(err)
++	}
++	if calls.Load() != 4 || final.Rollouts != 4 || final.ImprovementStages != 3 || len(final.PacketIDs) != 4 {
++		t.Fatal("status change altered k=1 accounting", calls.Load(), final)
++	}
++}
+--- /dev/null
++++ b/internal/app/harness_status_test.go
+@@ -0,0 +1,185 @@
++package app
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"gemmadesktop.local/app/internal/harness"
++)
++
++// The published Python core drives these transitions through the unchanged
++// stdio adapter. Only the Go solver callback is a deterministic, blocked fixture.
++func TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages(t *testing.T) {
++	for _, terminal := range []string{"completed", "failed"} {
++		t.Run(terminal, func(t *testing.T) {
++			entered := make(chan harness.SolveRequest)
++			release := make(chan struct{})
++			var calls atomic.Int32
++			_, m, x := harnessTestManager(t, "upstream", func(ctx context.Context, r harness.SolveRequest, _ func(harness.Event)) (harness.SolveResult, error) {
++				calls.Add(1)
++				select {
++				case entered <- r:
++				case <-ctx.Done():
++					return harness.SolveResult{}, ctx.Err()
++				}
++				select {
++				case <-release:
++				case <-ctx.Done():
++					return harness.SolveResult{}, ctx.Err()
++				}
++				if terminal == "failed" && r.Revision.Content.Instructions == "compose" {
++					return harness.SolveResult{Incomplete: true, Usage: harness.Doc{"eval_count": 10}}, errors.New("controlled incomplete final")
++				}
++				return harness.SolveResult{Content: "controlled public output", Usage: harness.Doc{"eval_count": 10}}, nil
++			})
++			if x.Status != "ready" {
++				t.Fatal("new experiment not ready", x.Status)
++			}
++			if _, err := m.Advance(x.ID); err != nil {
++				t.Fatal(err)
++			}
++			probe := func(want string) {
++				t.Helper()
++				select {
++				case r := <-entered:
++					if r.Revision.Content.Instructions != want {
++						t.Fatalf("probe order=%q want %q", r.Revision.Content.Instructions, want)
++					}
++				case <-time.After(10 * time.Second):
++					t.Fatal("probe did not start", want)
++				}
++				d, err := m.Get("experiment", x.ID)
++				if err != nil || d["status"] != "running" || !m.Active() {
++					t.Fatalf("active %s reported %v: %v", want, d["status"], err)
++				}
++				if _, err = m.Advance(x.ID); err == nil {
++					t.Fatal("duplicate job admitted")
++				}
++				release <- struct{}{}
++			}
++			submit := func(stage string) {
++				t.Helper()
++				p := waitHarnessStatusPacket(t, m, x.ID, stage)
++				r := harness.PacketResponse{ID: p.ID, RequestHash: p.RequestHash, AuthoredBy: harness.Author{Kind: "codex", Identity: "status-test-proposer"}, Content: &harness.Content{Instructions: stage}, Notes: "deterministic status test"}
++				if stage == "reflection" {
++					r.Content = nil
++					r.Verdict = "approved"
++					r.AuthoredBy.Identity = "independent-status-reviewer"
++					r.Evidence = p.Evidence
++				}
++				if _, err := m.Submit(r); err != nil {
++					t.Fatal(err)
++				}
++			}
++			probe("baseline")
++			submit("proposal_inv")
++			submit("proposal_dom")
++			probe("proposal_inv")
++			probe("proposal_dom")
++			submit("compose")
++			probe("compose")
++			if terminal == "completed" {
++				submit("reflection")
++			}
++			waitHarnessStatusIdle(t, m)
++			d, err := m.Get("experiment", x.ID)
++			if err != nil || d["status"] != terminal || calls.Load() != 4 || number(d, "rollouts", 0) != 4 || number(d, "improvementStages", 0) != 3 {
++				t.Fatal("terminal outcome or method accounting changed", d, calls.Load(), err)
++			}
++		})
++	}
++}
++
++func TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit(t *testing.T) {
++	for _, stage := range []string{"active_solver", "waiting_packet"} {
++		t.Run(stage, func(t *testing.T) {
++			entered := make(chan struct{})
++			_, m, x := harnessTestManager(t, "upstream", func(ctx context.Context, _ harness.SolveRequest, _ func(harness.Event)) (harness.SolveResult, error) {
++				if stage == "active_solver" {
++					close(entered)
++					<-ctx.Done()
++					// Simulate a solver that returns a stale success after cancellation.
++				}
++				return harness.SolveResult{Content: "late deterministic output", Usage: harness.Doc{"eval_count": 10}}, nil
++			})
++			if _, err := m.Advance(x.ID); err != nil {
++				t.Fatal(err)
++			}
++			if stage == "active_solver" {
++				select {
++				case <-entered:
++				case <-time.After(10 * time.Second):
++					t.Fatal("solver did not start")
++				}
++			} else {
++				waitHarnessStatusPacket(t, m, x.ID, "proposal_inv")
++			}
++			if err := m.Cancel(x.ID); err != nil {
++				t.Fatal(err)
++			}
++			waitHarnessStatusIdle(t, m)
++			d, err := m.Get("experiment", x.ID)
++			if err != nil || d["status"] != "cancelled" {
++				t.Fatal("late worker exit overwrote cancellation", d, err)
++			}
++			if _, err = m.Advance(x.ID); err == nil {
++				t.Fatal("cancelled experiment restarted")
++			}
++		})
++	}
++}
++
++func waitHarnessStatusPacket(t *testing.T, m *harness.Manager, id, stage string) harness.Packet {
++	t.Helper()
++	deadline := time.Now().Add(10 * time.Second)
++	for time.Now().Before(deadline) {
++		rows, err := m.List("packet")
++		if err != nil {
++			t.Fatal(err)
++		}
++		for _, row := range rows {
++			if row["stage"] != stage || row["status"] != "awaiting_codex" {
++				continue
++			}
++			d, err := m.Get("experiment", id)
++			if err != nil {
++				t.Fatal(err)
++			}
++			// Packet creation and parent status persistence are separate writes. Wait
++			// until the driver has reached its actual blocked packet stage.
++			if d["status"] != "awaiting_codex" {
++				continue
++			}
++			if !m.Active() {
++				t.Fatal("upstream packet wait lost active worker")
++			}
++			full, err := m.Get("packet", str(row, "id"))
++			if err != nil {
++				t.Fatal(err)
++			}
++			raw, _ := json.Marshal(full)
++			var p harness.Packet
++			if err = json.Unmarshal(raw, &p); err != nil {
++				t.Fatal(err)
++			}
++			return p
++		}
++		time.Sleep(5 * time.Millisecond)
++	}
++	t.Fatal("upstream packet did not wait", stage)
++	return harness.Packet{}
++}
++func waitHarnessStatusIdle(t *testing.T, m *harness.Manager) {
++	t.Helper()
++	deadline := time.Now().Add(10 * time.Second)
++	for m.Active() && time.Now().Before(deadline) {
++		time.Sleep(5 * time.Millisecond)
++	}
++	if m.Active() {
++		t.Fatal("upstream worker did not finish")
++	}
++}

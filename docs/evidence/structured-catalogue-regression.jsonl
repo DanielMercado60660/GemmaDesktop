@@ -1,0 +1,16 @@
+{"Time":"2026-10-27T14:49:14.260939-05:00","Action":"start","Package":"gemmadesktop.local/app/internal/app"}
+{"Time":"2026-10-27T14:49:14.540642-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues"}
+{"Time":"2026-10-27T14:49:14.540709-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues","Output":"=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues\n"}
+{"Time":"2026-10-27T14:49:14.540742-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval"}
+{"Time":"2026-10-27T14:49:14.54075-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval","Output":"=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval\n"}
+{"Time":"2026-10-27T14:49:14.573955-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval","Output":"--- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval (0.03s)\n"}
+{"Time":"2026-10-27T14:49:14.573972-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval","Elapsed":0.03}
+{"Time":"2026-10-27T14:49:14.573991-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only"}
+{"Time":"2026-10-27T14:49:14.573996-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only","Output":"=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only\n"}
+{"Time":"2026-10-27T14:49:14.585456-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only","Output":"--- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only (0.01s)\n"}
+{"Time":"2026-10-27T14:49:14.585465-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only","Elapsed":0.01}
+{"Time":"2026-10-27T14:49:14.585477-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues","Output":"--- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues (0.04s)\n"}
+{"Time":"2026-10-27T14:49:14.585482-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestStructuredActionsAcceptGovernedBuiltinCatalogues","Elapsed":0.04}
+{"Time":"2026-10-27T14:49:14.585517-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Output":"PASS\n"}
+{"Time":"2026-10-27T14:49:15.596274-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Output":"ok  \tgemmadesktop.local/app/internal/app\t1.335s\n"}
+{"Time":"2026-10-27T14:49:15.596446-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Elapsed":1.336}

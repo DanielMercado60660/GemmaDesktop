@@ -1,0 +1,109 @@
+{
+  "runId": "6a3550878e375141c54f2d3b91bafb0b",
+  "profile": ".runtime/graph-review-20261027",
+  "savedWorkflowName": "Edited after the recorded run",
+  "before": {
+    "runId": "6a3550878e375141c54f2d3b91bafb0b",
+    "source": "checkpoint",
+    "workflow": {
+      "edges": [
+        {
+          "condition": null,
+          "id": "e1",
+          "source": "analyst",
+          "target": "approval"
+        },
+        {
+          "condition": null,
+          "id": "e2",
+          "source": "approval",
+          "target": "reviewer"
+        }
+      ],
+      "id": "046669937525fb3d65e4bc5aec57a7b2",
+      "name": "Analyze \u00b7 approve \u00b7 review",
+      "nodes": [
+        {
+          "id": "analyst",
+          "label": "Analyze project",
+          "position": {
+            "x": 50,
+            "y": 70
+          },
+          "type": "agent"
+        },
+        {
+          "id": "approval",
+          "label": "Review permission",
+          "position": {
+            "x": 340,
+            "y": 70
+          },
+          "type": "approval"
+        },
+        {
+          "id": "reviewer",
+          "label": "Independent review",
+          "position": {
+            "x": 630,
+            "y": 70
+          },
+          "type": "agent"
+        }
+      ]
+    }
+  },
+  "after": {
+    "runId": "6a3550878e375141c54f2d3b91bafb0b",
+    "source": "checkpoint",
+    "workflow": {
+      "edges": [
+        {
+          "condition": null,
+          "id": "e1",
+          "source": "analyst",
+          "target": "approval"
+        },
+        {
+          "condition": null,
+          "id": "e2",
+          "source": "approval",
+          "target": "reviewer"
+        }
+      ],
+      "id": "046669937525fb3d65e4bc5aec57a7b2",
+      "name": "Analyze \u00b7 approve \u00b7 review",
+      "nodes": [
+        {
+          "id": "analyst",
+          "label": "Analyze project",
+          "position": {
+            "x": 50,
+            "y": 70
+          },
+          "type": "agent"
+        },
+        {
+          "id": "approval",
+          "label": "Review permission",
+          "position": {
+            "x": 340,
+            "y": 70
+          },
+          "type": "approval"
+        },
+        {
+          "id": "reviewer",
+          "label": "Independent review",
+          "position": {
+            "x": 630,
+            "y": 70
+          },
+          "type": "agent"
+        }
+      ]
+    }
+  },
+  "projectionUnchanged": true,
+  "inferencePerformed": false
+}

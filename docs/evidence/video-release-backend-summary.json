@@ -1,0 +1,25 @@
+{
+  "scope": "Final citation fix regression with opt-in macOS sandbox results replacing ordinary execution/tools package results",
+  "testsPassed": 379,
+  "topLevelTestsPassed": 174,
+  "packagesPassed": [
+    "gemmadesktop.local/app/internal/browser",
+    "gemmadesktop.local/app/internal/mcp",
+    "gemmadesktop.local/app/internal/workflow",
+    "gemmadesktop.local/app/internal/workspace",
+    "gemmadesktop.local/app/internal/store",
+    "gemmadesktop.local/app/internal/inference",
+    "gemmadesktop.local/app/internal/engine",
+    "gemmadesktop.local/app/internal/media",
+    "gemmadesktop.local/app/internal/app",
+    "gemmadesktop.local/app/internal/tools",
+    "gemmadesktop.local/app/internal/execution"
+  ],
+  "skippedTests": [
+    "TestLiveChrome",
+    "TestLiveOllamaRejectsContextOverflow",
+    "TestLiveOllamaToolAndSnapshot",
+    "TestRealUserTerminal"
+  ],
+  "failures": []
+}

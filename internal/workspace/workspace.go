@@ -29,6 +29,8 @@ const MaxEntries = 2000
 
 var ErrConflict = errors.New("file changed since it was read; read it again before editing")
 var ErrProtected = errors.New("protected path is unavailable to workspace tools")
+var ErrBinary = errors.New("file is binary; use an artifact viewer")
+var ErrTooLarge = errors.New("file exceeds the text read limit")
 var writers sync.Map
 
 type Workspace struct {
@@ -50,6 +52,7 @@ type File struct {
 	Hash       string    `json:"hash"`
 	Size       int64     `json:"size"`
 	ModifiedAt time.Time `json:"modifiedAt"`
+	Executable bool      `json:"executable,omitempty"`
 }
 type Change struct {
 	Path       string `json:"path"`
@@ -102,6 +105,10 @@ func Clean(name string, writing bool) (string, error) {
 			return "", errors.New("parent traversal is not allowed")
 		}
 		lower := strings.ToLower(p)
+		switch lower {
+		case ".npmrc", ".pypirc", ".netrc", ".git-credentials", ".docker", ".kube", ".azure":
+			return "", ErrProtected
+		}
 		if lower == ".git" || lower == ".ssh" || lower == ".aws" || lower == ".gnupg" || lower == ".codex" || lower == ".gemmadesktop" || lower == ".gemma-desktop" || lower == ".env" || strings.HasPrefix(lower, ".env.") && !strings.HasSuffix(lower, ".example") && !strings.HasSuffix(lower, ".sample") {
 			return "", ErrProtected
 		}
@@ -178,6 +185,15 @@ func regular(r *os.Root, name string) (*os.File, os.FileInfo, error) {
 }
 
 func (w *Workspace) Read(name string) (File, error) {
+	return w.ReadLimit(name, MaxFileBytes)
+}
+
+// ReadLimit applies the same path and inode checks while enforcing a smaller
+// caller budget before allocating the file's content.
+func (w *Workspace) ReadLimit(name string, limit int) (File, error) {
+	if limit < 1 || limit > MaxFileBytes {
+		return File{}, errors.New("invalid text read limit")
+	}
 	r, base, err := w.parent(name, false)
 	if err != nil {
 		return File{}, err
@@ -188,21 +204,21 @@ func (w *Workspace) Read(name string) (File, error) {
 		return File{}, err
 	}
 	defer f.Close()
-	if info.Size() > MaxFileBytes {
-		return File{}, fmt.Errorf("file exceeds %d byte limit", MaxFileBytes)
+	if info.Size() > int64(limit) {
+		return File{}, fmt.Errorf("%w (%d bytes)", ErrTooLarge, limit)
 	}
-	b, err := io.ReadAll(io.LimitReader(f, MaxFileBytes+1))
+	b, err := io.ReadAll(io.LimitReader(f, int64(limit)+1))
 	if err != nil {
 		return File{}, err
 	}
-	if len(b) > MaxFileBytes {
-		return File{}, errors.New("file grew beyond read limit")
+	if len(b) > limit {
+		return File{}, ErrTooLarge
 	}
 	if !utf8.Valid(b) || bytes.IndexByte(b, 0) >= 0 {
-		return File{}, errors.New("file is binary; use an artifact viewer")
+		return File{}, ErrBinary
 	}
 	clean, _ := Clean(name, false)
-	return File{Path: clean, Content: string(b), Hash: Hash(b), Size: int64(len(b)), ModifiedAt: info.ModTime()}, nil
+	return File{Path: clean, Content: string(b), Hash: Hash(b), Size: int64(len(b)), ModifiedAt: info.ModTime(), Executable: info.Mode()&0111 != 0}, nil
 }
 
 func (w *Workspace) List(name string) ([]Entry, error) {
@@ -252,6 +268,38 @@ func (w *Workspace) List(name string) ([]Entry, error) {
 		return out[i].Name < out[j].Name
 	})
 	return out, nil
+}
+
+// DirectoryPath validates a command working directory using the same protected
+// paths and no-symlink rules as file tools. Process confinement still applies
+// independently if a directory is renamed after validation.
+func (w *Workspace) DirectoryPath(name string) (string, error) {
+	clean, err := Clean(name, false)
+	if err != nil {
+		return "", err
+	}
+	r, base, err := w.parent(clean, false)
+	if err != nil {
+		return "", err
+	}
+	defer r.Close()
+	before, err := r.Lstat(base)
+	if err != nil {
+		return "", err
+	}
+	if !before.IsDir() || before.Mode()&os.ModeSymlink != 0 {
+		return "", errors.New("working directory must be a directory without symlinks")
+	}
+	next, err := r.OpenRoot(base)
+	if err != nil {
+		return "", err
+	}
+	defer next.Close()
+	after, err := next.Stat(".")
+	if err != nil || !os.SameFile(before, after) {
+		return "", ErrConflict
+	}
+	return filepath.Join(w.Path, filepath.FromSlash(clean)), nil
 }
 
 // Write requires the exact hash from Read; a new file uses expectedHash="missing".
@@ -351,20 +399,34 @@ func (w *Workspace) Mkdir(name string) error {
 	return r.Mkdir(base, 0755)
 }
 
-// Replace applies one unambiguous text edit to a file at its expected revision.
-func (w *Workspace) Replace(name, old, new, expectedHash string) (Change, error) {
+// ValidateReplacement checks the exact edit before asking for approval. Replace
+// performs this check again, followed by Write's final revision check.
+func (w *Workspace) ValidateReplacement(name, old, expectedHash string) (File, error) {
 	if old == "" {
-		return Change{}, errors.New("oldText cannot be empty")
+		return File{}, errors.New("oldText cannot be empty")
 	}
 	f, err := w.Read(name)
 	if err != nil {
-		return Change{}, err
+		return File{}, err
 	}
 	if f.Hash != expectedHash {
-		return Change{}, ErrConflict
+		return File{}, ErrConflict
 	}
-	if strings.Count(f.Content, old) != 1 {
-		return Change{}, errors.New("oldText must match exactly once; include more surrounding text")
+	matches := strings.Count(f.Content, old)
+	if matches == 0 {
+		return File{}, errors.New("oldText was not found. Re-read the file and use a shorter unique span with actual newlines; do not copy JSON escape sequences. You may instead use write_file with the complete content and a fresh hash")
+	}
+	if matches > 1 {
+		return File{}, fmt.Errorf("oldText matched %d times; include more surrounding text to identify exactly one occurrence", matches)
+	}
+	return f, nil
+}
+
+// Replace applies one unambiguous text edit to a file at its expected revision.
+func (w *Workspace) Replace(name, old, new, expectedHash string) (Change, error) {
+	f, err := w.ValidateReplacement(name, old, expectedHash)
+	if err != nil {
+		return Change{}, err
 	}
 	return w.Write(name, strings.Replace(f.Content, old, new, 1), expectedHash)
 }
@@ -405,7 +467,7 @@ func (w *Workspace) Search(ctx context.Context, dir, query string, useRegex bool
 			if err := ctx.Err(); err != nil {
 				return err
 			}
-			if len(result.Matches) >= limit {
+			if len(result.Matches) >= limit || result.FilesScanned >= 5000 {
 				result.Truncated = true
 				return nil
 			}
@@ -413,7 +475,7 @@ func (w *Workspace) Search(ctx context.Context, dir, query string, useRegex bool
 				continue
 			}
 			if e.IsDir {
-				if e.Name == "node_modules" || e.Name == "vendor" || e.Name == ".cache" || e.Name == "dist" || e.Name == "build" {
+				if e.Name == "node_modules" || e.Name == "vendor" || e.Name == ".cache" || e.Name == "dist" || e.Name == "build" || e.Name == ".venv" || e.Name == "venv" || e.Name == "__pycache__" {
 					continue
 				}
 				if err := walk(e.Path, depth+1); err != nil {

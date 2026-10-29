@@ -1,0 +1,4 @@
+{
+  "logic.go": "package main\nimport \"sort\"\nvar _ = sort.Strings\nfunc solve(x map[string]any) any {out:=map[string]float64{};for _,raw:=range x[\"events\"].([]any){e:=raw.(map[string]any);at:=e[\"at\"].(float64);if at>=x[\"now\"].(float64)-x[\"window\"].(float64)&&at<=x[\"now\"].(float64){out[e[\"user\"].(string)]+=e[\"units\"].(float64)}};return out}\n",
+  "regression_test.go": "package main\nimport(\"testing\";\"encoding/json\";\"reflect\")\nfunc TestREADMERegression(t *testing.T){var x map[string]any;_ =json.Unmarshal([]byte(`{\"events\": [{\"user\": \"a\", \"at\": 90, \"units\": 3}, {\"user\": \"a\", \"at\": 100, \"units\": 2}, {\"user\": \"b\", \"at\": 101, \"units\": 9}], \"now\": 100, \"window\": 10}`),&x);b,_:=json.Marshal(solve(x));var got,want any;_ =json.Unmarshal(b,&got);_ =json.Unmarshal([]byte(`{\"a\": 5}`),&want);if !reflect.DeepEqual(got,want){t.Fatal(got,want)}}\n"
+}

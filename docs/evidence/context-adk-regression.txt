@@ -1,0 +1,3 @@
+ok  	gemmadesktop.local/app/internal/engine	1.293s
+ok  	gemmadesktop.local/app/internal/inference	1.569s
+ok  	gemmadesktop.local/app/internal/app	4.003s

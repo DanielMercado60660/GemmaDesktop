@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n latest={}\n for o in x[\"orders\"]:\n  if o[\"id\"] not in latest or o[\"updatedAt\"]>=latest[o[\"id\"]][\"updatedAt\"]: latest[o[\"id\"]]=o\n return sorted(k for k,v in latest.items() if v[\"status\"]!=\"cancelled\")\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass Regression(unittest.TestCase):\n def test_readme_example(self):self.assertEqual(solve({'orders': [{'id': 'b', 'updatedAt': 3, 'status': 'cancelled'}, {'id': 'b', 'updatedAt': 1, 'status': 'open'}, {'id': 'a', 'updatedAt': 2, 'status': 'open'}]}),['a'])\n"
+}

@@ -1,0 +1,68 @@
+{
+  "scope": "Independent capability, skill, OAuth, frozen-context and delegation review",
+  "evidence": "docs/evidence/phase2-capability-independent-review.jsonl",
+  "tests": "race; selection Capability|Skill|OAuth|Grant|Context|Delegate|BinaryAsset|PrivateExecution|WorkflowUsesFrozen|Revision|TaskPlan|Hierarchical",
+  "countsIncludingSubtests": {
+    "pass": 39
+  },
+  "topLevelCounts": {
+    "pass": 21
+  },
+  "packages": [
+    {
+      "package": "gemmadesktop.local/app/internal/workspace",
+      "action": "pass",
+      "elapsed": 1.152
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/store",
+      "action": "pass",
+      "elapsed": 1.168
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/mcp",
+      "action": "pass",
+      "elapsed": 1.169
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/engine",
+      "action": "pass",
+      "elapsed": 1.244
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/app",
+      "action": "pass",
+      "elapsed": 1.776
+    }
+  ],
+  "qualification": [
+    "Mock HTTP/OAuth providers only.",
+    "No model inference, real account sign-in, Keychain writes, or personal settings changes.",
+    "Independent review exercised binary materialization helper that landed after executor suite.",
+    "This suite precedes any fixes for the review findings listed below; their owner must retain separate regression evidence.",
+    "Subsequent narrow review fixes verified separately in phase2-capability-review-fixes.jsonl."
+  ],
+  "findingsSentToOwner": [
+    {
+      "area": "comparison frozen capability provenance",
+      "detail": "startEval mutates frozen Harness/skill metadata after computing Digest; final record and request identity must be recomputed together."
+    },
+    {
+      "area": "skill import interrupted publication recovery",
+      "detail": "Directory publish before database records can make exact same import retry fail on existing nonempty directory; validate/reuse complete immutable directory and finish missing registration."
+    }
+  ],
+  "reviewFixVerification": {
+    "evidence": "docs/evidence/phase2-capability-review-fixes.jsonl",
+    "counts": {
+      "pass": 5
+    },
+    "verified": [
+      "Final comparison frozen digest and request CapabilityID agree after Harness binding.",
+      "Interrupted skill import reuses only a digest-matching complete package directory.",
+      "Conflicting package bytes are preserved and rejected.",
+      "Unarchive registers missing resource artifacts.",
+      "Legacy selected package identity is retained and digest changes are rejected."
+    ]
+  }
+}

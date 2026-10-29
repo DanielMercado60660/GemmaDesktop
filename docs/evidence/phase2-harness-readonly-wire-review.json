@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T01:00:42.141791+00:00",
+  "kind": "fake-http-schema-and-argument-transport-regression",
+  "verdict": "pass",
+  "test": {
+    "name": "TestHarnessRunCommandReadOnlySchemaAndNativeTransport",
+    "command": "GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race ./internal/app -run '^TestHarnessRunCommandReadOnlySchemaAndNativeTransport$' -count=1 -v",
+    "workingDirectory": "/Users/danielmercado/GemmaDesktop",
+    "exitCode": 0,
+    "reportedPackageSeconds": 1.731,
+    "toolCallWallSeconds": 5.2005375,
+    "stdout": "=== RUN   TestHarnessRunCommandReadOnlySchemaAndNativeTransport\n    harness_readonly_wire_test.go:177: Actual Harness outbound schema contains optional readOnly with exact casing and boolean type. A native fake-model readOnly:true survives ADK, frozen authorization, manager approval, typed executor request, completion receipt/event and next Ollama tool message; recording executor only, no Docker/process execution.\n--- PASS: TestHarnessRunCommandReadOnlySchemaAndNativeTransport (0.06s)\nPASS\nok  \tgemmadesktop.local/app/internal/app\t1.731s\n",
+    "stdoutProvenance": "Exact completed exec_command output captured during this review; no rerun performed to create this record."
+  },
+  "schemaFinding": {
+    "tool": "run_command",
+    "property": "readOnly",
+    "type": "boolean",
+    "required": false,
+    "documentedDefault": false,
+    "omissionBehavior": "Without a host read-only override, the manager treats an absent readOnly argument as false.",
+    "finding": "No missing-property, casing or boolean-type defect observed in the actual ordinary Harness outbound declaration. Omission is permitted by the current schema."
+  },
+  "stages": [
+    {
+      "path": "actual executeHarnessSolver -> engine -> ADK -> Ollama adapter -> fake HTTP server",
+      "evidence": "Captured real no-workflow Harness /api/chat declaration; fake model returned final text, so no command was executed."
+    },
+    {
+      "path": "captured declaration -> engine -> fake native tool call -> ADK -> frozen Authorize -> tools.Manager -> recording executor -> receipt/event -> next Ollama tool message",
+      "evidence": "readOnly:true preserved as a boolean throughout; executable python3 and argv [-m, unittest] preserved. Host Request.ReadOnly remained false, so no forced read-only override masks parameter transport."
+    }
+  ],
+  "testOnlyChanges": [
+    "internal/app/harness_readonly_wire_test.go"
+  ],
+  "sourcePointers": [
+    {
+      "path": "internal/app/harness_readonly_wire_test.go",
+      "lines": [
+        35
+      ],
+      "sha256": "067d6bdbd087d37e79f2e6abc71736c7b32ce942b97e24be2e3d4a19c0c4faab",
+      "purpose": "Regression: actual Harness schema capture, followed by native argument/receipt transport through a recording executor."
+    },
+    {
+      "path": "internal/app/harness_solver.go",
+      "lines": [
+        94,
+        190
+      ],
+      "sha256": "3a259e0d36c40bb9d85fd83d83b4af7baf83726cf2af995ddd944d8ea8800ef6",
+      "purpose": "Allowed manager definitions enter the ordinary no-workflow Engine.Run request."
+    },
+    {
+      "path": "internal/engine/engine.go",
+      "lines": [
+        148,
+        155
+      ],
+      "sha256": "0d4dee27cddef5bcdeb31b64417605a6ced8b359f553fce42d445c4a499434d3",
+      "purpose": "ADK functional tool arguments reach the governed Go callback unchanged."
+    },
+    {
+      "path": "internal/engine/adapter.go",
+      "lines": [
+        389,
+        418
+      ],
+      "sha256": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9",
+      "purpose": "Native tool-call argument and declaration serialization."
+    },
+    {
+      "path": "internal/tools/manager.go",
+      "lines": [
+        423,
+        437,
+        525,
+        595
+      ],
+      "sha256": "3aa02a90d12b52fc55c4b2a3d30f5d44b9f4334c5e9236eecfea5a6be56a159b",
+      "purpose": "Exact boolean property; typed extraction, executor request and execution-result receipt."
+    },
+    {
+      "path": "internal/engine/tool_presentation.go",
+      "lines": [
+        28
+      ],
+      "sha256": "8914bb33b72140575274505aaf2cf03667f0950baec7e3afb5ae4bc2e6b2b9ed",
+      "purpose": "Model-facing command receipt retains readOnly metadata."
+    }
+  ],
+  "scopeLimits": [
+    "Controlled fake HTTP proof, not evidence of historical live Ollama payloads or model compliance.",
+    "Actual Harness solver was used for schema capture. Parameter execution used the same captured declaration with production engine/ADK/authorization/tools-manager paths and a recording executor; it was not a real Docker execution through executeHarnessSolver.",
+    "The recording executor echoes its received typed ReadOnly value into its synthetic execution result. The test verifies receipt encoding and propagation, not operating-system write enforcement.",
+    "No live inference, Docker/process execution, frozen binary rebuild, production edit, campaign mutation or hidden-grader inspection occurred.",
+    "Only the true-boolean transport was exercised here; omission/default-false behavior is supported by schema inspection and manager source trace, not a separate omission execution case.",
+    "Source hashes reflect evidence-record creation; this test does not qualify workflow, structured JSON protocol, or historical campaign branches."
+  ]
+}

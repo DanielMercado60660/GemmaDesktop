@@ -1,0 +1,4 @@
+=== RUN   TestLiveOllamaRejectsContextOverflow
+    context_policy_test.go:170: qualifying overflow rejection: Ollama=0.32.3 model=gemma4:12b-mlx requestedContext=1024
+signal: interrupt
+FAIL	gemmadesktop.local/app/internal/inference	125.050s

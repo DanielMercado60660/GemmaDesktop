@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n out={}\n for e in x[\"events\"]:\n  if x[\"now\"]-x[\"window\"]<=e[\"at\"]<=x[\"now\"]: out[e[\"user\"]]=out.get(e[\"user\"],0)+e[\"units\"]\n return out\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass Regression(unittest.TestCase):\n def test_readme_example(self):self.assertEqual(solve({'events': [{'user': 'a', 'at': 90, 'units': 3}, {'user': 'a', 'at': 100, 'units': 2}, {'user': 'b', 'at': 101, 'units': 9}], 'now': 100, 'window': 10}),{'a': 5})\n"
+}

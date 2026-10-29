@@ -2,6 +2,8 @@
 
 Prepared for Daniel Mercado on 26 October 2026, before implementation kickoff.
 
+This page preserves the original pre-build research. Current implementation and qualification take precedence: see the [delivery report](../implementation/STATUS.md), [27 October reference audit](reference-audit-2026-10-27.md), [ADK follow-up](adk-followup-audit-2026-10-27.md), [context and runtime investigation](context-adk-investigation-2026-10-27.md), and [video retrieval design](video-rag-design.md). The bounded visual video feature is implemented and qualified in the delivery report; historical pending statements below are not current status. The subsequent capability/execution/Harness² work follows the [accepted phase contract](../implementation/PHASE2.md).
+
 Gemma Desktop's proposed Go, Wails, React, ADK, and Ollama architecture is viable. The important work is the integration between those components: preserving model tool-call state, enforcing permissions independently of the model, recording external effects, and recovering without repeating them. The build should retain the full product scope and resolve these boundaries before expanding every feature screen.
 
 This research inspected current official documentation, tagged source, release notes, selected upstream implementations, and the local host. It produced documentation only. No application, inference benchmark, sandbox, or end-to-end workflow has been implemented or validated.

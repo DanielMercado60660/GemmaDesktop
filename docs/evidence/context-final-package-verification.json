@@ -1,0 +1,19 @@
+{
+  "createdAt": "2026-10-27T20:28:47.125510+00:00",
+  "app": "/Users/danielmercado/GemmaDesktop/dist/Gemma Desktop.app",
+  "binarySHA256": "a65c4d6207f98a08e5e9af829b3d31e510fa515bab9477c3292395ba6d39fbea",
+  "packagedBinarySHA256": "a65c4d6207f98a08e5e9af829b3d31e510fa515bab9477c3292395ba6d39fbea",
+  "packagedBinaryMatches": true,
+  "archive": "/Users/danielmercado/GemmaDesktop/dist/GemmaDesktop-core-20261027.zip",
+  "archiveSHA256": "cbda61c6ec6786cd02daefa0a08566824974a09a76a564e58a83c60d53cdba78",
+  "checksumFileMatches": true,
+  "buildInfo": "docs/evidence/context-preservation-build-info.json",
+  "buildInfoSHA256": "fb5f91352aca47ba0120d4fd5c4d2be56d0d17a4f2598a29f8a9ea384659ea53",
+  "codesignExitCode": 0,
+  "codesignOutput": "",
+  "file": "/Users/danielmercado/GemmaDesktop/dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop: Mach-O 64-bit executable arm64",
+  "scope": "Final context/revision/graph package. Ad-hoc signed local build; not notarized. Native/browser UI evidence references the same unchanged frontend assets; live coding report is separate.",
+  "frontendMatchesGraphReview": true,
+  "frontendFingerprint": "8850637757bee44a23bd2100b34088ffa75857fc06e2b7387826e8f761979231",
+  "note": "Immutable core checkpoint retained before the separately qualified video extension."
+}

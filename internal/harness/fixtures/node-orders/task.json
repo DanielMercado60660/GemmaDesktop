@@ -1,0 +1,120 @@
+{
+  "id": "node-orders",
+  "name": "Resolve order update stream",
+  "stack": "node",
+  "split": "validation",
+  "prompt": "Read README.md, repair resolve order update stream, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "node",
+    "public_test.cjs"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.cjs"
+  ],
+  "public": {
+    "logic.cjs": "exports.solve=function(x){const latest=new Map();for(const o of x.orders){if(!latest.has(o.id)||false)latest.set(o.id,o);}return [...latest].filter(([k,v])=>v.status!=='cancelled').map(([k])=>k).sort();};\n",
+    "main.cjs": "const {solve}=require(\"./logic.cjs\");console.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "package.json": "{\"private\": true, \"scripts\": {\"test\": \"node public_test.cjs\"}}",
+    "public_test.cjs": "const assert=require(\"node:assert/strict\"),{execFileSync}=require(\"node:child_process\");const cases=[{\"orders\": []}, {\"orders\": [{\"id\": \"a\", \"updatedAt\": 1, \"status\": \"open\"}]}],expected=[[], [\"a\"]];assert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"main.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);console.log(\"2 public cases passed\");\n\nconst fs=require(\"node:fs\");for(const file of fs.readdirSync(\".\").filter(x=>x.endsWith(\".test.cjs\")))require(\"./\"+file);\n",
+    "README.md": "# Resolve order update stream\n\nRepair this node service module and add regression tests.\n\nReturn the active order ids sorted lexicographically. Each id uses the greatest updatedAt timestamp; ties choose the later input record. Only that final record decides whether status cancelled excludes the id. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `node public_test.cjs` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"orders\": [\n    {\n      \"id\": \"b\",\n      \"updatedAt\": 3,\n      \"status\": \"cancelled\"\n    },\n    {\n      \"id\": \"b\",\n      \"updatedAt\": 1,\n      \"status\": \"open\"\n    },\n    {\n      \"id\": \"a\",\n      \"updatedAt\": 2,\n      \"status\": \"open\"\n    }\n  ]\n}\n```\nExpected result:\n```json\n[\n  \"a\"\n]\n```\n"
+  },
+  "cases": [
+    {
+      "name": "orders-1",
+      "input": {
+        "orders": []
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "orders-2",
+      "input": {
+        "orders": [
+          {
+            "id": "a",
+            "updatedAt": 1,
+            "status": "open"
+          }
+        ]
+      },
+      "expected": [
+        "a"
+      ],
+      "critical": false
+    },
+    {
+      "name": "orders-3",
+      "input": {
+        "orders": [
+          {
+            "id": "b",
+            "updatedAt": 3,
+            "status": "cancelled"
+          },
+          {
+            "id": "b",
+            "updatedAt": 1,
+            "status": "open"
+          },
+          {
+            "id": "a",
+            "updatedAt": 2,
+            "status": "open"
+          }
+        ]
+      },
+      "expected": [
+        "a"
+      ],
+      "critical": false
+    },
+    {
+      "name": "orders-4",
+      "input": {
+        "orders": [
+          {
+            "id": "a",
+            "updatedAt": 2,
+            "status": "open"
+          },
+          {
+            "id": "a",
+            "updatedAt": 2,
+            "status": "cancelled"
+          }
+        ]
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "orders-5",
+      "input": {
+        "orders": [
+          {
+            "id": "z",
+            "updatedAt": 1,
+            "status": "open"
+          },
+          {
+            "id": "a",
+            "updatedAt": 3,
+            "status": "cancelled"
+          },
+          {
+            "id": "a",
+            "updatedAt": 4,
+            "status": "open"
+          }
+        ]
+      },
+      "expected": [
+        "a",
+        "z"
+      ],
+      "critical": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-27T18:14:47.484932+00:00",
+  "appBundleID": "app.gemmadesktop.validation",
+  "profile": "/Users/danielmercado/GemmaDesktop/.runtime/native-sampling-result",
+  "sourceProfile": "/Users/danielmercado/GemmaDesktop/.runtime/realistic-qa",
+  "runID": "7d5cd1efe38e0e2ac8aaf5fc7bc9fa71",
+  "binarySHA256": "a67aba5e23ebeee93569584e3c887978343f106d06c5cdfb089a70d65f73d786",
+  "observed": [
+    "Restarted native app displays failed empty-response run",
+    "Failure text: model stopped without an answer or tool call",
+    "Expanded durable receipt shows 3 tool calls and no command or file mutation",
+    "Prior command failures and summary failures remain visible in execution history"
+  ],
+  "screenshot": "screenshots/native-incomplete-run-history.png",
+  "result": "passed UI persistence check; coding run remains failed",
+  "binarySHA256Meaning": "SHA256 of the production input executable before re-signing it for the separate QA bundle identifier. It is not the signature-dependent hash of the QA executable."
+}

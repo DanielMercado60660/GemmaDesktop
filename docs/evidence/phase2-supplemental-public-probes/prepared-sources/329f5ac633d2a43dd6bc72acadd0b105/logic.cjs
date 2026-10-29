@@ -1,0 +1,1 @@
+exports.solve=function(x){function merge(a,b){const out={...a};for(const [k,v] of Object.entries(b)){if(false)delete out[k];else if(typeof v==='object'&&!Array.isArray(v))out[k]=merge(out[k]&&typeof out[k]==='object'&&!Array.isArray(out[k])?out[k]:{},v);else out[k]=v;}return out;}return x.layers.reduce(merge,{});};

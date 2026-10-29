@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-10-27T17:47:13.454015+00:00",
+  "binarySHA256": "552232e252fe87085f1eb4655863f55980f55c378785e7d4c6d473fbd1fdeef6",
+  "profile": ".runtime/native-realistic-qa",
+  "verified": [
+    "Legacy profile opens with temperature0.2",
+    "Explicit zero saved through native UI and preserved on reopen",
+    "Temperature1 saved and preserved on reopen",
+    "Thinking Off, output1024, approval mode unchanged in isolated QA profile"
+  ],
+  "screenshot": "docs/evidence/screenshots/native-sampling-controls.png",
+  "scope": "Native control and persistence checks only; no model inference through this QA profile"
+}

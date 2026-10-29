@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T08:23:02.702863+00:00",
+  "status": "delivered_baseline_retained",
+  "campaignUnchanged": true,
+  "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+  "backend": {
+    "includingSubtests": {
+      "pass": 529,
+      "skip": 29
+    },
+    "topLevel": {
+      "pass": 265,
+      "skip": 29
+    },
+    "packageResults": [
+      {
+        "package": "gemmadesktop.local/app/internal/browser",
+        "status": "pass",
+        "elapsed": 1.294
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/workflow",
+        "status": "pass",
+        "elapsed": 1.4
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/mcp",
+        "status": "pass",
+        "elapsed": 1.4
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/workspace",
+        "status": "pass",
+        "elapsed": 1.772
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/tools",
+        "status": "pass",
+        "elapsed": 1.794
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/inference",
+        "status": "pass",
+        "elapsed": 1.813
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/harness",
+        "status": "pass",
+        "elapsed": 2.005
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/execution",
+        "status": "pass",
+        "elapsed": 2.133
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/media",
+        "status": "pass",
+        "elapsed": 2.8609999999999998
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/engine",
+        "status": "pass",
+        "elapsed": 3.81
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/store",
+        "status": "pass",
+        "elapsed": 10.216
+      },
+      {
+        "package": "gemmadesktop.local/app/internal/app",
+        "status": "pass",
+        "elapsed": 13.083
+      }
+    ]
+  },
+  "frontend": {
+    "passed": 65,
+    "failed": 0
+  },
+  "scripts": {
+    "passed": 33,
+    "failed": 0
+  },
+  "adapter": {
+    "passed": 4,
+    "failed": 0
+  },
+  "dockerAcceptance": {
+    "includingSubtests": {
+      "pass": 4
+    },
+    "topLevel": {
+      "pass": 2
+    },
+    "packageResults": [
+      {
+        "package": "gemmadesktop.local/app/internal/execution",
+        "status": "pass",
+        "elapsed": 4.4
+      }
+    ]
+  },
+  "referenceFixtures": {
+    "fixturesPassed": 18,
+    "fixturesFailed": 0,
+    "includingSubtests": {
+      "pass": 19
+    },
+    "topLevel": {
+      "pass": 1
+    },
+    "packageResults": [
+      {
+        "package": "gemmadesktop.local/app/internal/app",
+        "status": "pass",
+        "elapsed": 71.583
+      }
+    ]
+  },
+  "logHashes": {
+    "docs/evidence/phase2-correction-backend.jsonl": "ba083dfe8ac93f966260e62d5788cbbafddf5fbc52d83d4c9877b76a0e4bb7eb",
+    "docs/evidence/phase2-correction-frontend-tests.txt": "28d871a0bbd848a37e2d6b0e55a559476e0329ea10eb7b0cb7084f24ca4ed321",
+    "docs/evidence/phase2-correction-script-tests.txt": "17b5c19557f4efd2281318216f29695ea9609b504faf54b4241147b1410657ec",
+    "docs/evidence/phase2-correction-adapter-tests.txt": "b0cb919dd9e7b3a3111fdcca0f4aeadb37d4aa2266bb816d65d7b2090f85c280",
+    "docs/evidence/phase2-correction-docker-acceptance.jsonl": "4d69cb0e223c1d1a8ded3b34a32cc83c820b69515a36b3b07f48a60720f7e1a4",
+    "docs/evidence/phase2-correction-reference-fixtures.jsonl": "18b480229616fb1f4ecf7df595b7c479f06598cda70b3e1efe3a18c764d8e924"
+  },
+  "newHostTestHashes": {
+    "internal/execution/docker_connection_loss_test.go": "0b83bcdfbe44649ddb88d591b989a0e7906568237e770e774cc4f99f2abfd005",
+    "internal/execution/docker_workflows_test.go": "498062f30cbb0d0ccf399ed79211b41328fc820d16eb3dcf65c40c0262ef3f2a",
+    "internal/app/harness_integration_test.go": "6d97976b98313f2c8d1886cf45a1b5e6b163813a8eecd89f658b29ee6eae284b"
+  },
+  "boundaries": [
+    "The connection-loss check interrupts its owned Unix proxy and active connections; it does not stop Docker Desktop or qualify a VM crash.",
+    "The npm/multiprocessing fixtures execute authored acceptance programs, not solver code on the host. Source is read-only, output/caches temporary, no dependency downloads.",
+    "The eighteen reference checks are deterministic infrastructure qualification, not Gemma task successes or reuse of the held-out pool for optimization.",
+    "These correction checks and live smoke are separate from the frozen0.2.0 paired campaign; historical metrics, output files and grades were not rewritten.",
+    "No external OAuth provider compatibility, remote A2A, Xcode executor, persistent preview, expanded media understanding or public notarization is claimed.",
+    "A well-run rejected optimization is the completed outcome of this phase, not evidence that the candidate improved general coding reliability."
+  ],
+  "release": {
+    "version": "0.2.1",
+    "build": "3",
+    "binarySHA256": "ebd1ba6e8bf39f81e655986cb0da5a5a71bb78c58e5189b2a1069fc4a47a4521",
+    "archiveSHA256": "4276b3277511a04636cc6fde5c4cd54216a756c918ff45243b48bed2452b0359",
+    "buildInfo": "docs/evidence/phase2-correction-build-info.json",
+    "finalVerification": "docs/evidence/phase2-final-package-verification.json",
+    "signature": "local ad-hoc; verified; not notarized"
+  },
+  "liveAccounting": {
+    "status": "passed",
+    "model": "gemma4:26b-mlx",
+    "requestedContext": 65536,
+    "promptTokens": 1000,
+    "outputTokens": 37,
+    "attempts": 2,
+    "measuredTerminalResponses": 2,
+    "unknownContributions": 0,
+    "scope": "One actual read_file call and correct unchanged marker. Operational accounting/transport smoke, not coding or context-capacity qualification.",
+    "report": "docs/evidence/phase2-correction-live-accounting.json"
+  },
+  "videoRegression": {
+    "retrievalIntervalsPassed": 6,
+    "retrievalIntervalsTotal": 6,
+    "completedAnswers": 7,
+    "seconds": 40.382,
+    "independentSemantics": "Five unambiguous positives, one ambiguous yellow flower/star silhouette, appropriate scoped absent-dog abstention.",
+    "report": "docs/evidence/phase2-correction-video-regression.json",
+    "provenanceBoundary": "Video report omits inline process/binary identity; independent review correlates exact records and frame bytes to the isolated smoke data directory. This is corroboration, not independent historical process attestation."
+  },
+  "independentOperationalReview": "docs/evidence/phase2-correction-operational-independent-review.json",
+  "nativeUI": {
+    "status": "passed_bounded_visual_review",
+    "record": "docs/evidence/phase2-native-final-workbench-review.json",
+    "dataDirectory": ".runtime/phase2-correction-ui-20261028",
+    "actions": "Inspected completed evaluation, lessons and revisions only. No activation, lesson decision or inference.",
+    "minorClarity": "Completed badge represents execution completion; imported rejected verdict is in durable records but not an explicit badge in saved pixels."
+  },
+  "frozenCampaign": {
+    "version": "0.2.0",
+    "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+    "attempts": 72,
+    "baselineAutomatedPasses": 0,
+    "baselineAttempts": 36,
+    "candidateAutomatedPasses": 3,
+    "candidateAttempts": 36,
+    "baselineHeldOutPasses": 0,
+    "candidateHeldOutPasses": 1,
+    "heldOutAttemptsPerArm": 18,
+    "solverCompleted": 62,
+    "solverFailed": 10,
+    "protectedInputViolations": 5,
+    "completeTokenAccounting": "unknown",
+    "independentVerdict": "rejected",
+    "candidateActivated": false,
+    "finalSummary": "docs/evidence/phase2-paired-evaluation-final-summary.json",
+    "independentReview": "docs/evidence/phase2-independent-promotion-review.json",
+    "exportReview": "docs/evidence/phase2-native-final-export-independent-review.json",
+    "heldOutPoolExposed": true
+  },
+  "cleanup": "docs/evidence/phase2-final-cleanup.json",
+  "deliveryEvidenceHashes": {
+    "docs/evidence/phase2-correction-build-info.json": "cd99c5ce908090af17697b7dc245a14de9e771ec013bc85cef55a12466c8181c",
+    "docs/evidence/phase2-correction-package.sha256": "c7ee20f86637d47b87d95de55c4d159de64731b74706c808247c5f93fab30db1",
+    "docs/evidence/phase2-final-package-verification.json": "5eb2affed05c1c115f80936ff2c34f44cca50ac46bbafa3b7e909070a1606a63",
+    "docs/evidence/phase2-final-cleanup.json": "b14d98790907c8e207f987e6c7bf7033ba758446a314bc67340623accade42cc",
+    "docs/evidence/phase2-correction-live-accounting.json": "4fbdb9de5a96f4bd5e1412c2f6b6ed257c551764f9603d7975adbf66c4ca4227",
+    "docs/evidence/phase2-correction-video-regression.json": "6215144f49f7397ff200a8cfd0b05c1499b0991ade560c460640b15a40d754cf",
+    "docs/evidence/phase2-correction-operational-independent-review.json": "66952878f1f439a576251bb3b644e93ea658c3c915bb4c9b7a14ee67f9466dcc",
+    "docs/evidence/phase2-native-final-workbench-review.json": "d21af0cd3e531e1a94b890851a477181d9dc7231ed64f41c6117fc65b9e40494",
+    "docs/evidence/phase2-independent-promotion-review.json": "291d32f69bbb7593862548a0dda32c64cc90dbafb905975c8dc20130c29b5304",
+    "docs/evidence/phase2-native-final-export-independent-review.json": "f232cb7099d7eeb04477def641d41d61489d06cad04920551bf9d236e812ed38"
+  }
+}

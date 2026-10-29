@@ -16,7 +16,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 
 	"gemmadesktop.local/app/internal/execution"
@@ -25,20 +24,22 @@ import (
 )
 
 type Config struct {
-	ID        string   `json:"id"`
-	Name      string   `json:"name"`
-	Transport string   `json:"transport"`
-	Command   string   `json:"command,omitempty"`
-	Args      []string `json:"args,omitempty"`
-	URL       string   `json:"url,omitempty"`
-	Enabled   bool     `json:"enabled"`
+	ID        string       `json:"id"`
+	Name      string       `json:"name"`
+	Transport string       `json:"transport"`
+	Command   string       `json:"command,omitempty"`
+	Args      []string     `json:"args,omitempty"`
+	URL       string       `json:"url,omitempty"`
+	Enabled   bool         `json:"enabled"`
+	OAuth     *OAuthConfig `json:"oauth,omitempty"`
 }
 type Tool struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	InputSchema any    `json:"inputSchema"`
-	SchemaHash  string `json:"schemaHash"`
-	ServerID    string `json:"serverId"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	InputSchema  any    `json:"inputSchema"`
+	OutputSchema any    `json:"outputSchema,omitempty"`
+	SchemaHash   string `json:"schemaHash"`
+	ServerID     string `json:"serverId"`
 }
 type Server struct {
 	Config
@@ -68,6 +69,7 @@ type Manager struct {
 	servers   map[string]*connected
 	life      context.Context
 	cancel    context.CancelFunc
+	oauth     *OAuthManager
 }
 
 func NewManager() *Manager {
@@ -156,9 +158,22 @@ func (m *Manager) Connect(ctx context.Context, cfg Config, workspace string, aut
 			return Server{}, e
 		}
 		execution.BoundJSONResponses(client, 2<<20)
+		if cfg.OAuth != nil {
+			if err = ValidateOAuthConfig(*cfg.OAuth); err != nil {
+				cancel()
+				return Server{}, err
+			}
+			oauth := m.OAuth()
+			if oauth == nil {
+				cancel()
+				return Server{}, errors.New("OAuth is unavailable")
+			}
+			client.Transport = oauthTransport{base: client.Transport, manager: oauth, id: cfg.ID, resource: cfg.URL, config: *cfg.OAuth}
+		}
 		transport = &sdk.StreamableClientTransport{Endpoint: cfg.URL, HTTPClient: client, MaxRetries: -1, MaxEventSize: 1 << 20}
 	}
 	client := sdk.NewClient(&sdk.Implementation{Name: "Gemma Desktop", Version: "0.1.0"}, &sdk.ClientOptions{Capabilities: &sdk.ClientCapabilities{}, Logger: slog.New(slog.NewTextHandler(io.Discard, nil))})
+	client.AddSendingMiddleware(uncachedToolDiscovery)
 	connectCtx, ccancel := context.WithTimeout(ctx, 20*time.Second)
 	defer ccancel()
 	cs, err := client.Connect(connectCtx, transport, nil)
@@ -191,6 +206,23 @@ func (m *Manager) Connect(ctx context.Context, cfg Config, workspace string, aut
 	m.mu.Unlock()
 	return result, nil
 }
+
+// uncachedToolDiscovery uses the SDK's public middleware/result API to decline
+// local TTL caching. ListTools stores the returned value after middleware, so
+// each approval check performs discovery even when a server advertises a TTL.
+// This cannot prevent the server changing behavior after the final check.
+func uncachedToolDiscovery(next sdk.MethodHandler) sdk.MethodHandler {
+	return func(ctx context.Context, method string, req sdk.Request) (sdk.Result, error) {
+		result, err := next(ctx, method, req)
+		if list, ok := result.(*sdk.ListToolsResult); err == nil && ok && list != nil {
+			copy := *list
+			copy.TTLMs = 0
+			return &copy, nil
+		}
+		return result, err
+	}
+}
+
 func discover(ctx context.Context, cs *sdk.ClientSession, id string) ([]Tool, error) {
 	out := []Tool{}
 	cursor := ""
@@ -209,14 +241,15 @@ func discover(ctx context.Context, cs *sdk.ClientSession, id string) ([]Tool, er
 			if len(out) >= 200 {
 				return nil, errors.New("MCP server advertises more than 200 tools")
 			}
-			schema, err := json.Marshal(t.InputSchema)
+			schemas := map[string]any{"input": t.InputSchema, "output": t.OutputSchema}
+			schema, err := json.Marshal(schemas)
 			if err != nil || len(schema) > 128<<10 {
 				return nil, errors.New("invalid or oversized tool schema")
 			}
 			if t.Name == "" || len(t.Name) > 200 || len(t.Description) > 16<<10 {
 				return nil, errors.New("invalid or oversized tool description")
 			}
-			out = append(out, Tool{Name: t.Name, Description: t.Description, InputSchema: t.InputSchema, SchemaHash: digest(t.InputSchema), ServerID: id})
+			out = append(out, Tool{Name: t.Name, Description: t.Description, InputSchema: t.InputSchema, OutputSchema: t.OutputSchema, SchemaHash: digest(schemas), ServerID: id})
 		}
 		if res.NextCursor == "" {
 			return out, nil
@@ -272,6 +305,9 @@ func (m *Manager) CallInWorkspace(ctx context.Context, id, name string, args map
 	return m.call(ctx, c, id, name, args, authorize)
 }
 func (m *Manager) call(ctx context.Context, c *connected, id, name string, args map[string]any, authorize execution.Authorizer) (CallResult, error) {
+	if err := checkGrant(ctx, c, name, ""); err != nil {
+		return CallResult{}, err
+	}
 	b, err := json.Marshal(args)
 	if err != nil || len(b) > 256<<10 {
 		return CallResult{}, errors.New("tool arguments exceed limit")
@@ -281,7 +317,9 @@ func (m *Manager) call(ctx context.Context, c *connected, id, name string, args 
 		return CallResult{}, err
 	}
 	args = snapshot
-	// Refresh before every call so changed schemas cannot reuse an earlier approval.
+	// Re-discover before and after approval. uncachedToolDiscovery disables the
+	// SDK's local TTL reuse; this pins advertised input/output schemas at those
+	// checks, not server behavior after the final response.
 	refreshCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	list, err := discover(refreshCtx, c.session, id)
 	cancel()
@@ -298,6 +336,9 @@ func (m *Manager) call(ctx context.Context, c *connected, id, name string, args 
 	if selected == nil {
 		return CallResult{}, errors.New("MCP tool is no longer advertised")
 	}
+	if err := checkGrant(ctx, c, name, selected.SchemaHash); err != nil {
+		return CallResult{}, err
+	}
 	schemaBytes, _ := json.Marshal(selected.InputSchema)
 	var schema jsonschema.Schema
 	if err = json.Unmarshal(schemaBytes, &schema); err != nil {
@@ -309,6 +350,21 @@ func (m *Manager) call(ctx context.Context, c *connected, id, name string, args 
 	}
 	if err = resolved.Validate(args); err != nil {
 		return CallResult{}, fmt.Errorf("tool arguments: %w", err)
+	}
+	var outputSchema *jsonschema.Resolved
+	if selected.OutputSchema != nil {
+		outputBytes, marshalErr := json.Marshal(selected.OutputSchema)
+		var schema jsonschema.Schema
+		if marshalErr != nil {
+			return CallResult{}, fmt.Errorf("invalid tool output schema: %w", marshalErr)
+		}
+		if err = json.Unmarshal(outputBytes, &schema); err != nil {
+			return CallResult{}, fmt.Errorf("invalid tool output schema: %w", err)
+		}
+		outputSchema, err = schema.Resolve(nil)
+		if err != nil {
+			return CallResult{}, fmt.Errorf("unsupported tool output schema: %w", err)
+		}
 	}
 	if err = execution.Require(ctx, authorize, execution.Approval{Tool: "mcp.call", Arguments: map[string]any{"serverId": id, "tool": name, "arguments": args, "schemaHash": selected.SchemaHash, "configHash": c.server.ConfigHash}, Workspace: c.server.Workspace, Environment: c.server.Transport, Reason: "Allow this MCP tool invocation. Server annotations cannot establish that it is read-only."}); err != nil {
 		return CallResult{}, err
@@ -351,6 +407,14 @@ func (m *Manager) call(ctx context.Context, c *connected, id, name string, args 
 	if len(b) > 2<<20 {
 		return CallResult{OutcomeUnknown: true}, errors.New("MCP result exceeds 2 MiB limit; do not automatically retry the operation")
 	}
+	// Error results may omit success-shaped structured output, matching the
+	// official SDK's typed server handler behavior. Successful results must
+	// satisfy the exact schema included in the approval hash.
+	if outputSchema != nil && !res.IsError {
+		if err := outputSchema.Validate(res.StructuredContent); err != nil {
+			return CallResult{OutcomeUnknown: true}, fmt.Errorf("MCP result violates its declared output schema; the operation may have completed, do not automatically retry: %w", err)
+		}
+	}
 	var text strings.Builder
 	for _, item := range res.Content {
 		if t, ok := item.(*sdk.TextContent); ok {
@@ -370,7 +434,7 @@ func (m *Manager) Disconnect(id string) error {
 	}
 	c.cancel()
 	if c.command != nil && c.command.Process != nil {
-		_ = syscall.Kill(-c.command.Process.Pid, syscall.SIGKILL)
+		_ = c.command.Process.Kill()
 	}
 	err := c.session.Close()
 	c.cleanup()
@@ -378,6 +442,9 @@ func (m *Manager) Disconnect(id string) error {
 }
 func (m *Manager) Close() error {
 	m.cancel()
+	if oauth := m.OAuth(); oauth != nil {
+		oauth.Close()
+	}
 	m.mu.Lock()
 	ids := make([]string, 0, len(m.servers))
 	for id := range m.servers {

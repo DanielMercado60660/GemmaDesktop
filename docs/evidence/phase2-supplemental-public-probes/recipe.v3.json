@@ -1,0 +1,974 @@
+{
+  "schemaVersion": 1,
+  "preparedAt": "2026-10-28T06:16:31.100825+00:00",
+  "preparedBy": "/root/ollama_model_research",
+  "status": "prepared_unexecuted",
+  "executionCount": 0,
+  "authorization": "DO NOT EXECUTE until root explicitly confirms the active 72-trial campaign has finished and authorizes this serialized probe. Preparation does not grant execution permission. No scheduler or auto-run is installed.",
+  "scope": "Seven supplemental public-contract CLI observations, distinct from frozen independent grades, reference qualification and promotion. No hidden oracle or assertions read; no candidate code imported/executed on host; no original candidate directory mounted or edited. Public terminal source only.",
+  "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+  "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+  "image": {
+    "id": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+    "provenance": "Verified read-only from harness_experiment.spec.executorIdentity for the exact campaign experiment in .runtime/phase2-campaign-20261027/gemma.db. Docker was not invoked.",
+    "pullAllowed": false
+  },
+  "sourceReviews": [
+    {
+      "path": "docs/evidence/phase2-go-paired-source-review.json",
+      "sha256": "50cf4b5e60d6804e732526981bb0494cbcd82854d425f1a0459f4c746965b181"
+    },
+    {
+      "path": "docs/evidence/phase2-go-paired-source-review.summary.json",
+      "sha256": "668b0d9878ff5d76a6a47a79315070daf3dea7092276d7d5e0b3cbe5c80f1866"
+    },
+    {
+      "path": "docs/evidence/phase2-node-paired-source-review.json",
+      "sha256": "6dd569211eff6593299c293fc8982334b93e0a95344e79f384c7ead16655e0d7"
+    }
+  ],
+  "contractDerivation": {
+    "go-usage": {
+      "publicContract": "Return per-user total units for events in closed [now-window,now]; units are nonnegative integers; no upper unit or aggregate bound is stated.",
+      "READMEsha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+      "inputValues": {
+        "unitDecimal": "4611686018427387904",
+        "unitPower": "2^62",
+        "trueSumDecimal": "9223372036854775808",
+        "trueSumPower": "2^63"
+      },
+      "validity": "Both events qualify at endpoints90 and100. Each unit2^62 and true sum2^63 are exactly representable in binary64, so the probe does not rely on rounding a nonrepresentable JSON input. On linux/arm64 int is64bits; the suspected defect is signed accumulation overflow. Expected output is a positive exact integer, compared using an arbitrary-precision host JSON integer parser."
+    },
+    "node-config": {
+      "publicContract": "Merge objects recursively into a new object, preserve replacement values, and exclude no JSON property names. CLI parses a JSON array argument and serializes an array result.",
+      "READMEsha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+      "validity": "Input is literal serialized JSON, not a JavaScript object literal. JSON.parse creates an own __proto__ key. Expected output retains that own key and object value. Ordinary mode:local object is the control.",
+      "claimBoundary": "Only own JSON-key loss in the returned serialized object is tested. No global Object.prototype pollution, credential access or exploit-chain claim is made."
+    },
+    "node-usage": {
+      "publicContract": "Return per-user numeric totals for qualifying events; nonnegative integer units and no exclusion for inherited-name user strings. CLI accepts a JSON array and returns corresponding results.",
+      "READMEsha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+      "caseOrder": [
+        "ordinary own-key addition control a =>5",
+        "single qualifying __proto__ user =>own numeric1",
+        "single qualifying constructor user =>own numeric1"
+      ],
+      "validity": "All events lie at closed-window endpoints90 or100 for now100/window10. Units1,2,3 are small exact integers. User strings __proto__ and constructor are literal field values in serialized JSON, not JavaScript object literal syntax. Expected output compares own JSON properties and numeric types.",
+      "claimBoundary": "Tests lost/coerced per-user totals only. No global prototype pollution, large-number precision requirement, or cross-trial execution claim."
+    }
+  },
+  "executionPlan": {
+    "serialization": "One container at a time. No inference. Run only after explicit completion signal; stop if root indicates any new campaign/runtime work is active.",
+    "stage": "Recheck every reviewed-public manifest hash against both the exact terminal original path and prepared subset. Refuse any drift/symlink/nonregular entry. Create a fresh private disposable directory and copy only prepared runtime source files into source/. Verify copies equal recorded hashes, set source files0444 and source directory0555. Never bind an original trial workspace.",
+    "dockerClientArgvPrefix": [
+      "/usr/local/bin/docker",
+      "--host",
+      "unix://{CURRENT_USER_HOME}/.docker/run/docker.sock",
+      "--config",
+      "{PRIVATE_DISPOSABLE_DIR}/docker-config"
+    ],
+    "dockerClientEnvironment": "Minimal PATH plus private HOME and explicit private DOCKER_CONFIG; no inherited credentials, cloud context or runtime configuration. Socket is used only by host Docker CLI and never mounted into the guest.",
+    "createArgvTemplate": [
+      "create",
+      "--name",
+      "gemma-public-probe-{RUN_NONCE}-{PROBE_INDEX}",
+      "--label",
+      "com.gemmadesktop.public-review={RUN_NONCE}",
+      "--label",
+      "com.gemmadesktop.public-probe={PROBE_ID}",
+      "--pull=never",
+      "--platform=linux/arm64",
+      "--init",
+      "--network=none",
+      "--cpus=4",
+      "--memory=8g",
+      "--memory-swap=8g",
+      "--pids-limit=256",
+      "--cap-drop=ALL",
+      "--security-opt=no-new-privileges",
+      "--read-only",
+      "--user",
+      "{HOST_UID}:{HOST_GID}",
+      "--ulimit",
+      "nofile=1024:1024",
+      "--ulimit",
+      "core=0:0",
+      "--ulimit",
+      "fsize=67108864:67108864",
+      "--tmpfs",
+      "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+      "--workdir",
+      "/source",
+      "--mount",
+      "type=bind,source={PRIVATE_DISPOSABLE_DIR}/source,target=/source,readonly",
+      "--env",
+      "HOME=/tmp",
+      "--env",
+      "TMPDIR=/tmp",
+      "--env",
+      "GOTOOLCHAIN=local",
+      "--env",
+      "GOPROXY=off",
+      "--env",
+      "GOSUMDB=off",
+      "--env",
+      "GOCACHE=/tmp/gocache",
+      "--env",
+      "GOMODCACHE=/tmp/gomodcache",
+      "--env",
+      "GOPATH=/tmp/gopath",
+      "--env",
+      "GOFLAGS=-buildvcs=false",
+      "--env",
+      "LANG=C.UTF-8",
+      "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+      "{GUEST_ARGV_AS_SEPARATE_ARGUMENTS}"
+    ],
+    "argvHandling": "Construct argv arrays. Pass each probe guestArgv verbatim as separate arguments, including the single JSON argument. No host shell interpolation, eval or candidate imports. Use the image default environment PATH; no lifecycle/setup script or package installation.",
+    "startArgv": [
+      "start",
+      "--attach",
+      "{OWNED_CONTAINER_NAME}"
+    ],
+    "commandDeadlineSeconds": 120,
+    "controlCommandDeadlineSeconds": 20,
+    "campaignIndependentProbeDeadlineSeconds": 1200,
+    "outputCapture": "Drain stdout/stderr with a bounded streaming collector:64KiB per stream. If either limit or deadline is exceeded, mark infrastructure/probe failure, stop/force-remove the exact owned container, preserve captured prefixes and truncation flags. No unbounded communicate/readAll buffers.",
+    "storage": "Private source subset is read-only. Compilation caches/binary/runtime writes are confined to512MiB private guest tmpfs; no host cache or writable source bind, no volume, credentials, .git, env files or Docker socket. Removal destroys tmpfs.",
+    "cleanup": "In finally, verify the exact container name carries this run nonce label, then stop with2-second grace and force-remove it. Confirm no container remains for this exact run label before removing its disposable source/config directory. If Docker control/removal is uncertain, fail closed, retain and report the exact names/directories, and stop further probes. Never prune or remove other clients containers/images/caches.",
+    "afterEach": "Hash the original reviewed public manifest and prepared runtime subset again, require exact equality, and save hashes/results as a new supplemental observation document. Do not overwrite preparation recipe, trials, grades, packets or campaign records.",
+    "comparison": "Require exitCode0 and exactly one stdout JSON array with no non-whitespace trailing text. Compare parsed output against expectedParsedOutput, preserving arbitrary-precision integer values. Record actual stdout/stderr/exit/signal/timing and control/defect case matches separately; a successful control does not turn a failing defect case into a pass.",
+    "resultMeaning": "An observed mismatch confirms only this public-contract counterexample for the exact recorded source hashes. If controls fail, timeout/output truncation occurs or source hashes drift, classify as inconclusive/infrastructure, not defect confirmation. Existing frozen grades remain unchanged."
+  },
+  "probes": [
+    {
+      "probeId": "go-usage-candidate-1",
+      "status": "prepared_unexecuted",
+      "trialId": "01b7af929f33ffa5380d3799ca9a0bd4",
+      "taskId": "go-usage",
+      "arm": "candidate",
+      "repeat": 1,
+      "terminalStatusFromPublicReview": "completed",
+      "finishedAtFromPublicReview": "2026-10-28T04:08:23.633717Z",
+      "reviewSource": "docs/evidence/phase2-go-paired-source-review.json",
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/01b7af929f33ffa5380d3799ca9a0bd4/workspace",
+      "recordedOutputHashNotRecomputed": "0f73c9900b4d96fedb52a819a7f7af2fc8794288d07992eef3fc0d2674ef4fe2",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 885,
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "role": "public-contract"
+        },
+        {
+          "path": "go.mod",
+          "bytes": 39,
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic.go",
+          "bytes": 429,
+          "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic_regression_test.go",
+          "bytes": 2067,
+          "sha256": "2bbf1386d9003f79c3bf2f7f7fffe1c736f88af3921f15feff1c4d5ec327d00f",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "logic_test.go",
+          "bytes": 544,
+          "sha256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+          "role": "original-public-test"
+        },
+        {
+          "path": "main.go",
+          "bytes": 282,
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "role": "solver-source"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/01b7af929f33ffa5380d3799ca9a0bd4",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 885,
+            "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f"
+          },
+          {
+            "path": "go.mod",
+            "bytes": 39,
+            "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7"
+          },
+          {
+            "path": "main.go",
+            "bytes": 282,
+            "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1"
+          },
+          {
+            "path": "logic.go",
+            "bytes": 429,
+            "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c"
+          }
+        ],
+        "qualification": "Only runtime/CLI/module metadata plus public README copied; original public and added tests are hashed for unchanged-source provenance but are not executed by this supplemental probe."
+      },
+      "guestArgv": [
+        "go",
+        "run",
+        ".",
+        "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":4611686018427387904},{\"user\":\"a\",\"at\":100,\"units\":4611686018427387904}],\"now\":100,\"window\":10}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/go-usage.input.json",
+      "inputArgumentSHA256": "dc1997e9040197d993b14368b8a6afdc25416f3d8ed47addac03640d81abb5f3",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/go-usage.expected.json",
+      "expectedParsedOutput": [
+        {
+          "a": 5
+        },
+        {
+          "a": 9223372036854775808
+        }
+      ],
+      "staticPredictionNotObserved": [
+        {
+          "a": 5
+        },
+        {
+          "a": -9223372036854775808
+        }
+      ],
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true
+    },
+    {
+      "probeId": "go-usage-candidate-2",
+      "status": "prepared_unexecuted",
+      "trialId": "f947f229824f07c7ec5bb71ee3b17b62",
+      "taskId": "go-usage",
+      "arm": "candidate",
+      "repeat": 2,
+      "terminalStatusFromPublicReview": "completed",
+      "finishedAtFromPublicReview": "2026-10-28T04:21:37.395673Z",
+      "reviewSource": "docs/evidence/phase2-go-paired-source-review.json",
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/f947f229824f07c7ec5bb71ee3b17b62/workspace",
+      "recordedOutputHashNotRecomputed": "ec4c073f4e1006a1f4007f20f6e3cd71fc75a44b57311b49e473f695e99424bb",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 885,
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "role": "public-contract"
+        },
+        {
+          "path": "go.mod",
+          "bytes": 39,
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic.go",
+          "bytes": 401,
+          "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic_regression_test.go",
+          "bytes": 2173,
+          "sha256": "38598f7bfa05a1aa9c31c0a10778233beee18e1cbdc812c53330f086133240b7",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "logic_test.go",
+          "bytes": 544,
+          "sha256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+          "role": "original-public-test"
+        },
+        {
+          "path": "main.go",
+          "bytes": 282,
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "role": "solver-source"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/f947f229824f07c7ec5bb71ee3b17b62",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 885,
+            "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f"
+          },
+          {
+            "path": "go.mod",
+            "bytes": 39,
+            "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7"
+          },
+          {
+            "path": "main.go",
+            "bytes": 282,
+            "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1"
+          },
+          {
+            "path": "logic.go",
+            "bytes": 401,
+            "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c"
+          }
+        ],
+        "qualification": "Only runtime/CLI/module metadata plus public README copied; original public and added tests are hashed for unchanged-source provenance but are not executed by this supplemental probe."
+      },
+      "guestArgv": [
+        "go",
+        "run",
+        ".",
+        "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":4611686018427387904},{\"user\":\"a\",\"at\":100,\"units\":4611686018427387904}],\"now\":100,\"window\":10}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/go-usage.input.json",
+      "inputArgumentSHA256": "dc1997e9040197d993b14368b8a6afdc25416f3d8ed47addac03640d81abb5f3",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/go-usage.expected.json",
+      "expectedParsedOutput": [
+        {
+          "a": 5
+        },
+        {
+          "a": 9223372036854775808
+        }
+      ],
+      "staticPredictionNotObserved": [
+        {
+          "a": 5
+        },
+        {
+          "a": -9223372036854775808
+        }
+      ],
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true
+    },
+    {
+      "probeId": "node-config-baseline-0",
+      "status": "prepared_unexecuted",
+      "trialId": "329f5ac633d2a43dd6bc72acadd0b105",
+      "taskId": "node-config",
+      "arm": "baseline",
+      "repeat": 0,
+      "terminalStatusFromPublicReview": "failed",
+      "finishedAtFromPublicReview": "2026-10-28T04:30:56.565108Z",
+      "reviewSource": "docs/evidence/phase2-node-paired-source-review.json",
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/329f5ac633d2a43dd6bc72acadd0b105/workspace",
+      "recordedOutputHashNotRecomputed": "4479d57ce7f892ae8743ae4b3e3d3a59485792154cf30057dbd196a63b986970",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 917,
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 317,
+          "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/329f5ac633d2a43dd6bc72acadd0b105",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 917,
+            "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385"
+          },
+          {
+            "path": "package.json",
+            "bytes": 62,
+            "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+          },
+          {
+            "path": "main.cjs",
+            "bytes": 106,
+            "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+          },
+          {
+            "path": "logic.cjs",
+            "bytes": 317,
+            "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a"
+          }
+        ],
+        "qualification": "Only runtime/CLI/module metadata plus public README copied; original public and added tests are hashed for unchanged-source provenance but are not executed by this supplemental probe."
+      },
+      "guestArgv": [
+        "node",
+        "main.cjs",
+        "[{\"layers\":[{\"mode\":\"local\"}]},{\"layers\":[{\"__proto__\":{\"mode\":\"local\"}}]}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/node-config.input.json",
+      "inputArgumentSHA256": "6f99066f4fcd685a51566c70dc3a666a353369036b38202b58bd9885fbe5ba5b",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/node-config.expected.json",
+      "expectedParsedOutput": [
+        {
+          "mode": "local"
+        },
+        {
+          "__proto__": {
+            "mode": "local"
+          }
+        }
+      ],
+      "staticPredictionNotObserved": [
+        {
+          "mode": "local"
+        },
+        {}
+      ],
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true
+    },
+    {
+      "probeId": "node-config-candidate-0",
+      "status": "prepared_unexecuted",
+      "trialId": "1bdc643edafa0698ed402be4aa3c3a1e",
+      "taskId": "node-config",
+      "arm": "candidate",
+      "repeat": 0,
+      "terminalStatusFromPublicReview": "completed",
+      "finishedAtFromPublicReview": "2026-10-28T04:35:10.265525Z",
+      "reviewSource": "docs/evidence/phase2-node-paired-source-review.json",
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/1bdc643edafa0698ed402be4aa3c3a1e/workspace",
+      "recordedOutputHashNotRecomputed": "e84a885164a2846d8258baa475ae8a6672dada3a783fc3e9e19a3347e6184fc4",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 917,
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 320,
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 797,
+          "sha256": "15ba0af878e336ec57610e74cf91c13bfe12f023fe166f46065c8e8b7ecf9f08",
+          "role": "added-regression-test"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/1bdc643edafa0698ed402be4aa3c3a1e",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 917,
+            "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385"
+          },
+          {
+            "path": "package.json",
+            "bytes": 62,
+            "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+          },
+          {
+            "path": "main.cjs",
+            "bytes": 106,
+            "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+          },
+          {
+            "path": "logic.cjs",
+            "bytes": 320,
+            "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725"
+          }
+        ],
+        "qualification": "Only runtime/CLI/module metadata plus public README copied; original public and added tests are hashed for unchanged-source provenance but are not executed by this supplemental probe."
+      },
+      "guestArgv": [
+        "node",
+        "main.cjs",
+        "[{\"layers\":[{\"mode\":\"local\"}]},{\"layers\":[{\"__proto__\":{\"mode\":\"local\"}}]}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/node-config.input.json",
+      "inputArgumentSHA256": "6f99066f4fcd685a51566c70dc3a666a353369036b38202b58bd9885fbe5ba5b",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/node-config.expected.json",
+      "expectedParsedOutput": [
+        {
+          "mode": "local"
+        },
+        {
+          "__proto__": {
+            "mode": "local"
+          }
+        }
+      ],
+      "staticPredictionNotObserved": [
+        {
+          "mode": "local"
+        },
+        {}
+      ],
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true
+    },
+    {
+      "probeId": "node-config-candidate-1",
+      "status": "prepared_unexecuted",
+      "trialId": "97b1e933d011bc05ce7ea38919e09f23",
+      "taskId": "node-config",
+      "arm": "candidate",
+      "repeat": 1,
+      "terminalStatusFromPublicReview": "completed",
+      "finishedAtFromPublicReview": "2026-10-28T04:38:09.238779Z",
+      "reviewSource": "docs/evidence/phase2-node-paired-source-review.json",
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/97b1e933d011bc05ce7ea38919e09f23/workspace",
+      "recordedOutputHashNotRecomputed": "0575f83099d1cda3f62eab44143fb263e5f661081244f93088e0060d84b39c1b",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 917,
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 320,
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1386,
+          "sha256": "358d39db28fbd45088cfe5bc135fc10c09e55e6201317e6feb1c6cf2b2a42978",
+          "role": "added-regression-test"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/97b1e933d011bc05ce7ea38919e09f23",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 917,
+            "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385"
+          },
+          {
+            "path": "package.json",
+            "bytes": 62,
+            "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+          },
+          {
+            "path": "main.cjs",
+            "bytes": 106,
+            "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+          },
+          {
+            "path": "logic.cjs",
+            "bytes": 320,
+            "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725"
+          }
+        ],
+        "qualification": "Fresh independent copy for this exact terminal attempt; byte equality with another attempt is not execution evidence."
+      },
+      "guestArgv": [
+        "node",
+        "main.cjs",
+        "[{\"layers\":[{\"mode\":\"local\"}]},{\"layers\":[{\"__proto__\":{\"mode\":\"local\"}}]}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/node-config.input.json",
+      "inputArgumentSHA256": "6f99066f4fcd685a51566c70dc3a666a353369036b38202b58bd9885fbe5ba5b",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/node-config.expected.json",
+      "expectedParsedOutput": [
+        {
+          "mode": "local"
+        },
+        {
+          "__proto__": {
+            "mode": "local"
+          }
+        }
+      ],
+      "staticPredictionNotObserved": [
+        {
+          "mode": "local"
+        },
+        {}
+      ],
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true,
+      "reviewSourceSnapshot": {
+        "path": "docs/evidence/phase2-supplemental-public-probes/node-config-candidate1-public-review-excerpt.json",
+        "sha256": "63f2bdff7d92ef82d43b6acfeccfe861d9bd016646a9b1403643127198f8288f"
+      },
+      "historicalFinalVerificationReceipt": {
+        "source": "public source-review historical observations, not independently re-executed",
+        "callId": "call_jcydwg81",
+        "commandId": "cmd-vpole2dqire32b6cc3q5dym6pl",
+        "argv": [
+          "node",
+          "public_test.cjs"
+        ],
+        "readOnlyArgument": true,
+        "readOnlyReceipt": true,
+        "publication": "read_only",
+        "exitCode": 0,
+        "startSequence": 23,
+        "completionSequence": 24,
+        "lastPotentiallyMutatingCompletionSequence": 22,
+        "error": "",
+        "cancelled": false,
+        "truncated": false
+      },
+      "gradeQualification": "Root reports this is the first automated grade pass. No hidden grade assertions or full grade report were fetched here. That report and its valid read-only receipt do not establish the unexecuted special-key counterexample result."
+    },
+    {
+      "probeId": "node-usage-candidate-1",
+      "status": "prepared_unexecuted",
+      "trialId": "2b3d280e7299c221a83542e524c5ee7d",
+      "taskId": "node-usage",
+      "arm": "candidate",
+      "repeat": 1,
+      "terminalStatusFromPublicReview": "completed",
+      "finishedAtFromPublicReview": "2026-10-28T05:56:42.893499Z",
+      "reviewSource": "docs/evidence/phase2-node-paired-source-review.json",
+      "reviewSourceSnapshot": {
+        "path": "docs/evidence/phase2-supplemental-public-probes/node-usage-candidate1-public-review-excerpt.json",
+        "sha256": "65f895ada2bb470ac8b784868aa09a17c9a6a8e7fa18303964e462b7f98dd23a"
+      },
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/2b3d280e7299c221a83542e524c5ee7d/workspace",
+      "recordedOutputHashNotRecomputed": "2373c0f2203cbaca77778fe5e7971ba28fdad51cde2e6ffbfdfd4a1746ccf55d",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 894,
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 153,
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1901,
+          "sha256": "774207f40158c6142d6ac88892ccbfeb32f772d001c3bae86bb98eebe62b215a",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "repro.cjs",
+          "bytes": 164,
+          "sha256": "c3baf1405a6b17a82448bc3562393d5a77f4f7821631aa910f0fb719e6fa0572",
+          "role": "added-diagnostic-script"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/2b3d280e7299c221a83542e524c5ee7d",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 894,
+            "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd"
+          },
+          {
+            "path": "package.json",
+            "bytes": 62,
+            "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+          },
+          {
+            "path": "main.cjs",
+            "bytes": 106,
+            "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+          },
+          {
+            "path": "logic.cjs",
+            "bytes": 153,
+            "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9"
+          }
+        ],
+        "qualification": "Fresh independent copy for this exact terminal attempt. Other byte-identical trial source does not substitute for its own execution evidence. Public/added tests and diagnostic scripts are hashed but not copied or run."
+      },
+      "guestArgv": [
+        "node",
+        "main.cjs",
+        "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"__proto__\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"constructor\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/node-usage.input.json",
+      "inputArgumentSHA256": "883d134f0496fc03aefb8fe8ae7d99545acc0681fb3746e8ab14f11e1d75f082",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/node-usage.expected.json",
+      "expectedParsedOutput": [
+        {
+          "a": 5
+        },
+        {
+          "__proto__": 1
+        },
+        {
+          "constructor": 1
+        }
+      ],
+      "staticPredictionNotObserved": {
+        "control": "Numeric total5 for own ordinary user key a.",
+        "__proto__": "Expected own numeric bucket omitted; serialized case predicted{} because assignment of a coerced primitive uses the inherited prototype setter.",
+        "constructor": "Own constructor property predicted to contain a string from inherited function coercion plus1, rather than numeric total1; exact native-function string is not an oracle requirement."
+      },
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true,
+      "historicalReceiptQualification": "Public source review receipts are historical evidence only; this supplemental probe is unexecuted and no full independent grade/assertions were fetched.",
+      "historicalFinalVerificationReceipt": {
+        "source": "final public source-review receipt, not re-executed",
+        "callId": "call_je5733pu",
+        "commandId": "cmd-45h344lrxxqazdktpub64admak",
+        "argv": [
+          "node",
+          "public_test.cjs"
+        ],
+        "readOnlyArgument": true,
+        "readOnlyReceipt": true,
+        "publication": "read_only",
+        "exitCode": 0,
+        "startSequence": 35,
+        "completionSequence": 36,
+        "lastSuccessfulExplicitWriteSequence": 26,
+        "error": "",
+        "cancelled": false,
+        "truncated": false,
+        "qualification": "Final exact public success36 follows file write26 and two failed read-only cleanup attempts32/34; no mutation publication from those cleanup attempts. This proves only historical verification receipt coverage, not the still-unexecuted inherited-key result."
+      }
+    },
+    {
+      "probeId": "node-usage-baseline-1",
+      "status": "prepared_unexecuted",
+      "trialId": "27a20d6b163b76460ec594ae04021c90",
+      "taskId": "node-usage",
+      "arm": "baseline",
+      "repeat": 1,
+      "terminalStatusFromPublicReview": "completed",
+      "finishedAtFromPublicReview": "2026-10-28T05:59:39.072904Z",
+      "reviewSource": "docs/evidence/phase2-node-paired-source-review.json",
+      "reviewSourceSnapshot": {
+        "path": "docs/evidence/phase2-supplemental-public-probes/node-usage-baseline1-public-review-excerpt.json",
+        "sha256": "fd23710a048f0495fcf564f9abe55602a480572c4616091070963f5591672971"
+      },
+      "originalWorkspace": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/harness/trials/27a20d6b163b76460ec594ae04021c90/workspace",
+      "recordedOutputHashNotRecomputed": "95bdd01b460f19fef9cab6cca15090235013bf7f87f60ae308706437dc9f1c1c",
+      "reviewedPublicFileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 894,
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 153,
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "bytes": 1087,
+          "sha256": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "reproduce_issue.cjs",
+          "bytes": 629,
+          "sha256": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+          "role": "added-diagnostic-script"
+        }
+      ],
+      "preparedRuntimeSourceSubset": {
+        "directory": "docs/evidence/phase2-supplemental-public-probes/prepared-sources/27a20d6b163b76460ec594ae04021c90",
+        "files": [
+          {
+            "path": "README.md",
+            "bytes": 894,
+            "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd"
+          },
+          {
+            "path": "package.json",
+            "bytes": 62,
+            "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+          },
+          {
+            "path": "main.cjs",
+            "bytes": 106,
+            "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+          },
+          {
+            "path": "logic.cjs",
+            "bytes": 153,
+            "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9"
+          }
+        ],
+        "qualification": "Fresh independent copy for this exact terminal attempt. Other byte-identical trial source does not substitute for its own execution evidence. Public/added tests and diagnostic scripts are hashed but not copied or run."
+      },
+      "guestArgv": [
+        "node",
+        "main.cjs",
+        "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"__proto__\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"constructor\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10}]"
+      ],
+      "inputFile": "docs/evidence/phase2-supplemental-public-probes/node-usage.input.json",
+      "inputArgumentSHA256": "883d134f0496fc03aefb8fe8ae7d99545acc0681fb3746e8ab14f11e1d75f082",
+      "expectedOutputFile": "docs/evidence/phase2-supplemental-public-probes/node-usage.expected.json",
+      "expectedParsedOutput": [
+        {
+          "a": 5
+        },
+        {
+          "__proto__": 1
+        },
+        {
+          "constructor": 1
+        }
+      ],
+      "staticPredictionNotObserved": {
+        "control": "Numeric total5 for own ordinary user key a.",
+        "__proto__": "Expected own numeric bucket omitted; serialized case predicted{} because assignment of a coerced primitive uses the inherited prototype setter.",
+        "constructor": "Own constructor property predicted to contain a string from inherited function coercion plus1, rather than numeric total1; exact native-function string is not an oracle requirement."
+      },
+      "actualResult": null,
+      "originalSourceUnchangedAfterPreparation": true,
+      "historicalReceiptQualification": "Public source review receipts are historical evidence only; this supplemental probe is unexecuted and no full independent grade/assertions were fetched. Representative matched-repeat baseline has no final readOnly:true receipt according to the public review; its writable public success is not relabeled.",
+      "historicalFinalVerificationReceipt": null
+    }
+  ],
+  "preparationChecks": {
+    "terminalReviewedSources": 7,
+    "reviewedPublicFileHashesMatched": 43,
+    "preparedFiles": 28,
+    "allOriginalHashesUnchangedAfterPreparation": true,
+    "candidateImportsOrExecutionOnHost": false,
+    "dockerCalls": 0,
+    "inferenceCalls": 0,
+    "activeWorkspacesRead": false,
+    "hiddenAssertionsRead": false
+  },
+  "results": null,
+  "recipeRevision": 3,
+  "supersedes": {
+    "path": "docs/evidence/phase2-supplemental-public-probes/recipe.v2.json",
+    "sha256": "c8cf56e134490f80ff5f26072a7829fd7cbbbb5f802392cc9b0e902b39c15b87",
+    "preservedUnchanged": true,
+    "reason": "Add exact completed Node usage candidate1 and representative baseline1 control/inherited-user-key probes; preserve all five prior probes unchanged."
+  },
+  "additionalPublicReview": {
+    "path": "docs/evidence/phase2-node-paired-source-review.json",
+    "sha256": "96de45b90c540e7b42fc84067a189dc53da986f1cec20d2d94694df0c46da444",
+    "terminalTrialId": "97b1e933d011bc05ce7ea38919e09f23"
+  },
+  "preservedRecipes": [
+    {
+      "path": "docs/evidence/phase2-supplemental-public-probes/recipe.json",
+      "sha256": "6772158494267b6d48d0d37081b3231e5d3e2f5846e40c9fb0fe01e87c3b265e",
+      "preservedUnchanged": true
+    },
+    {
+      "path": "docs/evidence/phase2-supplemental-public-probes/recipe.v2.json",
+      "sha256": "c8cf56e134490f80ff5f26072a7829fd7cbbbb5f802392cc9b0e902b39c15b87",
+      "preservedUnchanged": true
+    }
+  ],
+  "completedNodeSourceReview": {
+    "path": "docs/evidence/phase2-node-paired-source-review.json",
+    "sha256": "fa7e2114954d82c3f01db6e4d4b36ad0505a7226d5781e9db6f1c9531f8439d5",
+    "publicTestChangeLedger": {
+      "path": "docs/evidence/phase2-node-test-change-ledger.json",
+      "sha256": "fe4dd5b748f5b387f88dd032857cf0c9f6c6837fe95cc99cc1caddc8c75ac63c"
+    },
+    "qualification": "Provided final public source-review hashes verified before adding probes; no hidden grader source or expected assertions accessed."
+  }
+}

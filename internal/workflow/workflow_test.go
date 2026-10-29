@@ -9,7 +9,9 @@ import (
 	"net/http/httptest"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"gemmadesktop.local/app/internal/engine"
 	"gemmadesktop.local/app/internal/inference"
@@ -154,6 +156,72 @@ func TestDynamicFanoutAndSharedBudget(t *testing.T) {
 	}
 }
 
+func TestFanoutFailureCancelsActiveChildrenAndNeverStartsQueuedItems(t *testing.T) {
+	var modelCalls atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/show" {
+			fmt.Fprint(w, `{}`)
+			return
+		}
+		modelCalls.Add(1)
+		var req inference.ChatRequest
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		for _, message := range req.Messages {
+			if message.Role == "tool" {
+				http.Error(w, "fixture child failure", http.StatusInternalServerError)
+				return
+			}
+		}
+		fmt.Fprintln(w, `{"message":{"tool_calls":[{"id":"wait_for_group","function":{"name":"inspect","arguments":{}}}]},"done":true}`)
+	}))
+	defer srv.Close()
+	c, _ := inference.NewClient(srv.URL)
+	runtime := New(engine.New(c))
+	items := make([]string, 16)
+	for i := range items {
+		items[i] = fmt.Sprintf("item-%d", i)
+	}
+	definition := Definition{Nodes: []Node{{ID: "fanout", Type: "fanout", Items: items}, {ID: "done", Type: "output"}}, Edges: []Edge{{Source: "fanout", Target: "done"}}}
+	var entered, cancelled atomic.Int32
+	barrier := make(chan struct{})
+	var eventMu sync.Mutex
+	started, committed := 0, 0
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+	result, err := runtime.Run(ctx, definition, engine.Request{Model: "fixture", Prompt: "fanout", MaxSteps: 24, Tools: []engine.ToolDefinition{{Name: "inspect"}}}, func(event engine.Event) {
+		eventMu.Lock()
+		defer eventMu.Unlock()
+		if event.Type == "node_started" && strings.HasPrefix(event.NodeID, "fanout_item_") {
+			started++
+		}
+		if event.Type == "tool_completed" {
+			committed++
+		}
+	}, func(ctx context.Context, _ engine.ToolCall) (engine.ToolResult, error) {
+		ordinal := entered.Add(1)
+		if ordinal == 4 {
+			close(barrier)
+		}
+		select {
+		case <-barrier:
+		case <-ctx.Done():
+			return engine.ToolResult{}, ctx.Err()
+		}
+		if ordinal == 1 {
+			return engine.ToolResult{Content: "Committed read evidence before sibling cancellation"}, nil
+		}
+		<-ctx.Done()
+		cancelled.Add(1)
+		return engine.ToolResult{}, ctx.Err()
+	}, nil)
+	if err == nil || !strings.Contains(err.Error(), "fixture child failure") || errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("original failure lost or siblings ignored cancellation: %v", err)
+	}
+	if entered.Load() != 4 || cancelled.Load() != 3 || started != 4 || committed != 1 || modelCalls.Load() != 5 || len(result.Snapshot) == 0 {
+		t.Fatalf("fanout fail-fast/audit: entered=%d cancelled=%d started=%d committed=%d requests=%d snapshot=%d", entered.Load(), cancelled.Load(), started, committed, modelCalls.Load(), len(result.Snapshot))
+	}
+}
+
 func TestNodeBudgetCannotBeResetByLargerWorkflowBudget(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/show" {
@@ -184,11 +252,11 @@ func TestParallelTerminalsRejectedBeforeExecution(t *testing.T) {
 }
 
 func TestAgentConfigurationRetainsReadOnlyToolAndSkillPolicy(t *testing.T) {
-	base := engine.Request{Tools: []engine.ToolDefinition{{Name: "write_file"}}, Skills: []string{"base"}}
+	base := engine.Request{Tools: []engine.ToolDefinition{{Name: "write_file"}}, Skills: []string{"base"}, ToolProtocol: engine.ToolProtocolStructuredJSON}
 	req, err := nodeRequest(base, Node{ID: "reviewer", AgentID: "reviewer"}, func(string) (engine.Request, error) {
 		return engine.Request{ReadOnly: true, Tools: []engine.ToolDefinition{}, Skills: []string{"reviewer"}}, nil
 	})
-	if err != nil || !req.ReadOnly || len(req.Tools) != 0 || req.Skills[0] != "reviewer" || req.NodeID != "reviewer" {
+	if err != nil || !req.ReadOnly || len(req.Tools) != 0 || req.Skills[0] != "reviewer" || req.NodeID != "reviewer" || req.ToolProtocol != "" {
 		t.Fatalf("lost node policy: %+v %v", req, err)
 	}
 }

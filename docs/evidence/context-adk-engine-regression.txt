@@ -1,0 +1,8 @@
+2026/10/27 13:56:17 adk: context compaction failed: token-threshold: tail-retention summarization failed: summarizer stopped before finishing (finish reason "MAX_TOKENS"), so the summary is incomplete; continuing with an uncompacted prompt
+2026/10/27 13:56:17 adk: context compaction failed: token-threshold: tail-retention summarization failed: summarizer model call failed: Ollama request: Post "http://127.0.0.1:59846/api/chat": context canceled; continuing with an uncompacted prompt
+--- FAIL: TestCompactionPreservesLongConstraintsAndPriorSummary (0.00s)
+    compaction_test.go:276: summary request silently shortened a user constraint or prior summary
+FAIL
+FAIL	gemmadesktop.local/app/internal/engine	0.327s
+ok  	gemmadesktop.local/app/internal/inference	1.582s
+FAIL

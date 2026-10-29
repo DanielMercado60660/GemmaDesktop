@@ -1,0 +1,23 @@
+{
+  "createdAt": "2026-10-28T01:01:10.718325+00:00",
+  "purpose": "Read-only saved-result aggregation; no inference, submission, activation, DB mutation or hidden assertion disclosure.",
+  "files": [
+    {
+      "path": ".runtime/phase2-campaign-20261027/evaluation_summary.py",
+      "sha256": "73b80cca00ecfdb438ffae58198e80ee2b719258b980d6d17c2fad4d79f7bed5"
+    },
+    {
+      "path": ".runtime/phase2-campaign-20261027/test_evaluation_summary.py",
+      "sha256": "50a8a45b84b54e0e566e08ff17e72fdfcdcb96bea10ab3177999565b0b5e8c1c"
+    },
+    {
+      "path": "scripts/harnessctl.py",
+      "sha256": "fd907931f44c87f5cd6ce5f132250dbf9531d2deca86ae2d041bfe970505ad0d"
+    }
+  ],
+  "defaultExperiment": "3c1f216827db7eef221ce7565c9936d6",
+  "defaultURL": "http://127.0.0.1:8797",
+  "testEvidence": "docs/evidence/harness-campaign-summary-helper-tests.txt",
+  "readOnlySmokeEvidence": "docs/evidence/harness-campaign-summary-before-evaluation.json",
+  "method": "Counts all recorded attempts, including failed/incomplete; medians use all recorded values and zero for missing measurements; actual saved gates are shown only when completed. Fixture identity verifies schedule-based denominators."
+}

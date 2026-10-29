@@ -1,0 +1,199 @@
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.14s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.393s
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+==================
+WARNING: DATA RACE
+Write at 0x00c000194938 by goroutine 26:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:334 +0x214
+  gemmadesktop.local/app/internal/harness.(*Manager).launch.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:320 +0x108
+
+Previous read at 0x00c000194938 by goroutine 9:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:352 +0x714
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamActualCoreStdioParity()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_integration_test.go:55 +0x1e8
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 26 (running) created at:
+  gemmadesktop.local/app/internal/harness.(*Manager).launch()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:316 +0x3a0
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:332 +0x700
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamActualCoreStdioParity()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_integration_test.go:55 +0x1e8
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 9 (running) created at:
+  testing.(*T).Run()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x7bc
+  testing.runTests.func1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2585 +0x74
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.runTests()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2583 +0x7a0
+  testing.(*M).Run()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2443 +0xb38
+  main.main()
+      _testmain.go:170 +0x100
+==================
+    testing.go:1712: race detected during execution of test
+--- FAIL: TestHarnessUpstreamActualCoreStdioParity (1.48s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+==================
+WARNING: DATA RACE
+Write at 0x00c0001f2bb8 by goroutine 46:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:334 +0x214
+  gemmadesktop.local/app/internal/harness.(*Manager).launch.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:320 +0x108
+
+Previous read at 0x00c0001f2bb8 by goroutine 43:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:352 +0x714
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_integration_test.go:218 +0x16c
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 46 (running) created at:
+  gemmadesktop.local/app/internal/harness.(*Manager).launch()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:316 +0x3a0
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:332 +0x700
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_integration_test.go:218 +0x16c
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 43 (running) created at:
+  testing.(*T).Run()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x7bc
+  testing.runTests.func1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2585 +0x74
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.runTests()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2583 +0x7a0
+  testing.(*M).Run()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2443 +0xb38
+  main.main()
+      _testmain.go:170 +0x100
+==================
+    testing.go:1712: race detected during execution of test
+--- FAIL: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.04s)
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+==================
+WARNING: DATA RACE
+Write at 0x00c0004106b8 by goroutine 57:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:334 +0x214
+  gemmadesktop.local/app/internal/harness.(*Manager).launch.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:320 +0x108
+
+Previous read at 0x00c0004106b8 by goroutine 54:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:352 +0x714
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages.func1()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_status_test.go:42 +0x2f0
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 57 (running) created at:
+  gemmadesktop.local/app/internal/harness.(*Manager).launch()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:316 +0x3a0
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:332 +0x700
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages.func1()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_status_test.go:42 +0x2f0
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 54 (running) created at:
+  testing.(*T).Run()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x7bc
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_status_test.go:18 +0x74
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+==================
+    testing.go:1712: race detected during execution of test
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+--- FAIL: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (2.44s)
+    --- FAIL: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (1.41s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (1.03s)
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver
+==================
+WARNING: DATA RACE
+Write at 0x00c0006795b8 by goroutine 78:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:334 +0x214
+  gemmadesktop.local/app/internal/harness.(*Manager).launch.func1()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:320 +0x108
+
+Previous read at 0x00c0006795b8 by goroutine 75:
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:352 +0x714
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit.func1()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_status_test.go:109 +0x1ac
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 78 (running) created at:
+  gemmadesktop.local/app/internal/harness.(*Manager).launch()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:316 +0x3a0
+  gemmadesktop.local/app/internal/harness.(*Manager).Advance()
+      /Users/danielmercado/GemmaDesktop/internal/harness/manager.go:332 +0x700
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit.func1()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_status_test.go:109 +0x1ac
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+
+Goroutine 75 (running) created at:
+  testing.(*T).Run()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x7bc
+  gemmadesktop.local/app/internal/app.TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit()
+      /Users/danielmercado/GemmaDesktop/internal/app/harness_status_test.go:99 +0x74
+  testing.tRunner()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2036 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/danielmercado/GemmaDesktop/.cache/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.darwin-arm64/src/testing/testing.go:2101 +0x34
+==================
+    testing.go:1712: race detected during execution of test
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet
+--- FAIL: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit (0.26s)
+    --- FAIL: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver (0.12s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet (0.14s)
+FAIL
+FAIL	gemmadesktop.local/app/internal/app	5.633s
+FAIL

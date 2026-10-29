@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-10-27T18:18:50.624953+00:00",
+  "sourceReport": "docs/evidence/realistic-followup-20261027-131035-4786f6c9.json",
+  "sourceReportSHA256": "7f7be278e57425f68ea160d6681ff3ad3a6a9b07446291e8bbeaebde7d5aed9a",
+  "postAuditHarnessSHA256": "6134413ca4898f93f5df23e763a10372797dd688dae85f6657c79400c4d174f4",
+  "passed": false,
+  "verification": {
+    "successfulPrescribedCommands": [],
+    "successfulCommandsAfterLastMutation": [],
+    "lastMutationEventSequence": 55040,
+    "latestPrescribedAttempt": null,
+    "latestPrescribedAttemptSucceeded": false,
+    "unlinkedOrAmbiguousPrescribedCallIds": [],
+    "unsequencedPrescribedCallIds": [],
+    "discoveredAdditionalTests": true,
+    "independentCases": 9,
+    "note": "The latest prescribed attempt must have a uniquely linked successful receipt and start after the final recorded mutation. Replayed/ambiguous IDs or missing outcomes cannot verify edits. Additional tests still require human review; command exit zero alone is not acceptance."
+  },
+  "observedRunStatus": "cancelled",
+  "limitation": "Post-audit of a run whose original driver predated the final frozen harness; no source-drift guarantee for that original execution. Historical report unchanged."
+}

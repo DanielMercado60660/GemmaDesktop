@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T01:26:27.405410+00:00",
+  "reviewer": "independent source review lane /root/adk_architecture_research",
+  "evaluation": {
+    "id": "68381c81596bc2c357d5f0ade2e2063e",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+    "baselineId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+    "status": "running",
+    "expectedResults": 72
+  },
+  "batch": 1,
+  "reviewedTrialIds": [
+    "8b6cae172041c511fba395969941e451",
+    "29ad163710af03adbe4f53ed4c149d05",
+    "a7cce179e1b848be6709b2e95a46c6cb"
+  ],
+  "reviewBasis": "Only terminal Go solver workspaces, public README/original tests/added tests, and bounded read-only API identity/status/solver-receipt fields. No hidden grader assertion source or expected answer consulted.",
+  "methods": [
+    "harness.evaluations.get",
+    "harness.trials.list",
+    "harness.trials.get"
+  ],
+  "trials": [
+    {
+      "taskId": "go-config",
+      "split": "heldout",
+      "repeat": 0,
+      "arm": "baseline",
+      "trialId": "8b6cae172041c511fba395969941e451",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-0",
+      "status": "completed",
+      "inputHash": "8b6cae172041c511fba395969941e451a2c14e9276d313ed5df723bcca17786f",
+      "outputHash": "e2eaf853d636596054d057244052a86c56e44ce07f9876158efae735691fae51",
+      "createdAt": "2026-10-28T01:05:30.36488Z",
+      "finishedAt": "2026-10-28T01:10:43.878721Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/8b6cae172041c511fba395969941e451/workspace",
+      "solverIncomplete": false,
+      "solverError": "",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 908,
+          "sha256": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "role": "public-contract"
+        },
+        {
+          "path": "go.mod",
+          "bytes": 40,
+          "sha256": "984e57ab600af476a39a1d94db5b587f157722968dc50fc7a2396c984d3ec84a",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic.go",
+          "bytes": 691,
+          "sha256": "df7c3504dba99ba3483b2160a7748d74fd0b041fb69bbe5b3a7fbd7cec326548",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic_test.go",
+          "bytes": 465,
+          "sha256": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "role": "original-public-test"
+        },
+        {
+          "path": "main.go",
+          "bytes": 282,
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "role": "solver-source"
+        },
+        {
+          "path": "regression_test.go",
+          "bytes": 2030,
+          "sha256": "469392fd05d44156fe5e82e5a33b7cec5477733e744c652c6cb953d24a453eb0",
+          "role": "added-regression-test"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "go.mod",
+          "firstRecordedReadHash": null,
+          "matchesFirstRecordedRead": null
+        },
+        {
+          "path": "logic_test.go",
+          "firstRecordedReadHash": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "main.go",
+          "firstRecordedReadHash": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "matchesFirstRecordedRead": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of only files listed above; no candidate execution.",
+        "assessment": "No substantive defect found for valid README layer inputs by source inspection. Fresh maps implement recursive object merge and null deletion; non-object replacements retain false/zero/empty values. The unused sort reference is harmless, not a bypass.",
+        "logicLocations": [
+          {
+            "path": "logic.go",
+            "line": 7
+          },
+          {
+            "path": "logic.go",
+            "line": 13
+          },
+          {
+            "path": "logic.go",
+            "line": 15
+          },
+          {
+            "path": "logic.go",
+            "line": 20
+          },
+          {
+            "path": "logic.go",
+            "line": 22
+          },
+          {
+            "path": "logic.go",
+            "line": 28
+          }
+        ],
+        "substantiveBugsFound": [],
+        "bypassFound": false,
+        "bypassAssessment": "No skipped/disabled tests, TestMain/os.Exit manipulation, conditional test detection, answer lookup, dependency injection, hard-coded example dispatch, or source/test writes inside tests observed. Original public test, main and README bytes are identical across these three workspaces.",
+        "testAssessment": {
+          "path": "regression_test.go",
+          "addedCaseCount": 6,
+          "assertions": "Calls real solve and compares decoded structures with reflect.DeepEqual; expected values are literal public-contract cases.",
+          "covered": [
+            "README recursive merge and empty-array replacement",
+            "top-level and nested null deletion",
+            "array replacement",
+            "false replacement",
+            "zero replacement"
+          ],
+          "gaps": [
+            "No before/after assertion that input layers remain unchanged",
+            "No empty-string replacement assertion",
+            "No explicit scalar-to-object and object-to-scalar regression",
+            "No automated CLI contract assertion"
+          ],
+          "lines": [
+            9,
+            37,
+            45,
+            53,
+            61,
+            69,
+            105
+          ]
+        },
+        "scopeNote": "README requires a new output object and no mutation during merge; this review does not impose an unstated deep-clone/isolation guarantee for later caller mutation of returned arrays."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Read-only harness.trials.get solver tool receipts; not independently rerun or used as correctness oracle.",
+        "commands": [
+          {
+            "callId": "call_zlc3zboh",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "go",
+            "argv": [
+              "test",
+              "-v",
+              "./..."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-yaeh3fw7d2kmxzbfshhnkshggg",
+            "error": ""
+          },
+          {
+            "callId": "call_0t8upzu3",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "go",
+            "argv": [
+              "test",
+              "-v",
+              "./..."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-iex6odgbeqrxzbgiswzmiiag32",
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_6od5uwur",
+            "sequence": 24,
+            "startSequence": 23,
+            "executable": "go",
+            "argv": [
+              "test",
+              "-v",
+              "./..."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-x5erclfpdulkqdmz2ybwekljmk",
+            "error": ""
+          },
+          {
+            "callId": "call_5h3gf83e",
+            "sequence": 26,
+            "startSequence": 25,
+            "executable": "go",
+            "argv": [
+              "run",
+              "main.go",
+              "[{\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-2zk7qz5rxgo742vztzwcqs7sht",
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_697mykrk",
+            "sequence": 28,
+            "startSequence": 27,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-vswlub4d5yfykspsr2wimnqie2",
+            "error": ""
+          }
+        ],
+        "lastSuccessfulWriteSequence": 22,
+        "successfulPostWriteGoTestCallIds": [
+          "call_6od5uwur"
+        ],
+        "readonlyVerificationPresent": false,
+        "qualificationLimitation": "Every recorded command in this batch omitted readOnly and received readOnly:false. Existing exit-zero receipts are not read-only verification evidence. A completed tool test does not override an incomplete solver result."
+      }
+    },
+    {
+      "taskId": "go-config",
+      "split": "heldout",
+      "repeat": 0,
+      "arm": "candidate",
+      "trialId": "29ad163710af03adbe4f53ed4c149d05",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-0",
+      "status": "completed",
+      "inputHash": "29ad163710af03adbe4f53ed4c149d05083b983f93c30409647b1ab63e98278c",
+      "outputHash": "db05f9c18e96ee74a2c215e84179adb5ecf751978757b419a77203e697e12c86",
+      "createdAt": "2026-10-28T01:10:47.990347Z",
+      "finishedAt": "2026-10-28T01:16:30.545207Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/29ad163710af03adbe4f53ed4c149d05/workspace",
+      "solverIncomplete": false,
+      "solverError": "",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 908,
+          "sha256": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "role": "public-contract"
+        },
+        {
+          "path": "go.mod",
+          "bytes": 40,
+          "sha256": "984e57ab600af476a39a1d94db5b587f157722968dc50fc7a2396c984d3ec84a",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic.go",
+          "bytes": 735,
+          "sha256": "52840d3be8907401ab9e8587ea40f65a14f5e97187045e3878fc788d6d1020db",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic_test.go",
+          "bytes": 465,
+          "sha256": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "role": "original-public-test"
+        },
+        {
+          "path": "main.go",
+          "bytes": 282,
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "role": "solver-source"
+        },
+        {
+          "path": "regression_test.go",
+          "bytes": 1899,
+          "sha256": "920893811ddff6c79edc3b277e38faa7973c30b172ba35c16fff8d092e370d72",
+          "role": "added-regression-test"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "go.mod",
+          "firstRecordedReadHash": "984e57ab600af476a39a1d94db5b587f157722968dc50fc7a2396c984d3ec84a",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "logic_test.go",
+          "firstRecordedReadHash": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "main.go",
+          "firstRecordedReadHash": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "matchesFirstRecordedRead": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of only files listed above; no candidate execution.",
+        "assessment": "No substantive defect found for valid README layer inputs by source inspection. Recursive merge handles object/non-object transitions, null deletion and ordinary replacement without writing into input maps.",
+        "logicLocations": [
+          {
+            "path": "logic.go",
+            "line": 3
+          },
+          {
+            "path": "logic.go",
+            "line": 5
+          },
+          {
+            "path": "logic.go",
+            "line": 11
+          },
+          {
+            "path": "logic.go",
+            "line": 13
+          },
+          {
+            "path": "logic.go",
+            "line": 15
+          },
+          {
+            "path": "logic.go",
+            "line": 17
+          },
+          {
+            "path": "logic.go",
+            "line": 20
+          },
+          {
+            "path": "logic.go",
+            "line": 32
+          }
+        ],
+        "substantiveBugsFound": [],
+        "bypassFound": false,
+        "bypassAssessment": "No skipped/disabled tests, TestMain/os.Exit manipulation, conditional test detection, answer lookup, dependency injection, hard-coded example dispatch, or source/test writes inside tests observed. Original public test, main and README bytes are identical across these three workspaces.",
+        "testAssessment": {
+          "path": "regression_test.go",
+          "addedCaseCount": 9,
+          "assertions": "Calls real solve and compares decoded structures with reflect.DeepEqual; expected values are literal public-contract cases.",
+          "covered": [
+            "empty and single layer",
+            "top-level null deletion",
+            "recursive and deep object merge",
+            "scalar-to-object and object-to-scalar replacement",
+            "array replacement",
+            "README zero and empty-array example"
+          ],
+          "gaps": [
+            "No before/after assertion that input layers remain unchanged",
+            "No direct false or empty-string replacement assertion",
+            "No nested-null deletion assertion",
+            "No automated CLI contract assertion"
+          ],
+          "lines": [
+            9,
+            23,
+            27,
+            31,
+            35,
+            39,
+            43,
+            47,
+            73
+          ]
+        },
+        "scopeNote": "README requires a new output object and no mutation during merge; this review does not impose an unstated deep-clone/isolation guarantee for later caller mutation of returned arrays."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Read-only harness.trials.get solver tool receipts; not independently rerun or used as correctness oracle.",
+        "commands": [
+          {
+            "callId": "call_ulmciwyw",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "go",
+            "argv": [
+              "run",
+              "main.go",
+              "[{\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-5gphvwcezp2wczugcttk6fw5ek",
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_zaiind1m",
+            "sequence": 14,
+            "startSequence": 13,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-4s65wwm7wvoz6jmdferbsxaelo",
+            "error": ""
+          },
+          {
+            "callId": "call_2uxgnrga",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"a\": 1}, {\"a\": null}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-b66hvqegxs3jzafp2oapfhoyf4",
+            "error": ""
+          },
+          {
+            "callId": "call_xeeueyax",
+            "sequence": 18,
+            "startSequence": 17,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"a\": 1}, {\"a\": {\"b\": 2}}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-rmjvuo7ndakqztlpvfxctts7ec",
+            "error": ""
+          },
+          {
+            "callId": "call_25dyiw8r",
+            "sequence": 28,
+            "startSequence": 27,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-lvsmfu4ll3aroqvbe3afiw2xdj",
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_ej0s4lsh",
+            "sequence": 32,
+            "startSequence": 31,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"service\": {\"port\": 80, \"tls\": true}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-lu6l5l3uxr3lpgsbceruazr6eq",
+            "error": ""
+          },
+          {
+            "callId": "call_oqn37b1a",
+            "sequence": 34,
+            "startSequence": 33,
+            "executable": "go",
+            "argv": [
+              "run",
+              ".",
+              "[{\"layers\": [{\"a\": 1}, {\"a\": null}]}]"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-os646wyszykneb2yi7inkivsrz",
+            "error": ""
+          },
+          {
+            "callId": "call_7ycq939f",
+            "sequence": 38,
+            "startSequence": 37,
+            "executable": "go",
+            "argv": [
+              "test",
+              "./..."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-g3gf7ojmbcpfn4okbxfdla3bld",
+            "error": ""
+          },
+          {
+            "callId": "call_ydimghbo",
+            "sequence": 40,
+            "startSequence": 39,
+            "executable": "go",
+            "argv": [
+              "test",
+              "-run",
+              "TestPublic",
+              "./..."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-5qyzsl2g65wx4oz3ermuqi3chw",
+            "error": ""
+          }
+        ],
+        "lastSuccessfulWriteSequence": 36,
+        "successfulPostWriteGoTestCallIds": [
+          "call_7ycq939f",
+          "call_ydimghbo"
+        ],
+        "readonlyVerificationPresent": false,
+        "qualificationLimitation": "Every recorded command in this batch omitted readOnly and received readOnly:false. Existing exit-zero receipts are not read-only verification evidence. A completed tool test does not override an incomplete solver result."
+      }
+    },
+    {
+      "taskId": "go-config",
+      "split": "heldout",
+      "repeat": 1,
+      "arm": "candidate",
+      "trialId": "a7cce179e1b848be6709b2e95a46c6cb",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-1",
+      "status": "failed",
+      "inputHash": "a7cce179e1b848be6709b2e95a46c6cbe43250ac46a66f6075cda2aec4d8150f",
+      "outputHash": "9bd512a36dc0a7673a341cb862eca9de97d6ec433af843a16cf3399bfe9da0c1",
+      "createdAt": "2026-10-28T01:16:34.440255Z",
+      "finishedAt": "2026-10-28T01:20:30.061699Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/a7cce179e1b848be6709b2e95a46c6cb/workspace",
+      "solverIncomplete": true,
+      "solverError": "model stopped without an answer or tool call",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 908,
+          "sha256": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "role": "public-contract"
+        },
+        {
+          "path": "go.mod",
+          "bytes": 40,
+          "sha256": "984e57ab600af476a39a1d94db5b587f157722968dc50fc7a2396c984d3ec84a",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic.go",
+          "bytes": 679,
+          "sha256": "9b3f74b3b5c07b9fe0dcd51d31ead61e67500d79967c4a467632ba4bf5ea7a14",
+          "role": "solver-source"
+        },
+        {
+          "path": "logic_test.go",
+          "bytes": 465,
+          "sha256": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "role": "original-public-test"
+        },
+        {
+          "path": "main.go",
+          "bytes": 282,
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "role": "solver-source"
+        },
+        {
+          "path": "repro_test.go",
+          "bytes": 1555,
+          "sha256": "cf4ff1228f2299433f259ab9be2c8f806b268ba0c1b3a25639834441d62e8189",
+          "role": "added-regression-test"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "go.mod",
+          "firstRecordedReadHash": null,
+          "matchesFirstRecordedRead": null
+        },
+        {
+          "path": "logic_test.go",
+          "firstRecordedReadHash": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "matchesFirstRecordedRead": true
+        },
+        {
+          "path": "main.go",
+          "firstRecordedReadHash": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "matchesFirstRecordedRead": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of only files listed above; no candidate execution.",
+        "assessment": "No substantive defect found in the frozen partial output for valid README layer inputs by source inspection. The recursive merge code is plausible, but the attempt remains failed/incomplete and must not be relabeled completed based on code inspection.",
+        "logicLocations": [
+          {
+            "path": "logic.go",
+            "line": 3
+          },
+          {
+            "path": "logic.go",
+            "line": 19
+          },
+          {
+            "path": "logic.go",
+            "line": 25
+          },
+          {
+            "path": "logic.go",
+            "line": 27
+          },
+          {
+            "path": "logic.go",
+            "line": 29
+          },
+          {
+            "path": "logic.go",
+            "line": 31
+          },
+          {
+            "path": "logic.go",
+            "line": 34
+          }
+        ],
+        "substantiveBugsFound": [],
+        "bypassFound": false,
+        "bypassAssessment": "No skipped/disabled tests, TestMain/os.Exit manipulation, conditional test detection, answer lookup, dependency injection, hard-coded example dispatch, or source/test writes inside tests observed. Original public test, main and README bytes are identical across these three workspaces.",
+        "testAssessment": {
+          "path": "repro_test.go",
+          "addedCaseCount": 2,
+          "assertions": "Calls real solve and compares decoded structures with reflect.DeepEqual; expected values are literal public-contract cases.",
+          "covered": [
+            "README recursive merge with zero and empty-array replacement",
+            "nested null deletion"
+          ],
+          "gaps": [
+            "No before/after assertion that input layers remain unchanged",
+            "No direct false or empty-string replacement assertion",
+            "No nonempty array replacement or object/scalar transition assertion",
+            "No automated CLI contract assertion",
+            "Most JSON marshal/unmarshal errors are discarded in added tests; current literal inputs are valid by inspection"
+          ],
+          "lines": [
+            9,
+            12,
+            30,
+            36,
+            39,
+            55
+          ]
+        },
+        "scopeNote": "README requires a new output object and no mutation during merge; this review does not impose an unstated deep-clone/isolation guarantee for later caller mutation of returned arrays."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Read-only harness.trials.get solver tool receipts; not independently rerun or used as correctness oracle.",
+        "commands": [
+          {
+            "callId": "call_djtt72e8",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "go",
+            "argv": [
+              "test",
+              "./..."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-o5wxr3lmzlby34f7gqxwcsu5ep",
+            "error": ""
+          },
+          {
+            "callId": "call_xbpb6u2f",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "go",
+            "argv": [
+              "test",
+              "-v",
+              "repro_test.go",
+              "logic.go",
+              "main.go"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-vwk2ukqcpbmggjdhoqsehcvoqa",
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_byuq70ft",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "go",
+            "argv": [
+              "test",
+              "-v",
+              "."
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-5kehs36bdrogipqui3glfffzgn",
+            "error": ""
+          }
+        ],
+        "lastSuccessfulWriteSequence": 18,
+        "successfulPostWriteGoTestCallIds": [
+          "call_byuq70ft"
+        ],
+        "readonlyVerificationPresent": false,
+        "qualificationLimitation": "Every recorded command in this batch omitted readOnly and received readOnly:false. Existing exit-zero receipts are not read-only verification evidence. A completed tool test does not override an incomplete solver result."
+      }
+    }
+  ],
+  "summary": {
+    "reviewed": 3,
+    "completed": 2,
+    "failedIncomplete": 1,
+    "sourceCorrectnessBlockersFound": 0,
+    "testBypassFound": false,
+    "gaps": "Regression coverage remains incomplete, especially input non-mutation and CLI behavior. Candidate-1 remains failed/incomplete. All inspected command receipts are writable, not read-only verification."
+  },
+  "limitations": [
+    "No host import/execution of candidate code, compiler/test invocation, Docker/model operation or trial/candidate mutation.",
+    "Recorded dynamic receipts are historical execution observations only; no independent dynamic correctness test was performed in this review.",
+    "Original-file comparison uses first recorded read_file hashes when available and cross-trial byte equality, not hidden fixture/grader source.",
+    "No grading assertion text, expected answers, hidden tests, grader directories or optimization packets inspected or produced.",
+    "Review results are evidence for final independent qualification only, not new campaign lessons or instructions.",
+    "The baseline repeat-1 trial was running at initial resolution and was not inspected; subsequent trials require another terminal-only batch."
+  ]
+}

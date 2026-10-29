@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: qualified cost ratios require explicit complete accounting
+ok 1 - qualified cost ratios require explicit complete accounting
+  ---
+  duration_ms: 0.929792
+  type: 'test'
+  ...
+# Subtest: positive partial totals and legacy eligibility cannot establish cost compliance
+ok 2 - positive partial totals and legacy eligibility cannot establish cost compliance
+  ---
+  duration_ms: 0.112084
+  type: 'test'
+  ...
+# Subtest: invalid or unqualified measurements never render as authoritative ratios
+ok 3 - invalid or unqualified measurements never render as authoritative ratios
+  ---
+  duration_ms: 0.074833
+  type: 'test'
+  ...
+# Subtest: accounting audit events do not create execution nodes or displace real activity
+ok 4 - accounting audit events do not create execution nodes or displace real activity
+  ---
+  duration_ms: 1.803667
+  type: 'test'
+  ...
+# Subtest: graph uses only saved definition and labels unobserved branches without claiming traversal
+ok 5 - graph uses only saved definition and labels unobserved branches without claiming traversal
+  ---
+  duration_ms: 0.164
+  type: 'test'
+  ...
+# Subtest: runtime fan-out children are retained without invented prefix or chronological parent edges
+ok 6 - runtime fan-out children are retained without invented prefix or chronological parent edges
+  ---
+  duration_ms: 0.12675
+  type: 'test'
+  ...
+# Subtest: tool events group only by explicit identity and preserve unlinked failures
+ok 7 - tool events group only by explicit identity and preserve unlinked failures
+  ---
+  duration_ms: 0.466958
+  type: 'test'
+  ...
+# Subtest: legacy/event-only graph never fabricates a sequential path and reports display omissions
+ok 8 - legacy/event-only graph never fabricates a sequential path and reports display omissions
+  ---
+  duration_ms: 0.639834
+  type: 'test'
+  ...
+# Subtest: late graph reads and failures cannot replace the selected run; explicit retry is supported
+ok 9 - late graph reads and failures cannot replace the selected run; explicit retry is supported
+  ---
+  duration_ms: 0.205083
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71.675583

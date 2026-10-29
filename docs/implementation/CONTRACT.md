@@ -9,6 +9,7 @@ API methods:
 - `workspace.add`: {path,name?}; `workspace.pick`: native folder picker; `workspace.remove`: {id}.
 - `session.create`: {workspaceId,title?}; `session.get`: {id}; returns {session,messages,events}; `session.delete`: {id}.
 - `run.start`: {sessionId,prompt,agentId?,model?,attachments?:string[]}; `run.cancel`: {id}; `approval.respond`: {id,allow}.
+- `run.graph`: {id}; returns {runId,source:'checkpoint'|'events',workflow?:{id,name,nodes:[{id,type,label,position}],edges:[{id,source,target,condition?}]},reason?}. Read-only bounded diagram metadata from the run's frozen checkpoint, never the current editable workflow. Prompts and ADK snapshots are omitted. Missing legacy definitions yield explicitly labelled event-only graphs. Runtime tool outcomes can link to starts via `data.callId` / start `data.id`; fan-out children identify their declared parent via `data.parentNodeId`. Missing identities must not be inferred from ordering or node-name prefixes.
 - `file.list`: {workspaceId,path?}; `file.read`: {workspaceId,path}; `file.write`: {workspaceId,path,content,expectedHash}; `git.diff`: {workspaceId}.
 - `model.refresh`: {}; `model.pull`: {name}; `model.cancelPull`: {name}; `model.load`/`model.unload`/`model.delete`: {name}.
 - `agent.save`: {id?,name,instructions,model,maxSteps,mode}; `agent.delete`: {id}.

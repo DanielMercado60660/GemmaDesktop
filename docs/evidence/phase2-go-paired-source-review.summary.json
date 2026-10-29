@@ -1,0 +1,151 @@
+{
+  "recordedAt": "2026-10-28T04:27:02.407773+00:00",
+  "report": "docs/evidence/phase2-go-paired-source-review.json",
+  "reportSHA256": "50cf4b5e60d6804e732526981bb0494cbcd82854d425f1a0459f4c746965b181",
+  "scope": "24 terminal Go attempts, four public tasks \u00d7 two arms \u00d7 three repeats. Source inspection plus historical public solver receipts only; no hidden grader outcomes/assertions or independent candidate execution.",
+  "statusByArm": {
+    "baseline": {
+      "completed": 8,
+      "failed": 4
+    },
+    "candidate": {
+      "completed": 10,
+      "failed": 2
+    }
+  },
+  "statusTotal": {
+    "completed": 18,
+    "failed": 6
+  },
+  "failedAttempts": [
+    {
+      "trialId": "a7cce179e1b848be6709b2e95a46c6cb",
+      "taskId": "go-config",
+      "arm": "candidate",
+      "repeat": 1,
+      "status": "failed",
+      "incomplete": true,
+      "error": "model stopped without an answer or tool call"
+    },
+    {
+      "trialId": "8763e4b1e05bcadb63b8d1eeddd7342f",
+      "taskId": "go-config",
+      "arm": "baseline",
+      "repeat": 1,
+      "status": "failed",
+      "incomplete": true,
+      "error": "model response is incomplete: Ollama reached its generation length limit"
+    },
+    {
+      "trialId": "277f7139830e8696eec17adbe11d0a45",
+      "taskId": "go-config",
+      "arm": "baseline",
+      "repeat": 2,
+      "status": "failed",
+      "incomplete": false,
+      "error": "context deadline exceeded"
+    },
+    {
+      "trialId": "f65f9f9d52dbf7bfa42a8db9f22ad619",
+      "taskId": "go-intervals",
+      "arm": "candidate",
+      "repeat": 1,
+      "status": "failed",
+      "incomplete": true,
+      "error": "model response is incomplete: Ollama reached its generation length limit"
+    },
+    {
+      "trialId": "51c4e964edf9047e5aa5027b442334b5",
+      "taskId": "go-orders",
+      "arm": "baseline",
+      "repeat": 1,
+      "status": "failed",
+      "incomplete": true,
+      "error": "model response is incomplete: Ollama reached its generation length limit"
+    },
+    {
+      "trialId": "807cbd5a4cb2b49c980725874061242a",
+      "taskId": "go-usage",
+      "arm": "baseline",
+      "repeat": 0,
+      "status": "failed",
+      "incomplete": true,
+      "error": "model response is incomplete: Ollama reached its generation length limit"
+    }
+  ],
+  "protectedTestViolations": {
+    "count": 3,
+    "trials": [
+      {
+        "trialId": "5dc0cf5aad774592fbcde3dbd34f3744",
+        "taskId": "go-intervals",
+        "arm": "candidate",
+        "repeat": 2
+      },
+      {
+        "trialId": "19f287bcd7043fcb435c71dfe2fdd1d5",
+        "taskId": "go-orders",
+        "arm": "candidate",
+        "repeat": 1
+      },
+      {
+        "trialId": "7e88ecb6d1280438635f72692c5559b0",
+        "taskId": "go-usage",
+        "arm": "candidate",
+        "repeat": 0
+      }
+    ],
+    "meaning": "Three candidate attempts changed protected logic_test.go while preserving/expanding original assertions. Hash/accepted-operation evidence confirms integrity failures; no assertion weakening or intentional cheating inferred."
+  },
+  "sourceDefects": {
+    "unrepairedOriginalLogic": [
+      {
+        "trialId": "807cbd5a4cb2b49c980725874061242a",
+        "finding": "Usage baseline0 leaves original always-false filter; returns{} for qualifying input."
+      }
+    ],
+    "generatedTestBuildFailure": [
+      {
+        "trialId": "277f7139830e8696eec17adbe11d0a45",
+        "finding": "Config baseline2 generated invalid Go test syntax at regression_test.go:136 and timed out."
+      }
+    ],
+    "staticPendingOverflow": [
+      {
+        "trialId": "01b7af929f33ffa5380d3799ca9a0bd4",
+        "path": "logic.go",
+        "line": 17
+      },
+      {
+        "trialId": "f947f229824f07c7ec5bb71ee3b17b62",
+        "path": "logic.go",
+        "line": 14
+      }
+    ],
+    "overflowScope": "Both usage candidate1/2 accumulate into machine int. Public units have no upper bound. Two qualifying same-user units2^62 produce true total2^63 but signed int64 overflow gives negative2^63. Inputs and true sum are exactly representable float64; this is source-only inference. Independent Docker probe is pending and has NOT run."
+  },
+  "mandatoryReceiptEvidence": {
+    "trialsWithReadOnlyVerification": 0,
+    "reviewedTrials": 24,
+    "retainedCommandObservations": 192,
+    "readOnlyTrue": 0,
+    "readOnlyFalse": 191,
+    "readOnlyMissing": 1,
+    "meaning": "No reviewed trial contains the required readOnly:true verification receipt. One oversized historical observation lost data metadata; its readOnly value remains unknown. Writable exit-zero tests are not equivalent to the required verification. Original trace preserved; separate metadata fix is source-only."
+  },
+  "testQuality": {
+    "meaningful": "Most delivered tests invoke actual solve and assert literal public-contract results; later usage baseline1/baseline2/candidate2 explicitly test same-user addition. No skipped assertions or test-disabling mechanisms observed.",
+    "missingDeliverables": [
+      {
+        "trialId": "51c4e964edf9047e5aa5027b442334b5",
+        "finding": "Orders baseline1 failed length before successfully creating regressions."
+      },
+      {
+        "trialId": "807cbd5a4cb2b49c980725874061242a",
+        "finding": "Usage baseline0 failed length before successful source repair or added tests."
+      }
+    ],
+    "recurringGaps": "Input non-mutation and actual CLI behavior lack direct automated coverage; some tests duplicate original cases, some wrap solve without testing the CLI, and some timestamp cases cannot discriminate ordering mistakes. Coverage specifics remain per trial."
+  },
+  "qualificationConclusion": "This review establishes public-source/evidence findings only. 18 completed solver statuses are not18 qualified successes. Mandatory receipt failures,3 protected-file violations,6 terminal failures and source findings remain separate; no full grader pass or promotion recommendation is inferred. No campaign lessons or optimization packet generated."
+}

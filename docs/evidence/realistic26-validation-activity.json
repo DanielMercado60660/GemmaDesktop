@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-10-27T18:23:27.052924+00:00",
+  "runId": "bd7196397273815a251a1e073b9827f7",
+  "events": [
+    {
+      "createdAt": "2026-10-27T18:22:29.694005Z",
+      "data": {
+        "callId": "call_ol8fcfzy",
+        "error": "validating root: unexpected additional properties [\"expectedHash\"]",
+        "executed": false,
+        "stage": "schema_validation",
+        "truncated": false
+      },
+      "detail": "validating root: unexpected additional properties [\"expectedHash\"]",
+      "id": "ba2211838252d1d8c704ef7d5fb73d27",
+      "runId": "bd7196397273815a251a1e073b9827f7",
+      "title": "Invalid arguments: read_file",
+      "tool": "read_file",
+      "type": "tool_validation_failed"
+    }
+  ],
+  "scope": "Actual26B run activity; proposals rejected before host execution, no task-completion claim"
+}

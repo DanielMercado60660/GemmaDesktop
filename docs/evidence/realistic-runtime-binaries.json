@@ -1,0 +1,60 @@
+{
+  "recordedAt": "2026-10-27T18:26:11.263417+00:00",
+  "binaries": [
+    {
+      "binary": ".runtime/gemma-realistic-candidate",
+      "sha256": "65bd46a315f02e5f28ac5491a687a0871bc665d9bc6614986fc2ec527c4f0841",
+      "bytes": 50808594
+    },
+    {
+      "binary": ".runtime/gemma-realistic-candidate4",
+      "sha256": "0d5fe8506e29aa7319aef5a45fc52032aa42e1da5020e8fcb152753a121a4c9a",
+      "bytes": 50858178
+    },
+    {
+      "binary": ".runtime/gemma-realistic-final",
+      "sha256": "b2bbc00fad661843ccd42738174afcb8ce6c00043789ec377109a3887dd4c5b5",
+      "bytes": 50841650
+    },
+    {
+      "binary": ".runtime/gemma-realistic-recovery",
+      "sha256": "91281d081c47ad27c5b107bd9de499feecdb5f8c568db0a1f888ed6c867831c1",
+      "bytes": 50858178
+    },
+    {
+      "binary": ".runtime/gemma-realistic-controls",
+      "sha256": "9c0ad05b996a6a23ac220f9cc5bdffdd1cc6d3e98cd2a0c74427b6596c62b0d7",
+      "bytes": 50874690
+    },
+    {
+      "binary": "dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop",
+      "sha256": "f373d387a17eb2b810c1f2a56f99634ecdf8f5c733df3488d751976cf7d1ca4f",
+      "bytes": 50579088
+    },
+    {
+      "binary": "dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop",
+      "sha256": "837781851ac7df72927d2bc47e84b01d2f9e2f0b814cff0c5180ab605b8561be",
+      "bytes": 50579088,
+      "note": "Rebuilt with incomplete-replay fix; used for review follow-up"
+    },
+    {
+      "binary": "dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop",
+      "sha256": "a67aba5e23ebeee93569584e3c887978343f106d06c5cdfb089a70d65f73d786",
+      "bytes": 50579088,
+      "note": "Sampling and empty-response fixes; used for temperature1.0 follow-up"
+    },
+    {
+      "binary": "dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop",
+      "sha256": "7fdf4a2a8a2806e332c30abe9c029fdf3a86ac28c0ddc853d309cbfc9b06f1ee",
+      "bytes": 50579088,
+      "note": "Used for fresh26B qualification; validation event observer, historical outcome labels, fanout roundtrip fix. Later JSON text-input attributes are frontend-only and pending final package."
+    },
+    {
+      "binary": "dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop",
+      "sha256": "3ed2104275adc6cce55d5e438f24a7c89feebe2f25e63b2e3b71d542a1c61994",
+      "bytes": 50579088,
+      "note": "Final package: same backend as26Btrial, plus nativeJSON text-input attributes and recorded-model labels."
+    }
+  ],
+  "note": "Distinct local qualification binaries; source changes between attempts are described in STATUS.md. These hashes identify tested executables, not a hermetic source attestation."
+}

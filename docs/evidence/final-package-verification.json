@@ -1,0 +1,13 @@
+{
+  "verifiedAt": "2026-10-27T18:27:59.447711+00:00",
+  "bundle": "dist/Gemma Desktop.app",
+  "archive": "dist/GemmaDesktop-local.zip",
+  "archiveSHA256": "a35eb7e06777b8a5737eb481eeba737bb7366a54214d17d2394365ee341eceb3",
+  "binarySHA256": "3ed2104275adc6cce55d5e438f24a7c89feebe2f25e63b2e3b71d542a1c61994",
+  "sourceFingerprint": "1c14e048268205de96f17ed1b33b4ab22f41de88f063b96386a75b31b6630d23",
+  "frontendFingerprint": "3286d94aaef6096cd05237be093d87cecdef9aa67f798e0c0d1b62bce56cf93c",
+  "inputsVerifiedUnchanged": true,
+  "signature": "codesign --verify --deep --strict passed; local ad-hoc, not notarized",
+  "qualificationBinaryManifest": "realistic26-build-info.json",
+  "note": "Final package adds recorded-model labels and native JSON-input attributes to the frontend after fresh26B server launch; backend sources are unchanged from the qualification binary."
+}

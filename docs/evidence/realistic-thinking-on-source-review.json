@@ -1,0 +1,25 @@
+{
+  "reviewedAt": "2026-10-27T18:19:06.470937+00:00",
+  "report": "realistic-followup-20261027-131035-4786f6c9.json",
+  "fileHashes": {
+    "tracker/repository.py": "25a7abf2d91f93cc8bedd59ac34a95d1620d9c8d9b0b0b671a99c14c468fa6e0",
+    "tracker/csv_export.py": "8f46132512cdb70d69e9b0f722d93326ebb3ac57fd45b2f40ff1e7f9fe3907d5",
+    "tracker/service.py": "dbfe68cd75b994c663a455a7d503aad53725ed544a17855fbaf4528ac74189f2",
+    "tests/test_regressions.py": "62c3a23a85f150e3b7ce52c2805a1cecf5040c46b38eef947069330fee285c99"
+  },
+  "testResults": {
+    "public": 14,
+    "independent": 9,
+    "bothPass": true
+  },
+  "review": [
+    "Multiline CSV tests now parse actual file streams and retain exact title assertions.",
+    "The150-row export regression meaningfully exceeds public pagination limit; invalid status and Unicode checks are present.",
+    "Arbitrary export cap removed; service requests all matching repository rows.",
+    "Duplicate TaskRepository definitions and count method remain in repository.py.",
+    "Duplicate RegressionTests definitions and four unittest.main guards remain; later class retains the earlier two assertions, but dead duplicate code should be cleaned.",
+    "No protected-test changes or dynamic test monkeypatching observed.",
+    "No successful prescribed command was recorded by Gemma after the edits; cancelled deadline prevents end-to-end acceptance."
+  ],
+  "qualification": "failed; functional acceptance passes but completion/verification and source cleanup remain unqualified"
+}

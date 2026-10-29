@@ -1,0 +1,6 @@
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+    native_status_test.go:110: status=awaiting_codex, want running: <nil>
+--- FAIL: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.02s)
+FAIL
+FAIL	gemmadesktop.local/app/internal/harness	0.265s
+FAIL

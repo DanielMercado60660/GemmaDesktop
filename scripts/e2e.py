@@ -5,6 +5,7 @@ Only approves writes inside this generated fixture and the prescribed Python
 test command. All evidence is saved; execution failure raises rather than passes.
 """
 import json, os, pathlib, subprocess, sys, time, urllib.request, urllib.error
+from evidence_helpers import conversation
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BASE = os.environ.get('GEMMA_TEST_URL', 'http://127.0.0.1:8787')
 WORK = ROOT / '.runtime' / ('e2e-' + time.strftime('%Y%m%d-%H%M%S'))
@@ -44,7 +45,7 @@ while time.time()<deadline:
 else:
     api('run.cancel',{'id':run['id']});raise RuntimeError('Live agent exceeded test deadline')
 after=subprocess.run([sys.executable,'-m','unittest','-v'],cwd=WORK,capture_output=True,text=True)
-evidence={'createdAt':time.strftime('%Y-%m-%dT%H:%M:%S%z'),'workspace':str(WORK),'run':current,'runtime':state['runtime'],'models':state['models'],'decisions':decisions,'before':{'exitCode':before.returncode,'output':before.stdout+before.stderr},'after':{'exitCode':after.returncode,'output':after.stdout+after.stderr},'conversation':api('session.get',{'id':session['id']}),'artifacts':[a for a in state['artifacts'] if a.get('runId')==run['id']]}
+evidence={'createdAt':time.strftime('%Y-%m-%dT%H:%M:%S%z'),'workspace':str(WORK),'run':current,'runtime':state['runtime'],'models':state['models'],'decisions':decisions,'before':{'exitCode':before.returncode,'output':before.stdout+before.stderr},'after':{'exitCode':after.returncode,'output':after.stdout+after.stderr},'conversation':conversation(api,session['id']),'artifacts':[a for a in state['artifacts'] if a.get('runId')==run['id']]}
 out=ROOT/'docs/evidence';out.mkdir(parents=True,exist_ok=True)
 (out/'live-coding-task.json').write_text(json.dumps(evidence,indent=2))
 print(json.dumps({'status':current['status'],'testsExitCode':after.returncode,'runId':run['id'],'evidence':str(out/'live-coding-task.json')},indent=2))

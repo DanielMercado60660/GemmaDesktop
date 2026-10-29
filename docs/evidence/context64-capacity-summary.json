@@ -1,0 +1,16 @@
+{
+  "promptTokens": 55457,
+  "preflightPromptTokens": 55457,
+  "elapsedSeconds": 112.035,
+  "markersRecalled": [
+    true,
+    true,
+    true
+  ],
+  "samples": 24,
+  "minReportedFreePercentage": 39,
+  "swapUsedStartMiB": 139.19,
+  "swapUsedEndMiB": 139.19,
+  "swapUsedPeakMiB": 139.19,
+  "scope": "Single raw Ollama capacity/recall probe; no ADK or tools. Not full-window or coding qualification."
+}

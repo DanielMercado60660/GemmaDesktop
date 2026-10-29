@@ -1,0 +1,13 @@
+{
+  "format": "gemma-harness-export-v1",
+  "payloadHash": "14db69457bb84ee33c0fda2cb36384b49d9d447c87db1d288bdbc0d5a2efdaa3",
+  "repeatExportStable": true,
+  "artifactSHA256": "fe1c88a525cc7d00c29833b4d7ef8719e894b5c97b0b1ed3e7da48e57ee53fc4",
+  "artifactBytes": 310711,
+  "artifactMode": "0o400",
+  "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+  "trialCount": 4,
+  "packetCount": 4,
+  "lessonCount": 2,
+  "heldOutEvaluationStarted": false
+}

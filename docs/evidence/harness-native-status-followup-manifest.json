@@ -1,0 +1,23 @@
+{
+  "createdAt": "2026-10-28T00:18:20.245101+00:00",
+  "scope": "Source-only native experiment status metadata correction. No packaged binary or resources rebuilt; campaign continues with immutable binary identified by parent as 42bd... . Live campaign evidence must not be attributed to this follow-up source.",
+  "productionFiles": [
+    {
+      "path": "internal/harness/packets.go",
+      "beforeSha256": "7b7342c8bcd2d418fdfb55277f20658648f55d5bff1820d1a69c1b4f75fcff69",
+      "afterSha256": "cb4bdc62240ebf50aa3309a90cc54cfeef66490e6c186a203db93e4d8b1074d1"
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "internal/harness/native_status_test.go",
+      "sha256": "d1a6feffa872c9202a4719c3ffdf7537b94fa70f6e8b0446f1601c9fc1aa2c8c"
+    }
+  ],
+  "diff": "docs/evidence/harness-native-status-followup.patch",
+  "regressionBefore": "docs/evidence/harness-native-status-before-tests.txt",
+  "regressionAfter": "docs/evidence/harness-native-status-followup-tests.txt",
+  "inference": false,
+  "runtimeDataModified": false,
+  "frontendModified": false
+}

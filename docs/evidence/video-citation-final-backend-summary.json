@@ -1,0 +1,35 @@
+{
+  "testsPassed": 368,
+  "topLevelTestsPassed": 163,
+  "packagesPassed": [
+    "gemmadesktop.local/app/internal/browser",
+    "gemmadesktop.local/app/internal/mcp",
+    "gemmadesktop.local/app/internal/workflow",
+    "gemmadesktop.local/app/internal/workspace",
+    "gemmadesktop.local/app/internal/store",
+    "gemmadesktop.local/app/internal/inference",
+    "gemmadesktop.local/app/internal/engine",
+    "gemmadesktop.local/app/internal/execution",
+    "gemmadesktop.local/app/internal/tools",
+    "gemmadesktop.local/app/internal/media",
+    "gemmadesktop.local/app/internal/app"
+  ],
+  "skippedTests": [
+    "TestLiveChrome",
+    "TestLiveOllamaRejectsContextOverflow",
+    "TestLiveOllamaToolAndSnapshot",
+    "TestChangesCombineHEADAndNewTextSafely",
+    "TestChangesUnbornAndCleanRepositories",
+    "TestChangesBoundLargeAndNumerousNewFiles",
+    "TestChangesBoundsTrackedOutput",
+    "TestChangesQuotedExecutableWithoutFinalNewline",
+    "TestSeatbeltQualification",
+    "TestSandboxGitProtectedDiff",
+    "TestRealUserTerminal",
+    "TestNoisyCommandKeepsStructuredFailure",
+    "TestReadOnlySQLiteTestsUsePrivateTemporaryDirectory",
+    "TestNestedPythonSQLiteWorkflow",
+    "TestCancellationAfterProcessGroupChange"
+  ],
+  "failures": []
+}

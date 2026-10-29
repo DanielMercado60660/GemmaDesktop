@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "reviewer": {
+    "kind": "codex",
+    "identity": "/root/ollama_model_research",
+    "role": "independent source reviewer; distinct from correction authors and Harness proposer"
+  },
+  "reviewedAt": "2026-10-28T03:25:07.138462+00:00",
+  "verdict": "no blocking defect found in the reviewed source-only corrections",
+  "blockingFindings": [],
+  "scope": {
+    "metricManifest": {
+      "path": "docs/evidence/phase2-metric-accounting-followup-manifest.v2.json",
+      "sha256": "2ded699cf18f878f78c1194b8b18ffc221c76330966177b285f712e4f3945261"
+    },
+    "observationManifest": {
+      "path": "docs/evidence/phase2-harness-observation-metadata/manifest.json",
+      "sha256": "edf951f4da4a8bac6e39116abf9b4fad8a60df617a492b44f71f93f09a50b0ee"
+    },
+    "supersededV1Preserved": true,
+    "sourceHashesChecked": 24,
+    "sourceHashMismatches": [],
+    "productionSourceModified": false,
+    "distRebuilt": false,
+    "liveInference": false,
+    "docker": false,
+    "campaignDataReadOrModified": false,
+    "candidateCodeImported": false,
+    "hiddenGraderAssertionsRead": false
+  },
+  "confirmedBehavior": [
+    {
+      "topic": "Provider receipt completeness and failure paths",
+      "finding": "Each attempted Chat records an attempt before dispatch. The terminal envelope observer records both explicit nonnegative counter presence and observed values before message/tool parsing or consumer cancellation. Missing terminal receipts remain unknown/partial even when prior generations have positive totals; explicit zero differs from absent. Rejected payload, length, duplicate-ID, terminal provider-error and cancellation-after-terminal paths retain terminal receipts once.",
+      "sources": [
+        {
+          "path": "internal/inference/client.go",
+          "sha256": "45552b74f79f712506482e6a317846a3ee76cbe639e98e19c0fb5fd020ab1ea9",
+          "lines": [
+            224
+          ],
+          "match": "observeReceipt ...func(ChatChunk)"
+        },
+        {
+          "path": "internal/inference/client.go",
+          "sha256": "45552b74f79f712506482e6a317846a3ee76cbe639e98e19c0fb5fd020ab1ea9",
+          "lines": [
+            276
+          ],
+          "match": "countsPresent :="
+        },
+        {
+          "path": "internal/engine/usage_accounting.go",
+          "sha256": "3dd26b3a05e76c3821171b764758b61ee1b9ff6c473fd89d604090785eec2d2e",
+          "lines": [
+            31
+          ],
+          "match": "func beginProviderUsage"
+        },
+        {
+          "path": "internal/engine/adapter.go",
+          "sha256": "496c9a5f90f28f7fda4ccd35ef9c57f9b67dc00ff43c74c34724f19f35ab41f4",
+          "lines": [
+            192
+          ],
+          "match": "recordReceipt := beginProviderUsage"
+        }
+      ]
+    },
+    {
+      "topic": "Once-only aggregation",
+      "finding": "Invocation-local ledger replaces usage accumulation from replayable ADK events. Empty retry receipts and summary generations share that ledger. Child invocation receipts are attached to the parent once; workflow checkpoints separately retain prior aggregate receipts and unknown legacy contributions. Controlled cancellation waits for nested callback unwind before final accounting. Focused tests exercise real fake-provider nested calls, summary, retry and workflow resume.",
+      "sources": [
+        {
+          "path": "internal/engine/engine.go",
+          "sha256": "12f9d8203d18840a8dd398439879d3795756011e96c00357ca0dc2268122bcbb",
+          "lines": [
+            309
+          ],
+          "match": "result.Usage, result.TokenAccounting = ledger.usage, ledger.accounting"
+        },
+        {
+          "path": "internal/engine/skill_activity.go",
+          "sha256": "aceb862b318faa96cad433590cad7a55b691011220f6fcf7b2ae51ae8c2dfe83",
+          "lines": [
+            64
+          ],
+          "match": "func AccountNestedUsage"
+        },
+        {
+          "path": "internal/app/delegation.go",
+          "sha256": "59a734461dfbc30c2b160744a485879993a369cd089346de55b89f05b9b29e58",
+          "lines": [
+            184
+          ],
+          "match": "engine.AccountNestedUsage"
+        },
+        {
+          "path": "internal/workflow/workflow.go",
+          "sha256": "8a3631ef17162b6d54e10c57dd42a25139e9dbce13fac496dbef2aa5dd1786de",
+          "lines": [
+            565
+          ],
+          "match": "recordUsage(result.Usage, result.TokenAccounting)"
+        }
+      ]
+    },
+    {
+      "topic": "Reviewability versus activation",
+      "finding": "Shared evidence verifier requires unchanged output hashes and matching observed token total/accounting but does not require complete measurements. Truthful rejected reviews of unchanged legacy/partial evidence and idempotent resubmission remain possible. Promote separately recomputes the current paired gate, rejecting legacy/partial/malformed measurement evidence even when saved old eligibility and independent approval say otherwise. Failed trials remain in denominators; invalid comparisons produce no supported ratios.",
+      "sources": [
+        {
+          "path": "internal/harness/evaluation.go",
+          "sha256": "f0337b75641d85a1bd50e78c624109e49f5f85738a8f3d132034bfd94d8c601e",
+          "lines": [
+            376
+          ],
+          "match": "func (m *Manager) verifyEvaluationOutputs"
+        },
+        {
+          "path": "internal/harness/evaluation.go",
+          "sha256": "f0337b75641d85a1bd50e78c624109e49f5f85738a8f3d132034bfd94d8c601e",
+          "lines": [
+            323
+          ],
+          "match": "if !EvaluateGate(v.Results, currentTasks).Eligible"
+        },
+        {
+          "path": "internal/harness/evaluation.go",
+          "sha256": "f0337b75641d85a1bd50e78c624109e49f5f85738a8f3d132034bfd94d8c601e",
+          "lines": [
+            273
+          ],
+          "match": "g.CostComparisonValid ="
+        },
+        {
+          "path": "internal/harness/packets.go",
+          "sha256": "9e777a8df435eabfd9245e250d30ef3ffe718cc1df6f6b9436a0a05d786e07be",
+          "lines": [
+            109
+          ],
+          "match": "m.verifyEvaluationOutputs(evaluation)"
+        }
+      ]
+    },
+    {
+      "topic": "Oversized command observation integrity",
+      "finding": "Only durable oversized command observations receive the bounded fixed-field metadata projection. The returned model content/data map remains unchanged. Exact numeric exitCode and boolean flags are retained from JSON-normalized host results; absent/invalid fields are omitted, never defaulted to success. The verifier uses exitCode default -1 and explicit readOnly argument. Error text and sequence ordering remain outside the projection and unchanged. No stdout/stderr/body is copied into metadata. Change summaries and omitted-field/count flags remain bounded and explicit. Synthetic typed exit0, nonzero and writable observations preserve the intended verification predicate after serialization.",
+      "sources": [
+        {
+          "path": "internal/app/harness_solver.go",
+          "sha256": "b0df19e90be25eedb32e130ffb890a31d4c171696a8720fbbe1250cdbb105e0b",
+          "lines": [
+            165
+          ],
+          "match": "entry = boundHarnessObservation(entry)"
+        },
+        {
+          "path": "internal/app/harness_observation.go",
+          "sha256": "16a14c8ac21b551af42d3210e3e2c11e4333917028fb6d054dcdeacb3a603c56",
+          "lines": [
+            19
+          ],
+          "match": "func boundHarnessObservation"
+        },
+        {
+          "path": "internal/app/harness_observation.go",
+          "sha256": "16a14c8ac21b551af42d3210e3e2c11e4333917028fb6d054dcdeacb3a603c56",
+          "lines": [
+            35
+          ],
+          "match": "func harnessCommandObservationMetadata"
+        },
+        {
+          "path": "internal/app/harness_grader.go",
+          "sha256": "b51fa69e5bf3b7a0d85df8ebd03165598295e6508c685b9676d05db0908076a2",
+          "lines": [
+            212
+          ],
+          "match": "number(call.Data, \"exitCode\", -1) == 0"
+        }
+      ]
+    },
+    {
+      "topic": "Presentation and audit retention",
+      "finding": "Frontend displays ratios and activation affordance only with explicit complete qualified cost fields and finite positive ratios. Legacy/partial records show uncertainty. New token-accounting events stay in the raw journal while presentation SQL, App activity and execution graph exclude them; pagination test verifies they do not starve visible events.",
+      "sources": [
+        {
+          "path": "frontend/src/lib/harnessCost.ts",
+          "sha256": "40ddf7b864c90fe2368056c0368c22530dd2fc251270c04599d28a6aac7f51a3",
+          "lines": [
+            8
+          ],
+          "match": "export function hasQualifiedCostComparison"
+        },
+        {
+          "path": "frontend/src/HarnessWorkbench.tsx",
+          "sha256": "e2c3012166644e66440b397c291350c6c885b54d76f792525532b491893de26e",
+          "lines": [
+            599
+          ],
+          "match": "v.gate?.eligible && hasQualifiedCostComparison"
+        },
+        {
+          "path": "internal/store/event_page.go",
+          "sha256": "461fa2f80413bf50cb7239a2b0b78181d061ae828a7e1ad89c7315cf2370bdd4",
+          "lines": [
+            31,
+            70
+          ],
+          "match": "token_accounting"
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "sha256": "b48a33fa7079ac8e54bd3bc11f9971b011157990cc3498601e36f055796c24ff",
+          "lines": [
+            320,
+            1560
+          ],
+          "match": "token_accounting"
+        },
+        {
+          "path": "frontend/src/lib/runGraph.ts",
+          "sha256": "4f416a6db48bafdc8b8517826ae7a27dffb72d06db2fd6bb6b1c067db85950e4",
+          "lines": [
+            99
+          ],
+          "match": "token_accounting"
+        }
+      ]
+    }
+  ],
+  "independentValidation": {
+    "backend": {
+      "path": "docs/evidence/phase2-accounting-independent-tests.local-fixtures.jsonl",
+      "sha256": "cfe12e4141ae71277ec04f7c54f5a2e87aa4fc67cc61b86e0527f4d0006a6d9c",
+      "race": true,
+      "topLevelPasses": 21,
+      "passesIncludingSubtests": 51,
+      "failures": 0,
+      "skips": 0,
+      "packages": [
+        "gemmadesktop.local/app/internal/inference",
+        "gemmadesktop.local/app/internal/workflow",
+        "gemmadesktop.local/app/internal/harness",
+        "gemmadesktop.local/app/internal/app",
+        "gemmadesktop.local/app/internal/engine",
+        "gemmadesktop.local/app/internal/store"
+      ],
+      "method": "Focused deterministic fixtures with fake HTTP provider streams, local temporary repositories and stores; no live model or Docker."
+    },
+    "frontend": {
+      "path": "docs/evidence/phase2-accounting-independent-ui-tests.txt",
+      "sha256": "dc15cc6952abd7964bcfbee96e65df075bd9bac23af173c02ec3b1292d99640f",
+      "passed": 9,
+      "failed": 0,
+      "method": "Node tests for harness cost qualification and execution-graph event filtering; no dist build."
+    },
+    "initialRestrictedAttempt": {
+      "path": "docs/evidence/phase2-accounting-independent-tests.jsonl",
+      "sha256": "b92c3d134a2a239bc6523cb57bf910cc0d5e6396422ed3ad995e47531ec7af0c",
+      "outcome": "Some fixtures could not bind httptest loopback ports under sandbox; failed with operation not permitted. Approved local-listener rerun above passed. Initial evidence preserved; not classified as production failure."
+    }
+  },
+  "limits": [
+    "This is source-only verification. The packaged 0.2.0 binary and active 72-trial campaign still use the original frozen build; no fix or passed regression is attributed retroactively to their outcomes.",
+    "The frozen campaign positive partial token totals remain observed lower bounds, not complete cost evidence. Independent promotion must not approve unsupported complete-cost claims regardless of any saved old eligible gate.",
+    "Complete means every attempted generation has a terminal provider receipt with both explicit nonnegative token counts. It is receipt completeness, not independently measured physical compute, provider counter accuracy, elapsed-cost decomposition or proof that the task succeeded.",
+    "Failures before provider dispatch may conservatively leave an unknown attempted-generation contribution; this fails closed rather than guessing zero consumption.",
+    "Abrupt interruption and legacy records do not gain inferred accounting. Historical observation metadata lost by the old truncation behavior is not reconstructed.",
+    "Metadata verification uses synthetic typed execution results and the actual verifier; this review ran no real process-tree or inference qualification.",
+    "No promotion verdict or unfinished campaign outcome is inferred from this source review."
+  ]
+}

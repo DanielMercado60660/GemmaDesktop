@@ -1,0 +1,26 @@
+=== RUN   TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity
+--- PASS: TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity (0.01s)
+=== RUN   TestLessonVersionsCompatibilityAndPacketSnapshot
+--- PASS: TestLessonVersionsCompatibilityAndPacketSnapshot (0.01s)
+=== RUN   TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets
+--- PASS: TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets (0.03s)
+=== RUN   TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted
+--- PASS: TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted (0.03s)
+=== RUN   TestDeepFixturesRequireMultipleSourceFeatures
+--- PASS: TestDeepFixturesRequireMultipleSourceFeatures (0.01s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestSubmittedReflectionRetryRepairsMissingLessonHead
+--- PASS: TestSubmittedReflectionRetryRepairsMissingLessonHead (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.12s)
+=== RUN   TestImmutablePermissionSurfaceAndAuthorSeparation
+--- PASS: TestImmutablePermissionSurfaceAndAuthorSeparation (0.01s)
+=== RUN   TestFixtureSplitAndOracleSeparation
+--- PASS: TestFixtureSplitAndOracleSeparation (0.01s)
+=== RUN   TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement
+--- PASS: TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement (0.00s)
+=== RUN   TestHeldoutExposureAcrossExperiments
+--- PASS: TestHeldoutExposureAcrossExperiments (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.455s

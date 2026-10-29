@@ -1,0 +1,35 @@
+Evaluation (not started): not_started
+Recorded 0/72; passed 0; not passed 0; infrastructure/integrity failures 0
+Scope / arm                         pass / recorded / expected    median seconds / tokens
+all / baseline                       0 /  0 / 36             — / —
+all / candidate                      0 /  0 / 36             — / —
+heldout / baseline                   0 /  0 / 18             — / —
+heldout / candidate                  0 /  0 / 18             — / —
+validation / baseline                0 /  0 / 18             — / —
+validation / candidate               0 /  0 / 18             — / —
+go-config / baseline                 0 /  0 /  3             — / —
+go-config / candidate                0 /  0 /  3             — / —
+go-intervals / baseline              0 /  0 /  3             — / —
+go-intervals / candidate             0 /  0 /  3             — / —
+node-config / baseline               0 /  0 /  3             — / —
+node-config / candidate              0 /  0 /  3             — / —
+node-intervals / baseline            0 /  0 /  3             — / —
+node-intervals / candidate           0 /  0 /  3             — / —
+python-config / baseline             0 /  0 /  3             — / —
+python-config / candidate            0 /  0 /  3             — / —
+python-intervals / baseline          0 /  0 /  3             — / —
+python-intervals / candidate         0 /  0 /  3             — / —
+go-orders / baseline                 0 /  0 /  3             — / —
+go-orders / candidate                0 /  0 /  3             — / —
+go-usage / baseline                  0 /  0 /  3             — / —
+go-usage / candidate                 0 /  0 /  3             — / —
+node-orders / baseline               0 /  0 /  3             — / —
+node-orders / candidate              0 /  0 /  3             — / —
+node-usage / baseline                0 /  0 /  3             — / —
+node-usage / candidate               0 /  0 /  3             — / —
+python-orders / baseline             0 /  0 /  3             — / —
+python-orders / candidate            0 /  0 /  3             — / —
+python-usage / baseline              0 /  0 /  3             — / —
+python-usage / candidate             0 /  0 /  3             — / —
+Saved promotion gate: not available until evaluation completes
+Failed/incomplete attempts remain included. These are recorded medians, not forecasts; eligibility does not mean activation.

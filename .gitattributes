@@ -1,0 +1,6 @@
+# Keep research artifacts available without dominating language statistics/diffs.
+docs/evidence/** linguist-generated=true -whitespace
+third_party/** linguist-vendored=true
+*.png binary
+*.icns binary
+*.jpg binary

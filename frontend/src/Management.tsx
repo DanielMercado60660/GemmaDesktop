@@ -23,8 +23,21 @@ import {
   AlertTriangle,
   Check,
 } from "lucide-react";
-import type { Agent, MCPServer, State } from "./types";
+import type { Agent, Artifact, MCPServer, State } from "./types";
+import { api } from "./bridge";
+import {
+  createArtifactLoader,
+  artifactContent,
+  type ArtifactPreviewState,
+} from "./lib/artifactPreview";
+import { useConfirmation } from "./components/Confirmation";
 import { modelMemoryGuidance } from "./lib/runtimeMetrics";
+import { agentProfileDraft, agentSavePayload } from "./lib/agentProfile";
+import { isCompletionModel } from "./lib/modelCapabilities";
+import ExecutionSettings from "./components/ExecutionSettings";
+import HarnessWorkbench from "./HarnessWorkbench";
+import Capabilities, { CapabilitySelector } from "./Capabilities";
+import MCPSignIn from "./components/MCPSignIn";
 const CodeEditor = lazy(() => import("./components/CodeEditor"));
 import {
   Button,
@@ -51,14 +64,39 @@ function JsonDetails({ value }: { value: unknown }) {
 }
 
 export function AgentsPage({ state, action }: PageProps) {
+  const confirmAction = useConfirmation();
   const [editing, setEditing] = useState<Partial<Agent> | null>(null),
-    [saving, setSaving] = useState(false);
+    [saving, setSaving] = useState(false),
+    [formError, setFormError] = useState("");
+  function openEditor(agent: Partial<Agent>) {
+    setFormError("");
+    setEditing(agentProfileDraft(agent));
+  }
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (!editing) return;
+    setFormError("");
     setSaving(true);
-    const r = await action("agent.save", editing);
-    setSaving(false);
-    if (r !== undefined) setEditing(null);
+    try {
+      if (
+        !isCompletionModel(
+          state.models.find((m) => m.name === editing.model) || {
+            name: editing.model || state.settings.defaultModel,
+          },
+        )
+      )
+        throw new Error(
+          "Choose a local completion model for this agent. Embedding models build indexes and cannot answer chat requests.",
+        );
+      const r = await action("agent.save", agentSavePayload(editing));
+      if (r !== undefined) setEditing(null);
+    } catch (error) {
+      setFormError(
+        error instanceof Error ? error.message : "Could not save agent.",
+      );
+    } finally {
+      setSaving(false);
+    }
   }
   return (
     <div className="page-scroll">
@@ -70,7 +108,7 @@ export function AgentsPage({ state, action }: PageProps) {
           <Button
             variant="default"
             onClick={() =>
-              setEditing({
+              openEditor({
                 name: "",
                 instructions: "",
                 model: state.settings.defaultModel,
@@ -96,7 +134,7 @@ export function AgentsPage({ state, action }: PageProps) {
                   <Button
                     size="icon"
                     variant="ghost"
-                    onClick={() => setEditing({ ...a })}
+                    onClick={() => openEditor(a)}
                     aria-label={`Edit ${a.name}`}
                   >
                     <Pencil size={15} />
@@ -104,10 +142,17 @@ export function AgentsPage({ state, action }: PageProps) {
                   <Button
                     size="icon"
                     variant="ghost"
-                    onClick={() =>
-                      confirm(`Delete agent “${a.name}”?`) &&
-                      action("agent.delete", { id: a.id })
-                    }
+                    onClick={async () => {
+                      if (
+                        await confirmAction({
+                          title: "Delete agent?",
+                          description: `Delete “${a.name}” from your agent configurations?`,
+                          confirmLabel: "Delete agent",
+                          danger: true,
+                        })
+                      )
+                        await action("agent.delete", { id: a.id });
+                    }}
                     aria-label={`Delete ${a.name}`}
                   >
                     <Trash2 size={15} />
@@ -137,7 +182,7 @@ export function AgentsPage({ state, action }: PageProps) {
           action={
             <Button
               onClick={() =>
-                setEditing({
+                openEditor({
                   name: "",
                   instructions: "",
                   model: state.settings.defaultModel,
@@ -152,6 +197,7 @@ export function AgentsPage({ state, action }: PageProps) {
           }
         />
       )}
+      <Capabilities state={state} action={action} />
       <Modal
         open={!!editing}
         onClose={() => setEditing(null)}
@@ -188,12 +234,21 @@ export function AgentsPage({ state, action }: PageProps) {
                 }
               >
                 <option value="">Application default</option>
-                {state.models.map((m) => (
+                {state.models.filter(isCompletionModel).map((m) => (
                   <option key={m.name}>{m.name}</option>
                 ))}
                 {editing?.model &&
-                  !state.models.some((m) => m.name === editing.model) && (
-                    <option>{editing.model}</option>
+                  !state.models.some(
+                    (m) => m.name === editing.model && isCompletionModel(m),
+                  ) && (
+                    <option
+                      disabled={state.models.some(
+                        (m) =>
+                          m.name === editing.model && !isCompletionModel(m),
+                      )}
+                    >
+                      {editing.model}
+                    </option>
                   )}
               </select>
             </Field>
@@ -209,15 +264,93 @@ export function AgentsPage({ state, action }: PageProps) {
               />
             </Field>
           </div>
-          <Field label="Execution mode">
-            <select
-              value={editing?.mode || "approval"}
-              onChange={(e) => setEditing({ ...editing, mode: e.target.value })}
+          <div className="form-grid">
+            <Field
+              label="Thinking"
+              hint="Model default preserves the runtime setting. Support depends on the selected model."
             >
-              <option value="approval">Ask before changes</option>
-              <option value="read-only">Read only</option>
-            </select>
-          </Field>
+              <select
+                value={editing?.thinking ?? "auto"}
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    thinking: e.target.value as Agent["thinking"],
+                  })
+                }
+              >
+                <option value="auto">Model default</option>
+                <option value="on">On</option>
+                <option value="off">Off</option>
+              </select>
+            </Field>
+            <Field
+              label="Response token limit"
+              hint="Includes thinking when supported by the model. Reaching the limit stops the run as incomplete."
+            >
+              <input
+                type="number"
+                required
+                min={256}
+                max={32768}
+                step={1}
+                value={
+                  Number.isNaN(editing?.maxOutputTokens)
+                    ? ""
+                    : (editing?.maxOutputTokens ?? 8192)
+                }
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    maxOutputTokens: e.target.valueAsNumber,
+                  })
+                }
+              />
+            </Field>
+          </div>
+          <div className="form-grid">
+            <Field
+              label="Temperature"
+              hint="Controls sampling variation. Use the model publisher’s recommendation when available."
+            >
+              <input
+                type="number"
+                required
+                min={0}
+                max={2}
+                step={0.1}
+                value={
+                  Number.isNaN(editing?.temperature)
+                    ? ""
+                    : (editing?.temperature ?? 0.2)
+                }
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    temperature: e.target.valueAsNumber,
+                  })
+                }
+              />
+            </Field>
+            <Field label="Execution mode">
+              <select
+                value={editing?.mode || "approval"}
+                onChange={(e) =>
+                  setEditing({ ...editing, mode: e.target.value })
+                }
+              >
+                <option value="approval">Ask before changes</option>
+                <option value="read-only">Read only</option>
+              </select>
+            </Field>
+          </div>
+          <CapabilitySelector
+            value={editing?.capabilityProfileId}
+            onChange={(id) =>
+              setEditing({ ...editing, capabilityProfileId: id })
+            }
+            refreshKey={editing ? 1 : 0}
+          />
+          {formError && <p role="alert">{formError}</p>}
           <div className="modal-actions">
             <Button type="button" onClick={() => setEditing(null)}>
               Cancel
@@ -233,6 +366,7 @@ export function AgentsPage({ state, action }: PageProps) {
 }
 
 export function ModelsPage({ state, action }: PageProps) {
+  const confirmAction = useConfirmation();
   const [name, setName] = useState("gemma4:12b-mlx"),
     [busy, setBusy] = useState("");
   async function perform(method: string, params?: unknown) {
@@ -414,7 +548,13 @@ export function ModelsPage({ state, action }: PageProps) {
                 <Button
                   size="small"
                   disabled={
-                    m.name === state.settings.defaultModel || !!m.remote
+                    m.name === state.settings.defaultModel ||
+                    !isCompletionModel(m)
+                  }
+                  title={
+                    !isCompletionModel(m)
+                      ? "Only local completion models can be used for chat. Embedding models are used for indexing."
+                      : undefined
                   }
                   onClick={() =>
                     perform("settings.save", { defaultModel: m.name })
@@ -423,28 +563,49 @@ export function ModelsPage({ state, action }: PageProps) {
                   {m.name === state.settings.defaultModel ? (
                     <Check size={13} />
                   ) : null}
-                  Use model
+                  {isCompletionModel(m)
+                    ? "Use model"
+                    : m.remote
+                      ? "Remote model"
+                      : "Embedding model"}
                 </Button>
                 <Button
                   size="small"
-                  disabled={!!m.remote || !!busy}
+                  disabled={
+                    !!m.remote || !!busy || (!m.loaded && !isCompletionModel(m))
+                  }
+                  title={
+                    !m.loaded && !isCompletionModel(m)
+                      ? "The encoder loads when an indexing or retrieval job needs it."
+                      : undefined
+                  }
                   onClick={() =>
                     perform(m.loaded ? "model.unload" : "model.load", {
                       name: m.name,
                     })
                   }
                 >
-                  {m.loaded ? "Unload" : "Load"}
+                  {m.loaded
+                    ? "Unload"
+                    : !isCompletionModel(m) && !m.remote
+                      ? "Loads on demand"
+                      : "Load"}
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
                   aria-label={`Delete ${m.name}`}
-                  onClick={() =>
-                    confirm(
-                      `Delete local model “${m.name}”? You can download it again.`,
-                    ) && perform("model.delete", { name: m.name })
-                  }
+                  onClick={async () => {
+                    if (
+                      await confirmAction({
+                        title: "Delete local model?",
+                        description: `Delete “${m.name}” from local model storage? You can download it again.`,
+                        confirmLabel: "Delete model",
+                        danger: true,
+                      })
+                    )
+                      await perform("model.delete", { name: m.name });
+                  }}
                 >
                   <Trash2 size={15} />
                 </Button>
@@ -464,8 +625,10 @@ export function ModelsPage({ state, action }: PageProps) {
 }
 
 export function ToolsPage({ state, action, workspaceId }: PageProps) {
+  const confirmAction = useConfirmation();
   const [editing, setEditing] = useState<Partial<MCPServer> | null>(null),
     [args, setArgs] = useState(""),
+    [oauthScopes, setOAuthScopes] = useState(""),
     [saving, setSaving] = useState(false),
     [expanded, setExpanded] = useState("");
   async function submit(e: FormEvent) {
@@ -496,6 +659,7 @@ export function ToolsPage({ state, action, workspaceId }: PageProps) {
                 enabled: true,
               });
               setArgs("");
+              setOAuthScopes("");
             }}
           >
             <Plus size={15} />
@@ -552,6 +716,7 @@ export function ToolsPage({ state, action, workspaceId }: PageProps) {
                     onClick={() => {
                       setEditing({ ...s });
                       setArgs(s.args?.join("\n") || "");
+                      setOAuthScopes(s.oauth?.scopes.join(" ") || "");
                     }}
                   >
                     <Pencil size={15} />
@@ -560,15 +725,23 @@ export function ToolsPage({ state, action, workspaceId }: PageProps) {
                     size="icon"
                     variant="ghost"
                     aria-label={`Delete ${s.name}`}
-                    onClick={() =>
-                      confirm(`Remove MCP server “${s.name}”?`) &&
-                      action("mcp.delete", { id: s.id })
-                    }
+                    onClick={async () => {
+                      if (
+                        await confirmAction({
+                          title: "Remove MCP server?",
+                          description: `Remove the saved connection for “${s.name}”?`,
+                          confirmLabel: "Remove server",
+                          danger: true,
+                        })
+                      )
+                        await action("mcp.delete", { id: s.id });
+                    }}
                   >
                     <Trash2 size={15} />
                   </Button>
                 </div>
               </div>
+              {s.oauth && <MCPSignIn id={s.id} action={action} />}
               <button
                 className="expand-tools"
                 onClick={() => setExpanded(expanded === s.id ? "" : s.id)}
@@ -671,6 +844,81 @@ export function ToolsPage({ state, action, workspaceId }: PageProps) {
               />
             </Field>
           )}
+          {editing?.transport !== "stdio" && (
+            <>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={!!editing?.oauth}
+                  onChange={(e) =>
+                    setEditing({
+                      ...editing,
+                      oauth: e.target.checked
+                        ? {
+                            issuer: "",
+                            authorizationEndpoint: "",
+                            tokenEndpoint: "",
+                            clientId: "",
+                            scopes: [],
+                          }
+                        : undefined,
+                    })
+                  }
+                />
+                Use OAuth sign-in
+              </label>
+              {editing?.oauth && (
+                <fieldset className="capability-options">
+                  <legend>Public OAuth client</legend>
+                  <p className="small muted">
+                    Use your provider’s registered public-client configuration.
+                    Tokens are kept in macOS Keychain; no client secret is
+                    stored here.
+                  </p>
+                  {(
+                    [
+                      ["issuer", "Issuer URL"],
+                      ["authorizationEndpoint", "Authorization endpoint"],
+                      ["tokenEndpoint", "Token endpoint"],
+                      ["clientId", "Client ID"],
+                    ] as const
+                  ).map(([key, label]) => (
+                    <Field key={key} label={label}>
+                      <input
+                        required
+                        type={key === "clientId" ? "text" : "url"}
+                        value={editing.oauth![key]}
+                        onChange={(e) =>
+                          setEditing({
+                            ...editing,
+                            oauth: { ...editing.oauth!, [key]: e.target.value },
+                          })
+                        }
+                      />
+                    </Field>
+                  ))}
+                  <Field
+                    label="Scopes"
+                    hint="Separate scope names with spaces."
+                  >
+                    <input
+                      value={oauthScopes}
+                      onChange={(e) => {
+                        setOAuthScopes(e.target.value);
+                        setEditing({
+                          ...editing,
+                          oauth: {
+                            ...editing.oauth!,
+                            scopes: e.target.value.split(/\s+/).filter(Boolean),
+                          },
+                        });
+                      }}
+                    />
+                  </Field>
+                </fieldset>
+              )}
+            </>
+          )}
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -696,6 +944,7 @@ export function ToolsPage({ state, action, workspaceId }: PageProps) {
 }
 
 export function SkillsPage({ state, action }: PageProps) {
+  const confirmAction = useConfirmation();
   const [path, setPath] = useState(""),
     [busy, setBusy] = useState(false);
   async function submit(e: FormEvent) {
@@ -714,7 +963,7 @@ export function SkillsPage({ state, action }: PageProps) {
       />
       <form className="download-box" onSubmit={submit}>
         <div>
-          <h3>Import an instruction package</h3>
+          <h3>Import a complete skill package</h3>
           <p>Choose a local skill directory or SKILL.md path.</p>
         </div>
         <div className="inline-form">
@@ -743,10 +992,17 @@ export function SkillsPage({ state, action }: PageProps) {
                   size="icon"
                   variant="ghost"
                   aria-label={`Remove ${s.name}`}
-                  onClick={() =>
-                    confirm(`Remove skill “${s.name}” from Gemma Desktop?`) &&
-                    action("skill.delete", { id: s.id })
-                  }
+                  onClick={async () => {
+                    if (
+                      await confirmAction({
+                        title: "Remove skill?",
+                        description: `Remove “${s.name}” from Gemma Desktop?`,
+                        confirmLabel: "Remove skill",
+                        danger: true,
+                      })
+                    )
+                      await action("skill.delete", { id: s.id });
+                  }}
                 >
                   <Trash2 size={15} />
                 </Button>
@@ -754,6 +1010,16 @@ export function SkillsPage({ state, action }: PageProps) {
               <h3>{s.name}</h3>
               <p>{s.description || "No description supplied."}</p>
               <small className="mono break-all">{s.path}</small>
+              {s.digest && (
+                <small className="mono break-all">
+                  Version {s.digest.slice(0, 20)}
+                </small>
+              )}
+              {s.files && (
+                <p className="small muted">
+                  {s.files.length} immutable files · {formatBytes(s.bytes)}
+                </p>
+              )}
             </article>
           ))}
         </div>
@@ -771,10 +1037,28 @@ export function SkillsPage({ state, action }: PageProps) {
 export function ArtifactsPage({ state, action, workspaceId }: PageProps) {
   const [all, setAll] = useState(false),
     [selected, setSelected] = useState<string>("");
+  const [preview, setPreview] = useState<ArtifactPreviewState>({
+    status: "idle",
+    id: "",
+  });
+  const [loader] = useState(() =>
+    createArtifactLoader(
+      (id) => api<Artifact>("artifact.get", { id }),
+      setPreview,
+    ),
+  );
+  useEffect(() => {
+    void loader.select(selected);
+    return () => loader.invalidate();
+  }, [loader, selected]);
   const artifacts = state.artifacts.filter(
     (a) => all || !workspaceId || a.workspaceId === workspaceId,
   );
   const artifact = state.artifacts.find((a) => a.id === selected);
+  const selectedPreview = preview.id === selected ? preview : undefined;
+  const details =
+    selectedPreview?.status === "ready" ? selectedPreview.artifact : undefined;
+  const contents = artifactContent(details);
   return (
     <div className="page-scroll">
       <SectionHeader
@@ -843,7 +1127,7 @@ export function ArtifactsPage({ state, action, workspaceId }: PageProps) {
         onClose={() => setSelected("")}
         title={artifact?.name || "Artifact"}
         description="Artifact details"
-        wide={artifact?.after !== undefined}
+        wide={contents.kind !== "none"}
       >
         <div className="detail-list">
           <div>
@@ -863,16 +1147,39 @@ export function ArtifactsPage({ state, action, workspaceId }: PageProps) {
             <code>{artifact?.runId}</code>
           </div>
         </div>
-        {artifact?.after !== undefined && (
+        {selected &&
+          (!selectedPreview || selectedPreview.status === "loading") && (
+            <p className="muted" role="status">
+              Loading artifact contents…
+            </p>
+          )}
+        {selectedPreview?.status === "error" && (
+          <div className="notice error" role="alert">
+            <div>
+              <strong>Artifact contents could not be loaded</strong>
+              <p>{selectedPreview.error}</p>
+            </div>
+            <Button onClick={() => void loader.select(selected)}>Retry</Button>
+          </div>
+        )}
+        {selectedPreview?.status === "ready" && contents.kind === "none" && (
+          <p className="muted">
+            This artifact has no saved inline text preview. Use Open file or
+            Show in Finder to inspect it.
+          </p>
+        )}
+        {details && contents.kind !== "none" && (
           <div className="artifact-editor">
             <Suspense
               fallback={<p className="muted">Opening code comparison…</p>}
             >
               <CodeEditor
-                key={artifact.id}
-                path={artifact.path}
-                value={artifact.after}
-                original={artifact.before}
+                key={details.id}
+                path={details.path}
+                value={contents.after}
+                original={
+                  contents.kind === "diff" ? contents.before : undefined
+                }
                 readOnly
                 theme={state.settings.theme}
               />
@@ -906,10 +1213,24 @@ export function ArtifactsPage({ state, action, workspaceId }: PageProps) {
 export function SettingsPage({ state, action }: PageProps) {
   const [draft, setDraft] = useState(state.settings),
     [saving, setSaving] = useState(false),
+    [modelError, setModelError] = useState(""),
     [diagnosticsPath, setDiagnosticsPath] = useState("");
   useEffect(() => setDraft(state.settings), [JSON.stringify(state.settings)]);
   async function submit(e: FormEvent) {
     e.preventDefault();
+    setModelError("");
+    if (
+      !isCompletionModel(
+        state.models.find((m) => m.name === draft.defaultModel) || {
+          name: draft.defaultModel,
+        },
+      )
+    ) {
+      setModelError(
+        "The default must be a local completion model. Embedding models are used for indexing.",
+      );
+      return;
+    }
     setSaving(true);
     await action("settings.save", draft);
     setSaving(false);
@@ -949,10 +1270,15 @@ export function SettingsPage({ state, action }: PageProps) {
                 list="installed-models"
               />
               <datalist id="installed-models">
-                {state.models.map((m) => (
+                {state.models.filter(isCompletionModel).map((m) => (
                   <option key={m.name}>{m.name}</option>
                 ))}
               </datalist>
+              {modelError && (
+                <small className="error-text" role="alert">
+                  {modelError}
+                </small>
+              )}
             </Field>
             <Field
               label="Context size"
@@ -1050,6 +1376,7 @@ export function SettingsPage({ state, action }: PageProps) {
           <code className="break-all">{diagnosticsPath}</code>
         </p>
       )}
+      <ExecutionSettings action={action} />
       <p className="settings-footnote">
         Gemma Desktop is an independent application. Gemma is a model family
         from Google DeepMind.
@@ -1058,7 +1385,13 @@ export function SettingsPage({ state, action }: PageProps) {
   );
 }
 
-export function LabPage({ state, action, workspaceId }: PageProps) {
+export function LabPage(props: PageProps) {
+  return (
+    <HarnessWorkbench {...props} compare={<ComparisonPage {...props} />} />
+  );
+}
+
+function ComparisonPage({ state, action, workspaceId }: PageProps) {
   const [baseline, setBaseline] = useState(""),
     [candidate, setCandidate] = useState(""),
     [tasks, setTasks] = useState(""),

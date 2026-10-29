@@ -2,6 +2,7 @@ package inference
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -10,6 +11,42 @@ import (
 	"testing"
 	"time"
 )
+
+func TestExplicitLoadUsesRequestedContext(t *testing.T) {
+	var requests []map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/show" {
+			fmt.Fprint(w, `{}`)
+			return
+		}
+		var request map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			t.Error(err)
+		}
+		requests = append(requests, request)
+		fmt.Fprint(w, `{"done":true}`)
+	}))
+	defer srv.Close()
+	c, _ := NewClient(srv.URL)
+	if err := c.Load(t.Context(), "gemma4:12b", 32768); err != nil {
+		t.Fatal(err)
+	}
+	if err := c.Unload(t.Context(), "gemma4:12b"); err != nil {
+		t.Fatal(err)
+	}
+	if err := c.Load(t.Context(), "gemma4:12b", 0); err == nil {
+		t.Fatal("invalid context accepted")
+	}
+	if len(requests) != 2 {
+		t.Fatalf("requests: %v", requests)
+	}
+	if requests[0]["options"].(map[string]any)["num_ctx"] != float64(32768) {
+		t.Fatalf("load omitted requested context: %v", requests[0])
+	}
+	if requests[1]["keep_alive"] != float64(0) || requests[1]["options"] != nil {
+		t.Fatalf("unload changed: %v", requests[1])
+	}
+}
 
 func TestRejectRemoteOrigins(t *testing.T) {
 	for _, u := range []string{"https://example.com", "http://127.0.0.1.evil.test", "http://user:secret@127.0.0.1", "http://127.0.0.1/api", "file:///tmp/server", "http://192.168.1.10:11434"} {

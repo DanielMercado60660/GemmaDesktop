@@ -1,0 +1,29 @@
+{
+  "parentReport": "docs/evidence/realistic-followup-20261027-145302-338fad1a.json",
+  "parentSHA256": "5b074d7891675d4c96f9306c3d83a1712bd33b3f01a3c2ba730e507651c438c3",
+  "before": {
+    "id": "51c6b7b4bc597ad1a2058e65f48ec642",
+    "instructions": "This turn is a conversation continuity check. Answer only from saved conversation; do not call tools.",
+    "maxOutputTokens": 16384,
+    "maxSteps": 3,
+    "mode": "read-only",
+    "model": "gemma4:26b-mlx",
+    "name": "Realistic tracker repair",
+    "temperature": 1,
+    "thinking": "on",
+    "toolProtocol": "native"
+  },
+  "after": {
+    "id": "51c6b7b4bc597ad1a2058e65f48ec642",
+    "instructions": "Follow the explicit source scope and test policy in the user request. Preserve all original tests. Complete the task using evidence, and state any remaining failure honestly.",
+    "maxOutputTokens": 16384,
+    "maxSteps": 80,
+    "mode": "approval",
+    "model": "gemma4:26b-mlx",
+    "name": "Realistic tracker repair",
+    "temperature": 1,
+    "thinking": "on",
+    "toolProtocol": "native"
+  },
+  "scope": "Restore only the exact original test coding profile overwritten by the earlier continuity harness; no normal-profile change. The new harness creates a separate continuity profile."
+}

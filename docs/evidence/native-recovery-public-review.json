@@ -1,0 +1,203 @@
+{
+  "reviewedAt": "2026-10-27T20:00:18.088158+00:00",
+  "workspace": "/Users/danielmercado/GemmaDesktop/.runtime/realistic-20261027-135431-ae475d/workspace",
+  "scope": "Public README, tracker/*.py, tests/*.py and prior public review only. No hidden acceptance source or report was read; independent-test outcomes were not inputs to the findings.",
+  "method": "Read-only source review, duplicate-definition AST check, three in-memory SQLite search probes and two serialize/write CSV round trips in temporary directories. Bytecode writing disabled; no inference or candidate edits.",
+  "verdict": "Public-contract qualification remains incomplete: the previously reported ASCII-only search defect is still present.",
+  "sourceFiles": [
+    {
+      "path": "README.md",
+      "sha256": "1cac561d91ad9f7a8004f58af9934ce7893ce6075b523e21ce06bd60359df749"
+    },
+    {
+      "path": "tracker/__init__.py",
+      "sha256": "cf1f4b0e3f26a34023d5c82e285dd60224acc6f56c872444cf00f7b74a758cd8"
+    },
+    {
+      "path": "tracker/cli.py",
+      "sha256": "667713bae647c955db8cf2bc2129a398154c3cf08f3cc4ae8f0dd980775774c7"
+    },
+    {
+      "path": "tracker/csv_export.py",
+      "sha256": "eb9a50bc543c62a0aff5862ede1f449762e45bc0845251bf1346c43f165f0f73"
+    },
+    {
+      "path": "tracker/db.py",
+      "sha256": "44c0cf050975fe9176050977bd839eb9e4ae534005ae0afa0d478cec2ad99706"
+    },
+    {
+      "path": "tracker/models.py",
+      "sha256": "31721a2d1e94b5346e0f998acd7e712ea0a38449410948087ecbd4c0acc810d8"
+    },
+    {
+      "path": "tracker/repository.py",
+      "sha256": "d5f23d32bdfca9264e22f29100b8c2b620c84dd95c2a4e4e440d35bb225045de"
+    },
+    {
+      "path": "tracker/service.py",
+      "sha256": "6a37da33230a53f52d2ab946ba1b6d0d114fa5a9f278e65c366d1a4db09acac9"
+    },
+    {
+      "path": "tests/__init__.py",
+      "sha256": "4ba4362ceed406c8448494900f44d1561a47edb40f1e20c6d845c311b9f18049"
+    },
+    {
+      "path": "tests/test_existing.py",
+      "sha256": "f9d8ce1fc037c0197a15097d2ea7e11f1148faf77273498e510eee818961e08d"
+    },
+    {
+      "path": "tests/test_regressions.py",
+      "sha256": "1e2fb4556568cab930c2c30cdb28956ab30a35ed667f3ba27491e4a34744509a"
+    }
+  ],
+  "priorPublicFeedback": {
+    "path": "/Users/danielmercado/GemmaDesktop/.runtime/realistic-20261027-135431-ae475d/FOLLOWUP-PUBLIC-REVIEW.txt",
+    "sha256": "bed42b4eafda4436174278891fb2485cafd54a9ee0a4c400f92d11db589deef4"
+  },
+  "findings": [
+    {
+      "id": "PUBLIC-1",
+      "kind": "bug",
+      "severity": "medium",
+      "path": "tracker/repository.py",
+      "lines": [
+        15,
+        18
+      ],
+      "requirement": "README.md:8 requires ASCII case-insensitive literal substring search; prior public feedback explicitly supplied the Éclair/éclair example.",
+      "finding": "query.lower() applies Unicode lowercasing before SQLite LOWER/LIKE, which fold ASCII only. It changes non-ASCII literal query characters and selects the wrong rows. The shared _where helper also affects count and export filters.",
+      "evidence": {
+        "titles": [
+          "Éclair",
+          "éclair"
+        ],
+        "query": "É",
+        "expectedIds": [
+          1
+        ],
+        "actualIds": [
+          2
+        ],
+        "actualTotal": 1
+      },
+      "minimalRepair": "Preserve non-ASCII query characters while folding only ASCII letters; keep escaping and bound SQL parameters. Add exact-title/ID regressions for É, é and mixed ÉC through listing and filtered export."
+    },
+    {
+      "id": "PUBLIC-2",
+      "kind": "test-gap",
+      "severity": "medium",
+      "path": "tests/test_regressions.py",
+      "lines": [
+        33,
+        61
+      ],
+      "requirement": "README.md:8-9 and prior public feedback.",
+      "finding": "The literal-query test covers % only; no _, backslash, quote or ASCII/non-ASCII boundary cases. The pagination test uses only the default first page, never exercises nonzero offset or a reduced limit, and checks an unfiltered total. Its timestamp/ID creation order does not challenge ordering when insertion time and created_at order differ.",
+      "minimalRepair": "Add combined status/query filters with real limit/offset pages, matching totals independent of paging, tied timestamps, reverse insertion/created_at order, and exact literal-query results."
+    },
+    {
+      "id": "PUBLIC-3",
+      "kind": "test-gap",
+      "severity": "medium",
+      "path": "tests/test_regressions.py",
+      "lines": [
+        63,
+        179
+      ],
+      "requirement": "README.md:15-20 and prior public feedback.",
+      "finding": "CSV tests cover commas/quotes, status-only filtering, 105 rows and an in-process unfiltered CLI call. They still omit multiline/Unicode titles, empty header-only output, direct serialize coverage, service/writer return counts, raw UTF-8-without-BOM/LF checks, and combined filtered CLI export. Small review probes passed multiline/Unicode and carriage-return round trips; these are coverage gaps, not a claimed CSV implementation defect.",
+      "minimalRepair": "Add those README-derived tests in the allowed regression file. Parse with newline-preserving streams, assert exact titles and returned counts, and call CLI main(argv) in process."
+    }
+  ],
+  "previousFindingsResolved": [
+    {
+      "path": "tracker/service.py",
+      "lines": [
+        50,
+        54
+      ],
+      "finding": "export_csv now validates status before writing and searches with limit=None; the former arbitrary 1,000,000 cap is gone."
+    },
+    {
+      "path": "tests/test_regressions.py",
+      "lines": [
+        119,
+        179
+      ],
+      "finding": "In-process CLI export, invalid export status and >100-task export cases were added."
+    }
+  ],
+  "publicProbes": [
+    {
+      "name": "ascii_search",
+      "query": "É",
+      "titles": [
+        "Éclair",
+        "éclair"
+      ],
+      "expectedIds": [
+        1
+      ],
+      "actualIds": [
+        2
+      ],
+      "passed": false
+    },
+    {
+      "name": "ascii_search",
+      "query": "é",
+      "titles": [
+        "Éclair",
+        "éclair"
+      ],
+      "expectedIds": [
+        2
+      ],
+      "actualIds": [
+        2
+      ],
+      "passed": true
+    },
+    {
+      "name": "ascii_search",
+      "query": "ÉC",
+      "titles": [
+        "Éclair",
+        "éclair"
+      ],
+      "expectedIds": [
+        1
+      ],
+      "actualIds": [
+        2
+      ],
+      "passed": false
+    },
+    {
+      "name": "csv_roundtrip",
+      "title": "café, \"quoted\"\n日本語 🧪",
+      "serializeAndWriterPreserveExactTitle": true,
+      "writerCount": 1,
+      "writerMatchesSerializedUTF8": true,
+      "noBOM": true,
+      "passed": true
+    },
+    {
+      "name": "csv_roundtrip",
+      "title": "carriage\rreturn",
+      "serializeAndWriterPreserveExactTitle": true,
+      "writerCount": 1,
+      "writerMatchesSerializedUTF8": true,
+      "noBOM": true,
+      "passed": true
+    }
+  ],
+  "integrityReview": {
+    "duplicateClassesOrDefinitions": [],
+    "visibleTestBypassesOrHardcodedAcceptanceResults": false,
+    "networkingOrSubprocessUseInReviewedCode": false,
+    "sourceHashesUnchangedAcrossProbes": true,
+    "limits": "This is a bounded public source review, not a claim about uninspected files or hidden tests."
+  },
+  "suggestedPublicFollowup": "The public README issue remains in repository._where: querying É against titles Éclair and éclair currently returns éclair. Preserve non-ASCII literals and fold only ASCII letters while retaining escaping and bound SQL parameters. Add exact regression cases including mixed ÉC and filtered export. Complete the previously requested tests for real offset/limit pages with filtered totals; literal _, backslash and quote searches; empty and multiline/Unicode CSV, direct serialize/service/writer counts and raw UTF-8/LF; and combined filtered CLI export in process. Preserve immutable files and the authorized source/test scope. Run the same prescribed unittest command after the final edit and report observed results."
+}

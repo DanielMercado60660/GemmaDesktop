@@ -1,0 +1,4 @@
+{
+  "logic.cjs": "exports.solve=function(x){const seen=new Set(), out={}; for(const e of x.events){if(seen.has(e.id))continue;seen.add(e.id);if(e.status==='posted')out[e.account]=(out[e.account]||0)+e.amount;}return out;};\n",
+  "regression.test.cjs": "const assert=require(\"node:assert/strict\"),{solve}=require(\"./logic.cjs\");assert.deepEqual(solve({\"events\": [{\"id\": \"a\", \"account\": \"shop\", \"amount\": 100, \"status\": \"posted\"}, {\"id\": \"b\", \"account\": \"shop\", \"amount\": -25, \"status\": \"posted\"}, {\"id\": \"c\", \"account\": \"other\", \"amount\": 70, \"status\": \"pending\"}]}),{\"shop\": 75});\n"
+}

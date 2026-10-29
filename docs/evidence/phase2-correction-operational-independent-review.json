@@ -1,0 +1,623 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-28T08:16:14.095797+00:00",
+  "reviewer": "independent agent /root/adk_architecture_research",
+  "scope": "Post-execution read-only review of correction-package operational records, persisted records, and existing synthetic images; no inference or runtime actions.",
+  "inputs": [
+    {
+      "path": "/Users/danielmercado/GemmaDesktop/docs/evidence/phase2-correction-live-accounting.json",
+      "sha256": "4fbdb9de5a96f4bd5e1412c2f6b6ed257c551764f9603d7975adbf66c4ca4227",
+      "bytes": 29702
+    },
+    {
+      "path": "/Users/danielmercado/GemmaDesktop/docs/evidence/phase2-correction-video-regression.json",
+      "sha256": "6215144f49f7397ff200a8cfd0b05c1499b0991ade560c460640b15a40d754cf",
+      "bytes": 25862
+    },
+    {
+      "path": "/Users/danielmercado/GemmaDesktop/docs/evidence/video-fixture-manifest.json",
+      "sha256": "7c2676c6b46f3f845c6c29ec0b0c00e36a0e82bfb86527b5c64eb6db5c677069",
+      "bytes": 1638
+    },
+    {
+      "path": "/Users/danielmercado/GemmaDesktop/docs/evidence/phase2-correction-build-info.json",
+      "sha256": "cd99c5ce908090af17697b7dc245a14de9e771ec013bc85cef55a12466c8181c",
+      "bytes": 61299
+    },
+    {
+      "path": "/Users/danielmercado/GemmaDesktop/docs/evidence/phase2-correction-video-command.txt",
+      "sha256": "e13a445f509d213ffb1818abcc7d4873be958e83372fa0228c1ddcf73009248e",
+      "bytes": 152
+    },
+    {
+      "path": "/Users/danielmercado/GemmaDesktop/docs/evidence/phase2-correction-live-accounting-command.txt",
+      "sha256": "090a800a48910aebca9436a841ce7476daffc75514c8dd286d587cac4c9c94dc",
+      "bytes": 170
+    }
+  ],
+  "packageProvenance": {
+    "version": "0.2.1",
+    "binary": {
+      "path": "/Users/danielmercado/GemmaDesktop/dist/Gemma Desktop.app/Contents/MacOS/gemma-desktop",
+      "sha256": "ebd1ba6e8bf39f81e655986cb0da5a5a71bb78c58e5189b2a1069fc4a47a4521",
+      "bytes": 52059712
+    },
+    "accountingReportServerIdentity": {
+      "pid": 58876,
+      "started": "Wed Oct 28 03:05:13 2026",
+      "url": "http://127.0.0.1:8798",
+      "binarySHA256": "ebd1ba6e8bf39f81e655986cb0da5a5a71bb78c58e5189b2a1069fc4a47a4521",
+      "binaryInode": 203782565,
+      "dataDirectory": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data",
+      "databaseInode": 203786004
+    },
+    "videoHarness": {
+      "path": "/Users/danielmercado/GemmaDesktop/scripts/video-e2e.py",
+      "sha256": "c7387a411e59527fc909279268f0be5d89c4061ed3eb91a0023198ba00988978",
+      "bytes": 6687
+    },
+    "videoBindingScope": "The video artifact lacks an inline server/binary identity. Its clip/index/answer/job IDs and bytes match the media database under the same isolated data directory named by the accounting server record; the current packaged binary hash matches build-info and accounting evidence. This is corroboration of the reported run, not an independent historical process attestation.",
+    "originalCampaignVersion": "0.2.0",
+    "retroactivelyQualifiesOriginalCampaign": false
+  },
+  "accounting": {
+    "runId": "da5fb356c65f3090dd1d362ce668417b",
+    "persistedStatus": "completed",
+    "finalAnswer": "The fixture value of README.md is lavender-harbor-72.",
+    "fixture": {
+      "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/workspace/README.md",
+      "sha256": "d02aa815edc4fb9d79f835da419a051de80792a06bfea6e29b92e21578d4ecf3",
+      "bytes": 66
+    },
+    "checkpointSHA256": "5d0b09cb2a0d8c19f0f2f6fe9668254e9d4c3426929c2f154b6f2f93685c813d",
+    "checkpointBytesMatchSavedHash": true,
+    "runCheckpointReportUsageEqual": true,
+    "checkpointReportLedgerEqual": true,
+    "providerTerminalGenerations": [
+      {
+        "attempt": 1,
+        "contextSize": 65536,
+        "doneReason": "stop",
+        "maxOutputTokens": 4096,
+        "model": "gemma4:26b-mlx",
+        "outputTokens": 20,
+        "promptTokens": 382,
+        "rawResponseCharacters": 0,
+        "step": 1,
+        "summary": false,
+        "thinkingCharacters": 0,
+        "toolCalls": 1,
+        "toolProtocol": "native",
+        "visibleCharacters": 0
+      },
+      {
+        "attempt": 1,
+        "contextSize": 65536,
+        "doneReason": "stop",
+        "maxOutputTokens": 4096,
+        "model": "gemma4:26b-mlx",
+        "outputTokens": 17,
+        "promptTokens": 618,
+        "rawResponseCharacters": 53,
+        "step": 2,
+        "summary": false,
+        "thinkingCharacters": 0,
+        "toolCalls": 0,
+        "toolProtocol": "native",
+        "visibleCharacters": 53
+      }
+    ],
+    "perGenerationLedgers": [
+      {
+        "attempts": 1,
+        "measuredResponses": 1,
+        "source": "provider_terminal_counts",
+        "status": "complete",
+        "terminalResponses": 1,
+        "unknownContributions": 0,
+        "version": 1
+      },
+      {
+        "attempts": 1,
+        "measuredResponses": 1,
+        "source": "provider_terminal_counts",
+        "status": "complete",
+        "terminalResponses": 1,
+        "unknownContributions": 0,
+        "version": 1
+      }
+    ],
+    "aggregateLedger": {
+      "version": 1,
+      "source": "provider_terminal_counts",
+      "status": "complete",
+      "attempts": 2,
+      "terminalResponses": 2,
+      "measuredResponses": 2,
+      "unknownContributions": 0
+    },
+    "recomputedPromptTokens": 1000,
+    "recomputedOutputTokens": 37,
+    "usage": {
+      "total_duration": 5665709250,
+      "load_duration": 4021539834,
+      "prompt_eval_count": 1000,
+      "prompt_eval_duration": 1041765250,
+      "eval_count": 37,
+      "eval_duration": 598752291
+    },
+    "toolReceipt": {
+      "id": "da5fb356c65f3090dd1d362ce668417b::call_a8d1oiek",
+      "tool": "read_file",
+      "path": "README.md",
+      "status": "completed",
+      "hashMatchesCurrentFixture": true
+    },
+    "historicalToolCallsPerGeneration": [
+      0,
+      1
+    ],
+    "observedToolCatalogue": [
+      "read_file"
+    ],
+    "observedContextSize": 65536,
+    "assessment": "Supported complete-terminal two-generation native tool-cycle accounting: 382+618 prompt tokens and 20+17 output tokens reconcile to 1000/37. One durable authorized file read is followed by the correct fixture value. No missing contribution is indicated in this observed path.",
+    "limits": [
+      "The recorded ledger measures provider-reported counts; it is not an independent tokenizer count.",
+      "No retries, partial transport failures, cancelled responses, nested delegates, or summary generations occurred. Their completeness is not established by this smoke.",
+      "65536 is the configured context size; measured prompts of 382 and 618 tokens do not establish capacity or long-context accuracy.",
+      "Cleanup/settings restoration are reported by the helper; this reviewer did not mutate or query the live service.",
+      "This is not a coding evaluation, promotion, campaign replay, or native UI acceptance."
+    ]
+  },
+  "video": {
+    "clipId": "ffc16ca136043d07638e177acc1f20ec",
+    "workspaceId": "f87f3a71b08b52f07d3402403be159ad",
+    "indexId": "c686e80d65707a2cafb7d1c8844e2cd4",
+    "sourceClip": {
+      "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/visual-scenes.mp4",
+      "sha256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+      "bytes": 42086
+    },
+    "importedSource": {
+      "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/assets/ffc16ca136043d07638e177acc1f20ec/source.mp4",
+      "sha256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+      "bytes": 42086
+    },
+    "sourceAndCopyMatchManifest": true,
+    "durationSecondsRecorded": 40.382,
+    "transport": {
+      "importCompleted": true,
+      "indexReady": true,
+      "persistedFrameCount": 30,
+      "completedJobs": 9,
+      "completedAnswers": 7,
+      "rangeResponse": {
+        "status": 206,
+        "contentRange": "bytes 0-31/42086",
+        "contentType": "video/mp4",
+        "bytes": 32,
+        "matchesSourcePrefix": true
+      },
+      "scope": "Import/index/answer records were verified against the existing read-only database; the HTTP range response is saved historical evidence, not reissued by reviewer."
+    },
+    "retrieval": {
+      "independentlyRecomputedHits": 6,
+      "positiveQueries": 6,
+      "criterion": "At least one of the three selected frame timestamps is inside each half-open expected scene interval.",
+      "limit": "This is selected-evidence temporal overlap, not top-one accuracy, broad retrieval accuracy, calibrated score confidence, or complete scene coverage."
+    },
+    "runtimeVersion": "0.40.11",
+    "embeddingModel": "embeddinggemma-2:440m-mxfp8-text-vision",
+    "embeddingDigest": "sha256:fc94c176e27b3109d869852b27871835b890dcc6742b1ef3d0fb2341f61e1263",
+    "answerModel": "gemma4:26b-mlx",
+    "answerModelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "sourceScenesVisuallyInspected": [
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/scene-00.jpg",
+        "sha256": "768ec5c6af1524caf45cea6a34b9227d64520da971a20452c7fdac617118996b",
+        "bytes": 8634,
+        "manifestLabel": "a red circle",
+        "interval": [
+          0,
+          5
+        ],
+        "visuallyInspected": true
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/scene-01.jpg",
+        "sha256": "65436a7bda0d62e43bd2c4c8e82e58549dce7895d4efc3efc48c2d063adabbbb",
+        "bytes": 6966,
+        "manifestLabel": "a blue square",
+        "interval": [
+          5,
+          10
+        ],
+        "visuallyInspected": true
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/scene-02.jpg",
+        "sha256": "888fe4f2bdea6b595e14dc0a9bd1ac931358b7563f6b673707ffbd12cfec1a67",
+        "bytes": 9619,
+        "manifestLabel": "a green triangle",
+        "interval": [
+          10,
+          15
+        ],
+        "visuallyInspected": true
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/scene-03.jpg",
+        "sha256": "0b70cb787826c59f8ea0a05b0c4ee3bfd9a35e02ead9931e7abec071c3244636",
+        "bytes": 9361,
+        "manifestLabel": "a yellow star",
+        "interval": [
+          15,
+          20
+        ],
+        "visuallyInspected": true
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/scene-04.jpg",
+        "sha256": "ea762d3df5a57fc006c629b1c93737226381d8a1b4b86b51878a6545a500603b",
+        "bytes": 10205,
+        "manifestLabel": "two purple circles",
+        "interval": [
+          20,
+          25
+        ],
+        "visuallyInspected": true
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input/scene-05.jpg",
+        "sha256": "b7cdab51846203a155f0a3029014ae99cf733e4d0961783c94492d4c8dbdfca4",
+        "bytes": 7687,
+        "manifestLabel": "an orange rectangle",
+        "interval": [
+          25,
+          30
+        ],
+        "visuallyInspected": true
+      }
+    ],
+    "actualSelectedRepresentativeFramesVisuallyInspected": [
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-001.jpg",
+        "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+        "bytes": 6560
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-006.jpg",
+        "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+        "bytes": 4256
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-010.jpg",
+        "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+        "bytes": 6923
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-015.jpg",
+        "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+        "bytes": 7363
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-021.jpg",
+        "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+        "bytes": 8379
+      },
+      {
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-025.jpg",
+        "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+        "bytes": 4178
+      }
+    ],
+    "allSelectedFrameFilesHashVerified": [
+      {
+        "frameId": "da3d6a161bfb8ea4a6249d24ce48c38c",
+        "timeSeconds": 1,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-001.jpg",
+        "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+        "bytes": 6560
+      },
+      {
+        "frameId": "fcc819af2f7881c50a77492d81871361",
+        "timeSeconds": 3,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-003.jpg",
+        "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+        "bytes": 6560
+      },
+      {
+        "frameId": "75afabf8d07e709a35e55b13732f8269",
+        "timeSeconds": 10,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-010.jpg",
+        "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+        "bytes": 6923
+      },
+      {
+        "frameId": "c662969a9c981af837b6feac825fd9ff",
+        "timeSeconds": 6,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-006.jpg",
+        "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+        "bytes": 4256
+      },
+      {
+        "frameId": "b6b4fc2dbea1c03294dfbf438ae3771e",
+        "timeSeconds": 8,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-008.jpg",
+        "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+        "bytes": 4256
+      },
+      {
+        "frameId": "69507c0ef7d2e98f47f53c78467f8e78",
+        "timeSeconds": 12,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-012.jpg",
+        "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+        "bytes": 6943
+      },
+      {
+        "frameId": "823085515adc26b0688b6f81b6da576d",
+        "timeSeconds": 14,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-014.jpg",
+        "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+        "bytes": 6943
+      },
+      {
+        "frameId": "cad9e7d00c5fd710ede1e226b2d86d90",
+        "timeSeconds": 15,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-015.jpg",
+        "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+        "bytes": 7363
+      },
+      {
+        "frameId": "16443c03f7f355596d31bb8c15b946aa",
+        "timeSeconds": 17,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-017.jpg",
+        "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+        "bytes": 7363
+      },
+      {
+        "frameId": "35dc34e981cc1669497be25f2a0058af",
+        "timeSeconds": 19,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-019.jpg",
+        "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+        "bytes": 7363
+      },
+      {
+        "frameId": "57dd7acd9c12259206db05d32ad3cddd",
+        "timeSeconds": 5,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-005.jpg",
+        "sha256": "ea93afd361b138f6bee991612b4f83921f49e086a0f5f891ae67f3efa8f00b71",
+        "bytes": 4336
+      },
+      {
+        "frameId": "01130402a4a2a3c25147f6686499ef05",
+        "timeSeconds": 21,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-021.jpg",
+        "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+        "bytes": 8379
+      },
+      {
+        "frameId": "e08120c3ac0cf53d7724dddf7f603bc4",
+        "timeSeconds": 23,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-023.jpg",
+        "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+        "bytes": 8379
+      },
+      {
+        "frameId": "d4e2976288edb7299990a292b6fc933a",
+        "timeSeconds": 25,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-025.jpg",
+        "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+        "bytes": 4178
+      },
+      {
+        "frameId": "1d2714e7b97982c26a693dbf491268a4",
+        "timeSeconds": 27,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-027.jpg",
+        "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+        "bytes": 4178
+      },
+      {
+        "frameId": "3d55d30e7f14da746e6011b367e27e8a",
+        "timeSeconds": 29,
+        "path": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-correction-smoke-20261028/data/media/indexes/c686e80d65707a2cafb7d1c8844e2cd4/frame-029.jpg",
+        "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+        "bytes": 4178
+      }
+    ],
+    "answerReviews": [
+      {
+        "answerId": "66a7cbe8261110e21ee1fc429450772b",
+        "question": "What shape is the red object?",
+        "answer": "The red object is a circle [F001, F002].",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          1,
+          3,
+          10
+        ],
+        "citedTimesSeconds": [
+          1,
+          3
+        ],
+        "expectedInterval": [
+          0,
+          5
+        ],
+        "recomputedRetrievalHit": true,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "supported_visual_observation",
+        "observation": "The representative frame shows a red circle."
+      },
+      {
+        "answerId": "44bd580db3460d1065fa15eb6b2d696c",
+        "question": "What shape is the blue object?",
+        "answer": "Based on the provided frames, the blue object is a square [F001, F002].",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          6,
+          8,
+          10
+        ],
+        "citedTimesSeconds": [
+          6,
+          8
+        ],
+        "expectedInterval": [
+          5,
+          10
+        ],
+        "recomputedRetrievalHit": true,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "supported_visual_observation",
+        "observation": "The representative frame shows a blue square."
+      },
+      {
+        "answerId": "fc25173a16a04f9c5a99124f08eaab02",
+        "question": "What shape is the green object?",
+        "answer": "The green object is a triangle [F001, F002, F003].",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          10,
+          12,
+          14
+        ],
+        "citedTimesSeconds": [
+          10,
+          12,
+          14
+        ],
+        "expectedInterval": [
+          10,
+          15
+        ],
+        "recomputedRetrievalHit": true,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "supported_visual_observation",
+        "observation": "The representative frame shows a green triangle."
+      },
+      {
+        "answerId": "a9a4072d92f55f60aebf745bd1ae2e82",
+        "question": "What shape is the yellow object?",
+        "answer": "The yellow object is a five-pointed star shape [F001, F002, F003].",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          15,
+          17,
+          19
+        ],
+        "citedTimesSeconds": [
+          15,
+          17,
+          19
+        ],
+        "expectedInterval": [
+          15,
+          20
+        ],
+        "recomputedRetrievalHit": true,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "fixture_label_ambiguous",
+        "observation": "The image has five curved, pointed lobes/petals and reads as a stylized flower or rounded star. The manifest calls it a yellow star. Five-pointed star shape is plausible but is not an unambiguous strict geometric classification; do not count this as clean shape accuracy."
+      },
+      {
+        "answerId": "f192baebe45b37e9bc3a97c8f7a90d46",
+        "question": "How many purple objects are visible, and what shape are they?",
+        "answer": "There are two purple objects visible, and they are circles [F002, F003].",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          5,
+          21,
+          23
+        ],
+        "citedTimesSeconds": [
+          21,
+          23
+        ],
+        "expectedInterval": [
+          20,
+          25
+        ],
+        "recomputedRetrievalHit": true,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "supported_visual_observation",
+        "observation": "The representative frame contains exactly two purple circles; the answer cites the two purple frames and not its blue distractor."
+      },
+      {
+        "answerId": "3f8ed48468e5f6d6c0b40d20093bcd2e",
+        "question": "What shape is the orange object?",
+        "answer": "The orange object is a rectangle [F001, F002, F003].",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          25,
+          27,
+          29
+        ],
+        "citedTimesSeconds": [
+          25,
+          27,
+          29
+        ],
+        "expectedInterval": [
+          25,
+          30
+        ],
+        "recomputedRetrievalHit": true,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "supported_visual_observation",
+        "observation": "The representative frame shows an orange rectangle."
+      },
+      {
+        "answerId": "8aad602d41e99a2d631bb58900634c40",
+        "question": "What color is the dog in the clip?",
+        "answer": "The provided video frames do not contain a dog; they consist of a single orange rectangle on a light gray background [F001, F002, F003]. Therefore, the color of the dog cannot be determined.",
+        "status": "completed",
+        "selectedTimesSeconds": [
+          25,
+          27,
+          29
+        ],
+        "citedTimesSeconds": [
+          25,
+          27,
+          29
+        ],
+        "expectedInterval": null,
+        "recomputedRetrievalHit": null,
+        "citationAllowlistVerified": true,
+        "persistedRecordMatchesReport": true,
+        "semanticAssessment": "supported_scoped_abstention",
+        "observation": "The three retrieved frames contain an orange rectangle, no dog. The answer explicitly refers to provided frames and declines to invent a dog color. All six source scenes were separately inspected and also show no dog; top-three retrieval alone would not establish absence throughout an arbitrary clip."
+      }
+    ],
+    "semanticSummary": {
+      "unambiguousPositiveObservations": 5,
+      "ambiguousFixtureClassification": 1,
+      "supportedNegativeAbstention": 1,
+      "broadAccuracyClaim": false
+    },
+    "limits": [
+      "Visual-only synthetic 30-second six-scene clip; no audio, natural-video, temporal reasoning, motion, or broad model accuracy qualification.",
+      "The yellow fixture is a five-lobed flower/star-like silhouette; its manifest label is itself ambiguous.",
+      "The dog negative control establishes appropriate abstention on the selected frames; retrieval alone cannot establish universal absence.",
+      "Citation label/frame/time membership is validated; membership alone is not proof of semantic support.",
+      "No new media decoding, inference, HTTP request, or UI playback was performed by this reviewer."
+    ]
+  },
+  "conclusion": "No contradiction found in the bounded accounting, persisted transport, or six temporal-overlap retrieval claims. Five positive answers and the scoped dog abstention agree with inspected images; retain the yellow shape ambiguity. These 0.2.1 checks provide new operational evidence only and do not repair or requalify the original 0.2.0 campaign.",
+  "reviewActions": {
+    "newInference": false,
+    "runtimeActions": false,
+    "candidateCodeChanges": false,
+    "sourceOrPriorReportChanges": false,
+    "databaseConnections": "sqlite URI mode=ro; selected only named smoke run and video clip/index/answer/job records"
+  },
+  "inputHashesRecheckedBeforeSave": true
+}

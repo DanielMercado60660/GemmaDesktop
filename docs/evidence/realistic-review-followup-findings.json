@@ -1,0 +1,26 @@
+{
+  "recordedAt": "2026-10-27T17:44:31.712986+00:00",
+  "runId": "b290cd41245ff5427ca9afe3e923ec0f",
+  "report": "docs/evidence/realistic-followup-20261027-123919-08218b74.json",
+  "reportSHA256": "8558b359e563cd8e5817ee2fefd6fe38544d01fbf1c6202761ab439fa0953fb9",
+  "sourceSHA256": {
+    "tracker/repository.py": "c95372177ebfe0e825b6b36340aca01b7105b45480d1a1e08ddcc4cedb01f956",
+    "tracker/service.py": "e3bac0de24ba14658526cc073e90cad48b5ff7e2b2325fb9280a7a9747a1189e",
+    "tracker/csv_export.py": "39c068a559ed74ae9cd0ad292dd0ecd88ece18b0abd2af58d43202fc79a1b2b2",
+    "tests/test_regressions.py": "ae528efc3e151994ecead31b248cf61b0a36871d2e859ddfcdc016d6603e37db"
+  },
+  "passedIndependentCases": 9,
+  "overallAccepted": false,
+  "remainingFindings": [
+    "service.export_csv still hardcodes1,000,000 row cap",
+    "csv_export.py now duplicates imports/FIELDS and write_tasks function",
+    "Generated tests unchanged: two wrong assertions and five-row large-export test; broader requested coverage absent",
+    "Run stopped with no answer and no test-command execution after edits; corrected app adapter now treats such empty stop as incomplete"
+  ],
+  "resolvedReviewFindings": [
+    "SQLite LIKE with escaped literal query now preserves ASCII-only case-insensitive behavior",
+    "CSV writer explicitly uses LF terminator",
+    "repository.py duplicate definitions removed"
+  ],
+  "scope": "Source review plus prior frozen acceptance report; no model-generated code modified manually."
+}

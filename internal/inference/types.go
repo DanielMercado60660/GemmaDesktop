@@ -44,6 +44,10 @@ type ChatRequest struct {
 	Format    any              `json:"format,omitempty"`
 	Options   map[string]any   `json:"options,omitempty"`
 	KeepAlive any              `json:"keep_alive,omitempty"`
+	// Explicit false values preserve the host's history. Chat enforces false
+	// even when a caller sets these fields; do not add omitempty.
+	Truncate bool `json:"truncate"`
+	Shift    bool `json:"shift"`
 }
 
 type Metrics struct {
@@ -56,11 +60,13 @@ type Metrics struct {
 }
 
 type ChatChunk struct {
-	Model      string  `json:"model"`
-	Message    Message `json:"message"`
-	Done       bool    `json:"done"`
-	DoneReason string  `json:"done_reason,omitempty"`
-	Error      string  `json:"error,omitempty"`
+	// Set by the decoder from explicit JSON member presence, not nonzero values.
+	TokenCountsPresent bool    `json:"-"`
+	Model              string  `json:"model"`
+	Message            Message `json:"message"`
+	Done               bool    `json:"done"`
+	DoneReason         string  `json:"done_reason,omitempty"`
+	Error              string  `json:"error,omitempty"`
 	Metrics
 }
 
@@ -102,4 +108,34 @@ type PullProgress struct {
 	Total     int64  `json:"total,omitempty"`
 	Completed int64  `json:"completed,omitempty"`
 	Error     string `json:"error,omitempty"`
+}
+
+// EmbedInput represents one independent embedding. Image contains encoded image
+// bytes, not a URL or filename. Text is passed exactly as supplied.
+type EmbedInput struct {
+	Text  string
+	Image []byte
+}
+
+type EmbedRequest struct {
+	Model          string
+	ExpectedDigest string
+	Input          []EmbedInput
+}
+
+type EmbedResponse struct {
+	Model           string      `json:"model"`
+	Digest          string      `json:"-"`
+	Embeddings      [][]float32 `json:"embeddings"`
+	TotalDuration   int64       `json:"total_duration"`
+	LoadDuration    int64       `json:"load_duration"`
+	PromptEvalCount int         `json:"prompt_eval_count"`
+}
+
+// ModelIdentity is local metadata verified against both tags and show. Digests
+// are normalized to sha256:<hex> for stable index provenance.
+type ModelIdentity struct {
+	Name         string
+	Digest       string
+	Capabilities []string
 }

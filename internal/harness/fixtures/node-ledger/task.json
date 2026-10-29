@@ -1,0 +1,136 @@
+{
+  "id": "node-ledger",
+  "name": "Reconcile payment events",
+  "stack": "node",
+  "split": "development",
+  "prompt": "Read README.md, repair reconcile payment events, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "node",
+    "public_test.cjs"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.cjs"
+  ],
+  "public": {
+    "logic.cjs": "exports.solve=function(x){const seen=new Set(), out={}; for(const e of x.events){if(seen.has(e.id))continue;seen.add(e.id);if(false)out[e.account]=(out[e.account]||0)+e.amount;}return out;};\n",
+    "main.cjs": "const {solve}=require(\"./logic.cjs\");console.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "package.json": "{\"private\": true, \"scripts\": {\"test\": \"node public_test.cjs\"}}",
+    "public_test.cjs": "const assert=require(\"node:assert/strict\"),{execFileSync}=require(\"node:child_process\");const cases=[{\"events\": []}, {\"events\": [{\"id\": \"a\", \"account\": \"shop\", \"amount\": 100, \"status\": \"posted\"}]}],expected=[{}, {\"shop\": 100}];assert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"main.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);console.log(\"2 public cases passed\");\n\nconst fs=require(\"node:fs\");for(const file of fs.readdirSync(\".\").filter(x=>x.endsWith(\".test.cjs\")))require(\"./\"+file);\n",
+    "README.md": "# Reconcile payment events\n\nRepair this node service module and add regression tests.\n\nReturn an object of account totals in integer cents. Include only status posted. Deduplicate by event id, keeping its first occurrence even when pending. Signed amounts include refunds. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `node public_test.cjs` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"events\": [\n    {\n      \"id\": \"a\",\n      \"account\": \"shop\",\n      \"amount\": 100,\n      \"status\": \"posted\"\n    },\n    {\n      \"id\": \"b\",\n      \"account\": \"shop\",\n      \"amount\": -25,\n      \"status\": \"posted\"\n    },\n    {\n      \"id\": \"c\",\n      \"account\": \"other\",\n      \"amount\": 70,\n      \"status\": \"pending\"\n    }\n  ]\n}\n```\nExpected result:\n```json\n{\n  \"shop\": 75\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "ledger-1",
+      "input": {
+        "events": []
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "ledger-2",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "shop",
+            "amount": 100,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "shop": 100
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-3",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "shop",
+            "amount": 100,
+            "status": "posted"
+          },
+          {
+            "id": "b",
+            "account": "shop",
+            "amount": -25,
+            "status": "posted"
+          },
+          {
+            "id": "c",
+            "account": "other",
+            "amount": 70,
+            "status": "pending"
+          }
+        ]
+      },
+      "expected": {
+        "shop": 75
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-4",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "x",
+            "amount": 9,
+            "status": "pending"
+          },
+          {
+            "id": "a",
+            "account": "x",
+            "amount": 50,
+            "status": "posted"
+          },
+          {
+            "id": "b",
+            "account": "y",
+            "amount": 0,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "y": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-5",
+      "input": {
+        "events": [
+          {
+            "id": "x",
+            "account": "a",
+            "amount": 3,
+            "status": "posted"
+          },
+          {
+            "id": "x",
+            "account": "a",
+            "amount": 3,
+            "status": "posted"
+          },
+          {
+            "id": "z",
+            "account": "a",
+            "amount": -5,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "a": -2
+      },
+      "critical": false
+    }
+  ]
+}

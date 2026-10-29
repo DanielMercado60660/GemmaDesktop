@@ -5,6 +5,8 @@ import {
   useEffect,
   useRef,
   useState,
+  useMemo,
+  memo,
   type CSSProperties,
   type PointerEvent,
 } from "react";
@@ -43,18 +45,31 @@ import {
   Copy,
   Trash2,
   Play,
+  Film,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import {
-  ReactFlow,
-  Background,
-  Controls,
-  type Node,
-  type Edge,
-} from "@xyflow/react";
 import { api, openExternal } from "./bridge";
+import {
+  createRefreshCoordinator,
+  currentRun,
+  eventStatus,
+  mergeEvents,
+  mergeSessionPage,
+  type SessionHistory,
+  type SessionPage,
+  restoreSelection,
+  streamedOutput,
+  savedMessageOutcome,
+} from "./lib/conversation";
 import { modelMemoryGuidance, runMetrics } from "./lib/runtimeMetrics";
+import { isCompletionModel } from "./lib/modelCapabilities";
+import { createComposerStore, submitDraft } from "./lib/composer";
+import RunReceipt from "./components/RunReceipt";
+import RunGraph from "./components/RunGraph";
+import RunContext from "./components/RunContext";
+import { useConfirmation } from "./components/Confirmation";
+import { confirmUnchanged } from "./lib/confirmation";
 import {
   emptyState,
   activeStatuses,
@@ -69,7 +84,6 @@ import {
   Button,
   Modal,
   Field,
-  Empty,
   cn,
   friendlyStatus,
   formatBytes,
@@ -87,6 +101,7 @@ import {
 const FilePane = lazy(() => import("./components/FilePane"));
 const TerminalPane = lazy(() => import("./components/TerminalPane"));
 const Workflows = lazy(() => import("./Workflows"));
+const VideoPane = lazy(() => import("./components/VideoPane"));
 type View =
   | "chat"
   | "agents"
@@ -97,7 +112,7 @@ type View =
   | "artifacts"
   | "settings"
   | "lab";
-type WorkTab = "chat" | "files" | "changes" | "terminal";
+type WorkTab = "chat" | "files" | "changes" | "terminal" | "video";
 const navigation: [View, string, typeof Bot][] = [
   ["chat", "Chats", MessageSquare],
   ["agents", "Agents", Bot],
@@ -146,7 +161,13 @@ function Orb({ large = false }: { large?: boolean }) {
     </div>
   );
 }
-function SafeMarkdown({ text }: { text: string }) {
+const SafeMarkdown = memo(function SafeMarkdown({
+  text,
+  onLinkError,
+}: {
+  text: string;
+  onLinkError: (message: string) => void;
+}) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -155,7 +176,14 @@ function SafeMarkdown({ text }: { text: string }) {
         a: ({ href, children }) => (
           <button
             className="markdown-link"
-            onClick={() => href && void openExternal(href).catch(() => {})}
+            onClick={async () => {
+              if (href)
+                try {
+                  await openExternal(href);
+                } catch (error) {
+                  onLinkError((error as Error).message);
+                }
+            }}
           >
             {children}
             <ArrowUpRight size={11} />
@@ -171,13 +199,13 @@ function SafeMarkdown({ text }: { text: string }) {
       {text}
     </ReactMarkdown>
   );
-}
+});
 function statusIcon(s: string) {
   return s === "completed" ? (
     <Check size={14} />
   ) : s === "failed" || s === "interrupted" ? (
     <AlertTriangle size={14} />
-  ) : s === "waiting_approval" ? (
+  ) : s === "waiting_approval" || s === "approval_requested" ? (
     <ShieldCheck size={14} />
   ) : s === "running" || s === "cancelling" ? (
     <LoaderCircle size={14} className="spin" />
@@ -185,6 +213,95 @@ function statusIcon(s: string) {
     <Clock3 size={14} />
   );
 }
+function SavedMessageOutcome({
+  message,
+  run,
+}: {
+  message: Message;
+  run?: Run;
+}) {
+  const outcome = savedMessageOutcome(message, run);
+  if (!outcome) return null;
+  return (
+    <div className="notice error" role="note">
+      <AlertTriangle size={16} aria-hidden="true" />
+      <div>
+        <strong>{outcome.label}</strong>
+        <p>{outcome.detail}</p>
+      </div>
+    </div>
+  );
+}
+function RunModelLabel({ run }: { run?: Run }) {
+  return run?.model ? (
+    <span className="muted small" title="Model recorded for this run">
+      Run model: {run.model}
+    </span>
+  ) : null;
+}
+const ActivityEvent = memo(function ActivityEvent({
+  event: e,
+}: {
+  event: Event;
+}) {
+  const [open, setOpen] = useState(false);
+  const outcome = eventStatus(e);
+  const failed = outcome === "failed" || outcome === "interrupted";
+  const dataError =
+    e.data && typeof e.data === "object" && "error" in e.data
+      ? String(e.data.error)
+      : "";
+  const summary = dataError || e.detail;
+  return (
+    <details
+      className={`event-item event-${e.type} ${failed ? "event-failure" : ""}`}
+      onToggle={(event) => setOpen(event.currentTarget.open)}
+    >
+      <summary>
+        <span className="event-symbol">
+          {outcome ? statusIcon(outcome) : <Activity size={14} />}
+        </span>
+        <span>
+          <strong>
+            {e.type === "approval"
+              ? "Approval requested"
+              : e.title || e.tool || e.type.replaceAll("_", " ")}
+          </strong>
+          {outcome && e.type !== "approval" && (
+            <span className="event-outcome">{friendlyStatus(outcome)}</span>
+          )}
+          {summary && (
+            <small>
+              {summary.length > 120 ? summary.slice(0, 120) + "…" : summary}
+            </small>
+          )}
+        </span>
+        <ChevronRight size={13} />
+      </summary>
+      {open && (
+        <div className="event-detail">
+          {e.detail && <pre>{e.detail}</pre>}
+          {e.data !== undefined && (
+            <details>
+              <summary>Structured tool details</summary>
+              <pre>
+                {typeof e.data === "string"
+                  ? e.data
+                  : JSON.stringify(e.data, null, 2)}
+              </pre>
+            </details>
+          )}
+          {!e.detail && e.data === undefined && (
+            <p className="muted small">No additional detail was recorded.</p>
+          )}
+          <time className="muted small">
+            {new Date(e.createdAt).toLocaleString()}
+          </time>
+        </div>
+      )}
+    </details>
+  );
+});
 function EventList({
   events,
   compact = false,
@@ -192,52 +309,31 @@ function EventList({
   events: Event[];
   compact?: boolean;
 }) {
+  const [visible, setVisible] = useState(100);
   const entries = events.filter(
-    (e) => !["text", "thinking", "adk_event"].includes(e.type),
+    (e) =>
+      ![
+        "text",
+        "thinking",
+        "adk_event",
+        "generation_metrics",
+        "token_accounting",
+        "context_prepared",
+      ].includes(e.type),
   );
   return (
     <div className={cn("event-list", compact && "compact")}>
-      {entries.map((e) => (
-        <details className={`event-item event-${e.type}`} key={e.id || e.seq}>
-          <summary>
-            <span className="event-symbol">
-              {e.type.includes("failed") || e.type === "error" ? (
-                <AlertTriangle size={14} />
-              ) : e.type.includes("completed") ? (
-                <Check size={14} />
-              ) : e.type === "approval" ? (
-                <ShieldCheck size={14} />
-              ) : (
-                <Activity size={14} />
-              )}
-            </span>
-            <span>
-              <strong>
-                {e.title || e.tool || e.type.replaceAll("_", " ")}
-              </strong>
-              {e.detail && (
-                <small>
-                  {e.detail.length > 120
-                    ? e.detail.slice(0, 120) + "…"
-                    : e.detail}
-                </small>
-              )}
-            </span>
-            <ChevronRight size={13} />
-          </summary>
-          {(e.detail || e.data !== undefined) && (
-            <div className="event-detail">
-              {e.detail && <pre>{e.detail}</pre>}
-              {e.data !== undefined && (
-                <pre>
-                  {typeof e.data === "string"
-                    ? e.data
-                    : JSON.stringify(e.data, null, 2)}
-                </pre>
-              )}
-            </div>
-          )}
-        </details>
+      {entries.length > visible && (
+        <Button
+          size="small"
+          variant="ghost"
+          onClick={() => setVisible((count) => count + 100)}
+        >
+          Show earlier activity ({entries.length - visible})
+        </Button>
+      )}
+      {entries.slice(-visible).map((e) => (
+        <ActivityEvent key={e.id || e.seq} event={e} />
       ))}
       {!entries.length && (
         <p className="muted small">
@@ -285,62 +381,6 @@ function ApprovalCard({
         </Button>
       </div>
     </div>
-  );
-}
-function RunGraph({ state, run }: { state: State; run?: Run }) {
-  const workflow = state.workflows.find((w) => w.id === run?.workflowId);
-  const nodeEvents = state.events.filter(
-    (e) => e.runId === run?.id && e.nodeId && e.type !== "adk_event",
-  );
-  const ids =
-    workflow?.nodes.map((n) => n.id) ||
-    Array.from(new Set(nodeEvents.map((e) => e.nodeId!)));
-  const nodes: Node[] = ids.map((id, i) => {
-    const n = workflow?.nodes.find((n) => n.id === id);
-    const latest = nodeEvents.filter((e) => e.nodeId === id).at(-1);
-    return {
-      id,
-      position: n?.position || { x: 25, y: i * 108 },
-      data: {
-        label: (
-          <div className="execution-node">
-            <span>{n?.label || latest?.title || id}</span>
-            <small>
-              {latest?.type.replace("node_", "").replaceAll("_", " ") ||
-                "Waiting"}
-            </small>
-          </div>
-        ),
-      },
-      className: `flow-node ${latest?.type === "node_completed" ? "node-finished" : latest?.type === "node_failed" ? "node-error" : latest ? "node-working" : ""}`,
-    };
-  });
-  const edges: Edge[] =
-    workflow?.edges.map((e) => ({ ...e })) ||
-    ids
-      .slice(1)
-      .map((id, i) => ({ id: `${ids[i]}-${id}`, source: ids[i], target: id }));
-  return nodes.length ? (
-    <div className="execution-graph">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        fitView
-        nodesDraggable={false}
-        nodesConnectable={false}
-        colorMode={state.settings.theme === "light" ? "light" : "dark"}
-        proOptions={{ hideAttribution: false }}
-      >
-        <Background gap={20} size={1} />
-        <Controls showInteractive={false} />
-      </ReactFlow>
-    </div>
-  ) : (
-    <Empty
-      icon={<Waypoints size={25} />}
-      title="A view of the process"
-      description="Workflow steps appear as the backend records their execution."
-    />
   );
 }
 function ResizeHandle({
@@ -406,29 +446,82 @@ function ResizeHandle({
 }
 
 export default function App() {
+  const confirmAction = useConfirmation();
   const [dirtyFile, setDirtyFile] = useState(false);
-  function mayLeaveFile() {
-    return !dirtyFile || confirm("Discard your unsaved file changes?");
+  const dirtyFileRef = useRef(false),
+    fileDraftRevision = useRef(0);
+  const handleDirtyChange = useCallback((dirty: boolean) => {
+    dirtyFileRef.current = dirty;
+    fileDraftRevision.current++;
+    setDirtyFile(dirty);
+  }, []);
+  async function mayLeaveFile() {
+    if (!dirtyFileRef.current) return true;
+    const snapshot = {
+      owner: composer.selection(),
+      revision: fileDraftRevision.current,
+    };
+    return confirmUnchanged(
+      snapshot,
+      (captured) =>
+        composer.isCurrent(captured.owner) &&
+        fileDraftRevision.current === captured.revision,
+      () =>
+        confirmAction({
+          title: "Discard unsaved file changes?",
+          description:
+            "Leaving this editor will discard the unsaved changes in the open file.",
+          confirmLabel: "Discard changes",
+          cancelLabel: "Keep editing",
+          danger: true,
+        }),
+    );
   }
   const [state, setState] = useState<State>(emptyState),
     [ready, setReady] = useState(false),
+    [hydrated, setHydrated] = useState(false),
     [backendError, setBackendError] = useState(""),
     [toast, setToast] = useState<{ message: string; error: boolean } | null>(
       null,
     );
+  const reportError = useCallback(
+    (message: string) => setToast({ message, error: true }),
+    [],
+  );
+  const [, refreshComposer] = useState(0);
+  const [composer] = useState(() =>
+    createComposerStore(
+      {
+        workspaceId: localStorage.getItem("gemma.workspace") || "",
+        sessionId: localStorage.getItem("gemma.session") || "",
+      },
+      () => refreshComposer((revision) => revision + 1),
+    ),
+  );
+  const { workspaceId, sessionId } = composer.selection();
+  const { text: prompt, attachments } = composer.read();
+  const sending = composer.isSending();
+  function selectConversation(nextWorkspace: string, nextSession = "") {
+    composer.select({ workspaceId: nextWorkspace, sessionId: nextSession });
+  }
+  function setPrompt(text: string) {
+    composer.update({ text });
+  }
+  function setAttachments(update: (previous: string[]) => string[]) {
+    composer.update({ attachments: update(composer.read().attachments) });
+  }
   const [view, setView] = useState<View>("chat"),
     [tab, setTab] = useState<WorkTab>("chat"),
-    [workspaceId, setWorkspaceId] = useState(
-      localStorage.getItem("gemma.workspace") || "",
-    ),
-    [sessionId, setSessionId] = useState(
-      localStorage.getItem("gemma.session") || "",
-    ),
     [messages, setMessages] = useState<Message[]>([]),
-    [sessionEvents, setSessionEvents] = useState<Event[]>([]);
-  const [inspector, setInspector] = useState(true),
+    [sessionEvents, setSessionEvents] = useState<Event[]>([]),
+    [sessionError, setSessionError] = useState(""),
+    [sessionLoading, setSessionLoading] = useState(false),
+    [visibleMessages, setVisibleMessages] = useState(40);
+  const sessionCache = useRef(new Map<string, SessionHistory>());
+  const sessionRequests = useRef(new Map<string, Promise<void>>());
+  const [inspector, setInspector] = useState(() => window.innerWidth > 800),
     [inspectorTab, setInspectorTab] = useState<
-      "activity" | "graph" | "runtime"
+      "activity" | "graph" | "context" | "plan" | "runtime"
     >("activity"),
     [sidebarOpen, setSidebarOpen] = useState(true),
     [sidebarWidth, setSidebarWidth] = useState(238),
@@ -440,15 +533,12 @@ export default function App() {
     [commandOpen, setCommandOpen] = useState(false),
     [commandQuery, setCommandQuery] = useState("");
   const [approvalInbox, setApprovalInbox] = useState(false);
-  const [prompt, setPrompt] = useState(""),
-    [agentId, setAgentId] = useState(""),
+  const [agentId, setAgentId] = useState(""),
     [model, setModel] = useState(""),
-    [sending, setSending] = useState(false),
     [attachmentModal, setAttachmentModal] = useState(false),
-    [attachmentPath, setAttachmentPath] = useState(""),
-    [attachments, setAttachments] = useState<string[]>([]);
+    [attachmentPath, setAttachmentPath] = useState("");
   const stateRef = useRef(state),
-    refreshing = useRef(false),
+    refreshFailed = useRef(false),
     sessionRef = useRef(sessionId),
     scrollRef = useRef<HTMLDivElement>(null),
     composerRef = useRef<HTMLTextAreaElement>(null),
@@ -458,12 +548,20 @@ export default function App() {
   const workspace = state.workspaces.find((w) => w.id === workspaceId),
     sessions = state.sessions.filter((s) => s.workspaceId === workspaceId),
     session = state.sessions.find((s) => s.id === sessionId);
-  const runs = state.runs.filter((r) => r.sessionId === sessionId),
-    run = runs.at(-1),
+  const runs = useMemo(
+      () => state.runs.filter((r) => r.sessionId === sessionId),
+      [state.runs, sessionId],
+    ),
+    run = currentRun(runs),
     working = !!run && activeStatuses.has(run.status),
-    events = sessionEvents.length
-      ? sessionEvents
-      : state.events.filter((e) => runs.some((r) => r.id === e.runId)),
+    events = useMemo(
+      () =>
+        mergeEvents(
+          sessionEvents,
+          state.events.filter((e) => runs.some((r) => r.id === e.runId)),
+        ),
+      [sessionEvents, state.events, runs],
+    ),
     approvals = state.approvals.filter(
       (a) =>
         runs.some((r) => r.id === a.runId) &&
@@ -479,9 +577,43 @@ export default function App() {
   useEffect(() => {
     if (globalApprovalKey) setApprovalInbox(true);
   }, [globalApprovalKey]);
-  const refresh = useCallback(async () => {
-    if (refreshing.current) return;
-    refreshing.current = true;
+  const loadSession = useCallback((sid: string): Promise<void> => {
+    const existing = sessionRequests.current.get(sid);
+    if (existing) return existing;
+    const request = (async () => {
+      let cache = sessionCache.current.get(sid) || {
+        messages: [],
+        events: [],
+        cursor: 0,
+        hasMore: false,
+      };
+      for (let pageNumber = 0; pageNumber < 3; pageNumber++) {
+        const page = await api<SessionPage>("session.get", {
+          id: sid,
+          after: cache.cursor,
+          limit: 1000,
+        });
+        cache = mergeSessionPage(cache, page);
+        sessionCache.current.set(sid, cache);
+        if (sessionRef.current === sid) {
+          setMessages(cache.messages);
+          setSessionEvents(cache.events);
+          setSessionError("");
+          setSessionLoading(false);
+        }
+        if (!cache.hasMore) break;
+      }
+    })()
+      .catch((error) => {
+        const cached = sessionCache.current.get(sid);
+        if (cached) cached.hasMore = false;
+        throw error;
+      })
+      .finally(() => sessionRequests.current.delete(sid));
+    sessionRequests.current.set(sid, request);
+    return request;
+  }, []);
+  const refreshTask = useCallback(async () => {
     try {
       const snapshot = await api<Partial<State>>("state");
       const normalized = {
@@ -507,26 +639,30 @@ export default function App() {
         if (!Array.isArray(normalized[key])) (normalized[key] as unknown) = [];
       }
       setState(normalized);
+      stateRef.current = normalized;
       setBackendError("");
+      refreshFailed.current = false;
       setReady(true);
+      setHydrated(true);
       const sid = sessionRef.current;
       if (sid && normalized.sessions.some((s) => s.id === sid)) {
-        const r = await api<{ messages: Message[]; events: Event[] }>(
-          "session.get",
-          { id: sid },
-        );
-        if (sessionRef.current === sid) {
-          setMessages(r.messages || []);
-          setSessionEvents(r.events || []);
-        }
+        await loadSession(sid).catch((e) => {
+          if (sessionRef.current === sid) {
+            setSessionError((e as Error).message);
+            setSessionLoading(false);
+          }
+        });
       }
     } catch (e) {
+      refreshFailed.current = true;
       setBackendError((e as Error).message);
       setReady(true);
-    } finally {
-      refreshing.current = false;
     }
-  }, []);
+  }, [loadSession]);
+  const refresh = useMemo(
+    () => createRefreshCoordinator(refreshTask),
+    [refreshTask],
+  );
   useEffect(() => {
     let disposed = false,
       timer: ReturnType<typeof setTimeout>;
@@ -540,7 +676,13 @@ export default function App() {
             (p) => !["success", "failed", "cancelled"].includes(p.status || ""),
           ) ||
           s.experiments.some((e) => activeStatuses.has(e.status));
-        timer = setTimeout(tick, busy ? 700 : 2200);
+        const catchingUp = sessionCache.current.get(
+          sessionRef.current,
+        )?.hasMore;
+        timer = setTimeout(
+          tick,
+          refreshFailed.current ? 3000 : catchingUp ? 80 : busy ? 700 : 2200,
+        );
       }
     }
     void tick();
@@ -561,39 +703,54 @@ export default function App() {
     }
   }, [toast]);
   useEffect(() => {
-    if (!ready) return;
-    if (!state.workspaces.some((w) => w.id === workspaceId)) {
-      setWorkspaceId(state.workspaces[0]?.id || "");
-      setSessionId("");
-    }
-  }, [state.workspaces, ready, workspaceId]);
+    if (!dirtyFile) return;
+    const preventUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", preventUnload);
+    return () => window.removeEventListener("beforeunload", preventUnload);
+  }, [dirtyFile]);
+  useEffect(() => {
+    if (!hydrated || sending || backendError) return;
+    const restored = restoreSelection(
+      state.workspaces,
+      state.sessions,
+      workspaceId,
+      sessionId,
+    );
+    selectConversation(restored.workspaceId, restored.sessionId);
+  }, [
+    state.workspaces,
+    state.sessions,
+    hydrated,
+    workspaceId,
+    sessionId,
+    sending,
+    backendError,
+  ]);
   useEffect(() => {
     localStorage.setItem("gemma.workspace", workspaceId);
-    if (
-      sessionId &&
-      !stateRef.current.sessions.some(
-        (s) => s.id === sessionId && s.workspaceId === workspaceId,
-      )
-    )
-      setSessionId("");
   }, [workspaceId]);
   useEffect(() => {
     localStorage.setItem("gemma.session", sessionId);
-    setMessages([]);
-    setSessionEvents([]);
+    setAttachmentModal(false);
+    setAttachmentPath("");
+    const cached = sessionCache.current.get(sessionId);
+    setMessages(cached?.messages || []);
+    setSessionEvents(cached?.events || []);
+    setSessionError("");
+    setSessionLoading(!!sessionId && !cached);
+    setVisibleMessages(40);
     if (sessionId)
-      void api<{ messages: Message[]; events: Event[] }>("session.get", {
-        id: sessionId,
-      })
-        .then((r) => {
-          if (sessionRef.current === sessionId) {
-            setMessages(r.messages || []);
-            setSessionEvents(r.events || []);
-          }
-        })
-        .catch((e) => setToast({ message: e.message, error: true }));
+      void loadSession(sessionId).catch((e) => {
+        if (sessionRef.current === sessionId) {
+          setSessionError((e as Error).message);
+          setSessionLoading(false);
+        }
+      });
     sticky.current = true;
-  }, [sessionId]);
+  }, [sessionId, loadSession]);
   useEffect(() => {
     if (sticky.current && scrollRef.current)
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -626,7 +783,7 @@ export default function App() {
   const action: Action = async <T,>(method: string, params: unknown = {}) => {
     try {
       const result = await api<T>(method, params);
-      await refresh();
+      await refresh(true);
       return result === undefined ? ({} as T) : result;
     } catch (e) {
       setToast({ message: (e as Error).message, error: true });
@@ -634,22 +791,19 @@ export default function App() {
     }
   };
   async function newSession() {
-    if (!mayLeaveFile()) return;
+    if (!(await mayLeaveFile())) return;
     if (!workspaceId) {
       setWorkspaceModal(true);
       return;
     }
-    const r = await action<Session>("session.create", { workspaceId });
-    if (r?.id) {
-      setSessionId(r.id);
-      setView("chat");
-      setTab("chat");
-      setPrompt("");
-      setTimeout(() => composerRef.current?.focus(), 0);
-    }
+    selectConversation(workspaceId);
+    setView("chat");
+    setTab("chat");
+    setTimeout(() => composerRef.current?.focus(), 0);
   }
   async function addWorkspace(pick = false) {
-    if (!mayLeaveFile()) return;
+    if (!(await mayLeaveFile())) return;
+    const owner = composer.selection();
     setWorkspaceBusy(true);
     try {
       const r = await action<{ id: string; path?: string }>(
@@ -657,8 +811,7 @@ export default function App() {
         pick ? {} : { path: workspacePath, name: workspaceName },
       );
       if (r?.id) {
-        setWorkspaceId(r.id);
-        setSessionId("");
+        if (composer.isCurrent(owner)) selectConversation(r.id);
         setWorkspaceModal(false);
         setWorkspacePath("");
         setWorkspaceName("");
@@ -669,65 +822,75 @@ export default function App() {
     }
   }
   async function send() {
-    if (!prompt.trim() || sending || working || !workspaceId) return;
-    setSending(true);
+    if (!canSend) return;
+    if (
+      !prompt.trim() ||
+      sending ||
+      working ||
+      !workspaceId ||
+      sessionLoading ||
+      sessionError
+    )
+      return;
+    const submission = composer.begin({
+      agentId: agentId || undefined,
+      model: model || undefined,
+    });
+    if (!submission) return;
     try {
-      let sid = sessionId;
-      if (!sid) {
-        const s = await action<Session>("session.create", {
-          workspaceId,
-          title: prompt.slice(0, 70),
-        });
-        if (!s?.id) return;
-        sid = s.id;
-        setSessionId(sid);
-      }
-      const result = await action("run.start", {
-        sessionId: sid,
-        prompt: prompt.trim(),
-        agentId: agentId || undefined,
-        model: model || undefined,
-        attachments,
+      await submitDraft(composer, submission, {
+        createSession: (params) => api<Session>("session.create", params),
+        startRun: (params) => api("run.start", params),
       });
-      if (result !== undefined) {
-        setPrompt("");
-        setAttachments([]);
+      if (
+        composer.selection().workspaceId === submission.workspaceId &&
+        composer.selection().sessionId === submission.sessionId
+      )
         sticky.current = true;
-        setView("chat");
-        setTab("chat");
-      }
+    } catch (error) {
+      reportError((error as Error).message);
     } finally {
-      setSending(false);
+      try {
+        await refresh(true);
+      } finally {
+        composer.finish(submission);
+      }
     }
   }
-  const streamRun = run && working ? run : undefined;
-  const streamed = streamRun
-    ? events
-        .filter((e) => e.runId === streamRun.id && e.type === "text")
-        .map((e) => e.detail || "")
-        .join("")
-    : "";
+
+  const streamed = useMemo(
+    () => streamedOutput(run, messages, events),
+    [run, messages, events],
+  );
   const hasStreamMessage =
-    streamRun &&
-    messages.some((m) => m.role === "assistant" && m.runId === streamRun.id);
-  const canSend =
-    !!workspace &&
-    state.runtime.available &&
-    !!prompt.trim() &&
-    !working &&
-    !sending;
-  function navigate(v: View) {
-    if (v !== view && !mayLeaveFile()) return;
-    setView(v);
-    setCommandOpen(false);
-    setCommandQuery("");
-  }
-  const pageProps = { state, action, workspaceId, sessionId };
+    run && messages.some((m) => m.role === "assistant" && m.runId === run.id);
   const selectedAgent = state.agents.find(
     (a) => a.id === (agentId || "default"),
   );
   const selectedModel =
     model || selectedAgent?.model || state.settings.defaultModel;
+  const selectedModelRecord = state.models.find(
+    (m) => m.name === selectedModel,
+  );
+  const completionSelected = isCompletionModel(
+    selectedModelRecord || { name: selectedModel },
+  );
+  const canSend =
+    !!workspace &&
+    state.runtime.available &&
+    !!prompt.trim() &&
+    !working &&
+    !sessionLoading &&
+    !sessionError &&
+    !sending &&
+    completionSelected;
+  async function navigate(v: View) {
+    if (v !== view && !(await mayLeaveFile())) return;
+    setView(v);
+    setCommandOpen(false);
+    setCommandQuery("");
+  }
+  const pageProps = { state, action, workspaceId, sessionId };
   const inspectedModelName = run?.model || selectedModel;
   const inspectedModel = state.models.find(
     (m) => m.name === inspectedModelName,
@@ -744,6 +907,28 @@ export default function App() {
   );
   const readOnly =
     state.settings.mode === "read-only" || selectedAgent?.mode === "read-only";
+  const workspaceRuns = new Set(
+    state.runs.filter((r) => r.workspaceId === workspaceId).map((r) => r.id),
+  );
+  const fileRevision =
+    state.events
+      .filter(
+        (e) =>
+          workspaceRuns.has(e.runId) &&
+          (e.type === "run_completed" ||
+            (e.type === "tool_completed" &&
+              ["write_file", "edit_file"].includes(e.tool || e.title))),
+      )
+      .at(-1)?.seq || 0;
+  const saveDisabledReason =
+    state.settings.mode === "read-only"
+      ? "Workspace settings are read only."
+      : state.runs.some(
+            (r) =>
+              r.workspaceId === workspaceId && activeStatuses.has(r.status),
+          )
+        ? "Wait for the active workspace run before saving changes."
+        : "";
   return (
     <div
       className="desktop-shell"
@@ -788,9 +973,9 @@ export default function App() {
                 className={`workspace-item ${w.id === workspaceId ? "selected" : ""}`}
               >
                 <button
-                  onClick={() => {
-                    if (!mayLeaveFile()) return;
-                    setWorkspaceId(w.id);
+                  onClick={async () => {
+                    if (!(await mayLeaveFile())) return;
+                    if (w.id !== workspaceId) selectConversation(w.id);
                     setView("chat");
                     setTab("chat");
                   }}
@@ -808,11 +993,18 @@ export default function App() {
                   variant="ghost"
                   className="workspace-remove"
                   aria-label={`Remove workspace ${w.name}`}
-                  onClick={() =>
-                    confirm(
-                      `Remove “${w.name}” from Gemma Desktop? Files on disk will remain.`,
-                    ) && action("workspace.remove", { id: w.id })
-                  }
+                  onClick={async () => {
+                    if (w.id === workspaceId && !(await mayLeaveFile())) return;
+                    if (
+                      await confirmAction({
+                        title: "Remove workspace?",
+                        description: `Remove “${w.name}” from Gemma Desktop? Files on disk will remain.`,
+                        confirmLabel: "Remove workspace",
+                        danger: true,
+                      })
+                    )
+                      await action("workspace.remove", { id: w.id });
+                  }}
                 >
                   <X size={12} />
                 </Button>
@@ -865,9 +1057,9 @@ export default function App() {
                   <button
                     key={s.id}
                     className={sessionId === s.id ? "selected" : ""}
-                    onClick={() => {
-                      if (!mayLeaveFile()) return;
-                      setSessionId(s.id);
+                    onClick={async () => {
+                      if (!(await mayLeaveFile())) return;
+                      selectConversation(s.workspaceId, s.id);
                       setTab("chat");
                     }}
                   >
@@ -928,7 +1120,9 @@ export default function App() {
                   <ChevronRight size={12} />
                   <span>
                     {view === "chat"
-                      ? session?.title || "New conversation"
+                      ? tab === "video"
+                        ? "Video"
+                        : session?.title || "New conversation"
                       : navigation.find((n) => n[0] === view)?.[1] ||
                         { settings: "Settings", lab: "Harness Lab" }[
                           view as "settings" | "lab"
@@ -946,7 +1140,7 @@ export default function App() {
               <span>{state.settings.defaultModel || "Choose a model"}</span>
               <ChevronDown size={12} />
             </button>
-            {view === "chat" && (
+            {view === "chat" && tab !== "video" && (
               <>
                 <span className="titlebar-divider" />
                 <Button
@@ -974,7 +1168,11 @@ export default function App() {
           <div className="backend-error" role="alert">
             <AlertTriangle size={15} />
             <span>{backendError}</span>
-            <Button size="small" variant="ghost" onClick={refresh}>
+            <Button
+              size="small"
+              variant="ghost"
+              onClick={() => void refresh(true)}
+            >
               <RefreshCw size={13} />
               Retry
             </Button>
@@ -1040,6 +1238,7 @@ export default function App() {
                     ["files", "Files", FileCode2],
                     ["changes", "Changes", GitCompareArrows],
                     ["terminal", "Terminal", TerminalSquare],
+                    ["video", "Video", Film],
                   ] as const
                 ).map(([id, label, Icon]) => (
                   <button
@@ -1048,8 +1247,8 @@ export default function App() {
                     aria-selected={tab === id}
                     className={tab === id ? "selected" : ""}
                     disabled={id !== "chat" && !workspace}
-                    onClick={() => {
-                      if (id === tab || mayLeaveFile()) setTab(id);
+                    onClick={async () => {
+                      if (id === tab || (await mayLeaveFile())) setTab(id);
                     }}
                   >
                     <Icon size={14} />
@@ -1057,19 +1256,26 @@ export default function App() {
                   </button>
                 ))}
                 <div className="spacer" />
-                {sessionId && (
+                {sessionId && tab !== "video" && (
                   <Button
                     size="icon"
                     variant="ghost"
                     aria-label="Delete conversation"
                     onClick={async () => {
                       if (
-                        confirm("Delete this conversation and its history?")
+                        await confirmAction({
+                          title: "Delete conversation?",
+                          description:
+                            "Delete this conversation and its saved history?",
+                          confirmLabel: "Delete conversation",
+                          danger: true,
+                        })
                       ) {
                         const r = await action("session.delete", {
                           id: sessionId,
                         });
-                        if (r !== undefined) setSessionId("");
+                        if (r !== undefined)
+                          composer.remove({ workspaceId, sessionId });
                       }
                     }}
                   >
@@ -1086,7 +1292,15 @@ export default function App() {
                     </div>
                   }
                 >
-                  {tab === "terminal" ? (
+                  {tab === "video" ? (
+                    <VideoPane
+                      key={workspaceId}
+                      workspaceId={workspaceId}
+                      models={state.models}
+                      runtime={state.runtime}
+                      defaultModel={state.settings.defaultModel}
+                    />
+                  ) : tab === "terminal" ? (
                     <TerminalPane key={workspaceId} workspaceId={workspaceId} />
                   ) : (
                     <FilePane
@@ -1094,12 +1308,26 @@ export default function App() {
                       workspaceId={workspaceId}
                       theme={state.settings.theme}
                       diff={tab === "changes"}
-                      onDirtyChange={setDirtyFile}
+                      onDirtyChange={handleDirtyChange}
+                      revision={fileRevision}
+                      saveDisabledReason={saveDisabledReason}
                     />
                   )}
                 </Suspense>
               ) : (
                 <>
+                  {sessionError && (
+                    <div className="backend-error" role="alert">
+                      <AlertTriangle size={15} />
+                      <span>
+                        Could not refresh this conversation: {sessionError}.
+                        Previously loaded messages are preserved.
+                      </span>
+                      <Button size="small" onClick={() => void refresh(true)}>
+                        Retry
+                      </Button>
+                    </div>
+                  )}
                   <div
                     className="chat-scroll"
                     ref={scrollRef}
@@ -1111,7 +1339,12 @@ export default function App() {
                           100;
                     }}
                   >
-                    {!messages.length && !streamed && !working ? (
+                    {sessionLoading && !messages.length ? (
+                      <div className="loading-pane">
+                        <LoaderCircle className="spin" />
+                        Opening conversation…
+                      </div>
+                    ) : !messages.length && !streamed && !working ? (
                       <div className="welcome">
                         <div className="welcome-art">
                           <div className="orbit-ring ring-one" />
@@ -1194,7 +1427,33 @@ export default function App() {
                           <span>{session?.title || "Conversation"}</span>
                           <small>{workspace?.name}</small>
                         </div>
-                        {messages.map((m) => (
+                        {sessionCache.current.get(sessionId)?.hasMore && (
+                          <p className="muted small">
+                            Loading remaining execution history…
+                          </p>
+                        )}
+                        {messages.length > visibleMessages && (
+                          <Button
+                            size="small"
+                            variant="ghost"
+                            onClick={() => {
+                              const previousHeight =
+                                scrollRef.current?.scrollHeight || 0;
+                              sticky.current = false;
+                              setVisibleMessages((count) => count + 40);
+                              requestAnimationFrame(() => {
+                                if (scrollRef.current)
+                                  scrollRef.current.scrollTop +=
+                                    scrollRef.current.scrollHeight -
+                                    previousHeight;
+                              });
+                            }}
+                          >
+                            Show earlier messages (
+                            {messages.length - visibleMessages})
+                          </Button>
+                        )}
+                        {messages.slice(-visibleMessages).map((m) => (
                           <article
                             key={m.id}
                             className={`message message-${m.role}`}
@@ -1217,6 +1476,11 @@ export default function App() {
                                     { hour: "numeric", minute: "2-digit" },
                                   )}
                                 </time>
+                                {m.role === "assistant" && (
+                                  <RunModelLabel
+                                    run={runs.find((r) => r.id === m.runId)}
+                                  />
+                                )}
                                 <Button
                                   size="icon"
                                   variant="ghost"
@@ -1235,9 +1499,21 @@ export default function App() {
                                   <Copy size={12} />
                                 </Button>
                               </div>
+                              <SavedMessageOutcome
+                                message={m}
+                                run={runs.find((r) => r.id === m.runId)}
+                              />
                               <div className="markdown">
-                                <SafeMarkdown text={m.content} />
+                                <SafeMarkdown
+                                  text={m.content}
+                                  onLinkError={reportError}
+                                />
                               </div>
+                              {m.role === "assistant" && (
+                                <RunReceipt
+                                  run={runs.find((r) => r.id === m.runId)}
+                                />
+                              )}
                             </div>
                           </article>
                         ))}
@@ -1249,10 +1525,16 @@ export default function App() {
                             <div className="message-body">
                               <div className="message-meta">
                                 <strong>Gemma</strong>
-                                <span className="stream-label">Writing</span>
+                                <span className="stream-label">
+                                  {working ? "Live output" : "Partial output"}
+                                </span>
+                                <RunModelLabel run={run} />
                               </div>
                               <div className="markdown">
-                                <SafeMarkdown text={streamed} />
+                                <SafeMarkdown
+                                  text={streamed}
+                                  onLinkError={reportError}
+                                />
                               </div>
                             </div>
                           </article>
@@ -1266,13 +1548,17 @@ export default function App() {
                                   ? "Waiting for your decision"
                                   : "Working on your request"}
                               </strong>
+                              <RunModelLabel run={run} />
                               <span>
                                 {events
                                   .filter(
                                     (e) =>
                                       e.type !== "text" &&
                                       e.type !== "thinking" &&
-                                      e.type !== "adk_event",
+                                      e.type !== "adk_event" &&
+                                      e.type !== "generation_metrics" &&
+                                      e.type !== "token_accounting" &&
+                                      e.type !== "context_prepared",
                                   )
                                   .at(-1)?.title || "Preparing the next step…"}
                               </span>
@@ -1321,6 +1607,7 @@ export default function App() {
                           <div className={`run-outcome outcome-${run.status}`}>
                             {statusIcon(run.status)}
                             <span>{friendlyStatus(run.status)}</span>
+                            <RunModelLabel run={run} />
                             {run.finishedAt && (
                               <small>
                                 {new Date(run.finishedAt).toLocaleTimeString(
@@ -1342,6 +1629,7 @@ export default function App() {
                             </Button>
                           </div>
                         )}
+                        {!hasStreamMessage && <RunReceipt run={run} />}
                       </div>
                     )}
                   </div>
@@ -1424,13 +1712,20 @@ export default function App() {
                             onChange={(e) => setModel(e.target.value)}
                           >
                             {!state.models.some(
-                              (m) => m.name === selectedModel,
-                            ) && <option>{selectedModel}</option>}
-                            {state.models
-                              .filter((m) => !m.remote)
-                              .map((m) => (
-                                <option key={m.name}>{m.name}</option>
-                              ))}
+                              (m) =>
+                                m.name === selectedModel &&
+                                isCompletionModel(m),
+                            ) && (
+                              <option disabled={!completionSelected}>
+                                {selectedModel}
+                                {completionSelected
+                                  ? ""
+                                  : " (not a chat model)"}
+                              </option>
+                            )}
+                            {state.models.filter(isCompletionModel).map((m) => (
+                              <option key={m.name}>{m.name}</option>
+                            ))}
                           </select>
                           {working ? (
                             <Button
@@ -1462,7 +1757,11 @@ export default function App() {
                     <div className="composer-footer">
                       <span>
                         <ShieldCheck size={11} />
-                        {readOnly ? "Read only" : "Changes require approval"}
+                        {!completionSelected
+                          ? "Choose a completion model to chat"
+                          : readOnly
+                            ? "Read only"
+                            : "Changes require approval"}
                       </span>
                       <span>
                         Enter to send <span className="dot-divider">·</span>{" "}
@@ -1473,8 +1772,13 @@ export default function App() {
                 </>
               )}
             </main>
-            {inspector && (
+            {inspector && tab !== "video" && (
               <>
+                <button
+                  className="inspector-backdrop"
+                  aria-label="Close inspector"
+                  onClick={() => setInspector(false)}
+                />
                 <ResizeHandle
                   value={inspectorWidth}
                   onChange={setInspectorWidth}
@@ -1483,24 +1787,44 @@ export default function App() {
                   reverse
                   label="Inspector width"
                 />
-                <aside className="inspector">
+                <aside className="inspector" aria-label="Execution inspector">
                   <div className="inspector-tabs">
-                    {(["activity", "graph", "runtime"] as const).map((t) => (
+                    {(
+                      [
+                        "activity",
+                        "graph",
+                        "context",
+                        "plan",
+                        "runtime",
+                      ] as const
+                    ).map((t) => (
                       <button
                         key={t}
                         className={inspectorTab === t ? "selected" : ""}
+                        aria-pressed={inspectorTab === t}
                         onClick={() => setInspectorTab(t)}
                       >
-                        {t === "activity"
-                          ? "Activity"
-                          : t === "graph"
-                            ? "Graph"
-                            : "Runtime"}
+                        {t[0].toUpperCase() + t.slice(1)}
                       </button>
                     ))}
+                    <button
+                      className="inspector-close"
+                      aria-label="Close inspector"
+                      onClick={() => setInspector(false)}
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
-                  {inspectorTab === "graph" ? (
-                    <RunGraph state={state} run={run} />
+                  {inspectorTab === "context" || inspectorTab === "plan" ? (
+                    <RunContext run={run} view={inspectorTab} />
+                  ) : inspectorTab === "graph" ? (
+                    <RunGraph
+                      run={run}
+                      runs={runs}
+                      history={events}
+                      theme={state.settings.theme}
+                      renderEvents={(related) => <EventList events={related} />}
+                    />
                   ) : inspectorTab === "runtime" ? (
                     <div className="inspector-content">
                       <span className="eyebrow">MODEL & RUNTIME</span>
@@ -1553,7 +1877,7 @@ export default function App() {
                             </div>
                           )}
                         <div>
-                          <span>Step budget</span>
+                          <span>Default step budget</span>
                           <span>{state.settings.maxSteps}</span>
                         </div>
                         <div>
@@ -1612,7 +1936,7 @@ export default function App() {
                         )}
                       </div>
                       {events.length ? (
-                        <EventList events={events} compact />
+                        <EventList key={sessionId} events={events} compact />
                       ) : (
                         <div className="inspector-empty">
                           <Activity size={26} />
@@ -1829,11 +2153,12 @@ export default function App() {
             .map((s) => (
               <button
                 key={s.id}
-                onClick={() => {
-                  if (!mayLeaveFile()) return;
-                  setWorkspaceId(s.workspaceId);
-                  setSessionId(s.id);
-                  navigate("chat");
+                onClick={async () => {
+                  if (!(await mayLeaveFile())) return;
+                  selectConversation(s.workspaceId, s.id);
+                  setView("chat");
+                  setCommandOpen(false);
+                  setCommandQuery("");
                   setTab("chat");
                 }}
               >

@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-10-27T19:10:22.937150+00:00",
+  "scope": "Snapshot while updated-runtime coding baseline is active; not a peak-memory measurement",
+  "loaded": {
+    "models": [
+      {
+        "name": "gemma4:26b-mlx",
+        "model": "gemma4:26b-mlx",
+        "size": 27331655396,
+        "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "details": {
+          "parent_model": "",
+          "format": "safetensors",
+          "family": "",
+          "families": null,
+          "parameter_size": "",
+          "quantization_level": "nvfp4"
+        },
+        "expires_at": "2026-10-27T14:15:17.439646-05:00",
+        "size_vram": 27331655396,
+        "context_length": 32768,
+        "runner": "mlx"
+      }
+    ]
+  },
+  "vmStat": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                                    44289.\nPages active:                                1219687.\nPages inactive:                              1207325.\nPages speculative:                             16812.\nPages throttled:                                   0.\nPages wired down:                            1480858.\nPages purgeable:                               43989.\n\"Translation faults\":                      918397314.\nPages copy-on-write:                        10115360.\nPages zero filled:                        1962072790.\nPages reactivated:                           3925283.\nPages purged:                                5626563.\nFile-backed pages:                            975252.\nAnonymous pages:                             1468572.\nPages stored in compressor:                   449465.\nPages occupied by compressor:                 178694.\nDecompressions:                              4609781.\nCompressions:                                9597928.\nPageins:                                    22747880.\nPageouts:                                     162485.\nSwapins:                                        3936.\nSwapouts:                                      12492.\n",
+  "swap": "vm.swapusage: total = 1024.00M  used = 139.19M  free = 884.81M  (encrypted)\n",
+  "pressure": "The system has 68719476736 (4194304 pages with a page size of 16384).\nSystem-wide memory free percentage: 59%\n"
+}

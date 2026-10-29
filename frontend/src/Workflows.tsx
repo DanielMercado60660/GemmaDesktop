@@ -29,13 +29,16 @@ import {
   Waypoints,
 } from "lucide-react";
 import { Button, Empty, Field, Modal, SectionHeader } from "./components/ui";
-import type { Workflow, WorkflowNode, WorkflowEdge } from "./types";
+import type { Workflow, WorkflowEdge } from "./types";
+import { useConfirmation } from "./components/Confirmation";
 import type { PageProps } from "./Management";
+import { workflowEditorNodes, workflowSaveNodes } from "./lib/workflowEditor";
 const kinds = [
   ["agent", "Agent"],
   ["condition", "Condition"],
   ["approval", "Approval"],
   ["parallel", "Parallel split"],
+  ["fanout", "Dynamic fan-out"],
   ["join", "Join"],
   ["output", "Output"],
 ];
@@ -44,7 +47,7 @@ function icon(type: string) {
     <ShieldCheck size={16} />
   ) : type === "condition" ? (
     <GitBranch size={16} />
-  ) : type === "parallel" ? (
+  ) : type === "parallel" || type === "fanout" ? (
     <Split size={16} />
   ) : type === "join" ? (
     <Merge size={16} />
@@ -55,12 +58,14 @@ function icon(type: string) {
   );
 }
 export default function Workflows({ state, action, sessionId }: PageProps) {
+  const confirmAction = useConfirmation();
   const [draft, setDraft] = useState<Workflow | null>(null),
     [nodes, setNodes] = useState<Node[]>([]),
     [edges, setEdges] = useState<Edge[]>([]),
     [selected, setSelected] = useState(""),
     [edgeSelected, setEdgeSelected] = useState(""),
     [saving, setSaving] = useState(false),
+    [saveError, setSaveError] = useState(""),
     [runModal, setRunModal] = useState(false),
     [prompt, setPrompt] = useState("");
   const selectedNode = nodes.find((n) => n.id === selected),
@@ -74,15 +79,8 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
       edges: [],
     };
     setDraft({ ...w });
-    setNodes(
-      w.nodes.map((n) => ({
-        id: n.id,
-        position: n.position,
-        type: "default",
-        data: { ...n, label: n.label },
-        className: `flow-node node-${n.type}`,
-      })),
-    );
+    setNodes(workflowEditorNodes(w.nodes));
+    setSaveError("");
     setEdges(
       w.edges.map((e) => ({
         ...e,
@@ -125,7 +123,7 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
     );
   }
   function add(type: string) {
-    const id = crypto.randomUUID();
+    const id = `step_${crypto.randomUUID()}`;
     setNodes((nds) => [
       ...nds,
       {
@@ -147,18 +145,21 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
   }
   async function save() {
     if (!draft) return;
-    setSaving(true);
+    setSaveError("");
+    let savedNodes;
+    try {
+      savedNodes = workflowSaveNodes(nodes);
+    } catch (error) {
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "Unable to save workflow items.",
+      );
+      return;
+    }
     const payload = {
       ...draft,
-      nodes: nodes.map((n) => ({
-        id: n.id,
-        type: String(n.data.type || "agent"),
-        label: String(n.data.label || ""),
-        agentId: n.data.agentId ? String(n.data.agentId) : undefined,
-        prompt: n.data.prompt ? String(n.data.prompt) : undefined,
-        condition: n.data.condition ? String(n.data.condition) : undefined,
-        position: n.position,
-      })) as WorkflowNode[],
+      nodes: savedNodes,
       edges: edges.map((e) => ({
         id: e.id,
         source: e.source,
@@ -167,9 +168,13 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
         condition: e.data?.condition ? String(e.data.condition) : undefined,
       })) as WorkflowEdge[],
     };
-    const r = await action<Workflow>("workflow.save", payload);
-    setSaving(false);
-    if (r) setDraft({ ...payload, id: r.id || draft.id });
+    setSaving(true);
+    try {
+      const r = await action<Workflow>("workflow.save", payload);
+      if (r) setDraft({ ...payload, id: r.id || draft.id });
+    } finally {
+      setSaving(false);
+    }
   }
   async function run() {
     if (!draft?.id) return;
@@ -233,10 +238,17 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
                     size="icon"
                     variant="ghost"
                     aria-label={`Delete ${w.name}`}
-                    onClick={() =>
-                      confirm(`Delete workflow “${w.name}”?`) &&
-                      action("workflow.delete", { id: w.id })
-                    }
+                    onClick={async () => {
+                      if (
+                        await confirmAction({
+                          title: "Delete workflow?",
+                          description: `Delete the saved workflow “${w.name}”?`,
+                          confirmLabel: "Delete workflow",
+                          danger: true,
+                        })
+                      )
+                        await action("workflow.delete", { id: w.id });
+                    }}
                   >
                     <Trash2 size={15} />
                   </Button>
@@ -302,6 +314,11 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
           Run
         </Button>
       </div>
+      {saveError && (
+        <div className="notice error" role="alert">
+          {saveError}
+        </div>
+      )}
       <div className="workflow-body">
         <div className="node-palette">
           <span className="eyebrow">Add a step</span>
@@ -376,7 +393,8 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
                   ))}
                 </select>
               </Field>
-              {selectedNode.data.type === "agent" && (
+              {(selectedNode.data.type === "agent" ||
+                selectedNode.data.type === "fanout") && (
                 <Field label="Agent">
                   <select
                     value={String(selectedNode.data.agentId || "")}
@@ -389,6 +407,22 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
                       </option>
                     ))}
                   </select>
+                </Field>
+              )}
+              {selectedNode.data.type === "fanout" && (
+                <Field
+                  label="Items"
+                  hint="JSON array of up to 16 strings, one agent run per item. Leave empty (or use []) to read the preceding step’s JSON array."
+                >
+                  <textarea
+                    rows={5}
+                    spellCheck={false}
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    value={String(selectedNode.data.itemsJSON || "")}
+                    onChange={(e) => updateNode("itemsJSON", e.target.value)}
+                    placeholder={'["First task", "Second task"]'}
+                  />
                 </Field>
               )}
               {selectedNode.data.type === "condition" ? (

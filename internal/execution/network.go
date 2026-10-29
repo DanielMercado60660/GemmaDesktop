@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"mime"
 	"net"
 	"net/http"
 	"net/url"
@@ -81,8 +82,9 @@ func PublicIP(ip net.IP) bool {
 	return true
 }
 
-// BoundJSONResponses limits non-streaming MCP responses before SDK decoding.
-// SSE has its own per-event bound in the official SDK.
+// BoundJSONResponses limits non-streaming MCP responses before SDK decoding,
+// including error bodies regardless of their media type. Only successful SSE
+// responses use the official SDK's per-event bound instead.
 func BoundJSONResponses(client *http.Client, limit int64) {
 	client.Transport = boundedJSONTransport{base: client.Transport, limit: limit}
 }
@@ -97,7 +99,8 @@ func (t boundedJSONTransport) RoundTrip(req *http.Request) (*http.Response, erro
 	if err != nil {
 		return nil, err
 	}
-	if strings.Contains(strings.ToLower(res.Header.Get("Content-Type")), "application/json") {
+	mediaType, _, mediaErr := mime.ParseMediaType(res.Header.Get("Content-Type"))
+	if mediaErr != nil || !strings.EqualFold(mediaType, "text/event-stream") || res.StatusCode < 200 || res.StatusCode >= 300 {
 		res.Body = &boundedBody{body: res.Body, remaining: t.limit}
 	}
 	return res, nil

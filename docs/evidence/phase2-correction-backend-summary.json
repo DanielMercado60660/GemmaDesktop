@@ -1,0 +1,74 @@
+{
+  "scope": "Current correction source, opt-in Docker/native/live-model checks explicitly disabled",
+  "race": true,
+  "testsIncludingSubtests": {
+    "pass": 529,
+    "skip": 29
+  },
+  "topLevelTests": {
+    "pass": 265,
+    "skip": 29
+  },
+  "packages": [
+    {
+      "package": "gemmadesktop.local/app/internal/browser",
+      "status": "pass",
+      "elapsed": 1.294
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/workflow",
+      "status": "pass",
+      "elapsed": 1.4
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/mcp",
+      "status": "pass",
+      "elapsed": 1.4
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/workspace",
+      "status": "pass",
+      "elapsed": 1.772
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/tools",
+      "status": "pass",
+      "elapsed": 1.794
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/inference",
+      "status": "pass",
+      "elapsed": 1.813
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/harness",
+      "status": "pass",
+      "elapsed": 2.005
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/execution",
+      "status": "pass",
+      "elapsed": 2.133
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/media",
+      "status": "pass",
+      "elapsed": 2.8609999999999998
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/engine",
+      "status": "pass",
+      "elapsed": 3.81
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/store",
+      "status": "pass",
+      "elapsed": 10.216
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/app",
+      "status": "pass",
+      "elapsed": 13.083
+    }
+  ]
+}

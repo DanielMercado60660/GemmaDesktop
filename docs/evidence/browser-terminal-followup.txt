@@ -1,0 +1,8 @@
+=== RUN   TestLiveChrome
+--- PASS: TestLiveChrome (1.11s)
+PASS
+ok  	gemmadesktop.local/app/internal/browser	2.324s
+=== RUN   TestRealUserTerminal
+--- PASS: TestRealUserTerminal (0.03s)
+PASS
+ok  	gemmadesktop.local/app/internal/execution	1.189s

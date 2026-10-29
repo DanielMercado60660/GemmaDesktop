@@ -1,0 +1,128 @@
+{
+  "id": "go-usage",
+  "name": "Aggregate bounded usage windows",
+  "stack": "go",
+  "split": "validation",
+  "prompt": "Read README.md, repair aggregate bounded usage windows, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport \"sort\"\nvar _ = sort.Strings\nfunc solve(x map[string]any) any {out:=map[string]float64{};for _,raw:=range x[\"events\"].([]any){e:=raw.(map[string]any);at:=e[\"at\"].(float64);if false&&at<=x[\"now\"].(float64){out[e[\"user\"].(string)]+=e[\"units\"].(float64)}};return out}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/go-usage\n\ngo 1.23\n",
+    "logic_test.go": "package main\nimport(\"testing\";\"encoding/json\";\"reflect\")\nfunc TestPublic(t *testing.T){var inputs []map[string]any;_ = json.Unmarshal([]byte(`[{\"events\": [], \"now\": 100, \"window\": 10}, {\"events\": [{\"user\": \"a\", \"at\": 95, \"units\": 2}], \"now\": 100, \"window\": 10}]`),&inputs);var expected []any;_ = json.Unmarshal([]byte(`[{}, {\"a\": 2}]`),&expected);for i,x:=range inputs{b,_:=json.Marshal(solve(x));var actual any;_ = json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected[i]){t.Fatalf(\"case %d: got %v want %v\",i,actual,expected[i])}}}\n",
+    "README.md": "# Aggregate bounded usage windows\n\nRepair this go service module and add regression tests.\n\nReturn per-user total units for events in the closed time interval [now-window, now]. Include zero-unit users when an event qualifies. Exclude future and older events. Units are nonnegative integers. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `go test ./...` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"events\": [\n    {\n      \"user\": \"a\",\n      \"at\": 90,\n      \"units\": 3\n    },\n    {\n      \"user\": \"a\",\n      \"at\": 100,\n      \"units\": 2\n    },\n    {\n      \"user\": \"b\",\n      \"at\": 101,\n      \"units\": 9\n    }\n  ],\n  \"now\": 100,\n  \"window\": 10\n}\n```\nExpected result:\n```json\n{\n  \"a\": 5\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "usage-1",
+      "input": {
+        "events": [],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "usage-2",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 95,
+            "units": 2
+          }
+        ],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {
+        "a": 2
+      },
+      "critical": false
+    },
+    {
+      "name": "usage-3",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 90,
+            "units": 3
+          },
+          {
+            "user": "a",
+            "at": 100,
+            "units": 2
+          },
+          {
+            "user": "b",
+            "at": 101,
+            "units": 9
+          }
+        ],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {
+        "a": 5
+      },
+      "critical": false
+    },
+    {
+      "name": "usage-4",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 89,
+            "units": 10
+          },
+          {
+            "user": "z",
+            "at": 90,
+            "units": 0
+          }
+        ],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {
+        "z": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "usage-5",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 0,
+            "units": 1
+          },
+          {
+            "user": "a",
+            "at": 1,
+            "units": 2
+          }
+        ],
+        "now": 0,
+        "window": 0
+      },
+      "expected": {
+        "a": 1
+      },
+      "critical": false
+    }
+  ]
+}

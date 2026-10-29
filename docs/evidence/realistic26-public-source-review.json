@@ -1,0 +1,20 @@
+{
+  "reviewedAt": "2026-10-27T18:34:21.676771+00:00",
+  "basis": "Independent reviewer read only public README and candidate source/tests; no external acceptance material",
+  "fileHashes": {
+    "tracker/csv_export.py": "9830fe3a2f001c8f05bc8fbfff898fea38ab9f1afad31d177e63750c34d750f0",
+    "tracker/repository.py": "cdc75ea189e8f9f8202ca06c8b8577f2366574289a46c9c2e8550861f04652c3",
+    "tracker/service.py": "6a37da33230a53f52d2ab946ba1b6d0d114fa5a9f278e65c366d1a4db09acac9",
+    "tracker/cli.py": "667713bae647c955db8cf2bc2129a398154c3cf08f3cc4ae8f0dd980775774c7",
+    "tests/test_regressions.py": "25b4e71a3a5b5477baf8cd448ea90d11e5ad8ef385fa739969cab8c59159b2ef",
+    "README.md": "1cac561d91ad9f7a8004f58af9934ce7893ce6075b523e21ce06bd60359df749"
+  },
+  "findings": [
+    "serialize returns tuple instead of documented string; writer relies on incorrect tuple",
+    "New CSV test expects creation order rather than specified descending timestamp/id",
+    "Query Unicode lower() differs from SQLite ASCII lower(); non-ASCII exact matching can fail",
+    "No duplicate definitions; real unbounded export, LF output, transaction update and CLI present",
+    "Direct serializer, returned counts above100, and case-folding regressions need coverage"
+  ],
+  "followupPrompt": ".runtime/realistic-20261027-125143-48828f/FOLLOWUP-PUBLIC-REVIEW.txt"
+}

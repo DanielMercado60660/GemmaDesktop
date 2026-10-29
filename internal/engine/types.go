@@ -16,11 +16,12 @@ type ToolDefinition struct {
 	Parameters  map[string]any `json:"parameters"`
 }
 type ToolCall struct {
-	ID        string         `json:"id"`
-	Name      string         `json:"name"`
-	Arguments map[string]any `json:"arguments"`
-	NodeID    string         `json:"nodeId,omitempty"`
-	ReadOnly  bool           `json:"readOnly,omitempty"`
+	ID           string         `json:"id"`
+	Name         string         `json:"name"`
+	Arguments    map[string]any `json:"arguments"`
+	NodeID       string         `json:"nodeId,omitempty"`
+	ReadOnly     bool           `json:"readOnly,omitempty"`
+	CapabilityID string         `json:"capabilityId,omitempty"`
 }
 type ToolResult struct {
 	Content string         `json:"content,omitempty"`
@@ -37,31 +38,55 @@ type Event struct {
 	Data   any    `json:"data,omitempty"`
 }
 
+const (
+	DefaultMaxOutputTokens = 8192
+	MinMaxOutputTokens     = 256
+	MaxMaxOutputTokens     = 32768
+)
+
 type Request struct {
-	Model        string           `json:"model"`
-	Instructions string           `json:"instructions"`
-	ReadOnly     bool             `json:"readOnly,omitempty"`
-	History      []Message        `json:"history,omitempty"`
-	Prompt       string           `json:"prompt"`
-	Images       []string         `json:"images,omitempty"`
-	Tools        []ToolDefinition `json:"tools,omitempty"`
-	Skills       []string         `json:"skills,omitempty"`
-	MaxSteps     int              `json:"maxSteps,omitempty"`
-	MaxToolCalls int              `json:"maxToolCalls,omitempty"`
-	ContextSize  int              `json:"contextSize,omitempty"`
-	Temperature  float64          `json:"temperature,omitempty"`
-	Think        any              `json:"think,omitempty"`
-	Timeout      time.Duration    `json:"-"`
-	NodeID       string           `json:"nodeId,omitempty"`
-	Snapshot     json.RawMessage  `json:"snapshot,omitempty"`
-	Resume       map[string]any   `json:"resume,omitempty"`
+	Model           string           `json:"model"`
+	Instructions    string           `json:"instructions"`
+	ReadOnly        bool             `json:"readOnly,omitempty"`
+	History         []Message        `json:"history,omitempty"`
+	Prompt          string           `json:"prompt"`
+	Images          []string         `json:"images,omitempty"`
+	Tools           []ToolDefinition `json:"tools,omitempty"`
+	Skills          []string         `json:"skills,omitempty"`
+	SkillPackages   []SkillPackage   `json:"skillPackages,omitempty"`
+	CapabilityID    string           `json:"capabilityId,omitempty"`
+	Deadline        time.Time        `json:"deadline,omitempty"`
+	ContextSources  []ContextSource  `json:"contextSources,omitempty"`
+	MaxSteps        int              `json:"maxSteps,omitempty"`
+	MaxToolCalls    int              `json:"maxToolCalls,omitempty"`
+	MaxOutputTokens int              `json:"maxOutputTokens,omitempty"`
+	ContextSize     int              `json:"contextSize,omitempty"`
+	Temperature     float64          `json:"temperature"`
+	Think           any              `json:"think,omitempty"`
+	// ToolProtocol is experimental and opt-in. Empty keeps the native protocol.
+	ToolProtocol  string          `json:"toolProtocol,omitempty"`
+	Timeout       time.Duration   `json:"-"`
+	NodeID        string          `json:"nodeId,omitempty"`
+	Snapshot      json.RawMessage `json:"snapshot,omitempty"`
+	Resume        map[string]any  `json:"resume,omitempty"`
+	ContextPolicy *ContextPolicy  `json:"contextPolicy,omitempty"`
+}
+
+// ContextPolicy enables ADK's append-only rolling summary. Nil remains off
+// until the application's qualified policy explicitly enables it.
+type ContextPolicy struct {
+	Enabled         bool `json:"enabled"`
+	ThresholdTokens int  `json:"thresholdTokens,omitempty"`
+	RetainEvents    int  `json:"retainEvents,omitempty"`
 }
 type Result struct {
-	Content  string            `json:"content"`
-	Steps    int               `json:"steps"`
-	Usage    inference.Metrics `json:"usage"`
-	Snapshot json.RawMessage   `json:"snapshot,omitempty"`
-	Pending  []PendingInput    `json:"pending,omitempty"`
+	Content         string                     `json:"content"`
+	Incomplete      bool                       `json:"incomplete,omitempty"`
+	Steps           int                        `json:"steps"`
+	Usage           inference.Metrics          `json:"usage"`
+	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
+	Snapshot        json.RawMessage            `json:"snapshot,omitempty"`
+	Pending         []PendingInput             `json:"pending,omitempty"`
 }
 type PendingInput struct {
 	ID      string `json:"id"`

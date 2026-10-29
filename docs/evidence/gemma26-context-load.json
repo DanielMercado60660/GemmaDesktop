@@ -1,0 +1,49 @@
+{
+  "observedAt": "2026-10-27T18:20:26.687336+00:00",
+  "normalAppActiveRunsBeforeLoad": 0,
+  "loadSeconds": 3.912,
+  "model": {
+    "capabilities": [
+      "completion",
+      "tools",
+      "thinking"
+    ],
+    "contextLength": 262144,
+    "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "family": "",
+    "loaded": true,
+    "loadedContextLength": 32768,
+    "memoryBytes": 17125440068,
+    "name": "gemma4:26b-mlx",
+    "parameterSize": "",
+    "quantization": "nvfp4",
+    "remote": false,
+    "size": 18334412658
+  },
+  "requestedContextSize": 32768,
+  "runtime": {
+    "available": true,
+    "memoryBytes": 68719476736,
+    "models": [
+      {
+        "context_length": 32768,
+        "details": {
+          "family": "",
+          "format": "safetensors",
+          "parameter_size": "",
+          "quantization_level": "nvfp4"
+        },
+        "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "expires_at": "2026-10-27T13:25:26.613034-05:00",
+        "model": "gemma4:26b-mlx",
+        "name": "gemma4:26b-mlx",
+        "size": 17125440068,
+        "size_vram": 17125440068
+      }
+    ],
+    "policy": "Local inference only",
+    "pulls": [],
+    "version": "0.32.3"
+  },
+  "scope": "Load/capability evidence only; not a coding qualification or hard context-bound measurement."
+}

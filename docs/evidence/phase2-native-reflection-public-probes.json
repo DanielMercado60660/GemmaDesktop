@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "reviewer": "/root/ollama_model_research",
+  "recordedAt": "2026-10-28T00:33:49.068396+00:00",
+  "method": "Supplemental public-contract boundary observations in three sequential pinned Docker containers. Network none; source read-only; databases in private tmpfs. No hidden assertions read, no host candidate imports, no inference. Original rollouts and grades unchanged.",
+  "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+  "probeSHA256": "85fc3eb3801248b1755401b44bd62933b1912d16aa3d2cb7d956fc693b6f8fb2",
+  "results": [
+    {
+      "label": "inv",
+      "trialId": "1d271c8c0d97b1490ab6869873e578ae",
+      "exitCode": 0,
+      "observations": [
+        {
+          "case": "non_object_record",
+          "exception": "AttributeError",
+          "message": "'NoneType' object has no attribute 'get'",
+          "databaseCreated": false
+        },
+        {
+          "case": "invalid_later_record",
+          "exception": "ValueError",
+          "message": "",
+          "databaseCreated": false
+        },
+        {
+          "case": "null_outer_batch",
+          "exception": "TypeError",
+          "message": "'NoneType' object is not iterable",
+          "databaseCreated": false
+        },
+        {
+          "case": "object_outer_batch",
+          "returned": {},
+          "databaseCreated": true
+        }
+      ],
+      "stderr": "",
+      "sourceSHA256": {
+        "README.md": "f9cc9bde86e1b44fdb00d96bd40bfddb8886afd9c9b66d9af5c3b3b2a3521f87",
+        "database.py": "72a7fd31274de6b62b1762621828e597da3e70c1086e10c96cb64689ce5d22d5",
+        "main.py": "f88b8bae4723ad8605152085a72fed2697fcb885c03f650811db1030a2de8cc6",
+        "public_test.py": "4b1bdcda4792c79c418efae712f00de83ece63744c919fef2e097489a7fbea2a",
+        "repository.py": "77387962c489848124d1a417116c6cb5839afea6c175cc82d2dc81907f43fc70",
+        "service.py": "6552d1917369a80b98fe565c531a1a3b6d77a0e5e92b6f9e47b3b68bc71522c0",
+        "test_regression.py": "f4ff24c29bed1e698f3a356a726a7310ea67f63e2839fb10a28cee7ebc28ab6c"
+      },
+      "sourceUnchanged": true
+    },
+    {
+      "label": "dom",
+      "trialId": "6275aefd7125eeb031ce669a461dac69",
+      "exitCode": 0,
+      "observations": [
+        {
+          "case": "non_object_record",
+          "exception": "AttributeError",
+          "message": "'NoneType' object has no attribute 'get'",
+          "databaseCreated": true
+        },
+        {
+          "case": "invalid_later_record",
+          "exception": "ValueError",
+          "message": "invalid amount",
+          "databaseCreated": true
+        },
+        {
+          "case": "null_outer_batch",
+          "exception": "TypeError",
+          "message": "'NoneType' object is not iterable",
+          "databaseCreated": true
+        },
+        {
+          "case": "object_outer_batch",
+          "returned": {},
+          "databaseCreated": true
+        }
+      ],
+      "stderr": "",
+      "sourceSHA256": {
+        "README.md": "f9cc9bde86e1b44fdb00d96bd40bfddb8886afd9c9b66d9af5c3b3b2a3521f87",
+        "database.py": "72a7fd31274de6b62b1762621828e597da3e70c1086e10c96cb64689ce5d22d5",
+        "main.py": "f88b8bae4723ad8605152085a72fed2697fcb885c03f650811db1030a2de8cc6",
+        "public_test.py": "4b1bdcda4792c79c418efae712f00de83ece63744c919fef2e097489a7fbea2a",
+        "regression_test.py": "2e2a5551b89632753fbb952ee6a225e59134de20b479867dd4d7a4cd8b1803bb",
+        "repository.py": "420b37554e5c434f58fb72e580d87799f391d75b25c416d728df64fb943fc0d6",
+        "service.py": "b95e398864e511aa4eb463bee11c6618c2bdae0ea05a9dec282e82888c44f438"
+      },
+      "sourceUnchanged": true
+    },
+    {
+      "label": "final",
+      "trialId": "f0e7550ec9dd1ff9af94e40707bbce02",
+      "exitCode": 0,
+      "observations": [
+        {
+          "case": "non_object_record",
+          "exception": "ValueError",
+          "message": "not a dict",
+          "databaseCreated": false
+        },
+        {
+          "case": "invalid_later_record",
+          "exception": "ValueError",
+          "message": "invalid amount",
+          "databaseCreated": false
+        },
+        {
+          "case": "null_outer_batch",
+          "exception": "TypeError",
+          "message": "'NoneType' object is not iterable",
+          "databaseCreated": false
+        },
+        {
+          "case": "object_outer_batch",
+          "returned": {},
+          "databaseCreated": true
+        }
+      ],
+      "stderr": "",
+      "sourceSHA256": {
+        "README.md": "f9cc9bde86e1b44fdb00d96bd40bfddb8886afd9c9b66d9af5c3b3b2a3521f87",
+        "database.py": "72a7fd31274de6b62b1762621828e597da3e70c1086e10c96cb64689ce5d22d5",
+        "main.py": "f88b8bae4723ad8605152085a72fed2697fcb885c03f650811db1030a2de8cc6",
+        "public_test.py": "4b1bdcda4792c79c418efae712f00de83ece63744c919fef2e097489a7fbea2a",
+        "repository.py": "546a5624b896ac265663830e64ab123b3a2f235d0cf4140ac2be66959b34faf2",
+        "service.py": "58567d0962a4b10648085e54a51c33b9709645fe5b80779d060d77180a442348",
+        "test_regression.py": "930b5897a283ab43351ab9d11b607e2d620438fd4a1a3f0ccf578030b12ef326"
+      },
+      "sourceUnchanged": true
+    }
+  ]
+}

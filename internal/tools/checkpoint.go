@@ -14,9 +14,6 @@ import (
 )
 
 func (m *Manager) snapshot(ctx context.Context, paths []string, label string) (Artifact, error) {
-	if m.options.ArtifactDir == "" {
-		return Artifact{}, errors.New("an app-owned checkpoint directory is required before modifying existing files")
-	}
 	if len(paths) == 0 || len(paths) > 20 || len(label) > 200 {
 		return Artifact{}, errors.New("checkpoint path or label limit exceeded")
 	}
@@ -35,6 +32,28 @@ func (m *Manager) snapshot(ctx context.Context, paths []string, label string) (A
 			return Artifact{}, errors.New("checkpoint exceeds 8 MiB text limit")
 		}
 		files = append(files, f)
+	}
+	return m.snapshotFiles(ctx, files, label)
+}
+
+// snapshotFiles persists the exact before-images already revision-checked by
+// the caller. Re-reading paths here could capture a different external edit.
+func (m *Manager) snapshotFiles(ctx context.Context, files []workspace.File, label string) (Artifact, error) {
+	if m.options.ArtifactDir == "" {
+		return Artifact{}, errors.New("an app-owned checkpoint directory is required before modifying existing files")
+	}
+	if len(files) == 0 || len(files) > 20 || len(label) > 200 {
+		return Artifact{}, errors.New("checkpoint file or label limit exceeded")
+	}
+	total := 0
+	for _, f := range files {
+		if err := ctx.Err(); err != nil {
+			return Artifact{}, err
+		}
+		total += len(f.Content)
+		if total > 8<<20 {
+			return Artifact{}, errors.New("checkpoint exceeds 8 MiB text limit")
+		}
 	}
 	data, err := json.Marshal(map[string]any{"version": 1, "kind": "workspace-file-snapshot", "workspace": m.workspace.Path, "label": label, "createdAt": time.Now().UTC(), "files": files})
 	if err != nil {
@@ -68,11 +87,13 @@ func (m *Manager) snapshot(ctx context.Context, paths []string, label string) (A
 	}
 	dir, err := r.Open(".")
 	if err != nil {
+		r.Remove(name)
 		return Artifact{}, err
 	}
 	err = dir.Sync()
 	dir.Close()
 	if err != nil {
+		r.Remove(name)
 		return Artifact{}, err
 	}
 	return Artifact{Path: filepath.Join(m.options.ArtifactDir, name), MediaType: "application/json", Size: int64(len(data))}, nil

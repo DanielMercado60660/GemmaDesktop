@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T07:47:50.717928+00:00",
+  "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+  "reviewer": "Independent Codex public-source review lane /root/adk_architecture_research",
+  "scope": "All24 terminal Python attempts; public-source/static/recorded-receipt review only. No hidden graders, candidate imports/execution, Docker/model operations or campaign mutation.",
+  "mainReport": {
+    "path": "docs/evidence/phase2-python-paired-source-review.json",
+    "sha256": "496516e9ee8836313033eca5dd231cab5b5e0b6322013e3a287b1a0de7122bfb",
+    "bytes": 564109
+  },
+  "immutableBatches": [
+    {
+      "batch": 1,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch1.json",
+      "sha256": "a311e8d5cee0e45852733687259398ccba456b3e59ef533b6fcdf2c2b97b04e1",
+      "reviewed": 3
+    },
+    {
+      "batch": 2,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch2.json",
+      "sha256": "36ed70bfc4ceb5c10cb6cb1ec034c95fdd71e1941c019a61fd808ad11389b5de",
+      "reviewed": 6
+    },
+    {
+      "batch": 3,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch3.json",
+      "sha256": "07b1d48a4758690f2f1b6fbd739cd14e5cf377a803488f950827f2ba6e3bcc80",
+      "reviewed": 9
+    },
+    {
+      "batch": 4,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch4.json",
+      "sha256": "3b2f8871de9e1fbe9e7bbc9061f62514d0fa15167fc6b80e9d4069cab897bdbf",
+      "reviewed": 12
+    },
+    {
+      "batch": 5,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch5.json",
+      "sha256": "821b119255713ac49888f0e2982e57ed75edb951f4c229c1180506e597330c62",
+      "reviewed": 15
+    },
+    {
+      "batch": 6,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch6.json",
+      "sha256": "65f7b2b015864fbc810c874ef108b0a835171cd536ec9ee730f8248bd045730f",
+      "reviewed": 18
+    },
+    {
+      "batch": 7,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch7.json",
+      "sha256": "18eee49114f6b02818176bedf1de441019d649548b0a190b039eefb5e5e8abb8",
+      "reviewed": 21
+    },
+    {
+      "batch": 8,
+      "path": "docs/evidence/phase2-python-paired-source-review.batch8.json",
+      "sha256": "496516e9ee8836313033eca5dd231cab5b5e0b6322013e3a287b1a0de7122bfb",
+      "reviewed": 24
+    }
+  ],
+  "aggregate": {
+    "reviewed": 24,
+    "tasks": {
+      "python-config": 6,
+      "python-intervals": 6,
+      "python-orders": 6,
+      "python-usage": 6
+    },
+    "completed": 23,
+    "completedMeaning": "Raw solver completed status, not qualification success",
+    "failed": 1,
+    "failureKinds": {
+      "generationLength": 1
+    },
+    "protectedInputViolations": 1,
+    "protectedByteIdenticalRewriteEvents": 1,
+    "sourceCorrectnessBlockersFound": 0,
+    "testQualityFindings": 7,
+    "mandatoryReadOnlyVerificationTrials": 1,
+    "commandObservations": 171,
+    "commandReadOnlyFalse": 169,
+    "commandReadOnlyTrue": 2,
+    "gaps": "All24 Python attempts reviewed:23 raw solver-completed and1 retained config generation-limit failure.1 protected-content violation: usage baseline0 strengthened but changed original public_test.py through accepted edits. No public static implementation blocker found. Fresh read-only verification exists only for usage candidate0 (2 exact post-change receipts); usage candidate1 passes8 methods before a later deletion without retesting. Test weaknesses include an inert placeholder, ineffective input-mutation check, import-time-only assertions, a suite excluded by filename discovery, and absent repeated-user aggregation coverage.171 command observations:169 writable,2 read-only. Source/receipt review does not infer full hidden grading, automated pass totals or promotion eligibility. All24 public inventories and listed hashes rechecked.",
+    "statusByArm": {
+      "baseline": {
+        "completed": 11,
+        "failed": 1
+      },
+      "candidate": {
+        "completed": 12
+      }
+    },
+    "integrityViolationsByArm": {
+      "baseline": 1,
+      "candidate": 0
+    },
+    "freshReadOnlyVerificationByArm": {
+      "baseline": 0,
+      "candidate": 1
+    },
+    "all24PublicFilesRehashed": true,
+    "publicFileCount": 128
+  },
+  "publicHashRecheck": {
+    "verifiedAt": "2026-10-28T07:46:36.835111+00:00",
+    "trialCount": 24,
+    "fileCount": 128,
+    "allMatchedRecordedFinalHashes": true,
+    "allPublicInventoriesUnchanged": true,
+    "method": "Read/hash only listed public README/Python source and tests. No import or execution; no private graders. Historical review entries remain unchanged."
+  },
+  "trials": [
+    {
+      "task": "python-config",
+      "arm": "baseline",
+      "repeat": 0,
+      "trialId": "8c45cdebc142c5e379c8fc729fb5e3f0",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 9,
+      "lastRecordedWorkspaceChangeSequence": 32,
+      "postFinalChangePublicCallIds": [
+        "call_5ebggcvk"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-config",
+      "arm": "candidate",
+      "repeat": 0,
+      "trialId": "5b922d40ce3092eab744beeeeb6481a4",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 7,
+      "lastRecordedWorkspaceChangeSequence": 28,
+      "postFinalChangePublicCallIds": [
+        "call_4pl96a9q"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-config",
+      "arm": "candidate",
+      "repeat": 1,
+      "trialId": "af6419b4d5dba3ec030767d08e6ccf04",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 9,
+      "lastRecordedWorkspaceChangeSequence": 24,
+      "postFinalChangePublicCallIds": [
+        "call_bqcrfm2u"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-config",
+      "arm": "baseline",
+      "repeat": 1,
+      "trialId": "e92aac5030c9b242dfee878a1e41b87b",
+      "solverStatus": "failed",
+      "solverIncomplete": true,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 10,
+      "lastRecordedWorkspaceChangeSequence": 36,
+      "postFinalChangePublicCallIds": [
+        "call_q1jrtxqc"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-config",
+      "arm": "baseline",
+      "repeat": 2,
+      "trialId": "58b2c1e59d1ec04c3b839c4af33cecd6",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 7,
+      "lastRecordedWorkspaceChangeSequence": 40,
+      "postFinalChangePublicCallIds": [
+        "call_apbl733v"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-config",
+      "arm": "candidate",
+      "repeat": 2,
+      "trialId": "35f6060d4d82d60844fcacc939300b59",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 6,
+      "lastRecordedWorkspaceChangeSequence": 38,
+      "postFinalChangePublicCallIds": [
+        "call_9bsjz3km"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-intervals",
+      "arm": "baseline",
+      "repeat": 0,
+      "trialId": "5b8585bca0f231301a16f063c877a9cb",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 8,
+      "lastRecordedWorkspaceChangeSequence": 32,
+      "postFinalChangePublicCallIds": [
+        "call_tq36k699"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-intervals",
+      "arm": "candidate",
+      "repeat": 0,
+      "trialId": "565eef05c308cfc3bb56bc8d3c567af0",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 10,
+      "lastRecordedWorkspaceChangeSequence": 18,
+      "postFinalChangePublicCallIds": [
+        "call_9qaryllz"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-intervals",
+      "arm": "candidate",
+      "repeat": 1,
+      "trialId": "dd9d06f72fdf6361512ad5a41d60d4d3",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 10,
+      "lastRecordedWorkspaceChangeSequence": 30,
+      "postFinalChangePublicCallIds": [
+        "call_enbefo2y"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-intervals",
+      "arm": "baseline",
+      "repeat": 1,
+      "trialId": "c9c256af7b7c2721705d051598f66361",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 7,
+      "lastRecordedWorkspaceChangeSequence": 26,
+      "postFinalChangePublicCallIds": [
+        "call_ng2mqzqp"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-intervals",
+      "arm": "baseline",
+      "repeat": 2,
+      "trialId": "f5af6f894e4e791c4204df5f493f1a31",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 8,
+      "lastRecordedWorkspaceChangeSequence": 30,
+      "postFinalChangePublicCallIds": [
+        "call_32d5tguu"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-intervals",
+      "arm": "candidate",
+      "repeat": 2,
+      "trialId": "3ff9483811a432a1b91c484e7e2572c0",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 5,
+      "lastRecordedWorkspaceChangeSequence": 30,
+      "postFinalChangePublicCallIds": [
+        "call_ovpz015q"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-orders",
+      "arm": "baseline",
+      "repeat": 0,
+      "trialId": "f6f0593ea74eb57424e93d358d5e5c71",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 7,
+      "lastRecordedWorkspaceChangeSequence": 38,
+      "postFinalChangePublicCallIds": [
+        "call_zzmj9wax",
+        "call_0wifru3a"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-orders",
+      "arm": "candidate",
+      "repeat": 0,
+      "trialId": "5dcc30bad862e9cb61eefca7c69d8e2f",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 3,
+      "lastRecordedWorkspaceChangeSequence": 44,
+      "postFinalChangePublicCallIds": [
+        "call_vfziqdyr"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-orders",
+      "arm": "candidate",
+      "repeat": 1,
+      "trialId": "bc380a32f9db27042e3b6186f9d02fa6",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 0,
+      "lastRecordedWorkspaceChangeSequence": 38,
+      "postFinalChangePublicCallIds": [
+        "call_cq4qx6hu",
+        "call_fhq0y5kv"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-orders",
+      "arm": "baseline",
+      "repeat": 1,
+      "trialId": "a926c5bd821688392de1087edaf95479",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 1,
+      "lastRecordedWorkspaceChangeSequence": 32,
+      "postFinalChangePublicCallIds": [
+        "call_o03jn6wz"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-orders",
+      "arm": "baseline",
+      "repeat": 2,
+      "trialId": "f86be214ed511c09cac507c9e53488a1",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 0,
+      "lastRecordedWorkspaceChangeSequence": 26,
+      "postFinalChangePublicCallIds": [
+        "call_skettkeg"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-orders",
+      "arm": "candidate",
+      "repeat": 2,
+      "trialId": "72b7e8ee85260ffa6ac6aa283b42ef7f",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 7,
+      "lastRecordedWorkspaceChangeSequence": 30,
+      "postFinalChangePublicCallIds": [
+        "call_sa9akkma"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-usage",
+      "arm": "baseline",
+      "repeat": 0,
+      "trialId": "8a263433251e8aa38ce765a0e7b5ac88",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": true,
+      "finalRecordedPublicUnittestMethods": 6,
+      "lastRecordedWorkspaceChangeSequence": 32,
+      "postFinalChangePublicCallIds": [
+        "call_dl2mc63u"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-usage",
+      "arm": "candidate",
+      "repeat": 0,
+      "trialId": "fc47edcd321ec9d99f1c14b3be446b2e",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 8,
+      "lastRecordedWorkspaceChangeSequence": 28,
+      "postFinalChangePublicCallIds": [
+        "call_uhikrscq",
+        "call_tnwoben3"
+      ],
+      "freshReadOnlyVerification": true,
+      "freshReadOnlyCallIds": [
+        "call_uhikrscq",
+        "call_tnwoben3"
+      ],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-usage",
+      "arm": "candidate",
+      "repeat": 1,
+      "trialId": "38d7132ad2e7ad55992749417350d873",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 8,
+      "lastRecordedWorkspaceChangeSequence": 32,
+      "postFinalChangePublicCallIds": [],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-usage",
+      "arm": "baseline",
+      "repeat": 1,
+      "trialId": "abec2b783ee71501e2a97e0a57b2224c",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 4,
+      "lastRecordedWorkspaceChangeSequence": 36,
+      "postFinalChangePublicCallIds": [
+        "call_nvibje4w"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-usage",
+      "arm": "baseline",
+      "repeat": 2,
+      "trialId": "79775f672eb451806dbb156422c717d1",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 5,
+      "lastRecordedWorkspaceChangeSequence": 34,
+      "postFinalChangePublicCallIds": [
+        "call_olvs4dz3"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    },
+    {
+      "task": "python-usage",
+      "arm": "candidate",
+      "repeat": 2,
+      "trialId": "0bc85f73ed4c203a51e479cb13149ec7",
+      "solverStatus": "completed",
+      "solverIncomplete": false,
+      "protectedIntegrityViolation": false,
+      "finalRecordedPublicUnittestMethods": 7,
+      "lastRecordedWorkspaceChangeSequence": 24,
+      "postFinalChangePublicCallIds": [
+        "call_qka7dyt9"
+      ],
+      "freshReadOnlyVerification": false,
+      "freshReadOnlyCallIds": [],
+      "sourceCorrectnessBlockersFound": 0
+    }
+  ],
+  "attribution": {
+    "solverFailure": {
+      "trialId": "e92aac5030c9b242dfee878a1e41b87b",
+      "kind": "generation length",
+      "retainedAsFailureDespitePassingRecordedTests": true
+    },
+    "protectedMutation": {
+      "trialId": "8a263433251e8aa38ce765a0e7b5ac88",
+      "path": "public_test.py",
+      "callIds": [
+        "call_z5983ucg",
+        "call_8e39ek4u"
+      ],
+      "originalSHA256": "d0f0c81e708f7e3563cb3d6b29aaf3462ab7320ed4ee06b4bcb02bf4542bdb69",
+      "finalSHA256": "ccd1f4ce9b4ba10228c6e04f5e2d677913a5a62ad35bcd1348c716fcf1eb278b",
+      "interpretation": "Original assertions retained and strengthened; protected-content violation persists irrespective of intent/test strength."
+    },
+    "freshReadOnlyVerification": {
+      "trialId": "fc47edcd321ec9d99f1c14b3be446b2e",
+      "callIds": [
+        "call_uhikrscq",
+        "call_tnwoben3"
+      ],
+      "sequences": [
+        30,
+        32
+      ],
+      "lastChangeSequence": 28,
+      "snapshotDigest": "ce9bfafe6d7b8887ab9211ada148ed57bb68b6df0a44aaba10cda9f2d6a00c25",
+      "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+      "exactArgs": {
+        "executable": "python3",
+        "args": [
+          "public_test.py"
+        ],
+        "readOnly": true
+      },
+      "receipt": {
+        "exitCode": 0,
+        "readOnly": true,
+        "publication": "read_only",
+        "cancelled": false,
+        "workspaceChanged": false,
+        "truncated": false
+      },
+      "observedTests": 8,
+      "fullQualificationInferred": false
+    },
+    "postVerificationChange": {
+      "trialId": "38d7132ad2e7ad55992749417350d873",
+      "lastPassingPublicSequence": 28,
+      "laterGeneratedReproDeletionSequence": 32,
+      "subsequentVerificationObserved": false
+    }
+  },
+  "testQualityHighlights": [
+    {
+      "trialId": "5b922d40ce3092eab744beeeeb6481a4",
+      "finding": "One discovered method is an assertion-free pass placeholder; another method does testREADME."
+    },
+    {
+      "trialId": "af6419b4d5dba3ec030767d08e6ccf04",
+      "finding": "Mutation check compares an object never passed to solve; extra demo module adds0 tests."
+    },
+    {
+      "trialId": "e92aac5030c9b242dfee878a1e41b87b",
+      "finding": "Falsy-named method replaces falsy values with non-falsy values; that preservation property is not tested."
+    },
+    {
+      "trialId": "bc380a32f9db27042e3b6186f9d02fa6",
+      "finding": "0unittestmethods, but2 realCLI assertions execute during discovery import; neither count inflation nor no execution is inferred."
+    },
+    {
+      "trialId": "f86be214ed511c09cac507c9e53488a1",
+      "finding": "5realCLI unittest methods passed directly; regression_test.py is omitted by normal test_*.py discovery."
+    },
+    {
+      "trialId": "0bc85f73ed4c203a51e479cb13149ec7",
+      "finding": "7substantive tests cover windows/zero-user behavior but never aggregate repeated same-user events."
+    }
+  ],
+  "limitations": [
+    "Static absence of a found defect is not proof of full correctness.",
+    "Recorded test results are historical host receipts, not independent reruns.",
+    "Automated/hidden grading outcomes and promotion eligibility were not inspected or inferred.",
+    "Test-count differences are distinguished from substantive assertions and original-input integrity."
+  ]
+}

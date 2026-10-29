@@ -1,0 +1,189 @@
+{
+  "id": "node-inventory",
+  "name": "TypeScript inventory worker service",
+  "stack": "node",
+  "split": "development",
+  "prompt": "Read README.md, repair calculate available inventory, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "node",
+    "public_test.cjs"
+  ],
+  "gradeCommand": [
+    "node",
+    "run.cjs"
+  ],
+  "public": {
+    "package.json": "{\"private\": true, \"scripts\": {\"test\": \"node public_test.cjs\"}}",
+    "public_test.cjs": "const assert=require(\"node:assert/strict\"),{execFileSync}=require(\"node:child_process\");const cases=[{\"stock\": {}, \"reservations\": [], \"now\": 10}, {\"stock\": {\"a\": 8}, \"reservations\": [], \"now\": 10}],expected=[{}, {\"a\": 8}];assert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"run.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);console.log(\"2 public cases passed\");\n\nconst fs=require(\"node:fs\");for(const file of fs.readdirSync(\".\").filter(x=>x.endsWith(\".test.cjs\")))require(\"./\"+file);\n",
+    "README.md": "# Calculate available inventory\n\nRepair this node service module and add regression tests.\n\nReturn an object containing every stock SKU. Available = max(0, stock minus active reservations). A reservation is active only when expires > now. Unknown SKUs do not create stock. Do not mutate input.\n\n`node run.cjs` is the CLI. The CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `node public_test.cjs` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"stock\": {\n    \"a\": 8,\n    \"b\": 2\n  },\n  \"reservations\": [\n    {\n      \"sku\": \"a\",\n      \"quantity\": 3,\n      \"expires\": 11\n    },\n    {\n      \"sku\": \"b\",\n      \"quantity\": 9,\n      \"expires\": 20\n    }\n  ],\n  \"now\": 10\n}\n```\nExpected result:\n```json\n{\n  \"a\": 5,\n  \"b\": 0\n}\n```\n\n## Feature work: TypeScript worker service\n\nImplement `available` in src/stock.ts and repair response ordering in src/main.ts. `run.cjs` compiles TypeScript with the installed offline tsc, launches the compiled service, and removes temporary output. Every input goes through the real worker thread; completion order may differ, but output order must match input order. Terminate the worker on success and error. Preserve README.md, run.cjs, src/worker.ts, public_test.cjs and package.json. Add a new *.test.cjs regression file; the prescribed command discovers these. No package installation is needed.\n",
+    "src/stock.ts": "export function available(input:any):Record<string,number> {\n // Implement expiry-aware reservations; preserve zero-stock SKUs and clamp at zero.\n throw new Error(\"implement inventory availability\");\n}\n",
+    "src/worker.ts": "declare const require:any;\nimport {available} from './stock';\nconst {parentPort}=require('node:worker_threads');\nparentPort.on('message',(m:any)=>setTimeout(()=>{\n try{parentPort.postMessage({id:m.id,value:available(m.input)});}catch(error:any){parentPort.postMessage({id:m.id,error:String(error)});}\n},(m.id%3)*3));\n",
+    "src/main.ts": "declare const require:any,process:any,__dirname:string;\nexport {};\nconst {Worker}=require('node:worker_threads');\nasync function main(){\n const inputs=JSON.parse(process.argv[2]);const results:any[]=[];\n const worker=new Worker(__dirname+'/worker.js');\n try{\n  await new Promise<void>((resolve,reject)=>{\n   if(!inputs.length){resolve();return;}\n   worker.on('error',reject);\n   worker.on('message',(m:any)=>{\n    if(m.error){reject(new Error(m.error));return;}\n    results.push(m.value); // Repair: worker completion order differs from request order.\n    if(results.length===inputs.length)resolve();\n   });\n   inputs.forEach((input:any,id:number)=>worker.postMessage({id,input}));\n  });\n  console.log(JSON.stringify(results));\n } finally {await worker.terminate();}\n}\nmain().catch(e=>{console.error(String(e));process.exitCode=1;});\n",
+    "run.cjs": "const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),cp=require('node:child_process');\nconst dir=fs.mkdtempSync(path.join(os.tmpdir(),'inventory-ts-'));\ntry{\n cp.execFileSync('tsc',['--target','ES2022','--module','commonjs','--outDir',dir,'src/main.ts','src/worker.ts','src/stock.ts'],{stdio:['ignore','pipe','pipe']});\n process.stdout.write(cp.execFileSync(process.execPath,[path.join(dir,'main.js'),process.argv[2]],{encoding:'utf8',timeout:10000}));\n}finally{fs.rmSync(dir,{recursive:true,force:true});}\n"
+  },
+  "cases": [
+    {
+      "name": "inventory-1",
+      "input": {
+        "stock": {},
+        "reservations": [],
+        "now": 10
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "inventory-2",
+      "input": {
+        "stock": {
+          "a": 8
+        },
+        "reservations": [],
+        "now": 10
+      },
+      "expected": {
+        "a": 8
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-3",
+      "input": {
+        "stock": {
+          "a": 8,
+          "b": 2
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 3,
+            "expires": 11
+          },
+          {
+            "sku": "b",
+            "quantity": 9,
+            "expires": 20
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 5,
+        "b": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-4",
+      "input": {
+        "stock": {
+          "a": 8
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 4,
+            "expires": 10
+          },
+          {
+            "sku": "a",
+            "quantity": 1,
+            "expires": 9
+          },
+          {
+            "sku": "ghost",
+            "quantity": 3,
+            "expires": 30
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 8
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-5",
+      "input": {
+        "stock": {
+          "a": 5,
+          "b": 0
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 2,
+            "expires": 20
+          },
+          {
+            "sku": "a",
+            "quantity": 2,
+            "expires": 20
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 1,
+        "b": 0
+      },
+      "critical": false
+    }
+  ],
+  "probe": {
+    "name": "independent TypeScript build and out-of-order worker correlation",
+    "command": [
+      "node",
+      "_harness_probe.cjs"
+    ],
+    "files": {
+      "_harness_probe.cjs": "const cp=require('node:child_process');const inputs=[{\"stock\": {\"a\": 0, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 1, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 2, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 3, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 4, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 5, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 6, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 7, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}, {\"stock\": {\"a\": 8, \"b\": 2}, \"reservations\": [{\"sku\": \"a\", \"quantity\": 1, \"expires\": 10}, {\"sku\": \"b\", \"quantity\": 8, \"expires\": 11}], \"now\": 10}];process.stdout.write(cp.execFileSync(process.execPath,['run.cjs',JSON.stringify(inputs)],{encoding:'utf8',timeout:20000}));\n"
+    },
+    "expected": [
+      {
+        "a": 0,
+        "b": 0
+      },
+      {
+        "a": 1,
+        "b": 0
+      },
+      {
+        "a": 2,
+        "b": 0
+      },
+      {
+        "a": 3,
+        "b": 0
+      },
+      {
+        "a": 4,
+        "b": 0
+      },
+      {
+        "a": 5,
+        "b": 0
+      },
+      {
+        "a": 6,
+        "b": 0
+      },
+      {
+        "a": 7,
+        "b": 0
+      },
+      {
+        "a": 8,
+        "b": 0
+      }
+    ]
+  },
+  "protectedFiles": [
+    "README.md",
+    "run.cjs",
+    "src/worker.ts",
+    "public_test.cjs",
+    "package.json"
+  ]
+}

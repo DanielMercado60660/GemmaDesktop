@@ -1,0 +1,36 @@
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/experiment
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/revision
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/packet
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/trial
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/lesson
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/evaluation
+=== RUN   TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/promotion
+--- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder (2.27s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/experiment (0.32s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/revision (0.32s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/packet (0.32s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/trial (0.32s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/lesson (0.32s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/evaluation (0.32s)
+    --- PASS: TestHarnessMetadataProjectsLargePayloadsAndPreservesDetailOrder/promotion (0.31s)
+=== RUN   TestHarnessMetadataRemovesPayloadBeforeGoDecode
+--- PASS: TestHarnessMetadataRemovesPayloadBeforeGoDecode (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/store	3.510s
+=== RUN   TestLessonVersionsCompatibilityAndPacketSnapshot
+--- PASS: TestLessonVersionsCompatibilityAndPacketSnapshot (0.01s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestSubmittedReflectionRetryRepairsMissingLessonHead
+--- PASS: TestSubmittedReflectionRetryRepairsMissingLessonHead (0.02s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.13s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.355s
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.52s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	3.863s

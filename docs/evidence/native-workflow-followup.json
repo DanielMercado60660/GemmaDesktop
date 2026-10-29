@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-27T17:08:20.077755+00:00",
+  "app": "app.gemmadesktop.validation",
+  "profile": ".runtime/native-realistic-qa",
+  "binarySHA256": "0d5fe8506e29aa7319aef5a45fc52032aa42e1da5020e8fcb152753a121a4c9a",
+  "frontendEntry": "index-CL1AitVw.js",
+  "checks": {
+    "dirtyNavigationDialogVisible": true,
+    "initialFocusKeepEditing": true,
+    "escapePreservesDraft": true,
+    "discardNavigatesWithoutSaving": true,
+    "externalRefreshPreservesDraftAndWarns": true,
+    "reloadKeepEditingPreservesDraft": true,
+    "confirmedReloadShowsDiskRevision": true,
+    "lazyArtifactGetRendersStoredDiff": true,
+    "historicalFailuresVisibleAfterRestart": true,
+    "terminalApprovalVisible": true,
+    "terminalRenderedMarkerAndCorrectCWD": true,
+    "terminalStopReturnsToStartState": true
+  },
+  "screenshots": [
+    "screenshots/native-confirmation.png",
+    "screenshots/native-lazy-artifact.png",
+    "screenshots/native-terminal-followup.png"
+  ],
+  "limitations": [
+    "Generated isolated QA profile only; user profile untouched",
+    "In-flight submission/navigation race covered by automated tests, not induced with real inference",
+    "Drafts intentionally survive navigation within the running app, not app restart"
+  ],
+  "binarySHA256Meaning": "SHA256 of the production input executable before re-signing it for the separate QA bundle identifier. It is not the signature-dependent hash of the QA executable."
+}

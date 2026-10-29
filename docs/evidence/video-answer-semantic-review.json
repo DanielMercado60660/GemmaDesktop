@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-27T20:48:59.415218+00:00",
+  "reviewer": "Independent Codex subagent visual assessment; not a human review or an additional model-inference run.",
+  "method": "Read immutable report and manifest; display all six source JPEGs and all eight distinct retrieved-evidence JPEG byte hashes with view_image; reason about visible shape, color, count and evidence scope; compare cited label timestamps to the manifest. No keyword-only grading, code changes, API calls, inference, fixture edits or regeneration.",
+  "inputs": {
+    "report": {
+      "path": "docs/evidence/video-workflow-live.json",
+      "sha256": "ab1931183641a34008350f234cb54f2aec14a604a3b8286cccf641307df0a570"
+    },
+    "manifest": {
+      "path": "docs/evidence/video-fixture-manifest.json",
+      "sha256": "7c2676c6b46f3f845c6c29ec0b0c00e36a0e82bfb86527b5c64eb6db5c677069"
+    },
+    "clip": {
+      "path": ".runtime/video-qa-input/visual-scenes.mp4",
+      "sha256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+      "manifestSHA256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872"
+    },
+    "model": "gemma4:26b-mlx",
+    "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "runtimeVersion": "0.40.11",
+    "indexId": "4f8d3ac60a7bf37f94a2db2c7668f3c2"
+  },
+  "summary": {
+    "unambiguousPositivePasses": 5,
+    "qualifiedPositivePasses": 1,
+    "positiveCases": 6,
+    "negativeControlPasses": 1,
+    "negativeCases": 1,
+    "reportedRetrievalHits": 6,
+    "historicalAnswerJobsCompleted": 0,
+    "historicalAnswerJobsFailed": 7,
+    "semanticAssessment": "Five clear positive fact/count passes, one qualified five-pointed-shape pass, and a correctly scoped negative answer.",
+    "originalEndToEndResultRemainsFailed": true,
+    "formatFailure": "Every original job failed with no recognized supplied-frame citation. The raw texts use grouped labels such as [F001, F002], and original citations arrays are empty. This semantic review neither retroactively changes those jobs nor qualifies an untested parser fix.",
+    "citationTruthSeparation": "Matching a citation label or timestamp does not prove a visual claim. The verdicts above come from inspecting pixels and reading each claim."
+  },
+  "sourceScenes": [
+    {
+      "path": ".runtime/video-qa-input/scene-00.jpg",
+      "sha256": "768ec5c6af1524caf45cea6a34b9227d64520da971a20452c7fdac617118996b",
+      "manifestSHA256Matches": true,
+      "expectedIntervalSeconds": [
+        0,
+        5
+      ],
+      "visualObservation": "A single filled red circle centered on an off-white/light gray background. Its boundary is round; no other foreground object or text is visible.",
+      "inspection": "Pixels displayed with view_image; manual visual reasoning by the reviewing agent, not a keyword classifier."
+    },
+    {
+      "path": ".runtime/video-qa-input/scene-01.jpg",
+      "sha256": "65436a7bda0d62e43bd2c4c8e82e58549dce7895d4efc3efc48c2d063adabbbb",
+      "manifestSHA256Matches": true,
+      "expectedIntervalSeconds": [
+        5,
+        10
+      ],
+      "visualObservation": "A single filled blue square centered on an off-white/light gray background. Four straight sides, four right-angle corners, and approximately equal width and height are visible.",
+      "inspection": "Pixels displayed with view_image; manual visual reasoning by the reviewing agent, not a keyword classifier."
+    },
+    {
+      "path": ".runtime/video-qa-input/scene-02.jpg",
+      "sha256": "888fe4f2bdea6b595e14dc0a9bd1ac931358b7563f6b673707ffbd12cfec1a67",
+      "manifestSHA256Matches": true,
+      "expectedIntervalSeconds": [
+        10,
+        15
+      ],
+      "visualObservation": "A single filled green upright triangle on an off-white/light gray background, with an apex above a horizontal base and two slanted sides.",
+      "inspection": "Pixels displayed with view_image; manual visual reasoning by the reviewing agent, not a keyword classifier."
+    },
+    {
+      "path": ".runtime/video-qa-input/scene-03.jpg",
+      "sha256": "0b70cb787826c59f8ea0a05b0c4ee3bfd9a35e02ead9931e7abec071c3244636",
+      "manifestSHA256Matches": true,
+      "expectedIntervalSeconds": [
+        15,
+        20
+      ],
+      "visualObservation": "A yellow five-lobed shape with five pointed tips and curved, petal-like edges on an off-white/light gray background. It resembles a stylized star or five-petalled flower, not a regular straight-edged star polygon.",
+      "inspection": "Pixels displayed with view_image; manual visual reasoning by the reviewing agent, not a keyword classifier."
+    },
+    {
+      "path": ".runtime/video-qa-input/scene-04.jpg",
+      "sha256": "ea762d3df5a57fc006c629b1c93737226381d8a1b4b86b51878a6545a500603b",
+      "manifestSHA256Matches": true,
+      "expectedIntervalSeconds": [
+        20,
+        25
+      ],
+      "visualObservation": "Two separate filled purple circles side by side, with a visible background gap. There are exactly two foreground purple objects and neither is a square.",
+      "inspection": "Pixels displayed with view_image; manual visual reasoning by the reviewing agent, not a keyword classifier."
+    },
+    {
+      "path": ".runtime/video-qa-input/scene-05.jpg",
+      "sha256": "b7cdab51846203a155f0a3029014ae99cf733e4d0961783c94492d4c8dbdfca4",
+      "manifestSHA256Matches": true,
+      "expectedIntervalSeconds": [
+        25,
+        30
+      ],
+      "visualObservation": "A single filled orange horizontal rectangle, clearly wider than it is tall, on an off-white/light gray background. No animal or text is visible.",
+      "inspection": "Pixels displayed with view_image; manual visual reasoning by the reviewing agent, not a keyword classifier."
+    }
+  ],
+  "inspectedRetrievedRepresentatives": [
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-001.jpg",
+      "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-005.jpg",
+      "sha256": "ea93afd361b138f6bee991612b4f83921f49e086a0f5f891ae67f3efa8f00b71",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-006.jpg",
+      "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-010.jpg",
+      "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-011.jpg",
+      "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-015.jpg",
+      "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-021.jpg",
+      "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+      "displayedWithViewImage": true
+    },
+    {
+      "path": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+      "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+      "displayedWithViewImage": true
+    }
+  ],
+  "cases": [
+    {
+      "case": 1,
+      "question": "What shape is the red object?",
+      "answerId": "24ee286fa83d88f8bb49ca7d1de3ee91",
+      "answerText": "Based on the provided frames, the red object is a circle [F001, F002].",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "pass",
+      "semanticPass": true,
+      "qualification": null,
+      "negativeControl": false,
+      "expectedIntervalSeconds": [
+        0,
+        5
+      ],
+      "reasoning": "The answer identifies the red object as a circle, which matches direct image inspection. F001 at 1 s and F002 at 3 s both show the red circle. The extra retrieved F003 at 10 s shows a green triangle and is correctly not cited in the answer text.",
+      "retrievedEvidence": [
+        {
+          "frameId": "2c846b11bf9d0227bd6d00982f50964a",
+          "timeSeconds": 1,
+          "score": 0.672049537834522,
+          "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-001.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "2c913c8c5ec3ad856037965fd7e402ef",
+          "timeSeconds": 3,
+          "score": 0.672049537834522,
+          "sha256": "608ed8fc3546371c486e8abe9eb2163cc7a8d5fa2b952889ae93829c35d61c17",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-001.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "aeb8857c6ea96ce72ad8c43b2d09fd02",
+          "timeSeconds": 10,
+          "score": 0.6451033105546128,
+          "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-010.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    },
+    {
+      "case": 2,
+      "question": "What shape is the blue object?",
+      "answerId": "8f77d62302e953a90b080dcc3ae10aa5",
+      "answerText": "Based on the provided frames, the blue object is a square [F001, F002].",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "pass",
+      "semanticPass": true,
+      "qualification": null,
+      "negativeControl": false,
+      "expectedIntervalSeconds": [
+        5,
+        10
+      ],
+      "reasoning": "The answer identifies the blue object as a square, matching the four equal-looking straight sides and right-angle corners. F001 at 6 s and F002 at 8 s show the square. The green-triangle distractor F003 at 10 s is not cited in the answer text.",
+      "retrievedEvidence": [
+        {
+          "frameId": "45b580c16ba8b988d1bfb15a6bfadfa6",
+          "timeSeconds": 6,
+          "score": 0.711308745311604,
+          "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-006.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "cb21adff8c891a07807a099cee736aef",
+          "timeSeconds": 8,
+          "score": 0.711308745311604,
+          "sha256": "9e1eedbe786671ca5f76557144356aff38c64b9e05f51284a6adc17320143c4d",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-006.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "aeb8857c6ea96ce72ad8c43b2d09fd02",
+          "timeSeconds": 10,
+          "score": 0.6464368606021548,
+          "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-010.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    },
+    {
+      "case": 3,
+      "question": "What shape is the green object?",
+      "answerId": "4ea0c91c8d951ae9b1cf7f083244a55c",
+      "answerText": "The green object is a triangle [F001, F002, F003].",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "pass",
+      "semanticPass": true,
+      "qualification": null,
+      "negativeControl": false,
+      "expectedIntervalSeconds": [
+        10,
+        15
+      ],
+      "reasoning": "The answer identifies a triangle. F001 at 10 s, F002 at 12 s, and F003 at 14 s all show the green triangle. No unsupported count, action, or temporal claim is added.",
+      "retrievedEvidence": [
+        {
+          "frameId": "aeb8857c6ea96ce72ad8c43b2d09fd02",
+          "timeSeconds": 10,
+          "score": 0.7218999324840474,
+          "sha256": "b9a4d778fd59a87a01f753a730a5b0bac757eb778183aeacb6fb3d5ea9741d18",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-010.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "c462be98e089da109159bc5b4e5e7f0e",
+          "timeSeconds": 12,
+          "score": 0.7214770829111277,
+          "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-011.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "d7dc154a3c36a334d6033402f949ad84",
+          "timeSeconds": 14,
+          "score": 0.7214770829111277,
+          "sha256": "ee75c02e9ceaa5144f597dd4b3a6dab7bee06a87b978e1200b9802a418e1853f",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-011.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    },
+    {
+      "case": 4,
+      "question": "What shape is the yellow object?",
+      "answerId": "d890026bf15604660a6f9660889e91a6",
+      "answerText": "The yellow object is a five-pointed star shape [F001, F002, F003].",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "qualified_pass",
+      "semanticPass": true,
+      "qualification": "Five-pointed stylized silhouette is supported; exact star-versus-flower taxonomy is ambiguous.",
+      "negativeControl": false,
+      "expectedIntervalSeconds": [
+        15,
+        20
+      ],
+      "reasoning": "The answer calls the yellow object a five-pointed star shape. Five pointed tips are visible, so this is a defensible coarse description consistent with the fixture label. However, the sides are curved and petal-like: a flower is also a reasonable description. This is a qualified semantic pass, not evidence that the model distinguished a regular star polygon from a flower.",
+      "retrievedEvidence": [
+        {
+          "frameId": "1b309efd536da35448532c99f6269dbd",
+          "timeSeconds": 15,
+          "score": 0.673781105624323,
+          "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-015.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "63fab2a0411a900496d82cd536459ec0",
+          "timeSeconds": 17,
+          "score": 0.673781105624323,
+          "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-015.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "b0f14c2eedabd2d700905da3b6720e1f",
+          "timeSeconds": 19,
+          "score": 0.673781105624323,
+          "sha256": "bd9c62fd65759aa66ce8d299c6982afe0fdeb4444a9b0b43fce65804e69fa6cb",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-015.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    },
+    {
+      "case": 5,
+      "question": "How many purple objects are visible, and what shape are they?",
+      "answerId": "d189a8b6f6cdabb88e1663fae9106c5c",
+      "answerText": "There are two purple objects visible, and they are circles [F002, F003].",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "pass",
+      "semanticPass": true,
+      "qualification": null,
+      "negativeControl": false,
+      "expectedIntervalSeconds": [
+        20,
+        25
+      ],
+      "reasoning": "The answer states both the correct count, two, and the correct shape, circles. The cited F002 at 21 s and F003 at 23 s show exactly two separated purple circles. Retrieved F001 at 5 s is a blue square and is correctly omitted from the textual citation group.",
+      "retrievedEvidence": [
+        {
+          "frameId": "8ef60038318d171787f10d02efd979c0",
+          "timeSeconds": 5,
+          "score": 0.5966930545998816,
+          "sha256": "ea93afd361b138f6bee991612b4f83921f49e086a0f5f891ae67f3efa8f00b71",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-005.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "18a049c08e69b14a69ac67412ec8fe86",
+          "timeSeconds": 21,
+          "score": 0.6983843492287857,
+          "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-021.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "9205a1b6efdeb3df157371f9ddd42244",
+          "timeSeconds": 23,
+          "score": 0.6983843492287857,
+          "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-021.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    },
+    {
+      "case": 6,
+      "question": "What shape is the orange object?",
+      "answerId": "e8f70f55540b36873e5a2c3f60d7d476",
+      "answerText": "Based on the provided frames, the orange object is a rectangle [F001, F002, F003].",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "pass",
+      "semanticPass": true,
+      "qualification": null,
+      "negativeControl": false,
+      "expectedIntervalSeconds": [
+        25,
+        30
+      ],
+      "reasoning": "The answer identifies the orange object as a rectangle, matching its horizontal straight-sided geometry. All three supplied frames, at 25 s, 27 s, and 29 s, show that rectangle.",
+      "retrievedEvidence": [
+        {
+          "frameId": "b885b589d322b6d9beb6102a364a2e75",
+          "timeSeconds": 25,
+          "score": 0.7044429986005721,
+          "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "e91688ada88a8cbe8fc278c2cbdb074c",
+          "timeSeconds": 27,
+          "score": 0.7044429986005721,
+          "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "6c64e609b3764ff0ca958193d0e21852",
+          "timeSeconds": 29,
+          "score": 0.7044429986005721,
+          "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    },
+    {
+      "case": 7,
+      "question": "What color is the dog in the clip?",
+      "answerId": "50f1a7073e59e6260c540ce61ba68165",
+      "answerText": "The provided video frames do not contain a dog; they consist of a single orange rectangle on a light gray background [F001, F002, F003]. Therefore, the color of the dog cannot be determined.",
+      "originalJobStatus": "failed",
+      "originalAnswerStatus": "failed",
+      "originalError": "visual answer did not cite any supplied frame; the retrieved evidence remains available",
+      "originalValidatedCitations": [],
+      "verdict": "pass",
+      "semanticPass": true,
+      "qualification": null,
+      "negativeControl": true,
+      "expectedIntervalSeconds": null,
+      "reasoning": "The answer explicitly refers to the provided video frames, which show only an orange rectangle on a light gray/off-white background, and declines to determine a dog color. That is supported by the supplied evidence. It does not establish the absence of a dog throughout an arbitrary clip; the model saw only these three sampled frames.",
+      "retrievedEvidence": [
+        {
+          "frameId": "b885b589d322b6d9beb6102a364a2e75",
+          "timeSeconds": 25,
+          "score": 0.6108373452851622,
+          "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+          "label": "F001",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "e91688ada88a8cbe8fc278c2cbdb074c",
+          "timeSeconds": 27,
+          "score": 0.6108373452851622,
+          "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+          "label": "F002",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        },
+        {
+          "frameId": "6c64e609b3764ff0ca958193d0e21852",
+          "timeSeconds": 29,
+          "score": 0.6108373452851622,
+          "sha256": "b3488876269f426388781b52d98ef5dd9c6eb87f4b7aef09ac3000671f5229e3",
+          "label": "F003",
+          "inspectedEquivalentFile": ".runtime/video-runtime-qa/media/indexes/4f8d3ac60a7bf37f94a2db2c7668f3c2/frame-025.jpg",
+          "fileSHA256Verified": true,
+          "equivalence": "Exact byte hash; one displayed representative for duplicate stored frames."
+        }
+      ],
+      "textualCitationGroupsAreNotAValidationPass": true
+    }
+  ],
+  "limits": [
+    "This is a 30-second, six-scene synthetic clip of static colored shapes. It does not qualify natural footage, OCR, activity recognition, temporal reasoning, audio, or general video understanding.",
+    "Several retrieved frames are byte-identical samples of the same static scene. Correct multiple-frame citations do not demonstrate independent visual diversity or motion understanding.",
+    "The yellow fixture called a star is visibly petal-like; its qualified pass must not be reported as an unambiguous geometric-star classification.",
+    "The negative answer is supported only for the three supplied orange-rectangle frames. Absence in a retrieved sample cannot prove absence across arbitrary unsampled video.",
+    "This review inspected stored JPEG evidence and matched its hashes and reported timestamps. It did not independently decode the source MP4, re-measure presentation timestamps, or test native playback/seek.",
+    "The reviewing agent saw the manifest and generated answers; this is an independent visual audit rather than a blinded human annotation study.",
+    "The original report remains immutable and failed on citation formatting. A fresh application run is required to qualify the corrected parser and frontend citation behavior."
+  ]
+}

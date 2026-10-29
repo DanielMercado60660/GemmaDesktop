@@ -200,6 +200,40 @@ func TestIntegrationApprovedToolJournalAndConversationContinuation(t *testing.T)
 	}
 }
 
+func TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay(t *testing.T) {
+	var requests atomic.Int32
+	var recoveryFound atomic.Bool
+	h := newIntegrationHarness(t, func(w http.ResponseWriter, r *http.Request, req inference.ChatRequest) {
+		switch requests.Add(1) {
+		case 1:
+			writeFixture(w, r, req)
+		case 2:
+			http.Error(w, "fixture inference interrupted after committed write", 503)
+		default:
+			for _, message := range req.Messages {
+				if message.Role == "system" && strings.Contains(message.Content, "Host recovery context") && strings.Contains(message.Content, "approved.txt") && strings.Contains(message.Content, "afterHash") && strings.Contains(message.Content, "not permission to resume") {
+					recoveryFound.Store(true)
+				}
+			}
+			fmt.Fprintln(w, `{"message":{"content":"The prior approved write is recorded; I will not repeat it."},"done":true}`)
+		}
+	})
+	run := callIntegration(t, h.core, "run.start", Doc{"sessionId": h.sessionID, "prompt": "Create approved.txt"})
+	a := pendingIntegration(t, h.core, str(run, "id"))
+	callIntegration(t, h.core, "approval.respond", Doc{"id": a["id"], "allow": true})
+	finishedIntegration(t, h.core, str(run, "id"), "failed")
+	next := callIntegration(t, h.core, "run.start", Doc{"sessionId": h.sessionID, "prompt": "What happened before the error? Do not repeat any action."})
+	finishedIntegration(t, h.core, str(next, "id"), "completed")
+	calls, err := h.core.Store.ForRun("toolcall", str(next, "id"))
+	if err != nil || len(calls) != 0 || !recoveryFound.Load() || requests.Load() != 3 {
+		t.Fatalf("recovery=%v requests=%d calls=%v err=%v", recoveryFound.Load(), requests.Load(), calls, err)
+	}
+	data, err := os.ReadFile(filepath.Join(h.workspace, "approved.txt"))
+	if err != nil || string(data) != "approved content" {
+		t.Fatalf("committed effect lost: %q %v", data, err)
+	}
+}
+
 func TestIntegrationCancellationExpiresApprovalWithoutFileEffect(t *testing.T) {
 	h := newIntegrationHarness(t, writeFixture)
 	run := callIntegration(t, h.core, "run.start", Doc{"sessionId": h.sessionID, "prompt": "Request a write"})

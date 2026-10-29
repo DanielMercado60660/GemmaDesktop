@@ -1,0 +1,182 @@
+=== RUN   TestAgentGenerationControlsValidateBeforePersisting
+--- PASS: TestAgentGenerationControlsValidateBeforePersisting (0.02s)
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/legacy
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/auto
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/on
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/off
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/structured
+--- PASS: TestIntegrationAgentGenerationControlsReachPlainChat (0.59s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/legacy (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/auto (0.11s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/on (0.11s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/off (0.11s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/structured (0.14s)
+=== RUN   TestIntegrationWorkflowFreezesReferencedGenerationControls
+--- PASS: TestIntegrationWorkflowFreezesReferencedGenerationControls (0.18s)
+=== RUN   TestIntegrationEvaluationFreezesGenerationControlsAndRequest
+--- PASS: TestIntegrationEvaluationFreezesGenerationControlsAndRequest (0.08s)
+=== RUN   TestApprovalIsDurableAndSingleUse
+--- PASS: TestApprovalIsDurableAndSingleUse (0.01s)
+=== RUN   TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks
+--- PASS: TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks (0.00s)
+=== RUN   TestSkillImportValidatesBeforePersisting
+--- PASS: TestSkillImportValidatesBeforePersisting (0.18s)
+=== RUN   TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs
+--- PASS: TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs (0.41s)
+=== RUN   TestIntegrationCancelledProposalIsNotExecutedOnNewTurn
+2026/10/27 18:19:02 adk: dropping function calls with no matching function response: ["write_once"]
+2026/10/27 18:19:02 adk: dropping function calls with no matching function response: ["write_once"]
+--- PASS: TestIntegrationCancelledProposalIsNotExecutedOnNewTurn (0.21s)
+=== RUN   TestConversationSnapshotEligibility
+=== RUN   TestConversationSnapshotEligibility/active
+=== RUN   TestConversationSnapshotEligibility/workflow_run
+=== RUN   TestConversationSnapshotEligibility/workflow_checkpoint
+=== RUN   TestConversationSnapshotEligibility/pending_approval
+=== RUN   TestConversationSnapshotEligibility/invalid_pending
+=== RUN   TestConversationSnapshotEligibility/missing_snapshot
+=== RUN   TestConversationSnapshotEligibility/unsupported_version
+=== RUN   TestConversationSnapshotEligibility/empty_snapshot
+=== RUN   TestConversationSnapshotEligibility/invalid_events
+--- PASS: TestConversationSnapshotEligibility (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/active (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/workflow_run (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/workflow_checkpoint (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/pending_approval (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/invalid_pending (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/missing_snapshot (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/unsupported_version (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/empty_snapshot (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/invalid_events (0.00s)
+=== RUN   TestHarnessWorkflowCapabilitiesCannotExpandParentOrModel
+--- PASS: TestHarnessWorkflowCapabilitiesCannotExpandParentOrModel (0.00s)
+=== RUN   TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt
+--- PASS: TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt (0.00s)
+=== RUN   TestHarnessSolverExistingEditHasDurableCheckpoint
+--- PASS: TestHarnessSolverExistingEditHasDurableCheckpoint (0.03s)
+=== RUN   TestLegacyComparisonPersistsFinalBoundCapabilityDigest
+--- PASS: TestLegacyComparisonPersistsFinalBoundCapabilityDigest (0.08s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.40s)
+=== RUN   TestHarnessLiveDockerFixtureReferences
+    harness_integration_test.go:113: opt-in installed immutable toolchain; no inference
+--- SKIP: TestHarnessLiveDockerFixtureReferences (0.00s)
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=false
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=true
+--- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed (0.42s)
+    --- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=false (0.21s)
+    --- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=true (0.21s)
+=== RUN   TestIntegrationApprovedToolJournalAndConversationContinuation
+--- PASS: TestIntegrationApprovedToolJournalAndConversationContinuation (0.24s)
+=== RUN   TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay
+--- PASS: TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay (0.30s)
+=== RUN   TestIntegrationCancellationExpiresApprovalWithoutFileEffect
+--- PASS: TestIntegrationCancellationExpiresApprovalWithoutFileEffect (0.11s)
+=== RUN   TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode
+--- PASS: TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode (0.17s)
+=== RUN   TestIntegrationConsumedCheckpointCannotReplayAfterRestart
+--- PASS: TestIntegrationConsumedCheckpointCannotReplayAfterRestart (0.15s)
+=== RUN   TestIntegrationReadOnlyAgentCannotGainWriteTool
+--- PASS: TestIntegrationReadOnlyAgentCannotGainWriteTool (0.10s)
+=== RUN   TestIntegrationEvaluationFreezesInputAndRuntime
+--- PASS: TestIntegrationEvaluationFreezesInputAndRuntime (0.09s)
+=== RUN   TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference
+--- PASS: TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference (0.12s)
+=== RUN   TestCapabilityRevisionAndSkillBundleRemainFrozen
+--- PASS: TestCapabilityRevisionAndSkillBundleRemainFrozen (0.04s)
+=== RUN   TestHierarchicalContextAndPlanCAS
+--- PASS: TestHierarchicalContextAndPlanCAS (0.01s)
+=== RUN   TestDurableReadOnlyDelegateCannotReplayOrEscapeBudget
+--- PASS: TestDurableReadOnlyDelegateCannotReplayOrEscapeBudget (0.04s)
+=== RUN   TestPrivateExecutionPathsAndLegacySelectorsFreeze
+--- PASS: TestPrivateExecutionPathsAndLegacySelectorsFreeze (0.01s)
+=== RUN   TestWorkflowUsesFrozenReferencedCapabilities
+--- PASS: TestWorkflowUsesFrozenReferencedCapabilities (0.10s)
+=== RUN   TestContextInspectorSeparatesAdmissionAndRuntime
+--- PASS: TestContextInspectorSeparatesAdmissionAndRuntime (0.13s)
+=== RUN   TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision
+--- PASS: TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision (0.09s)
+=== RUN   TestPhase2LivePilot
+    phase2_live_test.go:20: opt-in live Gemma/Docker qualification
+--- SKIP: TestPhase2LivePilot (0.00s)
+=== RUN   TestReceiptKeepsLatestEntriesAndExactOmissionFlag
+--- PASS: TestReceiptKeepsLatestEntriesAndExactOmissionFlag (0.25s)
+=== RUN   TestRecoveryHasTotalByteBoundAndRetainsOmittedUncertainty
+--- PASS: TestRecoveryHasTotalByteBoundAndRetainsOmittedUncertainty (0.27s)
+=== RUN   TestSnapshotArtifactMetadataAndExplicitFullGet
+--- PASS: TestSnapshotArtifactMetadataAndExplicitFullGet (0.03s)
+=== RUN   TestReceiptUsesOwnedToolOutcomesNotModelClaims
+--- PASS: TestReceiptUsesOwnedToolOutcomesNotModelClaims (0.03s)
+=== RUN   TestReceiptDoesNotInventVerificationForPlainAnswer
+--- PASS: TestReceiptDoesNotInventVerificationForPlainAnswer (0.02s)
+=== RUN   TestReceiptPreservesPublicationConflictSeparateFromProcessExit
+--- PASS: TestReceiptPreservesPublicationConflictSeparateFromProcessExit (0.02s)
+=== RUN   TestReceiptIncludesGovernedSetupAndBinaryMaterialization
+--- PASS: TestReceiptIncludesGovernedSetupAndBinaryMaterialization (0.02s)
+=== RUN   TestUnknownMCPOutcomeCannotBecomeVerifiedCompletion
+--- PASS: TestUnknownMCPOutcomeCannotBecomeVerifiedCompletion (0.04s)
+=== RUN   TestRunGraphFacadeIsReadOnlyAndRequiresAnExistingRun
+--- PASS: TestRunGraphFacadeIsReadOnlyAndRequiresAnExistingRun (0.01s)
+=== RUN   TestVideoMediaCapabilityRangesAndGuards
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/full
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/range
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/suffix
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/head
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/invalid
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/method
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/foreign-origin
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/foreign-host
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/cross-site
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/query
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/native
+--- PASS: TestVideoMediaCapabilityRangesAndGuards (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/full (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/range (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/suffix (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/head (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/invalid (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/method (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/foreign-origin (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/foreign-host (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/cross-site (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/query (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/native (0.00s)
+=== RUN   TestVideoMediaBoundAndCancelledReads
+--- PASS: TestVideoMediaBoundAndCancelledReads (0.00s)
+=== RUN   TestCompletionSelectionsRejectEmbeddingOnlyModels
+--- PASS: TestCompletionSelectionsRejectEmbeddingOnlyModels (0.00s)
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only
+--- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues (0.05s)
+    --- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval (0.03s)
+    --- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	7.416s
+=== RUN   TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity
+--- PASS: TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity (0.01s)
+=== RUN   TestLessonVersionsCompatibilityAndPacketSnapshot
+--- PASS: TestLessonVersionsCompatibilityAndPacketSnapshot (0.01s)
+=== RUN   TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets
+--- PASS: TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets (0.02s)
+=== RUN   TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted
+--- PASS: TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted (0.03s)
+=== RUN   TestDeepFixturesRequireMultipleSourceFeatures
+--- PASS: TestDeepFixturesRequireMultipleSourceFeatures (0.01s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestSubmittedReflectionRetryRepairsMissingLessonHead
+--- PASS: TestSubmittedReflectionRetryRepairsMissingLessonHead (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.11s)
+=== RUN   TestImmutablePermissionSurfaceAndAuthorSeparation
+--- PASS: TestImmutablePermissionSurfaceAndAuthorSeparation (0.01s)
+=== RUN   TestFixtureSplitAndOracleSeparation
+--- PASS: TestFixtureSplitAndOracleSeparation (0.01s)
+=== RUN   TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement
+--- PASS: TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement (0.00s)
+=== RUN   TestHeldoutExposureAcrossExperiments
+--- PASS: TestHeldoutExposureAcrossExperiments (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.410s

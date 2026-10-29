@@ -1,0 +1,127 @@
+{
+  "id": "python-config",
+  "name": "Apply layered service configuration",
+  "stack": "python",
+  "split": "heldout",
+  "prompt": "Read README.md, repair apply layered service configuration, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "python3",
+    "public_test.py"
+  ],
+  "gradeCommand": [
+    "python3",
+    "main.py"
+  ],
+  "public": {
+    "logic.py": "def solve(x):\n def merge(a,b):\n  out=dict(a)\n  for k,v in b.items():\n   if False: out.pop(k,None)\n   elif isinstance(v,dict): out[k]=merge(out.get(k,{}) if isinstance(out.get(k),dict) else {},v)\n   else: out[k]=v\n  return out\n out={}\n for layer in x[\"layers\"]: out=merge(out,layer)\n return out\n",
+    "main.py": "import json,sys\nfrom logic import solve\nprint(json.dumps([solve(x) for x in json.loads(sys.argv[1])]))\n",
+    "public_test.py": "import json,subprocess,sys\ncases=[{'layers': []}, {'layers': [{'a': 1}]}]\nexpected=[{}, {'a': 1}]\np=subprocess.run([sys.executable,\"main.py\",json.dumps(cases)],capture_output=True,text=True,check=True)\nassert json.loads(p.stdout)==expected,(p.stdout,expected)\nprint(\"2 public cases passed\")\n\nimport unittest\nsuite=unittest.defaultTestLoader.discover(\".\",pattern=\"test_*.py\")\nif not unittest.TextTestRunner().run(suite).wasSuccessful():raise SystemExit(1)\n",
+    "README.md": "# Apply layered service configuration\n\nRepair this python service module and add regression tests.\n\nMerge layers from left to right recursively for objects. Null deletes a key. Arrays and other values replace earlier values; false, zero and empty strings remain valid. Return a new object without mutating any layer.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `python3 public_test.py` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"layers\": [\n    {\n      \"service\": {\n        \"port\": 80,\n        \"tls\": true\n      },\n      \"tags\": [\n        \"old\"\n      ]\n    },\n    {\n      \"service\": {\n        \"port\": 0\n      },\n      \"tags\": []\n    }\n  ]\n}\n```\nExpected result:\n```json\n{\n  \"service\": {\n    \"port\": 0,\n    \"tls\": true\n  },\n  \"tags\": []\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "config-1",
+      "input": {
+        "layers": []
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "config-2",
+      "input": {
+        "layers": [
+          {
+            "a": 1
+          }
+        ]
+      },
+      "expected": {
+        "a": 1
+      },
+      "critical": false
+    },
+    {
+      "name": "config-3",
+      "input": {
+        "layers": [
+          {
+            "service": {
+              "port": 80,
+              "tls": true
+            },
+            "tags": [
+              "old"
+            ]
+          },
+          {
+            "service": {
+              "port": 0
+            },
+            "tags": []
+          }
+        ]
+      },
+      "expected": {
+        "service": {
+          "port": 0,
+          "tls": true
+        },
+        "tags": []
+      },
+      "critical": false
+    },
+    {
+      "name": "config-4",
+      "input": {
+        "layers": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": null,
+            "b": false,
+            "c": ""
+          }
+        ]
+      },
+      "expected": {
+        "b": false,
+        "c": ""
+      },
+      "critical": false
+    },
+    {
+      "name": "config-5",
+      "input": {
+        "layers": [
+          {
+            "a": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          {
+            "a": {
+              "x": null,
+              "z": 3
+            }
+          },
+          {
+            "a": {
+              "y": 0
+            }
+          }
+        ]
+      },
+      "expected": {
+        "a": {
+          "y": 0,
+          "z": 3
+        }
+      },
+      "critical": false
+    }
+  ]
+}

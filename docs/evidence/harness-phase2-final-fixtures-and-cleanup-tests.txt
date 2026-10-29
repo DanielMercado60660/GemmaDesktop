@@ -1,0 +1,66 @@
+=== RUN   TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches
+--- PASS: TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches (0.03s)
+=== RUN   TestHarnessCacheFailureIsDurableAndCannotQualify
+--- PASS: TestHarnessCacheFailureIsDurableAndCannotQualify (0.01s)
+=== RUN   TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials
+--- PASS: TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials (0.02s)
+=== RUN   TestHarnessSolverExistingEditHasDurableCheckpoint
+--- PASS: TestHarnessSolverExistingEditHasDurableCheckpoint (0.04s)
+=== RUN   TestHarnessLiveDockerFixtureReferences
+=== RUN   TestHarnessLiveDockerFixtureReferences/go-config
+    harness_integration_test.go:204: reference + isolated independent grader passed go test ./...
+=== RUN   TestHarnessLiveDockerFixtureReferences/go-intervals
+    harness_integration_test.go:204: reference + isolated independent grader passed go test ./...
+=== RUN   TestHarnessLiveDockerFixtureReferences/go-inventory
+    harness_integration_test.go:204: reference + isolated independent grader passed go test ./...
+=== RUN   TestHarnessLiveDockerFixtureReferences/go-ledger
+    harness_integration_test.go:204: reference + isolated independent grader passed go test ./...
+=== RUN   TestHarnessLiveDockerFixtureReferences/go-orders
+    harness_integration_test.go:204: reference + isolated independent grader passed go test ./...
+=== RUN   TestHarnessLiveDockerFixtureReferences/go-usage
+    harness_integration_test.go:204: reference + isolated independent grader passed go test ./...
+=== RUN   TestHarnessLiveDockerFixtureReferences/node-config
+    harness_integration_test.go:204: reference + isolated independent grader passed node public_test.cjs
+=== RUN   TestHarnessLiveDockerFixtureReferences/node-intervals
+    harness_integration_test.go:204: reference + isolated independent grader passed node public_test.cjs
+=== RUN   TestHarnessLiveDockerFixtureReferences/node-inventory
+    harness_integration_test.go:204: reference + isolated independent grader passed node public_test.cjs
+=== RUN   TestHarnessLiveDockerFixtureReferences/node-ledger
+    harness_integration_test.go:204: reference + isolated independent grader passed node public_test.cjs
+=== RUN   TestHarnessLiveDockerFixtureReferences/node-orders
+    harness_integration_test.go:204: reference + isolated independent grader passed node public_test.cjs
+=== RUN   TestHarnessLiveDockerFixtureReferences/node-usage
+    harness_integration_test.go:204: reference + isolated independent grader passed node public_test.cjs
+=== RUN   TestHarnessLiveDockerFixtureReferences/python-config
+    harness_integration_test.go:204: reference + isolated independent grader passed python3 public_test.py
+=== RUN   TestHarnessLiveDockerFixtureReferences/python-intervals
+    harness_integration_test.go:204: reference + isolated independent grader passed python3 public_test.py
+=== RUN   TestHarnessLiveDockerFixtureReferences/python-inventory
+    harness_integration_test.go:204: reference + isolated independent grader passed python3 public_test.py
+=== RUN   TestHarnessLiveDockerFixtureReferences/python-ledger
+    harness_integration_test.go:204: reference + isolated independent grader passed python3 public_test.py
+=== RUN   TestHarnessLiveDockerFixtureReferences/python-orders
+    harness_integration_test.go:204: reference + isolated independent grader passed python3 public_test.py
+=== RUN   TestHarnessLiveDockerFixtureReferences/python-usage
+    harness_integration_test.go:204: reference + isolated independent grader passed python3 public_test.py
+--- PASS: TestHarnessLiveDockerFixtureReferences (73.19s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/go-config (7.41s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/go-intervals (7.41s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/go-inventory (13.84s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/go-ledger (7.61s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/go-orders (7.63s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/go-usage (7.55s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/node-config (1.29s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/node-intervals (1.34s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/node-inventory (5.08s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/node-ledger (1.24s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/node-orders (1.40s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/node-usage (1.36s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/python-config (1.49s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/python-intervals (1.49s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/python-inventory (1.50s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/python-ledger (2.49s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/python-orders (1.50s)
+    --- PASS: TestHarnessLiveDockerFixtureReferences/python-usage (1.51s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	74.777s

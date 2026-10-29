@@ -18,6 +18,7 @@ export interface Message {
   content: string;
   createdAt: string;
   runId?: string;
+  incomplete?: boolean;
 }
 export interface Run {
   id: string;
@@ -32,7 +33,9 @@ export interface Run {
   agentId?: string;
   workflowId?: string;
   summary?: string;
+  incomplete?: boolean;
   resumable?: boolean;
+  receipt?: RunReceipt;
   usage?: {
     eval_count?: number;
     eval_duration?: number;
@@ -40,6 +43,47 @@ export interface Run {
     prompt_eval_duration?: number;
     total_duration?: number;
   };
+}
+export interface ReceiptCommand {
+  callId: string;
+  status: string;
+  executable: string;
+  args?: string[];
+  workingDirectory?: string;
+  readOnly?: boolean;
+  exitCode?: number;
+  signal?: string;
+  cancelled?: boolean;
+  truncated?: boolean;
+  durationMs?: number;
+  error?: string;
+  commandId?: string;
+  image?: string;
+  snapshotDigest?: string;
+  dependencyDigest?: string;
+  packageCount?: number;
+  downloadedBytes?: number;
+  lockHash?: string;
+  publication?: string;
+  workspaceChanged?: boolean;
+  changes?: Array<{ path: string; beforeHash?: string; afterHash?: string }>;
+}
+export interface RunReceipt {
+  source: string;
+  toolCalls: number;
+  failedTools: number;
+  unresolvedTools: number;
+  commands?: ReceiptCommand[];
+  changes?: Array<{
+    callId: string;
+    tool: string;
+    path: string;
+    destination?: string;
+    beforeHash?: string;
+    afterHash?: string;
+  }>;
+  entriesLimited?: boolean;
+  note?: string;
 }
 export interface Event {
   id: string;
@@ -81,6 +125,10 @@ export interface Agent {
   model: string;
   maxSteps: number;
   mode: string;
+  thinking?: "auto" | "on" | "off";
+  maxOutputTokens?: number;
+  temperature?: number;
+  capabilityProfileId?: string;
 }
 export interface WorkflowNode {
   id: string;
@@ -159,6 +207,13 @@ export interface MCPServer {
   enabled: boolean;
   status: string;
   error?: string;
+  oauth?: {
+    issuer: string;
+    authorizationEndpoint: string;
+    tokenEndpoint: string;
+    clientId: string;
+    scopes: string[];
+  };
   tools?: Array<{ name: string; description?: string; inputSchema?: unknown }>;
 }
 export interface Skill {
@@ -166,6 +221,12 @@ export interface Skill {
   name: string;
   description: string;
   path: string;
+  digest?: string;
+  fileCount?: number;
+  totalBytes?: number;
+  sourcePath?: string;
+  files?: Array<{ path: string; bytes: number; sha256: string }>;
+  bytes?: number;
 }
 export interface EvaluationResult {
   agentId: string;

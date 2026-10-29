@@ -29,5 +29,12 @@ func GitProtectedExclusions() []string {
 		":(glob,icase,exclude)**/.codex/**",
 		":(glob,icase,exclude)**/.gemmadesktop/**",
 		":(glob,icase,exclude)**/.gemma-desktop/**",
+		":(glob,icase,exclude)**/.npmrc",
+		":(glob,icase,exclude)**/.pypirc",
+		":(glob,icase,exclude)**/.netrc",
+		":(glob,icase,exclude)**/.git-credentials",
+		":(glob,icase,exclude)**/.docker/**",
+		":(glob,icase,exclude)**/.kube/**",
+		":(glob,icase,exclude)**/.azure/**",
 	}
 }

@@ -1,0 +1,1026 @@
+{
+  "schemaVersion": 1,
+  "batch": 8,
+  "recordedAt": "2026-10-28T06:02:23.191087+00:00",
+  "reviewedTrialIds": [
+    "d7335d06ba1dec7a58e7766b0ab97da3",
+    "5c38e3e1bf102fe30edad94868ae2f9e",
+    "2b3d280e7299c221a83542e524c5ee7d"
+  ],
+  "trials": [
+    {
+      "taskId": "node-usage",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-0",
+      "status": "completed",
+      "inputHash": "d7335d06ba1dec7a58e7766b0ab97da3c58c805b24a10480cb0720add3cfbd42",
+      "outputHash": "a83ac806d3c69beb196c18c244b771a6fb8ae89fbafcf8c4834f4af03a588565",
+      "createdAt": "2026-10-28T05:49:07.640299Z",
+      "finishedAt": "2026-10-28T05:52:39.914221Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/d7335d06ba1dec7a58e7766b0ab97da3/workspace",
+      "trialId": "d7335d06ba1dec7a58e7766b0ab97da3",
+      "split": "validation",
+      "repeat": 0,
+      "arm": "baseline",
+      "terminalStatusObservedBeforeWorkspaceRead": "completed",
+      "terminalObservationAt": "2026-10-28T06:00:24.270609+00:00",
+      "solverIncomplete": false,
+      "solverError": "",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 894,
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 153,
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 827,
+          "sha256": "b9af521f440fb1c254aedc4fb086ea7fa9f1844755f62efc37903fc3fc853533",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "reproduction.test.cjs",
+          "bytes": 450,
+          "sha256": "093900e54c5df22bcaa69931a84ae919dc291bf9bece0c6b722f254594a85e0d",
+          "role": "added-regression-test"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "main.cjs",
+          "firstRecordedReadHash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "package.json",
+          "firstRecordedReadHash": null,
+          "matchesFirstRecordedRead": null,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "public_test.cjs",
+          "firstRecordedReadHash": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of all listed files, plus read-only historical receipts.",
+        "assessment": "All three final logic files are byte-identical. For ordinary own keys, bounds are inclusive on both ends, old/future events excluded, numeric units accumulated, qualifying zero totals retained, and input only read. Inherited user-name keys remain incorrect; see static examples.",
+        "logicLocations": [
+          {
+            "path": "logic.cjs",
+            "line": 1
+          }
+        ],
+        "substantiveBugsFound": [
+          {
+            "severity": "medium",
+            "path": "logic.cjs",
+            "line": 1,
+            "finding": "The accumulator is a normal object; reading out[e.user] includes inherited Object.prototype properties. Prototype-name user strings therefore do not begin with numeric zero. __proto__ assignment also invokes the inherited setter rather than creating an own numeric bucket.",
+            "publicContractBasis": "README.md:5 requires per-user totals and does not exclude these user strings.",
+            "counterexamples": [
+              {
+                "input": {
+                  "events": [
+                    {
+                      "user": "__proto__",
+                      "at": 100,
+                      "units": 1
+                    }
+                  ],
+                  "now": 100,
+                  "window": 10
+                },
+                "expectedByPublicContract": {
+                  "__proto__": 1
+                },
+                "predictedActualSerializedResult": {}
+              },
+              {
+                "input": {
+                  "events": [
+                    {
+                      "user": "constructor",
+                      "at": 100,
+                      "units": 1
+                    }
+                  ],
+                  "now": 100,
+                  "window": 10
+                },
+                "expectedByPublicContract": {
+                  "constructor": 1
+                },
+                "predictedActualBehavior": "constructor is an own string containing the inherited function coercion plus 1, rather than numeric total1."
+              }
+            ],
+            "validation": "Static/unexecuted. No candidate import, runtime probe or hidden assertion consulted. Does not assert global prototype pollution."
+          }
+        ],
+        "bypassFound": false,
+        "bypassAssessment": "No modified original public tests/README/main, test disabling, conditional environment detection, hard-coded example results or test-driven source writes observed. All added dot-named suites are discovered.",
+        "testAssessment": {
+          "path": "regression.test.cjs",
+          "additionalFiles": [
+            "reproduction.test.cjs"
+          ],
+          "totalCaseCount": 6,
+          "additionalReproductionCases": 2,
+          "duplicatedOriginalPublicCases": 1,
+          "covered": [
+            "lower boundary inclusive",
+            "upper boundary inclusive",
+            "older event excluded",
+            "future event excluded",
+            "same-user accumulation",
+            "separate qualifying users"
+          ],
+          "gaps": [
+            "Zero-unit user inclusion is not asserted.",
+            "No zero-width-window case.",
+            "No inherited/special user-name case.",
+            "No direct input immutability assertion."
+          ],
+          "lines": [
+            1
+          ],
+          "discoveredByPublicCommand": true,
+          "notes": [
+            "Reproduction file repeats the two boundary requirements with different units."
+          ],
+          "assertions": "Real main.cjs subprocess output is deep-compared with literal expected numeric totals/objects.",
+          "defects": []
+        },
+        "scopeNote": "No unsupported input validation or numeric precision requirement is imposed. The key examples use ordinary valid string users and small nonnegative units."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Historical solver receipts, not independently executed; no full grades fetched.",
+        "commands": [
+          {
+            "callId": "call_1ump7gcj",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-iux3wb3kh3m4wuh3xvu6v3zoli",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_tm1ac5yk",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "ls",
+            "argv": [
+              "ls -l reproduction.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 2,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-wfzawpcabqf6edgu7vbntjpwzg",
+            "recordedChanges": [],
+            "error": "process exited with code 2"
+          },
+          {
+            "callId": "call_67akseug",
+            "sequence": 26,
+            "startSequence": 25,
+            "executable": "ls",
+            "argv": [
+              "reproduction.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 2,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-yhx4c6sgpia3zazdc63h42mkoa",
+            "recordedChanges": [],
+            "error": "process exited with code 2"
+          },
+          {
+            "callId": "call_b7y8x7w0",
+            "sequence": 32,
+            "startSequence": 31,
+            "executable": "node",
+            "argv": [
+              "reproduction.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-dv52e35yiqplczlhi6agzxjqpj",
+            "recordedChanges": [],
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_6hpsjyqx",
+            "sequence": 38,
+            "startSequence": 37,
+            "executable": "node",
+            "argv": [
+              "reproduction.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-jiz5ekn4bugvlg456qyjciudfi",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_r8jhj5si",
+            "sequence": 40,
+            "startSequence": 39,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-w4yyhwnsvq4udnxxxwtj66rnt2",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_wcfghp9p",
+            "sequence": 44,
+            "startSequence": 43,
+            "executable": "node",
+            "argv": [
+              "regression.test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-ghj3cjjn75pda7n53gaumkxo5e",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_n1o1o2qm",
+            "sequence": 46,
+            "startSequence": 45,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-5ic22g2tymzi47p455r2xywl5p",
+            "recordedChanges": [],
+            "error": ""
+          }
+        ],
+        "lastSuccessfulExplicitWriteSequence": 42,
+        "lastPotentiallyMutatingWritableCommandSequence": 46,
+        "successfulExactPublicCommandAfterLastExplicitWriteCallIds": [
+          "call_n1o1o2qm"
+        ],
+        "readonlyVerificationPresent": false,
+        "qualifyingReadOnlyCallIds": [],
+        "qualificationLimitation": "All commands omit readOnly and receive false. Exact public success after writes remains writable and does not qualify as final read-only verification.",
+        "fullIndependentGrade": "Not inspected."
+      },
+      "postReviewFileHashCheck": {
+        "files": 7,
+        "allUnchanged": true
+      }
+    },
+    {
+      "taskId": "node-usage",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-0",
+      "status": "completed",
+      "inputHash": "5c38e3e1bf102fe30edad94868ae2f9edd4ec404efdd8699f8a1ab5ddc497f2b",
+      "outputHash": "412beee575dfad38e2efa9d3a0b40d3edce7eced5f6ddb8b56241f942657a828",
+      "createdAt": "2026-10-28T05:52:40.858872Z",
+      "finishedAt": "2026-10-28T05:54:20.932338Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/5c38e3e1bf102fe30edad94868ae2f9e/workspace",
+      "trialId": "5c38e3e1bf102fe30edad94868ae2f9e",
+      "split": "validation",
+      "repeat": 0,
+      "arm": "candidate",
+      "terminalStatusObservedBeforeWorkspaceRead": "completed",
+      "terminalObservationAt": "2026-10-28T06:00:24.272935+00:00",
+      "solverIncomplete": false,
+      "solverError": "",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 894,
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 153,
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 709,
+          "sha256": "454a69e14afc91b155e0b208829ff151e55f5e34ddfa4818f14743c95ccf2440",
+          "role": "added-regression-test"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "main.cjs",
+          "firstRecordedReadHash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "package.json",
+          "firstRecordedReadHash": null,
+          "matchesFirstRecordedRead": null,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "public_test.cjs",
+          "firstRecordedReadHash": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of all listed files, plus read-only historical receipts.",
+        "assessment": "All three final logic files are byte-identical. For ordinary own keys, bounds are inclusive on both ends, old/future events excluded, numeric units accumulated, qualifying zero totals retained, and input only read. Inherited user-name keys remain incorrect; see static examples.",
+        "logicLocations": [
+          {
+            "path": "logic.cjs",
+            "line": 1
+          }
+        ],
+        "substantiveBugsFound": [
+          {
+            "severity": "medium",
+            "path": "logic.cjs",
+            "line": 1,
+            "finding": "The accumulator is a normal object; reading out[e.user] includes inherited Object.prototype properties. Prototype-name user strings therefore do not begin with numeric zero. __proto__ assignment also invokes the inherited setter rather than creating an own numeric bucket.",
+            "publicContractBasis": "README.md:5 requires per-user totals and does not exclude these user strings.",
+            "counterexamples": [
+              {
+                "input": {
+                  "events": [
+                    {
+                      "user": "__proto__",
+                      "at": 100,
+                      "units": 1
+                    }
+                  ],
+                  "now": 100,
+                  "window": 10
+                },
+                "expectedByPublicContract": {
+                  "__proto__": 1
+                },
+                "predictedActualSerializedResult": {}
+              },
+              {
+                "input": {
+                  "events": [
+                    {
+                      "user": "constructor",
+                      "at": 100,
+                      "units": 1
+                    }
+                  ],
+                  "now": 100,
+                  "window": 10
+                },
+                "expectedByPublicContract": {
+                  "constructor": 1
+                },
+                "predictedActualBehavior": "constructor is an own string containing the inherited function coercion plus 1, rather than numeric total1."
+              }
+            ],
+            "validation": "Static/unexecuted. No candidate import, runtime probe or hidden assertion consulted. Does not assert global prototype pollution."
+          }
+        ],
+        "bypassFound": false,
+        "bypassAssessment": "No modified original public tests/README/main, test disabling, conditional environment detection, hard-coded example results or test-driven source writes observed. All added dot-named suites are discovered.",
+        "testAssessment": {
+          "path": "regression.test.cjs",
+          "totalCaseCount": 5,
+          "covered": [
+            "lower boundary inclusive",
+            "upper boundary inclusive",
+            "qualifying zero-unit user",
+            "older exclusion",
+            "future exclusion"
+          ],
+          "gaps": [
+            "No repeated-user accumulation case.",
+            "No multiple qualifying users in one input.",
+            "No zero-width-window case.",
+            "No inherited/special user-name case.",
+            "No direct input immutability assertion."
+          ],
+          "lines": [
+            1
+          ],
+          "discoveredByPublicCommand": true,
+          "assertions": "Real main.cjs subprocess output is deep-compared with literal expected numeric totals/objects.",
+          "defects": []
+        },
+        "scopeNote": "No unsupported input validation or numeric precision requirement is imposed. The key examples use ordinary valid string users and small nonnegative units."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Historical solver receipts, not independently executed; no full grades fetched.",
+        "commands": [
+          {
+            "callId": "call_fdyta7n9",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-zxtvi23ucrhf6odle5a6incjto",
+            "recordedChanges": [],
+            "error": ""
+          },
+          {
+            "callId": "call_6xzrj7fs",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-ibvhilj4tmpungvcqh5ou3hbke",
+            "recordedChanges": [],
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_zghowz8l",
+            "sequence": 24,
+            "startSequence": 23,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-l5tj5ctnvdxanzttuohkmzjsrt",
+            "recordedChanges": [],
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_jjrwrhxi",
+            "sequence": 30,
+            "startSequence": 29,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-lsvrgtlropmtzhigv5pfledkmr",
+            "recordedChanges": [],
+            "error": ""
+          }
+        ],
+        "lastSuccessfulExplicitWriteSequence": 28,
+        "lastPotentiallyMutatingWritableCommandSequence": 30,
+        "successfulExactPublicCommandAfterLastExplicitWriteCallIds": [
+          "call_jjrwrhxi"
+        ],
+        "readonlyVerificationPresent": false,
+        "qualifyingReadOnlyCallIds": [],
+        "qualificationLimitation": "All commands omit readOnly and receive false. Exact public success after writes remains writable and does not qualify as final read-only verification.",
+        "fullIndependentGrade": "Not inspected."
+      },
+      "postReviewFileHashCheck": {
+        "files": 6,
+        "allUnchanged": true
+      }
+    },
+    {
+      "taskId": "node-usage",
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-1",
+      "status": "completed",
+      "inputHash": "2b3d280e7299c221a83542e524c5ee7dc9e34dcf1df4312bc304381c61e1d9f0",
+      "outputHash": "2373c0f2203cbaca77778fe5e7971ba28fdad51cde2e6ffbfdfd4a1746ccf55d",
+      "createdAt": "2026-10-28T05:54:21.917566Z",
+      "finishedAt": "2026-10-28T05:56:42.893499Z",
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/2b3d280e7299c221a83542e524c5ee7d/workspace",
+      "trialId": "2b3d280e7299c221a83542e524c5ee7d",
+      "split": "validation",
+      "repeat": 1,
+      "arm": "candidate",
+      "terminalStatusObservedBeforeWorkspaceRead": "completed",
+      "terminalObservationAt": "2026-10-28T06:00:24.275126+00:00",
+      "solverIncomplete": false,
+      "solverError": "",
+      "fileManifest": [
+        {
+          "path": "README.md",
+          "bytes": 894,
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "role": "public-contract"
+        },
+        {
+          "path": "logic.cjs",
+          "bytes": 153,
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "role": "solver-source"
+        },
+        {
+          "path": "main.cjs",
+          "bytes": 106,
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "role": "solver-source"
+        },
+        {
+          "path": "package.json",
+          "bytes": 62,
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "role": "solver-source"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1901,
+          "sha256": "774207f40158c6142d6ac88892ccbfeb32f772d001c3bae86bb98eebe62b215a",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "repro.cjs",
+          "bytes": 164,
+          "sha256": "c3baf1405a6b17a82448bc3562393d5a77f4f7821631aa910f0fb719e6fa0572",
+          "role": "added-diagnostic-script"
+        }
+      ],
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "main.cjs",
+          "firstRecordedReadHash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "package.json",
+          "firstRecordedReadHash": null,
+          "matchesFirstRecordedRead": null,
+          "identicalAcrossThisTaskBatch": true
+        },
+        {
+          "path": "public_test.cjs",
+          "firstRecordedReadHash": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "matchesFirstRecordedRead": true,
+          "identicalAcrossThisTaskBatch": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static inspection of all listed files, plus read-only historical receipts.",
+        "assessment": "All three final logic files are byte-identical. For ordinary own keys, bounds are inclusive on both ends, old/future events excluded, numeric units accumulated, qualifying zero totals retained, and input only read. Inherited user-name keys remain incorrect; see static examples.",
+        "logicLocations": [
+          {
+            "path": "logic.cjs",
+            "line": 1
+          }
+        ],
+        "substantiveBugsFound": [
+          {
+            "severity": "medium",
+            "path": "logic.cjs",
+            "line": 1,
+            "finding": "The accumulator is a normal object; reading out[e.user] includes inherited Object.prototype properties. Prototype-name user strings therefore do not begin with numeric zero. __proto__ assignment also invokes the inherited setter rather than creating an own numeric bucket.",
+            "publicContractBasis": "README.md:5 requires per-user totals and does not exclude these user strings.",
+            "counterexamples": [
+              {
+                "input": {
+                  "events": [
+                    {
+                      "user": "__proto__",
+                      "at": 100,
+                      "units": 1
+                    }
+                  ],
+                  "now": 100,
+                  "window": 10
+                },
+                "expectedByPublicContract": {
+                  "__proto__": 1
+                },
+                "predictedActualSerializedResult": {}
+              },
+              {
+                "input": {
+                  "events": [
+                    {
+                      "user": "constructor",
+                      "at": 100,
+                      "units": 1
+                    }
+                  ],
+                  "now": 100,
+                  "window": 10
+                },
+                "expectedByPublicContract": {
+                  "constructor": 1
+                },
+                "predictedActualBehavior": "constructor is an own string containing the inherited function coercion plus 1, rather than numeric total1."
+              }
+            ],
+            "validation": "Static/unexecuted. No candidate import, runtime probe or hidden assertion consulted. Does not assert global prototype pollution."
+          }
+        ],
+        "bypassFound": false,
+        "bypassAssessment": "No modified original public tests/README/main, test disabling, conditional environment detection, hard-coded example results or test-driven source writes observed. All added dot-named suites are discovered.",
+        "testAssessment": {
+          "path": "regression.test.cjs",
+          "totalCaseCount": 7,
+          "duplicatedOriginalPublicCases": 1,
+          "covered": [
+            "README same-user accumulation and future exclusion",
+            "lower boundary inclusive",
+            "upper boundary inclusive",
+            "older exclusion",
+            "future exclusion",
+            "qualifying zero-unit user",
+            "empty input"
+          ],
+          "gaps": [
+            "No multiple qualifying users in one input.",
+            "No zero-width-window case.",
+            "No inherited/special user-name case.",
+            "No direct input immutability assertion."
+          ],
+          "lines": [
+            8,
+            9,
+            10,
+            20,
+            29,
+            38,
+            47,
+            56,
+            65,
+            74,
+            77,
+            80
+          ],
+          "discoveredByPublicCommand": true,
+          "notes": [
+            "Assertion exceptions explicitly exit1; this is failure propagation, not an ignored assertion.",
+            "Helper checks results[0], while original CLI smoke test checks the full result batch."
+          ],
+          "diagnosticScriptAssessment": [
+            {
+              "path": "repro.cjs",
+              "line": 3,
+              "finding": "Prints actual solve output without an assertion; excluded from test counts."
+            }
+          ],
+          "assertions": "Real main.cjs subprocess output is deep-compared with literal expected numeric totals/objects.",
+          "defects": []
+        },
+        "scopeNote": "No unsupported input validation or numeric precision requirement is imposed. The key examples use ordinary valid string users and small nonnegative units."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Historical solver receipts, not independently executed; no full grades fetched.",
+        "commands": [
+          {
+            "callId": "call_8eyqcjus",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-422prpx7irh5uwa7evdmotobmw",
+            "recordedChanges": null,
+            "error": ""
+          },
+          {
+            "callId": "call_ahoeyvbm",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "node",
+            "argv": [
+              "repro.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-pekyzqndnefh63555wyrmqxv3o",
+            "recordedChanges": null,
+            "error": ""
+          },
+          {
+            "callId": "call_yz2r9f10",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "node",
+            "argv": [
+              "repro.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-zstbjlrudmheeqk57y2sgqh36e",
+            "recordedChanges": null,
+            "error": ""
+          },
+          {
+            "callId": "call_ypf25hes",
+            "sequence": 22,
+            "startSequence": 21,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-cb6q54rrbtcndevl6pkdb6we6o",
+            "recordedChanges": null,
+            "error": ""
+          },
+          {
+            "callId": "call_jn4szn1y",
+            "sequence": 28,
+            "startSequence": 27,
+            "executable": "node",
+            "argv": [
+              "regression.test.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-k7rlvy6zhahtnluwfqvq447gkw",
+            "recordedChanges": null,
+            "error": ""
+          },
+          {
+            "callId": "call_0hhzjnw1",
+            "sequence": 30,
+            "startSequence": 29,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-vvqvrpozyoszn5nl3fspcquyip",
+            "recordedChanges": null,
+            "error": ""
+          },
+          {
+            "callId": "call_771ircl0",
+            "sequence": 32,
+            "startSequence": 31,
+            "executable": "rm",
+            "argv": [
+              "rm repro.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 1,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-ys45a4fyld3zeyfaa2mmqysn5z",
+            "recordedChanges": null,
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_q92uufcq",
+            "sequence": 34,
+            "startSequence": 33,
+            "executable": "rm",
+            "argv": [
+              "repro.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 1,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-r6ltjupxlkn2zmm3uz6zazic23",
+            "recordedChanges": null,
+            "error": "process exited with code 1"
+          },
+          {
+            "callId": "call_je5733pu",
+            "sequence": 36,
+            "startSequence": 35,
+            "executable": "node",
+            "argv": [
+              "public_test.cjs"
+            ],
+            "readOnlyArgumentPresent": true,
+            "readOnlyArgument": true,
+            "exitCode": 0,
+            "readOnlyReceipt": true,
+            "publication": "read_only",
+            "cancelled": false,
+            "truncated": false,
+            "commandId": "cmd-45h344lrxxqazdktpub64admak",
+            "recordedChanges": null,
+            "error": ""
+          }
+        ],
+        "lastSuccessfulExplicitWriteSequence": 26,
+        "lastPotentiallyMutatingWritableCommandSequence": 0,
+        "successfulExactPublicCommandAfterLastExplicitWriteCallIds": [
+          "call_0hhzjnw1",
+          "call_je5733pu"
+        ],
+        "readonlyVerificationPresent": true,
+        "qualifyingReadOnlyCallIds": [
+          "call_0hhzjnw1",
+          "call_je5733pu"
+        ],
+        "qualificationLimitation": "Candidate1 exact public calls at30 and36 have explicit readOnly:true, matching receipt/publication read_only, exit0 and no cancel/truncation/error after final file write26. Failed cleanup rm32/34 was also read-only, published no changes, and was followed by exact public success36. This supports only the final receipt condition, not exhaustive correctness/full qualification.",
+        "fullIndependentGrade": "Not inspected."
+      },
+      "postReviewFileHashCheck": {
+        "files": 7,
+        "allUnchanged": true
+      }
+    }
+  ],
+  "excludedActiveTask": "node-usage baseline1 (not requested/read)",
+  "fixtureIdentity": {
+    "id": "node-usage",
+    "split": "validation",
+    "publicHash": "09b1cce3e8c06401e282407cf0e643ea8dbe3f65eb68f985e2afa980ffaeb24a",
+    "graderHash": "f0ec492e342e92c7dc24aa915420c4387602747c59431d306695b7070c07b638",
+    "scope": "Metadata only."
+  },
+  "limitations": [
+    "Only terminal public-source files and solver records read. No hidden/full grades, active workspaces, execution/import/Docker/model/build or campaign edits.",
+    "Counterexamples remain static/unexecuted pending post-campaign validation; no optimization lessons generated."
+  ]
+}

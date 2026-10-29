@@ -1,0 +1,5 @@
+=== RUN   TestDockerLiveConnectionLossDiscardsAndRecoversOwnedGuest
+    docker_connection_loss_test.go:121: opt-in: GEMMA_TEST_DOCKER_IMAGE must name installed immutable linux/arm64 toolchain image
+--- SKIP: TestDockerLiveConnectionLossDiscardsAndRecoversOwnedGuest (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/execution	0.201s

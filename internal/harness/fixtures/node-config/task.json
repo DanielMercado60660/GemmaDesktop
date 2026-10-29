@@ -1,0 +1,128 @@
+{
+  "id": "node-config",
+  "name": "Apply layered service configuration",
+  "stack": "node",
+  "split": "heldout",
+  "prompt": "Read README.md, repair apply layered service configuration, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "node",
+    "public_test.cjs"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.cjs"
+  ],
+  "public": {
+    "logic.cjs": "exports.solve=function(x){function merge(a,b){const out={...a};for(const [k,v] of Object.entries(b)){if(false)delete out[k];else if(typeof v==='object'&&!Array.isArray(v))out[k]=merge(out[k]&&typeof out[k]==='object'&&!Array.isArray(out[k])?out[k]:{},v);else out[k]=v;}return out;}return x.layers.reduce(merge,{});};\n",
+    "main.cjs": "const {solve}=require(\"./logic.cjs\");console.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "package.json": "{\"private\": true, \"scripts\": {\"test\": \"node public_test.cjs\"}}",
+    "public_test.cjs": "const assert=require(\"node:assert/strict\"),{execFileSync}=require(\"node:child_process\");const cases=[{\"layers\": []}, {\"layers\": [{\"a\": 1}]}],expected=[{}, {\"a\": 1}];assert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"main.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);console.log(\"2 public cases passed\");\n\nconst fs=require(\"node:fs\");for(const file of fs.readdirSync(\".\").filter(x=>x.endsWith(\".test.cjs\")))require(\"./\"+file);\n",
+    "README.md": "# Apply layered service configuration\n\nRepair this node service module and add regression tests.\n\nMerge layers from left to right recursively for objects. Null deletes a key. Arrays and other values replace earlier values; false, zero and empty strings remain valid. Return a new object without mutating any layer.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `node public_test.cjs` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"layers\": [\n    {\n      \"service\": {\n        \"port\": 80,\n        \"tls\": true\n      },\n      \"tags\": [\n        \"old\"\n      ]\n    },\n    {\n      \"service\": {\n        \"port\": 0\n      },\n      \"tags\": []\n    }\n  ]\n}\n```\nExpected result:\n```json\n{\n  \"service\": {\n    \"port\": 0,\n    \"tls\": true\n  },\n  \"tags\": []\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "config-1",
+      "input": {
+        "layers": []
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "config-2",
+      "input": {
+        "layers": [
+          {
+            "a": 1
+          }
+        ]
+      },
+      "expected": {
+        "a": 1
+      },
+      "critical": false
+    },
+    {
+      "name": "config-3",
+      "input": {
+        "layers": [
+          {
+            "service": {
+              "port": 80,
+              "tls": true
+            },
+            "tags": [
+              "old"
+            ]
+          },
+          {
+            "service": {
+              "port": 0
+            },
+            "tags": []
+          }
+        ]
+      },
+      "expected": {
+        "service": {
+          "port": 0,
+          "tls": true
+        },
+        "tags": []
+      },
+      "critical": false
+    },
+    {
+      "name": "config-4",
+      "input": {
+        "layers": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": null,
+            "b": false,
+            "c": ""
+          }
+        ]
+      },
+      "expected": {
+        "b": false,
+        "c": ""
+      },
+      "critical": false
+    },
+    {
+      "name": "config-5",
+      "input": {
+        "layers": [
+          {
+            "a": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          {
+            "a": {
+              "x": null,
+              "z": 3
+            }
+          },
+          {
+            "a": {
+              "y": 0
+            }
+          }
+        ]
+      },
+      "expected": {
+        "a": {
+          "y": 0,
+          "z": 3
+        }
+      },
+      "critical": false
+    }
+  ]
+}

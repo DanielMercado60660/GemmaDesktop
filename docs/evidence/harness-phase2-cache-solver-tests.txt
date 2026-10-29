@@ -1,0 +1,10 @@
+=== RUN   TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches
+--- PASS: TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches (0.03s)
+=== RUN   TestHarnessCacheFailureIsDurableAndCannotQualify
+--- PASS: TestHarnessCacheFailureIsDurableAndCannotQualify (0.01s)
+=== RUN   TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials
+--- PASS: TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials (0.02s)
+=== RUN   TestHarnessSolverExistingEditHasDurableCheckpoint
+--- PASS: TestHarnessSolverExistingEditHasDurableCheckpoint (0.04s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	1.421s

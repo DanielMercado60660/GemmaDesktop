@@ -1,0 +1,26 @@
+{
+  "command": "GEMMA_TEST_SANDBOX=1 go test -race -json ./...",
+  "finishedAt": "2026-10-27T13:19:31.6798-05:00",
+  "topLevelPassed": 108,
+  "includingSubtestsPassed": 161,
+  "failures": [],
+  "skipped": [
+    {
+      "package": "gemmadesktop.local/app/internal/browser",
+      "test": "TestLiveChrome"
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/execution",
+      "test": "TestRealUserTerminal"
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/inference",
+      "test": "TestLiveOllamaRejectsContextOverflow"
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/engine",
+      "test": "TestLiveOllamaToolAndSnapshot"
+    }
+  ],
+  "packagesPassed": 10
+}

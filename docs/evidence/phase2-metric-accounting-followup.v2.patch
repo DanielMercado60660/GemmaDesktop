@@ -1,0 +1,1273 @@
+--- a/internal/inference/types.go
++++ b/internal/inference/types.go
+@@ -60,11 +60,13 @@
+ }
+ 
+ type ChatChunk struct {
+-	Model      string  `json:"model"`
+-	Message    Message `json:"message"`
+-	Done       bool    `json:"done"`
+-	DoneReason string  `json:"done_reason,omitempty"`
+-	Error      string  `json:"error,omitempty"`
++	// Set by the decoder from explicit JSON member presence, not nonzero values.
++	TokenCountsPresent bool    `json:"-"`
++	Model              string  `json:"model"`
++	Message            Message `json:"message"`
++	Done               bool    `json:"done"`
++	DoneReason         string  `json:"done_reason,omitempty"`
++	Error              string  `json:"error,omitempty"`
+ 	Metrics
+ }
+ 
+--- a/internal/inference/client.go
++++ b/internal/inference/client.go
+@@ -219,7 +219,9 @@
+ 
+ // Chat permits a single inference at a time across all runs sharing this client.
+ // Holding this slot only around inference avoids parent/child workflow deadlocks.
+-func (c *Client) Chat(ctx context.Context, req ChatRequest, emit func(ChatChunk) error) error {
++// Optional receipt observers receive terminal envelope metadata before message
++// decoding/validation. They never receive content or tool authority.
++func (c *Client) Chat(ctx context.Context, req ChatRequest, emit func(ChatChunk) error, observeReceipt ...func(ChatChunk)) error {
+ 	if err := validName(req.Model); err != nil {
+ 		return err
+ 	}
+@@ -253,15 +255,39 @@
+ 	defer resp.Body.Close()
+ 	done := false
+ 	err = scanJSON(ctx, resp.Body, func(line []byte) error {
++		if done {
++			return errors.New("Ollama sent data after completion")
++		}
++		var envelope struct {
++			Done       bool   `json:"done"`
++			DoneReason string `json:"done_reason"`
++			Metrics
++		}
++		if err := json.Unmarshal(line, &envelope); err != nil {
++			return fmt.Errorf("decode chat envelope: %w", err)
++		}
++		var counts struct {
++			Prompt *int `json:"prompt_eval_count"`
++			Output *int `json:"eval_count"`
++		}
++		if err := json.Unmarshal(line, &counts); err != nil {
++			return fmt.Errorf("decode token counts: %w", err)
++		}
++		countsPresent := counts.Prompt != nil && counts.Output != nil && *counts.Prompt >= 0 && *counts.Output >= 0
++		if envelope.Done {
++			for _, observe := range observeReceipt {
++				if observe != nil {
++					observe(ChatChunk{Done: true, DoneReason: envelope.DoneReason, Metrics: envelope.Metrics, TokenCountsPresent: countsPresent})
++				}
++			}
++		}
+ 		var chunk ChatChunk
+ 		if err := json.Unmarshal(line, &chunk); err != nil {
+ 			return fmt.Errorf("decode chat chunk: %w", err)
+ 		}
++		chunk.TokenCountsPresent = countsPresent
+ 		if chunk.Error != "" {
+ 			return errors.New(chunk.Error)
+-		}
+-		if done {
+-			return errors.New("Ollama sent data after completion")
+ 		}
+ 		if emit != nil {
+ 			if err := emit(chunk); err != nil {
+--- a/internal/engine/types.go
++++ b/internal/engine/types.go
+@@ -80,12 +80,13 @@
+ 	RetainEvents    int  `json:"retainEvents,omitempty"`
+ }
+ type Result struct {
+-	Content    string            `json:"content"`
+-	Incomplete bool              `json:"incomplete,omitempty"`
+-	Steps      int               `json:"steps"`
+-	Usage      inference.Metrics `json:"usage"`
+-	Snapshot   json.RawMessage   `json:"snapshot,omitempty"`
+-	Pending    []PendingInput    `json:"pending,omitempty"`
++	Content         string                     `json:"content"`
++	Incomplete      bool                       `json:"incomplete,omitempty"`
++	Steps           int                        `json:"steps"`
++	Usage           inference.Metrics          `json:"usage"`
++	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
++	Snapshot        json.RawMessage            `json:"snapshot,omitempty"`
++	Pending         []PendingInput             `json:"pending,omitempty"`
+ }
+ type PendingInput struct {
+ 	ID      string `json:"id"`
+--- a/internal/engine/adapter.go
++++ b/internal/engine/adapter.go
+@@ -68,7 +68,6 @@
+ 					if attempt == 0 && m.outputTokenLimit == 0 && errors.Is(err, ErrEmptyResponse) && errors.As(err, &incomplete) {
+ 						usage := incomplete.usage
+ 						discarded = &usage
+-						recordDiscardedUsage(ctx, usage)
+ 						if err := ctx.Err(); err != nil {
+ 							yield(nil, err)
+ 							return
+@@ -189,6 +188,26 @@
+ 		var metric inference.Metrics
+ 		var reason string
+ 		stopped := errors.New("stream consumer stopped")
++		terminal, measured := false, false
++		recordReceipt := beginProviderUsage(ctx)
++		// Account at the provider boundary, before downstream validation or ADK
++		// cancellation can replace a response/error and hide consumed tokens.
++		defer func() {
++			t, n := 0, 0
++			if terminal {
++				t = 1
++			}
++			if measured {
++				n = 1
++			}
++			recordReceipt(metric, terminal, measured)
++			m.budget.mu.Lock()
++			m.usage = addGenerationUsage(m.usage, metric)
++			m.budget.mu.Unlock()
++			if m.emit != nil {
++				m.emit(Event{Type: "token_accounting", Title: "Token measurement", NodeID: m.request.NodeID, Data: map[string]any{"step": step, "attempt": attempt, "summary": m.outputTokenLimit > 0, "tokenAccounting": inference.NewTokenAccounting(1, t, n)}})
++			}
++		}()
+ 		err = m.client.Chat(ctx, chat, func(chunk inference.ChatChunk) error {
+ 			m.budget.mu.Lock()
+ 			m.budget.OutputBytes += len(chunk.Message.Content) + len(chunk.Message.Thinking)
+@@ -232,11 +251,11 @@
+ 				}
+ 				calls = append(calls, call)
+ 			}
+-			if chunk.Done {
+-				metric = chunk.Metrics
+-				reason = chunk.DoneReason
+-			}
+ 			return nil
++		}, func(receipt inference.ChatChunk) {
++			metric, reason = receipt.Metrics, receipt.DoneReason
++			terminal, measured = true, receipt.TokenCountsPresent
++			recordReceipt(metric, terminal, measured)
+ 		})
+ 		if errors.Is(err, stopped) {
+ 			return
+@@ -245,14 +264,6 @@
+ 			yield(nil, err)
+ 			return
+ 		}
+-		m.budget.mu.Lock()
+-		m.usage.TotalDuration += metric.TotalDuration
+-		m.usage.LoadDuration += metric.LoadDuration
+-		m.usage.PromptEvalCount += metric.PromptEvalCount
+-		m.usage.PromptEvalDuration += metric.PromptEvalDuration
+-		m.usage.EvalCount += metric.EvalCount
+-		m.usage.EvalDuration += metric.EvalDuration
+-		m.budget.mu.Unlock()
+ 		rawCharacters := utf8.RuneCountInString(text.String())
+ 		var protocolErr error
+ 		if protocol != nil {
+--- a/internal/engine/engine.go
++++ b/internal/engine/engine.go
+@@ -284,24 +284,6 @@
+ 	State   map[string]any   `json:"state"`
+ }
+ 
+-type discardedUsageKey struct{}
+-
+-// ADK may return context.Canceled instead of a model error once its invocation
+-// is cancelled. Record completed discarded attempts at the source so their
+-// observed cost survives that replacement, without inflating ADK prompt usage.
+-type discardedUsageLedger struct {
+-	mu    sync.Mutex
+-	usage inference.Metrics
+-}
+-
+-func recordDiscardedUsage(ctx context.Context, usage inference.Metrics) {
+-	if ledger, ok := ctx.Value(discardedUsageKey{}).(*discardedUsageLedger); ok {
+-		ledger.mu.Lock()
+-		defer ledger.mu.Unlock()
+-		ledger.usage = addGenerationUsage(ledger.usage, usage)
+-	}
+-}
+-
+ // RunAgent drives a real ADK agent, restores its full event history and exports
+ // it again. Complete ADK events are emitted as adk_event for durable checkpoints.
+ func (e *Engine) RunAgent(ctx context.Context, a agent.Agent, req Request, emit func(Event), budget *Budget) (result Result, runErr error) {
+@@ -319,12 +301,12 @@
+ 			return result, err
+ 		}
+ 	}
+-	discarded := &discardedUsageLedger{}
+-	ctx = context.WithValue(ctx, discardedUsageKey{}, discarded)
++	ledger := newUsageLedger()
++	ctx = context.WithValue(ctx, usageLedgerKey{}, ledger)
+ 	defer func() {
+-		discarded.mu.Lock()
+-		defer discarded.mu.Unlock()
+-		result.Usage = addGenerationUsage(result.Usage, discarded.usage)
++		ledger.mu.Lock()
++		defer ledger.mu.Unlock()
++		result.Usage, result.TokenAccounting = ledger.usage, ledger.accounting
+ 	}()
+ 	var emitMu sync.Mutex
+ 	send := func(event Event) {
+@@ -335,7 +317,6 @@
+ 		}
+ 	}
+ 	svc := session.InMemoryService()
+-	var summaryModel *ollamaModel
+ 	snapshot := sessionSnapshot{Version: 1, State: map[string]any{}}
+ 	if len(req.Snapshot) > 0 {
+ 		if len(req.Snapshot) > 64<<20 {
+@@ -380,14 +361,6 @@
+ 		}
+ 	}
+ 	defer func() {
+-		if summaryModel != nil {
+-			result.Usage.TotalDuration += summaryModel.usage.TotalDuration
+-			result.Usage.LoadDuration += summaryModel.usage.LoadDuration
+-			result.Usage.PromptEvalCount += summaryModel.usage.PromptEvalCount
+-			result.Usage.PromptEvalDuration += summaryModel.usage.PromptEvalDuration
+-			result.Usage.EvalCount += summaryModel.usage.EvalCount
+-			result.Usage.EvalDuration += summaryModel.usage.EvalDuration
+-		}
+ 		exportCtx, exportCancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+ 		defer exportCancel()
+ 		loaded, err := svc.Get(exportCtx, &session.GetRequest{AppName: "gemma_desktop", UserID: "local", SessionID: sess.ID()})
+@@ -419,7 +392,7 @@
+ 		budget.mu.Unlock()
+ 	}()
+ 	ctx = withOriginalUserContext(ctx, svc, sess.ID())
+-	contextConfig, summaryModel, err := e.compactionConfig(req, budget, send)
++	contextConfig, _, err := e.compactionConfig(req, budget, send)
+ 	if err != nil {
+ 		return result, err
+ 	}
+@@ -451,7 +424,6 @@
+ 			if errors.As(err, &incomplete) {
+ 				result.Content = incomplete.content
+ 				result.Incomplete = true
+-				result.Usage = addGenerationUsage(result.Usage, incomplete.usage)
+ 			}
+ 			return result, err
+ 		}
+@@ -503,16 +475,7 @@
+ 				}
+ 			}
+ 		}
+-		// Discarded usage is retained in event metadata for audit, but the
+-		// invocation ledger accounts for it once even if cancellation hides
+-		// the final response or error. Only current-attempt usage is added here.
+-		if raw, ok := ev.CustomMetadata["ollama_metrics"]; ok {
+-			b, _ := json.Marshal(raw)
+-			var metrics inference.Metrics
+-			if json.Unmarshal(b, &metrics) == nil {
+-				result.Usage = addGenerationUsage(result.Usage, metrics)
+-			}
+-		}
++		// Usage comes from provider receipts, not replayable ADK events.
+ 		send(Event{Type: "adk_event", Title: "Execution checkpoint", NodeID: nodeID, Data: ev})
+ 	}
+ 	if err := ctx.Err(); err != nil {
+--- a/internal/engine/skill_activity.go
++++ b/internal/engine/skill_activity.go
+@@ -61,6 +61,10 @@
+ 
+ // AccountNestedUsage records a completed child invocation once in its parent's
+ // accounting ledger without falsifying any model event's prompt token count.
+-func AccountNestedUsage(ctx context.Context, usage inference.Metrics) {
+-	recordDiscardedUsage(ctx, usage)
++func AccountNestedUsage(ctx context.Context, usage inference.Metrics, accounting ...*inference.TokenAccounting) {
++	var measured *inference.TokenAccounting
++	if len(accounting) > 0 {
++		measured = accounting[0]
++	}
++	recordObservedUsage(ctx, usage, measured)
+ }
+--- a/internal/workflow/workflow.go
++++ b/internal/workflow/workflow.go
+@@ -254,16 +254,17 @@
+ }
+ 
+ type checkpoint struct {
+-	Version        int                   `json:"version"`
+-	DefinitionHash string                `json:"definitionHash"`
+-	Session        json.RawMessage       `json:"session"`
+-	Interrupts     map[string]string     `json:"interrupts"`
+-	Pending        []engine.PendingInput `json:"pending"`
+-	Completed      map[string]any        `json:"completed"`
+-	ModelCalls     int                   `json:"modelCalls"`
+-	ToolCalls      int                   `json:"toolCalls"`
+-	OutputBytes    int                   `json:"outputBytes"`
+-	Usage          inference.Metrics     `json:"usage"`
++	Version         int                        `json:"version"`
++	DefinitionHash  string                     `json:"definitionHash"`
++	Session         json.RawMessage            `json:"session"`
++	Interrupts      map[string]string          `json:"interrupts"`
++	Pending         []engine.PendingInput      `json:"pending"`
++	Completed       map[string]any             `json:"completed"`
++	ModelCalls      int                        `json:"modelCalls"`
++	ToolCalls       int                        `json:"toolCalls"`
++	OutputBytes     int                        `json:"outputBytes"`
++	Usage           inference.Metrics          `json:"usage"`
++	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
+ }
+ 
+ // Run pauses durably at approval nodes. Resume must provide the same definition
+@@ -283,8 +284,9 @@
+ 	encoded, _ := json.Marshal(identity)
+ 	sum := sha256.Sum256(encoded)
+ 	hash := hex.EncodeToString(sum[:])
+-	cp := checkpoint{Version: 1, DefinitionHash: hash, Interrupts: map[string]string{}, Completed: map[string]any{}}
++	cp := checkpoint{TokenAccounting: inference.NewTokenAccounting(0, 0, 0), Version: 1, DefinitionHash: hash, Interrupts: map[string]string{}, Completed: map[string]any{}}
+ 	if len(request.Snapshot) > 0 {
++		cp.TokenAccounting = nil // Missing legacy checkpoint accounting stays unknown.
+ 		if err := json.Unmarshal(request.Snapshot, &cp); err != nil {
+ 			return result, fmt.Errorf("invalid workflow checkpoint: %w", err)
+ 		}
+@@ -330,9 +332,10 @@
+ 	ctx = engine.WithBudget(ctx, budget)
+ 	var mu sync.Mutex
+ 	var usageMu sync.Mutex
+-	recordUsage := func(usage inference.Metrics) {
++	recordUsage := func(usage inference.Metrics, accounting *inference.TokenAccounting) {
+ 		usageMu.Lock()
+ 		defer usageMu.Unlock()
++		cp.TokenAccounting = inference.MergeTokenAccounting(cp.TokenAccounting, accounting)
+ 		cp.Usage.TotalDuration += usage.TotalDuration
+ 		cp.Usage.LoadDuration += usage.LoadDuration
+ 		cp.Usage.PromptEvalCount += usage.PromptEvalCount
+@@ -376,7 +379,7 @@
+ 				req := base
+ 				req.Prompt = nodePrompt(n, input)
+ 				out, err := r.engine.Run(ac, req, send, execute)
+-				recordUsage(out.Usage)
++				recordUsage(out.Usage, out.TokenAccounting)
+ 				if err != nil {
+ 					send(engine.Event{Type: "node_failed", Title: n.Label, NodeID: n.ID, Detail: err.Error()})
+ 					return "", err
+@@ -452,7 +455,7 @@
+ 								cancelChild()
+ 							}
+ 							out, err := r.engine.Run(runCtx, req, send, execute)
+-							recordUsage(out.Usage)
++							recordUsage(out.Usage, out.TokenAccounting)
+ 							childErr = err
+ 							fail(err)
+ 							kind := "node_completed"
+@@ -559,7 +562,8 @@
+ 	request.Snapshot = cp.Session
+ 	priorPending := cp.Pending
+ 	result, runErr = r.engine.RunAgent(ctx, workflowAgent, request, send, budget)
+-	result.Usage = cp.Usage
++	recordUsage(result.Usage, result.TokenAccounting) // Includes outer workflow summary calls once.
++	result.Usage, result.TokenAccounting = cp.Usage, cp.TokenAccounting
+ 	result.Pending = append(cpPendingUnanswered(priorPending, request.Resume), result.Pending...)
+ 	cp.Session = result.Snapshot
+ 	cp.Pending = result.Pending
+--- a/internal/app/delegation.go
++++ b/internal/app/delegation.go
+@@ -181,7 +181,7 @@
+ 	req.Tools = defs
+ 	emit(engine.Event{Type: "node_started", NodeID: req.NodeID, Title: "Read-only delegate", Data: Doc{"parentNodeId": call.NodeID, "delegationId": key}})
+ 	result, e := engine.New(c.Client()).Run(ctx, req, emit, execute)
+-	engine.AccountNestedUsage(ctx, result.Usage)
++	engine.AccountNestedUsage(ctx, result.Usage, result.TokenAccounting)
+ 	d["status"] = "completed"
+ 	if e != nil {
+ 		d["status"] = "failed"
+--- a/internal/app/harness_solver.go
++++ b/internal/app/harness_solver.go
+@@ -189,5 +189,5 @@
+ 	} else {
+ 		result, e = eng.Run(ctx, req, emitEngine, execute)
+ 	}
+-	return harness.SolveResult{Content: result.Content, Incomplete: result.Incomplete, Usage: obj(result.Usage), ToolCalls: trace}, e
++	return harness.SolveResult{Content: result.Content, Incomplete: result.Incomplete, Usage: obj(result.Usage), TokenAccounting: result.TokenAccounting, ToolCalls: trace}, e
+ }
+--- a/internal/harness/types.go
++++ b/internal/harness/types.go
+@@ -5,6 +5,7 @@
+ import (
+ 	"context"
+ 	"encoding/json"
++	"gemmadesktop.local/app/internal/inference"
+ 	"gemmadesktop.local/app/internal/store"
+ 	"time"
+ )
+@@ -119,11 +120,12 @@
+ 	Task     Task     `json:"task"`
+ }
+ type SolveResult struct {
+-	Content    string            `json:"content"`
+-	Incomplete bool              `json:"incomplete"`
+-	Usage      Doc               `json:"usage"`
+-	ToolCalls  []ToolObservation `json:"toolCalls"`
+-	DurationMS int64             `json:"durationMs"`
++	Content         string                     `json:"content"`
++	Incomplete      bool                       `json:"incomplete"`
++	Usage           Doc                        `json:"usage"`
++	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
++	ToolCalls       []ToolObservation          `json:"toolCalls"`
++	DurationMS      int64                      `json:"durationMs"`
+ }
+ type Trial struct {
+ 	ID           string      `json:"id"`
+@@ -223,14 +225,15 @@
+ 	Error      string  `json:"error,omitempty"`
+ }
+ type EvalResult struct {
+-	TaskID     string `json:"taskId"`
+-	Split      string `json:"split"`
+-	Repeat     int    `json:"repeat"`
+-	Arm        string `json:"arm"`
+-	TrialID    string `json:"trialId"`
+-	Grade      Grade  `json:"grade"`
+-	DurationMS int64  `json:"durationMs"`
+-	Tokens     int64  `json:"tokens"`
++	TaskID          string                     `json:"taskId"`
++	Split           string                     `json:"split"`
++	Repeat          int                        `json:"repeat"`
++	Arm             string                     `json:"arm"`
++	TrialID         string                     `json:"trialId"`
++	Grade           Grade                      `json:"grade"`
++	DurationMS      int64                      `json:"durationMs"`
++	Tokens          int64                      `json:"tokens"`
++	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
+ }
+ type Evaluation struct {
+ 	ID              string       `json:"id"`
+@@ -247,13 +250,15 @@
+ 	ReviewPacketID  string       `json:"reviewPacketId,omitempty"`
+ }
+ type Gate struct {
+-	Eligible           bool     `json:"eligible"`
+-	Reasons            []string `json:"reasons"`
+-	BaselineSuccesses  int      `json:"baselineSuccesses"`
+-	CandidateSuccesses int      `json:"candidateSuccesses"`
+-	TimeRatio          float64  `json:"timeRatio"`
+-	TokenRatio         float64  `json:"tokenRatio"`
+-	EvidenceHash       string   `json:"evidenceHash"`
++	CostAccountingStatus string   `json:"costAccountingStatus,omitempty"`
++	CostComparisonValid  bool     `json:"costComparisonValid"`
++	Eligible             bool     `json:"eligible"`
++	Reasons              []string `json:"reasons"`
++	BaselineSuccesses    int      `json:"baselineSuccesses"`
++	CandidateSuccesses   int      `json:"candidateSuccesses"`
++	TimeRatio            float64  `json:"timeRatio"`
++	TokenRatio           float64  `json:"tokenRatio"`
++	EvidenceHash         string   `json:"evidenceHash"`
+ }
+ type Promotion struct {
+ 	ID           string `json:"id"`
+--- a/internal/harness/evaluation.go
++++ b/internal/harness/evaluation.go
+@@ -4,6 +4,7 @@
+ 	"context"
+ 	"errors"
+ 	"fmt"
++	"gemmadesktop.local/app/internal/inference"
+ 	"sort"
+ )
+ 
+@@ -153,7 +154,7 @@
+ 					grade.Checks = append(grade.Checks, Check{Name: "solver completed", Passed: false, Critical: false, Error: t.Error})
+ 				}
+ 				tokens := metric(t.Result.Usage, "prompt_eval_count") + metric(t.Result.Usage, "eval_count")
+-				v.Results = append(v.Results, EvalResult{TaskID: task.ID, Split: task.Split, Repeat: repeat, Arm: arm, TrialID: t.ID, Grade: grade, DurationMS: t.Result.DurationMS, Tokens: tokens})
++				v.Results = append(v.Results, EvalResult{TaskID: task.ID, Split: task.Split, Repeat: repeat, Arm: arm, TrialID: t.ID, Grade: grade, DurationMS: t.Result.DurationMS, Tokens: tokens, TokenAccounting: t.Result.TokenAccounting})
+ 				if e = m.put("evaluation", v); e != nil {
+ 					finish(e)
+ 					return
+@@ -211,6 +212,8 @@
+ 	times := map[string][]float64{}
+ 	tokens := map[string][]float64{}
+ 	critical := true
++	measurementsValid := true
++	accounting := inference.NewTokenAccounting(0, 0, 0)
+ 	for _, r := range results {
+ 		t, ok := expected[r.TaskID]
+ 		key := fmt.Sprintf("%s/%s/%d", r.TaskID, r.Arm, r.Repeat)
+@@ -240,8 +243,13 @@
+ 				}
+ 			}
+ 		}
++		accounting = inference.MergeTokenAccounting(accounting, r.TokenAccounting)
++		if !r.TokenAccounting.Complete() {
++			measurementsValid = false
++		}
+ 		if r.DurationMS <= 0 || r.Tokens <= 0 {
+ 			critical = false
++			measurementsValid = false
+ 		}
+ 		times[r.Arm] = append(times[r.Arm], float64(r.DurationMS))
+ 		tokens[r.Arm] = append(tokens[r.Arm], float64(r.Tokens))
+@@ -260,13 +268,21 @@
+ 	if g.CandidateSuccesses <= g.BaselineSuccesses {
+ 		g.Reasons = append(g.Reasons, "aggregate held-out successes did not increase")
+ 	}
+-	g.TimeRatio = ratio(times["candidate"], times["baseline"])
+-	g.TokenRatio = ratio(tokens["candidate"], tokens["baseline"])
+-	if g.TimeRatio > 1.2 {
+-		g.Reasons = append(g.Reasons, "median elapsed time exceeds 1.2× baseline")
+-	}
+-	if g.TokenRatio > 1.2 {
+-		g.Reasons = append(g.Reasons, "median tokens exceed 1.2× baseline")
++	measurementsValid = measurementsValid && accounting.Complete()
++	g.CostAccountingStatus = accounting.Status
++	g.CostComparisonValid = measurementsValid && len(tasks) > 0 && len(seen) == len(tasks)*6
++	if !measurementsValid {
++		g.Reasons = append(g.Reasons, "token accounting is incomplete or unknown, or cost measurements are invalid")
++	}
++	if g.CostComparisonValid {
++		g.TimeRatio = ratio(times["candidate"], times["baseline"])
++		g.TokenRatio = ratio(tokens["candidate"], tokens["baseline"])
++		if g.TimeRatio > 1.2 {
++			g.Reasons = append(g.Reasons, "median elapsed time exceeds 1.2× baseline")
++		}
++		if g.TokenRatio > 1.2 {
++			g.Reasons = append(g.Reasons, "median tokens exceed 1.2× baseline")
++		}
+ 	}
+ 	g.Eligible = len(g.Reasons) == 0
+ 	return g
+@@ -295,6 +311,18 @@
+ 	if e := m.get("experiment", v.ExperimentID, &x); e != nil {
+ 		return Promotion{}, e
+ 	}
++	if x.Spec.FixtureDigest != m.fixtureDigest() {
++		return Promotion{}, errors.New("fixture policy changed since evaluation")
++	}
++	currentTasks := []Task{}
++	for _, task := range m.tasks {
++		if task.Split == "validation" || task.Split == "heldout" {
++			currentTasks = append(currentTasks, task)
++		}
++	}
++	if !EvaluateGate(v.Results, currentTasks).Eligible {
++		return Promotion{}, errors.New("current promotion policy rejects incomplete/unknown measurement evidence or other failed gates")
++	}
+ 	if v.CandidateID != x.CandidateID {
+ 		return Promotion{}, errors.New("candidate changed after evaluation")
+ 	}
+@@ -346,10 +374,16 @@
+ }
+ 
+ func (m *Manager) verifyEvaluationOutputs(v Evaluation) error {
++	// This is an evidence-consistency check shared by review submission and
++	// activation. A reviewer must be able to reject unchanged partial/legacy
++	// measurements; only Promote's current gate requires complete costs.
+ 	for _, r := range v.Results {
+ 		t, e := m.trial(r.TrialID)
+ 		if e != nil {
+ 			return e
++		}
++		if Hash(r.TokenAccounting) != Hash(t.Result.TokenAccounting) || r.Tokens != metric(t.Result.Usage, "prompt_eval_count")+metric(t.Result.Usage, "eval_count") {
++			return errors.New("trial token measurement differs from evaluation")
+ 		}
+ 		h, e := treeHash(t.Root)
+ 		if e != nil || h != t.OutputHash {
+--- a/internal/harness/manager_test.go
++++ b/internal/harness/manager_test.go
+@@ -4,6 +4,7 @@
+ 	"context"
+ 	"encoding/json"
+ 	"errors"
++	"gemmadesktop.local/app/internal/inference"
+ 	"gemmadesktop.local/app/internal/store"
+ 	"os"
+ 	"path/filepath"
+@@ -234,7 +235,7 @@
+ 		for repeat := 0; repeat < 3; repeat++ {
+ 			for _, arm := range []string{"baseline", "candidate"} {
+ 				passed := arm == "candidate" || repeat > 0
+-				rows = append(rows, EvalResult{TaskID: task.ID, Split: task.Split, Repeat: repeat, Arm: arm, TrialID: task.ID + arm, Grade: Grade{Passed: passed, GraderHash: "h", Checks: []Check{{Name: "integrity: data", Passed: true, Critical: true}, {Name: "solver completed", Passed: passed}}}, DurationMS: 100, Tokens: 100})
++				rows = append(rows, EvalResult{TaskID: task.ID, Split: task.Split, Repeat: repeat, Arm: arm, TrialID: task.ID + arm, Grade: Grade{Passed: passed, GraderHash: "h", Checks: []Check{{Name: "integrity: data", Passed: true, Critical: true}, {Name: "solver completed", Passed: passed}}}, DurationMS: 100, Tokens: 100, TokenAccounting: inference.NewTokenAccounting(1, 1, 1)})
+ 			}
+ 		}
+ 	}
+--- a/internal/engine/packages_test.go
++++ b/internal/engine/packages_test.go
+@@ -210,9 +210,12 @@
+ 	client, _ := inference.NewClient(srv.URL)
+ 	result, e := New(client).Run(t.Context(), Request{Model: "fixture", Prompt: "Delegate once", MaxSteps: 3, Tools: []ToolDefinition{{Name: "delegate"}}}, nil, func(ctx context.Context, _ ToolCall) (ToolResult, error) {
+ 		child, e := New(client).Run(ctx, Request{Model: "fixture", Prompt: "Read-only child", MaxSteps: 1}, nil, nil)
+-		AccountNestedUsage(ctx, child.Usage)
++		AccountNestedUsage(ctx, child.Usage, child.TokenAccounting)
+ 		return ToolResult{Content: child.Content}, e
+ 	})
++	if !result.TokenAccounting.Complete() || result.TokenAccounting.Attempts != 3 {
++		t.Fatalf("nested accounting missing or doubled: %+v", result.TokenAccounting)
++	}
+ 	if e != nil || calls.Load() != 3 || result.Usage.PromptEvalCount != 15 || result.Usage.EvalCount != 9 {
+ 		t.Fatalf("nested usage counted incorrectly: %+v err=%v calls=%d", result.Usage, e, calls.Load())
+ 	}
+--- a/internal/engine/compaction_test.go
++++ b/internal/engine/compaction_test.go
+@@ -82,6 +82,9 @@
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
++	if !result.TokenAccounting.Complete() || result.TokenAccounting.Attempts != 2 {
++		t.Fatalf("summary accounting missing or double-counted: %+v", result.TokenAccounting)
++	}
+ 	if result.Steps != 2 || result.Usage.EvalCount != 15 || commits != 1 {
+ 		t.Fatalf("summary budget/usage/events: steps=%d tokens=%d commits=%d", result.Steps, result.Usage.EvalCount, commits)
+ 	}
+--- a/internal/app/harness_choices_test.go
++++ b/internal/app/harness_choices_test.go
+@@ -100,7 +100,7 @@
+ 		}
+ 		w.Header().Set("Content-Type", "application/x-ndjson")
+ 		if calls.Add(1) == 1 {
+-			response := Doc{"message": Doc{"tool_calls": []any{Doc{"id": "edit-existing", "function": Doc{"name": "edit_file", "arguments": Doc{"path": "source.txt", "oldText": "before", "newText": "after", "expectedHash": workspace.Hash(original)}}}}}, "done": true}
++			response := Doc{"message": Doc{"tool_calls": []any{Doc{"id": "edit-existing", "function": Doc{"name": "edit_file", "arguments": Doc{"path": "source.txt", "oldText": "before", "newText": "after", "expectedHash": workspace.Hash(original)}}}}}, "done": true, "prompt_eval_count": 10, "eval_count": 8}
+ 			_ = json.NewEncoder(w).Encode(response)
+ 		} else {
+ 			fmt.Fprintln(w, `{"message":{"content":"Edited the requested file."},"done":true,"eval_count":12,"prompt_eval_count":20}`)
+@@ -124,6 +124,9 @@
+ 	})
+ 	if e != nil {
+ 		t.Fatal(e)
++	}
++	if !result.TokenAccounting.Complete() || result.TokenAccounting.Attempts != 2 || result.Usage["prompt_eval_count"] != float64(30) || result.Usage["eval_count"] != float64(20) {
++		t.Fatalf("shared solver lost terminal accounting: usage=%v accounting=%+v", result.Usage, result.TokenAccounting)
+ 	}
+ 	data, e := os.ReadFile(filepath.Join(root, "source.txt"))
+ 	if e != nil || string(data) != "after\n" {
+--- /dev/null
++++ b/internal/inference/token_accounting.go
+@@ -0,0 +1,60 @@
++package inference
++
++// TokenAccounting describes observed provider receipts, independently of whether
++// the solver completed its task. Nil/legacy data is never evidence of completeness.
++type TokenAccounting struct {
++	Version              int    `json:"version"`
++	Source               string `json:"source"`
++	Status               string `json:"status"`
++	Attempts             int    `json:"attempts"`
++	TerminalResponses    int    `json:"terminalResponses"`
++	MeasuredResponses    int    `json:"measuredResponses"`
++	UnknownContributions int    `json:"unknownContributions"`
++}
++
++const tokenAccountingSource = "provider_terminal_counts"
++
++func NewTokenAccounting(attempts, terminal, measured int) *TokenAccounting {
++	a := &TokenAccounting{Version: 1, Source: tokenAccountingSource, Attempts: attempts, TerminalResponses: terminal, MeasuredResponses: measured}
++	a.Status = a.status()
++	return a
++}
++func (a *TokenAccounting) status() string {
++	if a.UnknownContributions == 0 && a.Attempts > 0 && a.Attempts == a.MeasuredResponses {
++		return "complete"
++	}
++	if a.MeasuredResponses > 0 {
++		return "partial"
++	}
++	return "unknown"
++}
++func (a *TokenAccounting) Valid() bool {
++	return a != nil && a.Version == 1 && a.Source == tokenAccountingSource && a.Attempts >= 0 && a.TerminalResponses >= 0 && a.MeasuredResponses >= 0 && a.UnknownContributions >= 0 && a.MeasuredResponses <= a.TerminalResponses && a.TerminalResponses <= a.Attempts && a.Status == a.status()
++}
++func (a *TokenAccounting) Complete() bool {
++	return a.Valid() && a.Attempts > 0 && a.Status == "complete"
++}
++func UnknownTokenAccounting() *TokenAccounting {
++	a := NewTokenAccounting(0, 0, 0)
++	a.UnknownContributions = 1
++	a.Status = "unknown"
++	return a
++}
++func MergeTokenAccounting(a, b *TokenAccounting) *TokenAccounting {
++	if !a.Valid() {
++		a = UnknownTokenAccounting()
++	}
++	if !b.Valid() {
++		b = UnknownTokenAccounting()
++	}
++	// Invalid imported counters must not wrap back into an apparently complete
++	// aggregate. Zero-attempt ledgers remain a known empty merge identity.
++	max := int(^uint(0) >> 1)
++	if b.Attempts > max-a.Attempts || b.TerminalResponses > max-a.TerminalResponses || b.MeasuredResponses > max-a.MeasuredResponses || b.UnknownContributions > max-a.UnknownContributions {
++		return UnknownTokenAccounting()
++	}
++	out := NewTokenAccounting(a.Attempts+b.Attempts, a.TerminalResponses+b.TerminalResponses, a.MeasuredResponses+b.MeasuredResponses)
++	out.UnknownContributions = a.UnknownContributions + b.UnknownContributions
++	out.Status = out.status()
++	return out
++}
+--- /dev/null
++++ b/internal/engine/usage_accounting.go
+@@ -0,0 +1,68 @@
++package engine
++
++import (
++	"context"
++	"gemmadesktop.local/app/internal/inference"
++	"sync"
++)
++
++type usageLedgerKey struct{}
++type usageLedger struct {
++	mu         sync.Mutex
++	usage      inference.Metrics
++	accounting *inference.TokenAccounting
++}
++
++func newUsageLedger() *usageLedger {
++	return &usageLedger{accounting: inference.NewTokenAccounting(0, 0, 0)}
++}
++func recordObservedUsage(ctx context.Context, usage inference.Metrics, accounting *inference.TokenAccounting) {
++	if ledger, ok := ctx.Value(usageLedgerKey{}).(*usageLedger); ok {
++		ledger.mu.Lock()
++		defer ledger.mu.Unlock()
++		ledger.usage = addGenerationUsage(ledger.usage, usage)
++		ledger.accounting = inference.MergeTokenAccounting(ledger.accounting, accounting)
++	}
++}
++
++// Register the attempt before dispatch, so cancellation cannot return a falsely
++// complete aggregate while a provider request is still unwinding. A terminal
++// receipt is committed immediately in the callback, ahead of payload validation.
++func beginProviderUsage(ctx context.Context) func(inference.Metrics, bool, bool) {
++	ledger, ok := ctx.Value(usageLedgerKey{}).(*usageLedger)
++	if !ok {
++		return func(inference.Metrics, bool, bool) {}
++	}
++	ledger.mu.Lock()
++	ledger.accounting = inference.MergeTokenAccounting(ledger.accounting, inference.NewTokenAccounting(1, 0, 0))
++	ledger.mu.Unlock()
++	var once sync.Once
++	return func(usage inference.Metrics, terminal, measured bool) {
++		once.Do(func() {
++			ledger.mu.Lock()
++			defer ledger.mu.Unlock()
++			if usage.PromptEvalCount < 0 {
++				usage.PromptEvalCount = 0
++			}
++			if usage.EvalCount < 0 {
++				usage.EvalCount = 0
++			}
++			ledger.usage = addGenerationUsage(ledger.usage, usage)
++			a := ledger.accounting
++			t, n := 0, 0
++			if terminal {
++				t = 1
++			}
++			if measured {
++				n = 1
++			}
++			out := inference.NewTokenAccounting(a.Attempts, a.TerminalResponses+t, a.MeasuredResponses+n)
++			if a.UnknownContributions > 0 {
++				unknown := inference.UnknownTokenAccounting()
++				unknown.UnknownContributions = a.UnknownContributions
++				out = inference.MergeTokenAccounting(out, unknown)
++			}
++			ledger.accounting = out
++		})
++	}
++}
+--- /dev/null
++++ b/internal/inference/token_accounting_test.go
+@@ -0,0 +1,56 @@
++package inference
++
++import (
++	"encoding/json"
++	"testing"
++)
++
++func TestTokenAccountingValidatesReceiptsAndLegacyUnknown(t *testing.T) {
++	if (*TokenAccounting)(nil).Complete() {
++		t.Fatal("legacy absence complete")
++	}
++	good := NewTokenAccounting(2, 2, 2)
++	if !good.Complete() {
++		t.Fatal(good)
++	}
++	if empty := NewTokenAccounting(0, 0, 0); empty.Status != "unknown" || empty.Complete() || !MergeTokenAccounting(empty, good).Complete() {
++		t.Fatal("empty ledger must be unknown but preserve new measured receipts", empty)
++	}
++	max := int(^uint(0) >> 1)
++	if overflow := MergeTokenAccounting(NewTokenAccounting(max, max, max), good); overflow.Complete() || overflow.Status != "unknown" {
++		t.Fatal("counter overflow claimed complete", overflow)
++	}
++	for _, mutate := range []func(*TokenAccounting){
++		func(a *TokenAccounting) { a.Version = 2 }, func(a *TokenAccounting) { a.Source = "guessed" }, func(a *TokenAccounting) { a.Attempts = 0 }, func(a *TokenAccounting) { a.TerminalResponses = 3 }, func(a *TokenAccounting) { a.MeasuredResponses = -1 }, func(a *TokenAccounting) { a.Status = "unknown" }, func(a *TokenAccounting) { a.UnknownContributions = 1 },
++	} {
++		a := *good
++		mutate(&a)
++		if a.Complete() {
++			t.Fatal("malformed complete receipt accepted", a)
++		}
++	}
++	partial := MergeTokenAccounting(good, NewTokenAccounting(1, 0, 0))
++	if partial.Complete() || partial.Status != "partial" || partial.Attempts != 3 {
++		t.Fatal(partial)
++	}
++	legacy := MergeTokenAccounting(good, nil)
++	if legacy.Complete() || legacy.Status != "partial" || legacy.UnknownContributions != 1 {
++		t.Fatal(legacy)
++	}
++	var old struct {
++		Usage           Metrics          `json:"usage"`
++		TokenAccounting *TokenAccounting `json:"tokenAccounting,omitempty"`
++	}
++	if err := json.Unmarshal([]byte(`{"usage":{"prompt_eval_count":100,"eval_count":20}}`), &old); err != nil {
++		t.Fatal(err)
++	}
++	if old.TokenAccounting != nil || old.TokenAccounting.Complete() {
++		t.Fatal("legacy positive counts inferred complete")
++	}
++	raw, _ := json.Marshal(old)
++	var restored map[string]any
++	_ = json.Unmarshal(raw, &restored)
++	if _, ok := restored["tokenAccounting"]; ok {
++		t.Fatal("legacy record silently upgraded")
++	}
++}
+--- /dev/null
++++ b/internal/engine/token_accounting_test.go
+@@ -0,0 +1,160 @@
++package engine
++
++import (
++	"context"
++	"errors"
++	"fmt"
++	"net/http"
++	"strings"
++	"sync"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"gemmadesktop.local/app/internal/inference"
++)
++
++func TestProviderTerminalAccountingSurvivesRejectedPayloads(t *testing.T) {
++	for _, tc := range []struct {
++		name, body          string
++		complete, wantError bool
++		prompt, output      int
++	}{
++		{"normal", `{"message":{"content":"answer"},"done":true,"prompt_eval_count":11,"eval_count":7}`, true, false, 11, 7},
++		{"explicit_zero", `{"message":{"content":"answer"},"done":true,"prompt_eval_count":0,"eval_count":0}`, true, false, 0, 0},
++		{"missing_prompt", `{"message":{"content":"answer"},"done":true,"eval_count":7}`, false, false, 0, 7},
++		{"missing_output", `{"message":{"content":"answer"},"done":true,"prompt_eval_count":11}`, false, false, 11, 0},
++		{"negative_prompt", `{"message":{"content":"answer"},"done":true,"prompt_eval_count":-1,"eval_count":7}`, false, false, 0, 7},
++		{"length", `{"message":{"content":"unfinished"},"done":true,"done_reason":"length","prompt_eval_count":11,"eval_count":7}`, true, true, 11, 7},
++		{"duplicate_id", `{"message":{"tool_calls":[{"id":"same","function":{"name":"inspect","arguments":{}}},{"id":"same","function":{"name":"inspect","arguments":{}}}]},"done":true,"prompt_eval_count":11,"eval_count":7}`, true, true, 11, 7},
++		{"missing_tool_name", `{"message":{"tool_calls":[{"id":"bad","function":{"arguments":{}}}]},"done":true,"prompt_eval_count":11,"eval_count":7}`, true, true, 11, 7},
++		{"malformed_tool_arguments", `{"message":{"tool_calls":[{"id":"bad","function":{"name":"inspect","arguments":"not an object"}}]},"done":true,"prompt_eval_count":11,"eval_count":7}`, true, true, 11, 7},
++		{"provider_terminal_error", `{"error":"fixture generation error","done":true,"prompt_eval_count":11,"eval_count":7}`, true, true, 11, 7},
++		{"data_after_terminal", `{"message":{"content":"answer"},"done":true,"prompt_eval_count":11,"eval_count":7}` + "\n" + `{"done":false}`, true, true, 11, 7},
++	} {
++		t.Run(tc.name, func(t *testing.T) {
++			client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) { fmt.Fprintln(w, tc.body) })
++			result, err := New(client).Run(t.Context(), Request{Model: "fixture", Prompt: "go", MaxSteps: 1, Tools: []ToolDefinition{{Name: "inspect"}}}, nil, func(context.Context, ToolCall) (ToolResult, error) {
++				t.Error("rejected payload executed a tool")
++				return ToolResult{}, nil
++			})
++			if (err != nil) != tc.wantError || result.Usage.PromptEvalCount != tc.prompt || result.Usage.EvalCount != tc.output || result.TokenAccounting == nil || result.TokenAccounting.Complete() != tc.complete || result.TokenAccounting.Attempts != 1 || result.TokenAccounting.TerminalResponses != 1 {
++				t.Fatalf("err=%v result=%+v accounting=%+v", err, result, result.TokenAccounting)
++			}
++		})
++	}
++}
++func TestAbortedGenerationKeepsObservedLowerBoundNotComplete(t *testing.T) {
++	for _, mode := range []string{"eof", "cancel", "deadline"} {
++		t.Run(mode, func(t *testing.T) {
++			var calls atomic.Int32
++			ctx, cancel := context.WithCancel(t.Context())
++			defer cancel()
++			if mode == "deadline" {
++				var deadlineCancel context.CancelFunc
++				ctx, deadlineCancel = context.WithTimeout(ctx, 2*time.Second)
++				defer deadlineCancel()
++			}
++			client := emptyRetryClient(t, func(w http.ResponseWriter, r *http.Request, _ inference.ChatRequest) {
++				if calls.Add(1) == 1 {
++					fmt.Fprintln(w, `{"message":{"tool_calls":[{"id":"observed","function":{"name":"inspect","arguments":{}}}]},"done":true,"prompt_eval_count":100,"eval_count":5}`)
++					return
++				}
++				fmt.Fprintln(w, `{"message":{"content":"partial second response"},"done":false}`)
++				w.(http.Flusher).Flush()
++				if mode == "cancel" || mode == "deadline" {
++					<-r.Context().Done()
++				}
++			})
++			result, err := New(client).Run(ctx, Request{Model: "fixture", Prompt: "go", MaxSteps: 2, Tools: []ToolDefinition{{Name: "inspect"}}}, func(e Event) {
++				if mode == "cancel" && e.Type == "text" {
++					cancel()
++				}
++			}, func(context.Context, ToolCall) (ToolResult, error) { return ToolResult{Content: "observed"}, nil })
++			if err == nil || result.Usage.PromptEvalCount != 100 || result.Usage.EvalCount != 5 || result.TokenAccounting == nil || result.TokenAccounting.Complete() || result.TokenAccounting.Status != "partial" || result.TokenAccounting.Attempts != 2 || result.TokenAccounting.MeasuredResponses != 1 {
++				t.Fatalf("aborted cost falsely complete: %v %+v accounting=%+v", err, result, result.TokenAccounting)
++			}
++			if mode == "deadline" && !errors.Is(err, context.DeadlineExceeded) {
++				t.Fatalf("expected real context deadline, got %v", err)
++			}
++		})
++	}
++}
++func TestTerminalReceiptRetainedWhenConsumerCancels(t *testing.T) {
++	ctx, cancel := context.WithCancel(t.Context())
++	defer cancel()
++	client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) {
++		fmt.Fprintln(w, `{"message":{"content":"terminal answer"},"done":true,"prompt_eval_count":12,"eval_count":8}`)
++	})
++	result, err := New(client).Run(ctx, Request{Model: "fixture", Prompt: "go", MaxSteps: 1}, func(e Event) {
++		if e.Type == "text" {
++			cancel()
++		}
++	}, nil)
++	if !errors.Is(err, context.Canceled) || result.Usage.PromptEvalCount != 12 || result.Usage.EvalCount != 8 || !result.TokenAccounting.Complete() {
++		t.Fatalf("terminal receipt lost: %v %+v accounting=%+v", err, result, result.TokenAccounting)
++	}
++}
++func TestEmptyRetryReceiptsAreCountedOnce(t *testing.T) {
++	var calls atomic.Int32
++	client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) {
++		body := `{"message":{},"done":true,"prompt_eval_count":100,"eval_count":7}`
++		if calls.Add(1) == 2 {
++			body = `{"message":{"content":"answer"},"done":true,"prompt_eval_count":110,"eval_count":5}`
++		}
++		fmt.Fprintln(w, body)
++	})
++	result, err := New(client).Run(t.Context(), Request{Model: "fixture", Prompt: "go", MaxSteps: 2}, nil, nil)
++	if err != nil || calls.Load() != 2 || result.Usage.PromptEvalCount != 210 || result.Usage.EvalCount != 12 || !result.TokenAccounting.Complete() || result.TokenAccounting.Attempts != 2 {
++		t.Fatalf("retry accounting: %v %+v accounting=%+v", err, result, result.TokenAccounting)
++	}
++	if strings.Contains(string(result.Snapshot), `"PromptTokenCount":210`) {
++		t.Fatal("aggregate cost polluted compaction prompt measurement")
++	}
++}
++
++func TestCancelledParentCannotClaimCompleteBeforeNestedUsageReturns(t *testing.T) {
++	ctx, cancel := context.WithCancel(t.Context())
++	defer cancel()
++	client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) {
++		fmt.Fprintln(w, `{"message":{"tool_calls":[{"id":"child","function":{"name":"delegate","arguments":{}}}]},"done":true,"prompt_eval_count":10,"eval_count":2}`)
++	})
++	entered, release := make(chan struct{}), make(chan struct{})
++	var released sync.Once
++	releaseChild := func() { released.Do(func() { close(release) }) }
++	defer releaseChild()
++	resultCh := make(chan Result, 1)
++	go func() {
++		result, _ := New(client).Run(ctx, Request{Model: "fixture", Prompt: "go", MaxSteps: 2, Tools: []ToolDefinition{{Name: "delegate"}}}, nil, func(childCtx context.Context, _ ToolCall) (ToolResult, error) {
++			close(entered)
++			<-release // Simulates a child unwinding after the parent's deadline.
++			AccountNestedUsage(childCtx, inference.Metrics{PromptEvalCount: 20, EvalCount: 3}, inference.NewTokenAccounting(2, 1, 1))
++			return ToolResult{}, context.Canceled
++		})
++		resultCh <- result
++	}()
++	select {
++	case <-entered:
++	case <-time.After(2 * time.Second):
++		t.Fatal("delegate did not start")
++	}
++	cancel()
++	var result Result
++	select {
++	case result = <-resultCh:
++		if result.TokenAccounting.Complete() {
++			t.Fatalf("parent returned complete before child's cost was known: %+v", result.TokenAccounting)
++		}
++	case <-time.After(100 * time.Millisecond):
++		// If the runner waits for its tool, it cannot publish premature costs.
++		releaseChild()
++		select {
++		case result = <-resultCh:
++		case <-time.After(2 * time.Second):
++			t.Fatal("parent did not return after child released")
++		}
++	}
++	if result.TokenAccounting.Complete() || result.TokenAccounting.Status != "partial" || result.Usage.PromptEvalCount != 30 || result.Usage.EvalCount != 5 {
++		t.Fatalf("nested partial receipt lost: usage=%+v accounting=%+v", result.Usage, result.TokenAccounting)
++	}
++}
+--- /dev/null
++++ b/internal/harness/token_accounting_test.go
+@@ -0,0 +1,219 @@
++package harness
++
++import (
++	"context"
++	"fmt"
++	"gemmadesktop.local/app/internal/inference"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++)
++
++func TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures(t *testing.T) {
++	for _, accounting := range []*inference.TokenAccounting{nil, inference.NewTokenAccounting(2, 1, 1), {Version: 1, Source: "provider_terminal_counts", Status: "complete", Attempts: 0}, {Version: 1, Source: "provider_terminal_counts", Status: "complete", Attempts: 1, TerminalResponses: 2, MeasuredResponses: 1}} {
++		tasks, rows := gateFixture()
++		rows[0].TokenAccounting = accounting
++		gate := EvaluateGate(rows, tasks)
++		if gate.Eligible || gate.CostComparisonValid || gate.TokenRatio != 0 || gate.TimeRatio != 0 || gate.BaselineSuccesses != 2 || gate.CandidateSuccesses != 3 || !strings.Contains(strings.Join(gate.Reasons, " "), "token accounting") {
++			t.Fatal("partial cost qualified or failure denominator changed", gate)
++		}
++	}
++	tasks, rows := gateFixture()
++	g := EvaluateGate(rows, tasks)
++	if !g.Eligible || !g.CostComparisonValid || g.CostAccountingStatus != "complete" || g.TokenRatio != 1 || g.TimeRatio != 1 {
++		t.Fatal("complete measurement rejected", g)
++	}
++}
++func TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords(t *testing.T) {
++	for _, mode := range []string{"legacy_both", "legacy_row", "legacy_trial", "partial_both", "malformed", "malformed_both", "complete"} {
++		t.Run(mode, func(t *testing.T) {
++			tasks, rows := gateFixture()
++			tasks = append(tasks, Task{ID: "dev", Split: "development", PublicHash: "public", GraderHash: "grade"})
++			repo := &memoryStore{}
++			root := t.TempDir()
++			activated := 0
++			config := Config{Root: root, Store: repo, Tasks: tasks, Activate: func(context.Context, string, string, string, string) error { activated++; return nil }}
++			m, err := Open(config)
++			if err != nil {
++				t.Fatal(err)
++			}
++			x, err := m.Start(Spec{Mode: "native", WorkspaceID: "workspace", AgentID: "agent", TaskIDs: []string{"dev"}, ModelDigest: "fixture", RuntimeVersion: "fixture", ExecutorIdentity: "sha256:fixture"}, Content{}, Author{})
++			if err != nil {
++				t.Fatal(err)
++			}
++			x.Status, x.CandidateID = "completed", x.Spec.BaseRevisionID
++			if err = m.put("experiment", x); err != nil {
++				t.Fatal(err)
++			}
++			for i := range rows {
++				rows[i].TrialID = fmt.Sprintf("trial-%d", i)
++				trialRoot := filepath.Join(root, "trials", rows[i].TrialID, "workspace")
++				if err = os.MkdirAll(trialRoot, 0700); err != nil {
++					t.Fatal(err)
++				}
++				if err = os.WriteFile(filepath.Join(trialRoot, "public.txt"), []byte("synthetic immutable output"), 0600); err != nil {
++					t.Fatal(err)
++				}
++				outputHash, err := treeHash(trialRoot)
++				if err != nil {
++					t.Fatal(err)
++				}
++				tr := Trial{ID: rows[i].TrialID, ExperimentID: x.ID, TaskID: rows[i].TaskID, Status: "completed", OutputHash: outputHash, Result: SolveResult{Usage: Doc{"prompt_eval_count": 90, "eval_count": 10}, TokenAccounting: inference.NewTokenAccounting(1, 1, 1)}}
++				if i == 0 {
++					if mode == "legacy_both" || mode == "legacy_row" {
++						rows[i].TokenAccounting = nil
++					}
++					if mode == "legacy_both" || mode == "legacy_trial" {
++						tr.Result.TokenAccounting = nil
++					}
++					if mode == "malformed" {
++						rows[i].TokenAccounting = &inference.TokenAccounting{Version: 1, Source: "provider_terminal_counts", Status: "complete"}
++					}
++					if mode == "partial_both" {
++						rows[i].TokenAccounting = inference.NewTokenAccounting(2, 1, 1)
++						tr.Result.TokenAccounting = rows[i].TokenAccounting
++					}
++					if mode == "malformed_both" {
++						rows[i].TokenAccounting = &inference.TokenAccounting{Version: 1, Source: "provider_terminal_counts", Status: "complete"}
++						tr.Result.TokenAccounting = rows[i].TokenAccounting
++					}
++				}
++				if err = m.put("trial", tr); err != nil {
++					t.Fatal(err)
++				}
++			}
++			v := Evaluation{ID: "evaluation", ExperimentID: x.ID, CandidateID: x.CandidateID, BaselineID: x.Spec.BaseRevisionID, Status: "completed", Results: rows, ReviewPacketID: "review", Gate: Gate{Eligible: true, EvidenceHash: Hash(rows)}}
++			if err = m.put("evaluation", v); err != nil {
++				t.Fatal(err)
++			}
++			if err = m.put("packet", Packet{ID: "review", Response: &PacketResponse{Verdict: "approved", AuthoredBy: Author{Kind: "codex", Identity: "independent-test-reviewer"}}}); err != nil {
++				t.Fatal(err)
++			}
++			before, _ := repo.Get("harness_evaluation", v.ID)
++			m.Close()
++			m, err = Open(config)
++			if err != nil {
++				t.Fatal(err)
++			}
++			defer m.Close()
++			_, err = m.Promote(t.Context(), v.ID)
++			if mode == "complete" {
++				if err != nil || activated != 1 {
++					t.Fatal("complete current evidence rejected", err)
++				}
++			} else if err == nil || activated != 0 {
++				t.Fatal("stored legacy eligible gate bypassed measurement validation", mode, err, activated)
++			}
++			after, _ := repo.Get("harness_evaluation", v.ID)
++			if Hash(before) != Hash(after) {
++				t.Fatal("activation rewrote original evidence")
++			}
++		})
++	}
++}
++func TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals(t *testing.T) {
++	repo := &memoryStore{}
++	if err := repo.Put("harness_trial", Doc{"id": "old", "status": "running", "result": Doc{"usage": Doc{"prompt_eval_count": 100, "eval_count": 20}}}); err != nil {
++		t.Fatal(err)
++	}
++	m, err := Open(Config{Root: t.TempDir(), Store: repo})
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer m.Close()
++	tr, err := m.trial("old")
++	if err != nil || tr.Status != "interrupted" || tr.Result.TokenAccounting != nil || tr.Result.TokenAccounting.Complete() || metric(tr.Result.Usage, "eval_count") != 20 {
++		t.Fatal("legacy restart invented accounting", tr, err)
++	}
++}
++
++func TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost(t *testing.T) {
++	for _, mode := range []string{"partial", "legacy", "changed_accounting", "changed_usage", "changed_output"} {
++		t.Run(mode, func(t *testing.T) {
++			root := t.TempDir()
++			activated := false
++			m, err := Open(Config{Root: root, Store: &memoryStore{}, Activate: func(context.Context, string, string, string, string) error { activated = true; return nil }})
++			if err != nil {
++				t.Fatal(err)
++			}
++			defer m.Close()
++			x := Experiment{ID: "experiment", Status: "completed", CandidateID: "candidate", Spec: Spec{WorkspaceID: "workspace", AgentID: "agent", FixtureDigest: m.fixtureDigest()}}
++			if err = m.put("experiment", x); err != nil {
++				t.Fatal(err)
++			}
++			trialRoot := filepath.Join(root, "trials", "trial", "workspace")
++			if err = os.MkdirAll(trialRoot, 0700); err != nil {
++				t.Fatal(err)
++			}
++			file := filepath.Join(trialRoot, "public.txt")
++			if err = os.WriteFile(file, []byte("unchanged synthetic evidence"), 0600); err != nil {
++				t.Fatal(err)
++			}
++			outputHash, err := treeHash(trialRoot)
++			if err != nil {
++				t.Fatal(err)
++			}
++			accounting := inference.NewTokenAccounting(2, 1, 1)
++			if mode == "legacy" {
++				accounting = nil
++			}
++			trial := Trial{ID: "trial", ExperimentID: x.ID, Status: "failed", OutputHash: outputHash, Result: SolveResult{Usage: Doc{"prompt_eval_count": 90, "eval_count": 10}, TokenAccounting: accounting}}
++			if err = m.put("trial", trial); err != nil {
++				t.Fatal(err)
++			}
++			evaluation := Evaluation{ID: "evaluation", ExperimentID: x.ID, CandidateID: x.CandidateID, Status: "completed", Results: []EvalResult{{TrialID: trial.ID, Tokens: 100, TokenAccounting: accounting}}}
++			evaluation.Gate = Gate{Eligible: false, EvidenceHash: Hash(evaluation.Results)}
++			packet, err := m.MakePacket(x, "evaluation", "promotion_review", "candidate", "Independent review", []string{evaluation.ID}, map[string]string{"evaluation-evidence.sha256": Hash(evaluation.Results)})
++			if err != nil {
++				t.Fatal(err)
++			}
++			evaluation.ReviewPacketID = packet.ID
++			if err = m.put("evaluation", evaluation); err != nil {
++				t.Fatal(err)
++			}
++			before := Hash(evaluation)
++			switch mode {
++			case "changed_accounting":
++				trial.Result.TokenAccounting = inference.NewTokenAccounting(2, 2, 2)
++				if err = m.put("trial", trial); err != nil {
++					t.Fatal(err)
++				}
++			case "changed_usage":
++				trial.Result.Usage["eval_count"] = 11
++				if err = m.put("trial", trial); err != nil {
++					t.Fatal(err)
++				}
++			case "changed_output":
++				if err = os.WriteFile(file, []byte("changed after grading"), 0600); err != nil {
++					t.Fatal(err)
++				}
++			}
++			response := PacketResponse{ID: packet.ID, RequestHash: packet.RequestHash, Verdict: "rejected", Evidence: packet.Evidence, AuthoredBy: Author{Kind: "codex", Identity: "independent-reviewer"}, Notes: "Observed costs are incomplete or unknown; retain the baseline."}
++			submitted, err := m.Submit(response)
++			if strings.HasPrefix(mode, "changed_") {
++				if err == nil {
++					t.Fatal("changed evidence was accepted for review")
++				}
++				var stored Packet
++				if err = m.get("packet", packet.ID, &stored); err != nil || stored.Response != nil {
++					t.Fatal("failed review mutated packet", err)
++				}
++				return
++			}
++			if err != nil || submitted.Response == nil || submitted.Response.Verdict != "rejected" {
++				t.Fatal("truthful rejection could not be retained", err, submitted)
++			}
++			if _, err = m.Submit(response); err != nil {
++				t.Fatal("identical rejected review was not idempotent", err)
++			}
++			if _, err = m.Promote(t.Context(), evaluation.ID); err == nil || activated {
++				t.Fatal("rejected/unknown cost activated", err)
++			}
++			var retained Evaluation
++			if err = m.get("evaluation", evaluation.ID, &retained); err != nil || Hash(retained) != before {
++				t.Fatal("review rewrote evaluation", err)
++			}
++		})
++	}
++}
+--- /dev/null
++++ b/internal/workflow/token_accounting_test.go
+@@ -0,0 +1,56 @@
++package workflow
++
++import (
++	"encoding/json"
++	"fmt"
++	"gemmadesktop.local/app/internal/engine"
++	"gemmadesktop.local/app/internal/inference"
++	"net/http"
++	"net/http/httptest"
++	"sync/atomic"
++	"testing"
++)
++
++func TestWorkflowAccountingSurvivesResumeAndKeepsLegacyUnknown(t *testing.T) {
++	for _, legacy := range []bool{false, true} {
++		t.Run(fmt.Sprintf("legacy_%v", legacy), func(t *testing.T) {
++			var calls atomic.Int32
++			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				if r.URL.Path == "/api/show" {
++					fmt.Fprint(w, `{}`)
++					return
++				}
++				calls.Add(1)
++				fmt.Fprintln(w, `{"message":{"content":"observed output"},"done":true,"prompt_eval_count":5,"eval_count":2}`)
++			}))
++			defer srv.Close()
++			client, _ := inference.NewClient(srv.URL)
++			r := New(engine.New(client))
++			d := Definition{ID: "accounting", Nodes: []Node{{ID: "before", Type: "agent"}, {ID: "approve", Type: "approval"}, {ID: "after", Type: "agent"}}, Edges: []Edge{{Source: "before", Target: "approve"}, {Source: "approve", Target: "after"}}}
++			req := engine.Request{Model: "fixture", Prompt: "go", MaxSteps: 4}
++			first, err := r.Run(t.Context(), d, req, nil, nil, nil)
++			if err != nil || len(first.Pending) != 1 || !first.TokenAccounting.Complete() || first.TokenAccounting.Attempts != 1 || first.Usage.EvalCount != 2 {
++				t.Fatal("initial accounting", first, err)
++			}
++			req.Snapshot = first.Snapshot
++			if legacy {
++				var cp map[string]any
++				_ = json.Unmarshal(req.Snapshot, &cp)
++				delete(cp, "tokenAccounting")
++				req.Snapshot, _ = json.Marshal(cp)
++			}
++			req.Resume = map[string]any{first.Pending[0].ID: true}
++			final, err := r.Run(t.Context(), d, req, nil, nil, nil)
++			if err != nil || calls.Load() != 2 || final.Usage.PromptEvalCount != 10 || final.Usage.EvalCount != 4 || final.TokenAccounting == nil {
++				t.Fatal("resume replayed/lost measurements", final, err, calls.Load())
++			}
++			if legacy {
++				if final.TokenAccounting.Complete() || final.TokenAccounting.Status != "partial" || final.TokenAccounting.UnknownContributions != 1 {
++					t.Fatal("legacy prior cost upgraded", final.TokenAccounting)
++				}
++			} else if !final.TokenAccounting.Complete() || final.TokenAccounting.Attempts != 2 {
++				t.Fatal("complete workflow cost missing/doubled", final.TokenAccounting)
++			}
++		})
++	}
++}

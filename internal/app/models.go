@@ -61,6 +61,14 @@ func (c *Core) RefreshModels() {
 	c.mu.Unlock()
 }
 func (c *Core) modelAction(ctx context.Context, method string, p Doc) (any, error) {
+	c.videoGuard.Lock()
+	defer c.videoGuard.Unlock()
+	if method != "model.cancelPull" && c.videoBusy() {
+		return nil, errors.New("Wait for the active video job before changing model residency or downloads")
+	}
+	if method != "model.cancelPull" && c.harnessBusy() {
+		return nil, errors.New("Wait for the active Harness experiment before changing model residency or downloads")
+	}
 	name, e := required(p, "name")
 	if e != nil {
 		return nil, e
@@ -108,7 +116,7 @@ func (c *Core) modelAction(ctx context.Context, method string, p Doc) (any, erro
 		}
 		return Doc{}, nil
 	case "model.load":
-		e = client.Load(ctx, name)
+		e = client.Load(ctx, name, number(c.Settings(), "contextSize", 32768))
 	case "model.unload", "model.delete":
 		c.mu.Lock()
 		evaluating := len(c.evals) > 0

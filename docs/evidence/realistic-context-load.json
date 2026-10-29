@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-27T16:37:39.376111+00:00",
+  "requestedContext": 32768,
+  "models": [
+    {
+      "context_length": 32768,
+      "details": {
+        "family": "",
+        "format": "safetensors",
+        "parameter_size": "",
+        "quantization_level": ""
+      },
+      "digest": "ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+      "expires_at": "2026-10-27T11:42:39.359106-05:00",
+      "model": "gemma4:12b-mlx",
+      "name": "gemma4:12b-mlx",
+      "size": 24793324972,
+      "size_vram": 24793324972
+    }
+  ],
+  "binarySHA256": "65bd46a315f02e5f28ac5491a687a0871bc665d9bc6614986fc2ec527c4f0841"
+}

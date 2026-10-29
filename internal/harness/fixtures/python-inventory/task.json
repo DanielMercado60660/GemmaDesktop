@@ -1,0 +1,131 @@
+{
+  "id": "python-inventory",
+  "name": "Calculate available inventory",
+  "stack": "python",
+  "split": "development",
+  "prompt": "Read README.md, repair calculate available inventory, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "python3",
+    "public_test.py"
+  ],
+  "gradeCommand": [
+    "python3",
+    "main.py"
+  ],
+  "public": {
+    "logic.py": "def solve(x):\n out=dict(x[\"stock\"])\n for r in x[\"reservations\"]:\n  if r[\"sku\"] in out and False: out[r[\"sku\"]]-=r[\"quantity\"]\n return {k:max(0,v) for k,v in out.items()}\n",
+    "main.py": "import json,sys\nfrom logic import solve\nprint(json.dumps([solve(x) for x in json.loads(sys.argv[1])]))\n",
+    "public_test.py": "import json,subprocess,sys\ncases=[{'stock': {}, 'reservations': [], 'now': 10}, {'stock': {'a': 8}, 'reservations': [], 'now': 10}]\nexpected=[{}, {'a': 8}]\np=subprocess.run([sys.executable,\"main.py\",json.dumps(cases)],capture_output=True,text=True,check=True)\nassert json.loads(p.stdout)==expected,(p.stdout,expected)\nprint(\"2 public cases passed\")\n\nimport unittest\nsuite=unittest.defaultTestLoader.discover(\".\",pattern=\"test_*.py\")\nif not unittest.TextTestRunner().run(suite).wasSuccessful():raise SystemExit(1)\n",
+    "README.md": "# Calculate available inventory\n\nRepair this python service module and add regression tests.\n\nReturn an object containing every stock SKU. Available = max(0, stock minus active reservations). A reservation is active only when expires > now. Unknown SKUs do not create stock. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `python3 public_test.py` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"stock\": {\n    \"a\": 8,\n    \"b\": 2\n  },\n  \"reservations\": [\n    {\n      \"sku\": \"a\",\n      \"quantity\": 3,\n      \"expires\": 11\n    },\n    {\n      \"sku\": \"b\",\n      \"quantity\": 9,\n      \"expires\": 20\n    }\n  ],\n  \"now\": 10\n}\n```\nExpected result:\n```json\n{\n  \"a\": 5,\n  \"b\": 0\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "inventory-1",
+      "input": {
+        "stock": {},
+        "reservations": [],
+        "now": 10
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "inventory-2",
+      "input": {
+        "stock": {
+          "a": 8
+        },
+        "reservations": [],
+        "now": 10
+      },
+      "expected": {
+        "a": 8
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-3",
+      "input": {
+        "stock": {
+          "a": 8,
+          "b": 2
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 3,
+            "expires": 11
+          },
+          {
+            "sku": "b",
+            "quantity": 9,
+            "expires": 20
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 5,
+        "b": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-4",
+      "input": {
+        "stock": {
+          "a": 8
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 4,
+            "expires": 10
+          },
+          {
+            "sku": "a",
+            "quantity": 1,
+            "expires": 9
+          },
+          {
+            "sku": "ghost",
+            "quantity": 3,
+            "expires": 30
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 8
+      },
+      "critical": false
+    },
+    {
+      "name": "inventory-5",
+      "input": {
+        "stock": {
+          "a": 5,
+          "b": 0
+        },
+        "reservations": [
+          {
+            "sku": "a",
+            "quantity": 2,
+            "expires": 20
+          },
+          {
+            "sku": "a",
+            "quantity": 2,
+            "expires": 20
+          }
+        ],
+        "now": 10
+      },
+      "expected": {
+        "a": 1,
+        "b": 0
+      },
+      "critical": false
+    }
+  ]
+}

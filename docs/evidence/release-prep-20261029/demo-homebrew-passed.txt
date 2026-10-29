@@ -1,0 +1,6 @@
+{
+  "status": "completed",
+  "testsExitCode": 0,
+  "runId": "960ad47cc96b700db91941e87a5223ec",
+  "evidence": "/private/tmp/gemma-desktop-release-zuvsambo/docs/evidence/live-coding-task.json"
+}

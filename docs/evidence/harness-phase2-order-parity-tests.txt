@@ -1,0 +1,12 @@
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.43s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.43s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.48s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.46s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.43s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	8.557s

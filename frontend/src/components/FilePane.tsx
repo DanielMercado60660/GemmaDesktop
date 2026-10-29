@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ChevronRight,
@@ -11,7 +11,14 @@ import {
   GitCompareArrows,
 } from "lucide-react";
 import { api } from "../bridge";
+import {
+  reconcileSavedFile,
+  type FileVersion,
+  type SavedChange,
+} from "../lib/conversation";
 import { Button, Empty, formatBytes } from "./ui";
+import { useConfirmation } from "./Confirmation";
+import { confirmUnchanged } from "../lib/confirmation";
 const CodeEditor = lazy(() => import("./CodeEditor"));
 interface Entry {
   name: string;
@@ -19,106 +26,252 @@ interface Entry {
   isDir: boolean;
   size?: number;
 }
+interface GitChange {
+  path: string;
+  index: string;
+  worktree: string;
+  untracked: boolean;
+}
+const gitState: Record<string, string> = {
+  M: "modified",
+  A: "added",
+  D: "deleted",
+  R: "renamed",
+  C: "copied",
+  U: "conflicted",
+  T: "type changed",
+};
 export default function FilePane({
   workspaceId,
   theme,
   diff = false,
   onDirtyChange,
+  revision = 0,
+  saveDisabledReason = "",
 }: {
   workspaceId: string;
   theme: string;
   diff?: boolean;
   onDirtyChange?: (dirty: boolean) => void;
+  revision?: number;
+  saveDisabledReason?: string;
 }) {
+  const confirmAction = useConfirmation();
   const [directory, setDirectory] = useState(""),
     [entries, setEntries] = useState<Entry[]>([]),
-    [file, setFile] = useState<{
-      path: string;
-      content: string;
-      hash: string;
-    } | null>(null),
+    [file, setFile] = useState<FileVersion | null>(null),
     [content, setContent] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
+    [conflict, setConflict] = useState(false),
+    [diffScope, setDiffScope] = useState(
+      "Unstaged tracked changes. This server does not report a broader scope.",
+    ),
+    [diffTruncated, setDiffTruncated] = useState(false),
+    [changedFiles, setChangedFiles] = useState<GitChange[]>([]),
     [diffText, setDiff] = useState("");
+  const fileRef = useRef(file),
+    contentRef = useRef(content),
+    fileRequest = useRef(0),
+    listRequest = useRef(0),
+    saving = useRef(false),
+    opening = useRef(false),
+    previousRevision = useRef(revision);
+  fileRef.current = file;
+  contentRef.current = content;
+  function updateContent(value: string) {
+    contentRef.current = value;
+    setContent(value);
+  }
+  function showFile(value: FileVersion) {
+    fileRef.current = value;
+    setFile(value);
+    updateContent(value.content);
+    setConflict(false);
+  }
+  async function mayDiscard(reload = false) {
+    const snapshot = { file: fileRef.current, content: contentRef.current };
+    if (!snapshot.file || snapshot.content === snapshot.file.content)
+      return true;
+    return confirmUnchanged(
+      snapshot,
+      (captured) =>
+        fileRef.current === captured.file &&
+        contentRef.current === captured.content,
+      () =>
+        confirmAction({
+          title: reload
+            ? "Reload and discard edits?"
+            : "Discard unsaved edits?",
+          description: `Your unsaved changes to ${snapshot.file!.path} will be discarded${reload ? " and replaced with the current file on disk" : ""}.`,
+          confirmLabel: reload ? "Reload from disk" : "Discard changes",
+          cancelLabel: "Keep editing",
+          danger: true,
+        }),
+    );
+  }
   useEffect(() => {
     onDirtyChange?.(!!file && file.content !== content);
   }, [file, content, onDirtyChange]);
-  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
-  async function list() {
+  useEffect(
+    () => () => {
+      fileRequest.current++;
+      listRequest.current++;
+      onDirtyChange?.(false);
+    },
+    [onDirtyChange],
+  );
+  async function refreshFile(discard = false) {
+    const opened = fileRef.current;
+    if (!opened || opening.current) return;
+    const draftAtStart = contentRef.current;
+    const request = ++fileRequest.current;
+    const disk = await api<FileVersion>("file.read", {
+      workspaceId,
+      path: opened.path,
+    });
+    if (
+      request !== fileRequest.current ||
+      fileRef.current?.path !== opened.path
+    )
+      return;
+    const changedDuringRead = contentRef.current !== draftAtStart;
+    const dirty = contentRef.current !== opened.content;
+    if (changedDuringRead || (dirty && !discard)) {
+      if (disk.hash !== opened.hash) setConflict(true);
+      return;
+    }
+    showFile({ ...disk, path: opened.path });
+  }
+  async function list(refreshOpen = false) {
+    const request = ++listRequest.current;
     setBusy(true);
     setError("");
     try {
       if (diff) {
-        const r = await api<{ diff: string }>("git.diff", { workspaceId });
-        setDiff(r.diff || "");
+        const result = await api<{
+          diff: string;
+          scope?: string;
+          truncated?: boolean;
+          files?: GitChange[];
+        }>("git.diff", { workspaceId });
+        if (request === listRequest.current) {
+          setDiff(result.diff || "");
+          setChangedFiles(result.files || []);
+          setDiffScope(
+            result.scope ||
+              "Unstaged tracked changes. This server does not report a broader scope.",
+          );
+          setDiffTruncated(!!result.truncated);
+        }
       } else {
-        const r = await api<{ entries: Entry[] }>("file.list", {
+        const result = await api<{ entries: Entry[] }>("file.list", {
           workspaceId,
           path: directory,
         });
-        setEntries(r.entries || []);
+        if (request === listRequest.current) {
+          setEntries(result.entries || []);
+          if (refreshOpen && !saving.current) await refreshFile();
+        }
       }
-    } catch (e) {
-      setError((e as Error).message);
+    } catch (error) {
+      if (request === listRequest.current) setError((error as Error).message);
     } finally {
-      setBusy(false);
+      if (request === listRequest.current) setBusy(false);
     }
   }
   useEffect(() => {
+    fileRequest.current++;
+    opening.current = false;
     setFile(null);
+    fileRef.current = null;
+    setConflict(false);
     void list();
   }, [workspaceId, directory, diff]);
+  useEffect(() => {
+    if (previousRevision.current !== revision) {
+      previousRevision.current = revision;
+      void list(true);
+    }
+  }, [revision]);
   async function open(entry: Entry) {
-    if (
-      file &&
-      content !== file.content &&
-      !confirm("Discard your unsaved changes?")
-    )
-      return;
+    if (saving.current) return;
+    if (!(await mayDiscard())) return;
     if (entry.isDir) {
       setDirectory(entry.path);
       return;
     }
+    const request = ++fileRequest.current;
+    opening.current = true;
+    const previousPath = fileRef.current?.path;
+    const previousDraft = contentRef.current;
     setBusy(true);
     setError("");
     try {
-      const r = await api<{ path: string; content: string; hash: string }>(
-        "file.read",
-        { workspaceId, path: entry.path },
-      );
-      setFile({ ...r, path: entry.path });
-      setContent(r.content);
-    } catch (e) {
-      setError((e as Error).message);
+      const result = await api<FileVersion>("file.read", {
+        workspaceId,
+        path: entry.path,
+      });
+      if (request === fileRequest.current) {
+        if (
+          fileRef.current?.path === previousPath &&
+          contentRef.current !== previousDraft
+        ) {
+          setError(
+            "The current file has newer unsaved edits. They were preserved; select the other file again when ready.",
+          );
+          return;
+        }
+        showFile({ ...result, path: entry.path });
+      }
+    } catch (error) {
+      if (request === fileRequest.current) setError((error as Error).message);
     } finally {
-      setBusy(false);
+      if (request === fileRequest.current) {
+        opening.current = false;
+        setBusy(false);
+      }
     }
   }
   async function save() {
-    if (!file) return;
+    const opened = fileRef.current;
+    if (!opened || saving.current || saveDisabledReason) return;
+    saving.current = true;
+    setBusy(true);
+    setError("");
+    const submitted = contentRef.current;
+    try {
+      const change = await api<SavedChange>("file.write", {
+        workspaceId,
+        path: opened.path,
+        content: submitted,
+        expectedHash: opened.hash,
+      });
+      if (fileRef.current?.path === opened.path) {
+        const updated = reconcileSavedFile(submitted, contentRef.current, {
+          ...change,
+          path: opened.path,
+        });
+        fileRef.current = updated.file;
+        setFile(updated.file);
+        updateContent(updated.content);
+        setConflict(false);
+      }
+    } catch (error) {
+      setError((error as Error).message);
+    } finally {
+      saving.current = false;
+      setBusy(false);
+    }
+  }
+  async function reloadFile() {
+    if (!(await mayDiscard(true))) return;
     setBusy(true);
     setError("");
     try {
-      const r = await api<{ hash?: string }>("file.write", {
-        workspaceId,
-        path: file.path,
-        content,
-        expectedHash: file.hash,
-      });
-      const updated = await api<{
-        path: string;
-        content: string;
-        hash: string;
-      }>("file.read", { workspaceId, path: file.path });
-      setFile({
-        ...updated,
-        path: file.path,
-        hash: updated.hash || r.hash || file.hash,
-      });
-      setContent(updated.content);
-    } catch (e) {
-      setError((e as Error).message);
+      await refreshFile(true);
+    } catch (error) {
+      setError((error as Error).message);
     } finally {
       setBusy(false);
     }
@@ -129,12 +282,12 @@ export default function FilePane({
         <div className="pane-toolbar">
           <span>
             <GitCompareArrows size={16} />
-            Working tree changes
+            Workspace changes
           </span>
           <Button
             size="icon"
             variant="ghost"
-            onClick={list}
+            onClick={() => void list(true)}
             disabled={busy}
             aria-label="Refresh changes"
           >
@@ -142,6 +295,40 @@ export default function FilePane({
           </Button>
         </div>
         {error && <div className="inline-error">{error}</div>}
+        <div className="pane-notice">
+          {diffScope}
+          {diffTruncated &&
+            " The displayed diff is truncated; inspect individual files for the complete changes."}
+        </div>
+        {!!changedFiles.length && (
+          <details className="git-change-list" open>
+            <summary>{changedFiles.length} changed paths</summary>
+            <div>
+              {changedFiles.map((change) => (
+                <div className="git-change-row" key={change.path}>
+                  <code>{change.path}</code>
+                  {change.untracked ? (
+                    <span className="tag">Untracked</span>
+                  ) : (
+                    <>
+                      {change.index !== " " && (
+                        <span className="tag">
+                          Staged · {gitState[change.index] || change.index}
+                        </span>
+                      )}
+                      {change.worktree !== " " && (
+                        <span className="tag">
+                          Unstaged ·{" "}
+                          {gitState[change.worktree] || change.worktree}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
         {diffText ? (
           <Suspense fallback={<LoaderCircle className="spin" />}>
             <CodeEditor
@@ -154,8 +341,22 @@ export default function FilePane({
         ) : (
           <Empty
             icon={<GitCompareArrows size={28} />}
-            title={busy ? "Reading changes…" : "No working tree changes"}
-            description="Changes made in this workspace will appear here for review."
+            title={
+              error
+                ? "Changes could not be read"
+                : busy
+                  ? "Reading changes…"
+                  : changedFiles.length > 0
+                    ? "No net patch against HEAD"
+                    : "No changes in this scope"
+            }
+            description={
+              error
+                ? "Resolve the reported error and refresh. An unsuccessful read does not mean the workspace is clean."
+                : changedFiles.length > 0
+                  ? "Staged and unstaged states are listed above. Their combined patch currently cancels out."
+                  : "Changes made in this workspace will appear here for review."
+            }
           />
         )}
       </div>
@@ -173,7 +374,8 @@ export default function FilePane({
               size="small"
               onClick={save}
               loading={busy}
-              disabled={content === file.content}
+              disabled={content === file.content || !!saveDisabledReason}
+              title={saveDisabledReason || undefined}
             >
               <Save size={13} />
               Save changes
@@ -182,8 +384,9 @@ export default function FilePane({
           <Button
             size="icon"
             variant="ghost"
-            onClick={list}
-            aria-label="Refresh files"
+            onClick={() => void list(true)}
+            disabled={busy}
+            aria-label="Refresh files and open file"
           >
             <RefreshCw size={15} />
           </Button>
@@ -195,18 +398,29 @@ export default function FilePane({
           {error}
         </div>
       )}
+      {saveDisabledReason && (
+        <div className="pane-notice">
+          {saveDisabledReason} Draft edits are kept in this editor.
+        </div>
+      )}
+      {conflict && (
+        <div className="notice" role="status">
+          <span>
+            This file changed on disk. Your unsaved draft is preserved; saving
+            will check the original revision.
+          </span>
+          <Button size="small" onClick={reloadFile} disabled={busy}>
+            Reload from disk
+          </Button>
+        </div>
+      )}
       <div className="file-layout">
         <div className="file-list">
           {directory && (
             <button
               className="file-row"
-              onClick={() => {
-                if (
-                  file &&
-                  content !== file.content &&
-                  !confirm("Discard your unsaved changes?")
-                )
-                  return;
+              onClick={async () => {
+                if (!(await mayDiscard())) return;
                 setDirectory(directory.split("/").slice(0, -1).join("/"));
               }}
             >
@@ -248,7 +462,7 @@ export default function FilePane({
               <CodeEditor
                 value={content}
                 path={`${workspaceId}/${file.path}`}
-                onChange={setContent}
+                onChange={updateContent}
                 theme={theme}
               />
             </Suspense>

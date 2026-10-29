@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-10-27T17:51:41.227379+00:00",
+  "method": "Gemma Desktop model.pull through isolated app API",
+  "model": "gemma4:26b-mlx",
+  "expectedManifestDigest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+  "manifestBlobBytes": 18334412658,
+  "response": {
+    "name": "gemma4:26b-mlx",
+    "status": "downloading"
+  },
+  "note": "Official model; background download only. No inference or default-model change requested.",
+  "lastCheckedAt": "2026-10-27T18:03:03.978665+00:00",
+  "progress": [
+    {
+      "completed": 8261296495,
+      "digest": "sha256:model",
+      "name": "gemma4:26b-mlx",
+      "status": "pulling model",
+      "total": 18334412658
+    }
+  ],
+  "lastObservedAt": "2026-10-27T18:17:21.258826+00:00",
+  "lastProgress": [
+    {
+      "name": "gemma4:26b-mlx",
+      "status": "success"
+    }
+  ],
+  "installedModel": {
+    "capabilities": [
+      "completion",
+      "tools",
+      "thinking"
+    ],
+    "contextLength": 262144,
+    "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "family": "",
+    "loaded": false,
+    "name": "gemma4:26b-mlx",
+    "parameterSize": "",
+    "quantization": "nvfp4",
+    "remote": false,
+    "size": 18334412658
+  },
+  "digestVerified": true
+}

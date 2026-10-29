@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
 	"gemmadesktop.local/app/internal/execution"
 	mcpclient "gemmadesktop.local/app/internal/mcp"
@@ -67,22 +66,18 @@ func (x *extensions) Call(ctx context.Context, method string, p Doc) (any, error
 			if c.Settings()["mode"] == "read-only" {
 				return nil, errors.New("Workspace is in read-only mode")
 			}
+			_, release, err := workspace.AcquireOperation(ctx, w.Path)
+			if err != nil {
+				return nil, err
+			}
+			defer release()
 			change, e := w.Write(str(p, "path"), str(p, "content"), str(p, "expectedHash"))
 			if e != nil {
 				return nil, e
 			}
 			return change, nil
 		case "git.diff":
-			args := []string{"--no-pager", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null", "diff", "--no-ext-diff", "--no-textconv", "--ignore-submodules=all", "--", "."}
-			args = append(args, execution.GitProtectedExclusions()...)
-			result, e := execution.NewRunner().Run(ctx, execution.Request{Workspace: w.Path, Executable: execution.GitExecutable(), Args: args, ReadOnly: true, AllowGitMetadata: true, Timeout: 15 * time.Second})
-			if e != nil {
-				return nil, e
-			}
-			if result.ExitCode != 0 {
-				return nil, errors.New(result.Stderr)
-			}
-			return Doc{"diff": result.Stdout}, nil
+			return execution.WorkspaceChanges(ctx, w.Path)
 		}
 	case "terminal.start":
 		w, e := x.workspace(p)
@@ -103,6 +98,11 @@ func (x *extensions) Call(ctx context.Context, method string, p Doc) (any, error
 	case "terminal.stop":
 		return Doc{}, x.terminals.Stop(str(p, "id"))
 	case "mcp.save":
+		var err error
+		p, err = sanitizeMCPConfig(p)
+		if err != nil {
+			return nil, err
+		}
 		if _, e := required(p, "name"); e != nil {
 			return nil, e
 		}
@@ -115,6 +115,9 @@ func (x *extensions) Call(ctx context.Context, method string, p Doc) (any, error
 		if str(p, "id") == "" {
 			p["id"] = store.ID()
 		} else {
+			if err := c.invalidateOAuthOnConfigChange(ctx, str(p, "id"), p); err != nil {
+				return nil, err
+			}
 			x.mcp.Disconnect(str(p, "id"))
 		}
 		p["status"] = "disconnected"
@@ -152,6 +155,9 @@ func (x *extensions) Call(ctx context.Context, method string, p Doc) (any, error
 		delete(d, "error")
 		return d, c.Store.Put("mcp", d)
 	case "mcp.delete":
+		if err := c.invalidateOAuthOnConfigChange(ctx, str(p, "id"), nil); err != nil {
+			return nil, err
+		}
 		x.mcp.Disconnect(str(p, "id"))
 		return Doc{}, c.Store.Delete("mcp", str(p, "id"))
 	}

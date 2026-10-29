@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-27T19:13:25.179808+00:00",
+  "workspace": "/Users/danielmercado/GemmaDesktop/.runtime/realistic-20261027-135431-ae475d/workspace",
+  "scope": {
+    "included": [
+      "README.md",
+      "tracker/*.py",
+      "tests/*.py"
+    ],
+    "hiddenAcceptanceRead": false,
+    "hiddenReportsRead": false,
+    "basis": "Only listed public source/README/tests and the documented in-memory public-API probe. No acceptance results used.",
+    "sourceEdited": false,
+    "publicSourceHashesUnchanged": true,
+    "unitSuiteExecuted": false,
+    "inferenceExecuted": false
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "1cac561d91ad9f7a8004f58af9934ce7893ce6075b523e21ce06bd60359df749",
+      "bytes": 2547,
+      "lines": 27
+    },
+    {
+      "path": "tracker/__init__.py",
+      "sha256": "cf1f4b0e3f26a34023d5c82e285dd60224acc6f56c872444cf00f7b74a758cd8",
+      "bytes": 112,
+      "lines": 5
+    },
+    {
+      "path": "tracker/cli.py",
+      "sha256": "667713bae647c955db8cf2bc2129a398154c3cf08f3cc4ae8f0dd980775774c7",
+      "bytes": 1715,
+      "lines": 44
+    },
+    {
+      "path": "tracker/csv_export.py",
+      "sha256": "eb9a50bc543c62a0aff5862ede1f449762e45bc0845251bf1346c43f165f0f73",
+      "bytes": 895,
+      "lines": 26
+    },
+    {
+      "path": "tracker/db.py",
+      "sha256": "44c0cf050975fe9176050977bd839eb9e4ae534005ae0afa0d478cec2ad99706",
+      "bytes": 508,
+      "lines": 17
+    },
+    {
+      "path": "tracker/models.py",
+      "sha256": "31721a2d1e94b5346e0f998acd7e712ea0a38449410948087ecbd4c0acc810d8",
+      "bytes": 331,
+      "lines": 21
+    },
+    {
+      "path": "tracker/repository.py",
+      "sha256": "1b1f4d5e4902d05343eb65ea7fbe53a5a39f18b10aabf0034d4c3c9b3099b36b",
+      "bytes": 2123,
+      "lines": 58
+    },
+    {
+      "path": "tracker/service.py",
+      "sha256": "3e493bc503ce44f3d6ec3582aef813e46974d27b73fab810304f9b5a7eaaa066",
+      "bytes": 2084,
+      "lines": 53
+    },
+    {
+      "path": "tests/__init__.py",
+      "sha256": "4ba4362ceed406c8448494900f44d1561a47edb40f1e20c6d845c311b9f18049",
+      "bytes": 75,
+      "lines": 1
+    },
+    {
+      "path": "tests/test_existing.py",
+      "sha256": "f9d8ce1fc037c0197a15097d2ea7e11f1148faf77273498e510eee818961e08d",
+      "bytes": 2002,
+      "lines": 51
+    },
+    {
+      "path": "tests/test_regressions.py",
+      "sha256": "0e07d0107fceb6ac91365e47557f47dd912a8921026837214acc5bd01d443c12",
+      "bytes": 6310,
+      "lines": 161
+    }
+  ],
+  "findings": [
+    {
+      "id": "export-status-validation",
+      "priority": "P2",
+      "title": "CSV export does not reject invalid status",
+      "locations": [
+        {
+          "path": "tracker/service.py",
+          "startLine": 50,
+          "endLine": 53
+        }
+      ],
+      "publicContract": {
+        "path": "README.md",
+        "startLine": 19,
+        "endLine": 19
+      },
+      "evidence": "export_csv passes status directly to repository.search and never calls _status; list_tasks calls _status(status, optional=True) at line38. An unknown status therefore selects no rows and reaches write_tasks instead of raising ValueError.",
+      "verification": "source inspection",
+      "suggestedFix": "Validate optional status before searching or opening the destination; add a public regression that invalid status raises and does not create/overwrite the destination."
+    },
+    {
+      "id": "export-arbitrary-row-ceiling",
+      "priority": "P2",
+      "title": "Export-all implementation has an arbitrary one-million-row limit",
+      "locations": [
+        {
+          "path": "tracker/service.py",
+          "startLine": 50,
+          "endLine": 53
+        }
+      ],
+      "publicContract": {
+        "path": "README.md",
+        "startLine": 17,
+        "endLine": 18
+      },
+      "evidence": "repository.search is called with limit=1000000. That is larger than normal listing limits but still truncates a larger matching dataset.",
+      "verification": "source inspection; no million-row dataset created",
+      "suggestedFix": "Provide an uncapped or correctly batched export path with the shared filters and deterministic order. Add a practical public >100-row regression to cover the explicitly described listing/export distinction."
+    },
+    {
+      "id": "unicode-literal-query",
+      "priority": "P2",
+      "title": "Python query lowercasing changes non-ASCII literal query characters",
+      "locations": [
+        {
+          "path": "tracker/repository.py",
+          "startLine": 15,
+          "endLine": 18
+        }
+      ],
+      "publicContract": {
+        "path": "README.md",
+        "startLine": 8,
+        "endLine": 8
+      },
+      "evidence": "Python query.lower() transforms É to é; SQLite LOWER(title) leaves É unchanged. With separate Éclair/id1 and éclair/id2 tasks, query É returns id2 instead of literal id1.",
+      "verification": "public TaskService API, in-memory SQLite, bytecode writing disabled",
+      "probe": {
+        "titles": [
+          "Éclair",
+          "éclair"
+        ],
+        "query": "É",
+        "expectedIDs": [
+          1
+        ],
+        "observedIDs": [
+          2
+        ],
+        "sqliteLowerUpper": "É",
+        "pythonLowerUpper": "é"
+      },
+      "suggestedFix": "Apply only ASCII-insensitive comparison while preserving other literal characters, identically in listing/count/export, and add exact non-ASCII query regressions."
+    }
+  ],
+  "publicTestQuality": {
+    "testCount": 10,
+    "tests": [
+      {
+        "path": "tests/test_existing.py",
+        "name": "test_create_and_read",
+        "line": 18
+      },
+      {
+        "path": "tests/test_existing.py",
+        "name": "test_status_update_survives_reopen",
+        "line": 22
+      },
+      {
+        "path": "tests/test_existing.py",
+        "name": "test_filters_are_combined",
+        "line": 29
+      },
+      {
+        "path": "tests/test_existing.py",
+        "name": "test_newest_first_with_stable_ties",
+        "line": 37
+      },
+      {
+        "path": "tests/test_existing.py",
+        "name": "test_invalid_values_are_rejected",
+        "line": 43
+      },
+      {
+        "path": "tests/test_regressions.py",
+        "name": "test_status_persistence",
+        "line": 24
+      },
+      {
+        "path": "tests/test_regressions.py",
+        "name": "test_filter_combination_and_literal_query",
+        "line": 33
+      },
+      {
+        "path": "tests/test_regressions.py",
+        "name": "test_pagination_order_and_total",
+        "line": 49
+      },
+      {
+        "path": "tests/test_regressions.py",
+        "name": "test_export_csv",
+        "line": 63
+      },
+      {
+        "path": "tests/test_regressions.py",
+        "name": "test_cli_export",
+        "line": 119
+      }
+    ],
+    "duplicateDefinitions": [],
+    "strengths": [
+      "Uses real on-disk SQLite with temporary directories.",
+      "Original tests cover durable status, AND filters and timestamp ties.",
+      "Added export test checks CSV fields and commas/quotes using csv.reader on newline-preserving streams.",
+      "CLI test invokes the public main(argv), captures JSON and verifies output file without subprocesses."
+    ],
+    "gaps": [
+      {
+        "locations": [
+          {
+            "path": "tests/test_regressions.py",
+            "startLine": 49,
+            "endLine": 61
+          }
+        ],
+        "detail": "Pagination-named test never supplies limit or offset, never filters, and reads all3 rows. It does not verify filter-before-paging, totals independent of paging, multiple pages or offsets beyond the end."
+      },
+      {
+        "locations": [
+          {
+            "path": "tests/test_regressions.py",
+            "startLine": 33,
+            "endLine": 47
+          }
+        ],
+        "detail": "Literal-query additions cover only %. Missing underscore, backslash, quotes, ASCII casing and preserved non-ASCII literal cases."
+      },
+      {
+        "locations": [
+          {
+            "path": "tests/test_regressions.py",
+            "startLine": 63,
+            "endLine": 117
+          }
+        ],
+        "detail": "Export coverage uses only3/4 tasks. Missing >100 rows, invalid status, query+status export filters, empty header-only export, direct serialize/write_tasks contracts, and service/writer row-count assertions."
+      },
+      {
+        "locations": [
+          {
+            "path": "tests/test_regressions.py",
+            "startLine": 103,
+            "endLine": 117
+          }
+        ],
+        "detail": "Special-character CSV test has commas/quotes but no embedded newline or Unicode title. No raw-byte assertions for no BOM/LF record terminators."
+      },
+      {
+        "locations": [
+          {
+            "path": "tests/test_regressions.py",
+            "startLine": 119,
+            "endLine": 158
+          }
+        ],
+        "detail": "CLI export coverage is one unfiltered task; does not exercise shared query/status filter semantics."
+      }
+    ]
+  },
+  "suggestedPublicFollowUp": "Public README/source review found three remaining contract gaps. TaskService.export_csv must reject invalid status before writing, just as list_tasks does. It must export all matches without the arbitrary limit=1000000 ceiling. In repository._where, query.lower() applies Unicode case folding while SQLite LOWER only folds ASCII; preserve non-ASCII literal characters while making ASCII letters case-insensitive. For example, with titles Éclair and éclair, query É must match the first, not the second.\n\nExtend only tests/test_regressions.py with focused tests for those cases and the README requirements currently uncovered: real limit/offset pages with filtered totals and tied timestamps; literal %, _, backslash and quote queries; exports beyond 100 tasks; empty exports; exact multiline/Unicode CSV round trips, row counts, UTF-8 without BOM and LF records; and filtered CLI export. Exercise the CLI by calling tracker.cli.main(argv) in process and capturing stdout; do not spawn subprocesses. Keep exact title assertions and parse CSV through a stream opened with newline=\"\" or io.StringIO, preserving embedded newlines. Preserve original tests, README, __init__.py, public signatures, parameterized SQL and the existing scope. Re-read current hashes before edits, run the same exact prescribed unittest command under the existing read-only command policy, inspect its output, and summarize only observed results.",
+  "limits": "This is a bounded public-contract review, not an independent acceptance verdict. The only executed probe used TaskService with an in-memory database; public unit tests were inspected but not run. Frozen workspace file hashes were rechecked unchanged before saving this report.",
+  "followUpFile": {
+    "path": "/Users/danielmercado/GemmaDesktop/.runtime/realistic-20261027-135431-ae475d/FOLLOWUP-PUBLIC-REVIEW.txt",
+    "sha256": "bed42b4eafda4436174278891fb2485cafd54a9ee0a4c400f92d11db589deef4"
+  }
+}

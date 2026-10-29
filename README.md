@@ -1,69 +1,122 @@
 # Gemma Desktop
 
-A local agent workbench for macOS and Apple Silicon. Go owns inference, orchestration, permissions, persistence, and tool execution. A Wails 3 window hosts the React interface. Gemma runs through your local Ollama installation; the app rejects remote inference endpoints and cloud model aliases.
+A local Gemma agent in a macOS desktop app, built with Google's Agent Development Kit (ADK), Ollama, Go, and React.
 
-This is an independent project, unaffiliated with Google. The original brief and concept image are preserved in [docs/reference](docs/reference/product-specification-v1.md) and [design/reference](design/reference/gemma-desktop-concept.png).
+Pick a project, give Gemma a task, review its proposed actions, and watch it work with your files. This is a personal project exploring how a local model, agent tools, and a desktop interface fit together.
 
-## Run
+![Gemma Desktop repairing a small Python project, with the conversation and runtime panel visible](docs/images/agent-task.jpg)
 
-1. Start Ollama locally (`ollama serve`, or the Ollama application).
-2. Install a local model, for example `ollama pull gemma4:12b-mlx`. The Models screen also supports downloads, cancellation, load, unload, and deletion.
-3. Open `dist/Gemma Desktop.app` after building.
-4. Choose a project directory, create a conversation, and send a task. Consequential tool calls appear as approvals with their exact arguments. Denying a request returns an error to the agent.
+*Recorded in the native app on October 29, 2026. The receipt includes the initially failing test run before the fix. Model answers and speed vary by task, model, and hardware.*
 
-The app defaults to `http://127.0.0.1:11434`, a 32K context, 24 model steps, and approval-required execution. Model weights are managed by Ollama outside the app bundle. Download size is not a promise of working memory usage: context, the runner, and other active applications affect memory requirements.
+## What you can do
 
-Closing the window hides it and lets active work continue in the app process. Clicking the Dock icon reopens it. Quitting cancels active work. There is no independent background daemon.
+- **Work with a local agent:** streamed chat, saved conversations, file inspection and editing, command approvals, and visible tool results.
+- **See the work:** browse files, inspect diffs, view artifacts, and follow execution activity.
+- **Build agents and workflows:** configure instructions and tools, import skills, connect MCP servers, and compose ADK workflows visually.
+- **Manage local models:** download, load, and unload Ollama models; inspect runtime and memory information.
+- **Explore visual retrieval:** ask questions about short local videos and jump to cited frames.
+- **Experiment with harnesses:** compare frozen agent configurations in Harness Lab, including the experimental Harness² integration.
 
-## Build and test
+Inference uses a local Ollama endpoint. Model downloads, optional browser tools, MCP connections, and explicit dependency setup can use the network. This is an independent project, unaffiliated with Google or the other upstream projects.
 
-Requires an Apple Silicon Mac, Xcode command-line development tools, Node 22.12+ (or another supported Vite runtime), and a Go bootstrap installation. Scripts select Go 1.26.10 and keep its caches inside this project. The current target machine and exact verification evidence are recorded in [docs/implementation/STATUS.md](docs/implementation/STATUS.md).
+## Build and run
+
+This release is intended for **building from source on Apple Silicon**. It produces a locally ad-hoc-signed app; it is not a notarized download.
+
+You need:
+
+- An Apple Silicon Mac. The app targets **macOS 14+**; testing was performed on one **64 GiB Apple Silicon Mac**, not a range of machines. A minimum working RAM configuration has not been established.
+- Xcode Command Line Tools (`xcode-select --install`).
+- Go with toolchain download support. The build selects **Go 1.26.10** automatically.
+- **Node.js 22.12+ within the 22.x line, or 24.x**, with npm.
+- **Python 3** for the build helpers. Use a Homebrew Python installation for the restricted-executor demo below; the upstream Harness² mode separately requires Python 3.12 or 3.13.
+- **Ollama** running locally and a downloaded model. The recorded runtime qualification used **Ollama 0.40.11** and `gemma4:12b-mlx` / `gemma4:26b-mlx`.
+
+Use a Git checkout; the build records its commit and working tree. GitHub’s “Download ZIP” omits that metadata and is not supported by the build helper. From the checkout:
 
 ```sh
-./scripts/icon.sh             # optional: regenerate the original app icon
-./scripts/build.sh            # React build, native arm64 app, ad-hoc signature
-./scripts/test.sh             # Go race tests, frontend tests and production build
-./scripts/package-local.sh    # verified local app archive and SHA-256 checksum
-./scripts/dev.sh              # embedded UI + headless app at 127.0.0.1:8787
+# Start the Ollama app, or run `ollama serve` in another terminal.
+ollama pull gemma4:12b-mlx
+
+./scripts/build.sh
+open "dist/Gemma Desktop.app"
 ```
 
-Development mode is explicit, loopback-only, rejects foreign origins/hosts, and is absent from an ordinary app launch. Core logic is independent of Wails in `internal/app`, `internal/engine`, and the other internal packages. Tests may need permission to create local listeners, launch Chrome, or apply a macOS sandbox when run inside another sandbox.
+The first build downloads the pinned Go and npm dependencies. Model weights are stored by Ollama outside this repository and app bundle. Available memory depends on the model, context size, and other running applications; model download size is not the memory requirement.
 
-With the development server and a real local Gemma model running:
+In the app, choose a workspace folder, create a conversation, and send a task. The default profile uses approval-required execution, a 32K context, and a 24-step budget. Review the arguments of proposed edits and commands before allowing them. Closing the window hides it; quitting the app cancels active work.
+
+### Try a small task
+
+Install Homebrew Python (`brew install python`) if needed. The restricted executor supports its `/opt/homebrew` installation; Python.org framework installations under `/Library/Frameworks` are outside the allowed runtime paths. Build helpers can use either installation.
+
+Copy the included demo into a disposable folder and confirm its three tests fail:
 
 ```sh
-python3 scripts/e2e.py
-python3 scripts/workflow-e2e.py
-GEMMA_LIVE_MODEL=gemma4:12b-mlx ./scripts/live-model-test.sh
+DEMO_DIR="$(mktemp -d /tmp/gemma-desktop-demo.XXXXXX)"
+cp examples/first-task/*.py "$DEMO_DIR/"
+(cd "$DEMO_DIR" && /opt/homebrew/bin/python3 -m unittest -v)
+open "$DEMO_DIR"
 ```
 
-The coding test creates its own small failing project under `.runtime`, accepts only a narrowly defined edit and Python test command, and independently reruns the tests. It writes actual evidence to `docs/evidence/live-coding-task.json`. It does not modify a user's project.
+Add that folder as a workspace in Gemma Desktop, then send:
 
-## Workbench
+> Inspect calculator.py and test_calculator.py. Fix the addition function without changing the tests. Run python3 -m unittest -v and report the observed result.
 
-- **Chats:** streamed answers, preserved conversation context, file attachments, run cancellation, approvals, chronological tool activity, and saved results.
-- **Files and changes:** scoped file browsing and Monaco editing with revision checks; Monaco comparison of Git changes and recorded file artifacts.
-- **Agents:** named instructions, local model choice, step budgets, and permission modes. The global read-only mode remains authoritative.
-- **Workflows:** React Flow editing backed by validated ADK graphs. Agent, condition, approval, parallel, join, output, and dynamic fan-out nodes are compiled in Go. The frontend does not schedule work.
-- **Models:** real Ollama inventory, model downloads and residency controls, host memory, and runtime diagnostics.
-- **Tools:** local stdio and remote HTTP MCP configuration, workspace-bound discovery and explicit invocation approval. Browser tools use an isolated Chrome profile and approved-origin networking.
-- **Skills:** copies a supplied SKILL.md into application storage and exposes it through ADK's skill toolset. Import does not authorize scripts or expand permissions.
-- **Artifacts:** retained before/after file content, generated files, and browser screenshots; native open/reveal actions.
-- **Harness Lab:** repeatable baseline/candidate comparisons on a bounded frozen text snapshot. It records configuration, input digest, output, timing, usage, and tool-call counts. It grants read-only tools and does not present execution success as an objective quality score.
-- **Terminal:** an explicitly approved interactive user shell, separate from agent execution. Agents have no terminal-input API.
+Approve the edit to `calculator.py` and the test command if their arguments match the task. A successful demonstration ends with three passing tests and a visible file change. You can independently rerun the same command in the folder. Local models can make mistakes or need a follow-up; an assistant's claim of success is not the test result.
 
-## Boundaries and recovery
+### Optional setup
 
-See [docs/architecture.md](docs/architecture.md) for the ownership model and [docs/security.md](docs/security.md) for precise operational limits.
+| Capability | Additional requirements |
+| --- | --- |
+| Browser tools | Installed Google Chrome and explicitly approved origins |
+| Docker command execution | Running Docker Desktop and the [installed toolchain image](internal/execution/README.md#explicit-toolchain-image-setup) |
+| Visual video questions | FFmpeg/ffprobe, a vision answer model, and the retrieval model described in the [workbench guide](docs/workbench.md#visual-video-questions) |
+| Upstream Harness² experiments | Python 3.12/3.13 and the [campaign workflow](docs/implementation/HARNESS_CAMPAIGN.md) |
 
-Workspace tools reject traversal, symlinks, protected credential paths and unsafe file types. Edits require a previously read hash; concurrent external changes cause conflicts. Agent commands run in a macOS Seatbelt profile with no network, no credential directories, a private temporary home, bounded output, and **no child process creation**. Commands requiring subprocess trees are restricted until a broader execution environment is qualified. There is no unrestricted fallback. The user terminal intentionally has user-account privileges and asks for approval separately.
+These are optional for basic chat and the small Python demo. The default restricted command executor allows single-process commands; projects needing subprocesses should use the Docker profile.
 
-SQLite stores the application journal, configurations, approvals, tool intents/outcomes, artifacts, and full ADK checkpoints. After an unexpected exit, unfinished work is marked interrupted; uncertain tool outcomes are not replayed. A supported native workflow approval checkpoint can be explicitly resumed with its frozen graph and agent definitions. Arbitrary process crashes cannot be safely resumed as if external actions had never occurred.
+## How it works
 
-No raw generated HTML, remote web pages, or active SVG is embedded in the privileged application webview. Markdown disables raw HTML. Monaco workers and frontend assets are bundled locally.
+```text
+React interface → Wails desktop bridge → Go application service
+                                        ├─ ADK agents and workflows
+                                        │   ├─ Ollama → local Gemma
+                                        │   └─ governed tools and approvals
+                                        └─ SQLite conversations and run records
+```
 
-## Distribution
+Go owns agent execution, permissions, persistence, and tool effects. React presents the state. The Ollama adapter connects local inference to ADK; tools go through host-side validation and approval. Read the [architecture](docs/architecture.md) for the package map and [security boundaries](docs/security.md) for the execution model.
 
-`scripts/build.sh` creates an ad-hoc-signed local app without Developer ID credentials. This is suitable for validation on this Mac. `scripts/package-local.sh` archives that app with a checksum. It is not a notarized public release. `scripts/distribute.sh` uses an explicitly supplied Developer ID identity and a preconfigured notarytool keychain profile; secrets are not written into the repository. Only run it when those distribution credentials and release intent are available.
+## Status and limitations
 
-Dependencies remain under their upstream licenses. See [NOTICE.md](NOTICE.md). The research reports are design evidence; implemented behavior and verification evidence take precedence over proposed research assumptions.
+**Feature work is complete for this experimental release.** The focus is a usable local-agent example, with documented limits. Cross-platform support and notarized distribution are outside this release's scope.
+
+The recorded October 28 qualification passed 265 top-level Go tests (529 including subtests), 65 frontend tests, 33 script tests, and four Harness adapter tests. Separate checks covered real Docker execution and local-model workflows. Those are recorded results, not a guarantee for every machine or task. See the [verification summary](docs/implementation/STATUS.md) and [release preparation record](docs/release-readiness.md).
+
+The Harness² campaign is complete and **did not qualify an improved agent**: baseline 0/36 automated passes, candidate 3/36; independent review rejected promotion. The baseline was retained. This integration and its negative result are included as an experiment, not a claim of reliable autonomous coding or a reproduction of published benchmarks. See the [campaign findings](docs/evidence/phase2-qualification.md).
+
+Other boundaries include unqualified external OAuth providers, sampled-frame video retrieval without audio understanding, and model/runtime-dependent context behavior. Details live in the [workbench guide](docs/workbench.md).
+
+## Development
+
+```sh
+./scripts/test.sh             # race tests, script/frontend tests, frontend build
+./scripts/dev.sh              # development app at http://127.0.0.1:8787
+./scripts/package-local.sh    # local app archive and checksum after building
+```
+
+Build once before running the development command. The general test suite does not run an inference campaign or install Docker images. Some integration tests are opt-in and require local services or macOS process permissions. Live-model checks and their evidence rules are documented in the [workbench guide](docs/workbench.md#build-and-test).
+
+For a bug report, include your macOS version, chip/RAM, app revision, Ollama version, model name, and a minimal reproduction. Remove private prompts, file contents, credentials, and local paths from attached logs.
+
+## Documentation
+
+- [Workbench guide](docs/workbench.md) — detailed features, operation, and recovery
+- [Architecture](docs/architecture.md) · [Security](docs/security.md)
+- [Execution setup](internal/execution/README.md) · [Capability operations](docs/implementation/CAPABILITY_OPERATIONS.md)
+- [Harness campaign guide](docs/implementation/HARNESS_CAMPAIGN.md) · [Evidence index](docs/evidence/README.md)
+
+## License
+
+Original application code and documentation are [MIT licensed](LICENSE). Third-party components retain their respective licenses; see [NOTICE.md](NOTICE.md). Gemma model weights are obtained separately and retain their publisher's terms.

@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-27T18:26:11.238269+00:00",
+  "testsPassed": 41,
+  "typecheckPassed": true,
+  "buildPassed": true,
+  "frontendEntry": "index-DVBWH3EK.js",
+  "log": "docs/evidence/frontend-final-tests.txt",
+  "scope": "Frontend regression fixtures; native outcome and fan-out checks separately recorded",
+  "finalBuildLog": ".cache/final-build.log"
+}

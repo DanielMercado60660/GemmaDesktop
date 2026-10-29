@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "/root/ollama_model_research",
+  "recordedAt": "2026-10-28T06:32:14.561638+00:00",
+  "status": "acceptance-gap-test-prepared-live-execution-pending",
+  "scope": "Bounded audit of executor tests, qualification logs and only public development-fixture source fields plus historical public solver receipts. No hidden grader assertions, probe payloads or reference solutions accessed. No active campaign workspace, candidate execution/import, Docker or inference operation.",
+  "existingEvidence": {
+    "sources": [
+      {
+        "path": "internal/execution/docker_test.go",
+        "sha256": "13d8215819b070b3d2ee7c259e522de3b6fd7ffe61927ee1c1888ab41096d134"
+      },
+      {
+        "path": "internal/execution/sqlite_test.go",
+        "sha256": "7f45991d5d3775e57708387a159d04d961f68bb1d7a20abaabc32a60148136c1"
+      },
+      {
+        "path": "internal/execution/dependencies_test.go",
+        "sha256": "4bbcf5720711c80987c75a8494662bfbe10d2a76a1f16eecbe4bae94b7a7f257"
+      }
+    ],
+    "logs": [
+      {
+        "path": "docs/evidence/phase2-executor-qualification-summary.json",
+        "sha256": "3221fcda1245595cce249f43403a1fdfc2f0a9822e2598cae0e18de9664af53e"
+      },
+      {
+        "path": "docs/evidence/phase2-executor-qualification.jsonl",
+        "sha256": "dbf7e5f6031b72dafb59e4f61d3b9a6d5bb5dea2bf9df9e9fe6744793ccec02c"
+      },
+      {
+        "path": "docs/evidence/harness-phase2-final-fixtures-and-cleanup-tests.txt",
+        "sha256": "eea38f651db0ed7b10145100e27879a37a67ce957bebda60469905e2bba16ead"
+      }
+    ],
+    "publicDevelopmentFiles": [
+      {
+        "fixture": "node-inventory",
+        "split": "development",
+        "publicPath": "package.json",
+        "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+        "bytes": 62
+      },
+      {
+        "fixture": "node-inventory",
+        "split": "development",
+        "publicPath": "run.cjs",
+        "sha256": "08e562e0f1783bbeb8f2601ec01ec5b13de3502bc4ffe94f66ab4367cf45a2d8",
+        "bytes": 530
+      },
+      {
+        "fixture": "node-inventory",
+        "split": "development",
+        "publicPath": "src/main.ts",
+        "sha256": "b24b6e0754c0950592a8ae0520ddfc0915ef82fcea580bcfe8ad329c4b8a26ed",
+        "bytes": 834
+      },
+      {
+        "fixture": "node-inventory",
+        "split": "development",
+        "publicPath": "src/worker.ts",
+        "sha256": "70888d07915bcd52e3080edd0d87dfbd458d35daa4bdb890b409dfbf3afebb90",
+        "bytes": 317
+      },
+      {
+        "fixture": "node-inventory",
+        "split": "development",
+        "publicPath": "public_test.cjs",
+        "sha256": "8c0b1add81337877009332b076cb984ebc55b1cbdfaf2220acb45923785ef6a0",
+        "bytes": 505
+      },
+      {
+        "fixture": "python-ledger",
+        "split": "development",
+        "publicPath": "main.py",
+        "sha256": "f88b8bae4723ad8605152085a72fed2697fcb885c03f650811db1030a2de8cc6",
+        "bytes": 432
+      },
+      {
+        "fixture": "python-ledger",
+        "split": "development",
+        "publicPath": "database.py",
+        "sha256": "72a7fd31274de6b62b1762621828e597da3e70c1086e10c96cb64689ce5d22d5",
+        "bytes": 211
+      },
+      {
+        "fixture": "python-ledger",
+        "split": "development",
+        "publicPath": "public_test.py",
+        "sha256": "4b1bdcda4792c79c418efae712f00de83ece63744c919fef2e097489a7fbea2a",
+        "bytes": 1585
+      }
+    ],
+    "historicalPublicReceipts": [
+      {
+        "taskId": "python-ledger",
+        "trialId": "e554367506210ce23712c47809c97298",
+        "callId": "call_v4x038kp",
+        "executable": "python3",
+        "argv": [
+          "public_test.py"
+        ],
+        "exitCode": 0,
+        "environment": "docker-linux",
+        "readOnly": false,
+        "publication": "applied",
+        "stdout": "2 public cases passed\ncross-process persistence passed\nservice-layer atomic validation passed\n",
+        "qualification": "Historical public solver receipt, not independently rerun now; writable receipt is not a final read-only verification pass."
+      },
+      {
+        "taskId": "python-ledger",
+        "trialId": "e554367506210ce23712c47809c97298",
+        "callId": "call_va81k5s5",
+        "executable": "python3",
+        "argv": [
+          "public_test.py"
+        ],
+        "exitCode": 0,
+        "environment": "docker-linux",
+        "readOnly": false,
+        "publication": "applied",
+        "stdout": "2 public cases passed\ncross-process persistence passed\nservice-layer atomic validation passed\n",
+        "qualification": "Historical public solver receipt, not independently rerun now; writable receipt is not a final read-only verification pass."
+      },
+      {
+        "taskId": "node-inventory",
+        "trialId": "a3b7c8faef0194f274f16fc23f7eff8a",
+        "callId": "call_lh0qmkzl",
+        "executable": "node",
+        "argv": [
+          "public_test.cjs"
+        ],
+        "exitCode": 0,
+        "environment": "docker-linux",
+        "readOnly": false,
+        "publication": "applied",
+        "stdout": "2 public cases passed\n",
+        "qualification": "Historical public solver receipt, not independently rerun now; writable receipt is not a final read-only verification pass."
+      },
+      {
+        "taskId": "node-inventory",
+        "trialId": "a3b7c8faef0194f274f16fc23f7eff8a",
+        "callId": "call_6nltpgej",
+        "executable": "node",
+        "argv": [
+          "public_test.cjs"
+        ],
+        "exitCode": 0,
+        "environment": "docker-linux",
+        "readOnly": false,
+        "publication": "applied",
+        "stdout": "2 public cases passed\n4 regression cases passed\n",
+        "qualification": "Historical public solver receipt, not independently rerun now; writable receipt is not a final read-only verification pass."
+      }
+    ],
+    "npmBuild": "No exact npm build-script execution found in the bounded executor/public-fixture qualification evidence. The public Node package has only a test script. run.cjs directly invokes tsc into temporary output, then a program using worker_threads; successful Docker public-test receipts support that direct compiler/worker route. Existing frontend npm run build records concern the host product frontend, not the isolated coding executor.",
+    "pythonMultiprocessing": "Existing Docker fixture explicitly uses subprocess.run and fork/setsid cancellation; public Python development tests use subprocess to reopen committed SQLite state. No literal multiprocessing API or spawn-context qualification was found in the audited sources/logs. Subprocess and multiprocessing are kept distinct."
+  },
+  "newTest": {
+    "path": "internal/execution/docker_workflows_test.go",
+    "sha256": "498062f30cbb0d0ccf399ed79211b41328fc820d16eb3dcf65c40c0262ef3f2a",
+    "name": "TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite",
+    "optIn": "GEMMA_TEST_DOCKER_IMAGE must be an installed immutable image digest; live execution remains gated on root explicit campaign completion and permission.",
+    "node": "Actual real-executor request runs npm run build with offline/no-audit/no-fund/update-notifier-disabled flags. The package build script asserts npm_lifecycle_event=build, invokes installed tsc to compile two local TypeScript modules into private tmp, runs a worker_threads Worker from compiled output, asserts value42 and positive worker thread ID, then observes the same result via a temporary guest-only127.0.0.1 HTTP server/client. No dependency installation or network access.",
+    "python": "Actual real-executor request runs a guarded Python file using multiprocessing.get_context(spawn). Two child processes write different rows into the same private WAL SQLite database and return distinct PIDs/start-method receipts. Both children must join exit0. A fresh subprocess reopens the database and asserts exact ordered rows and integrity_check=ok. Children are terminated/killed and joined on failure.",
+    "authorityAndResources": "Independent embedded test programs only, no candidate/fixture solution reused. Each Request has ReadOnly:true,90-second command timeout,2-minute outer timeout and16KiB bounded output. Production Docker executor supplies4CPUs/8GiB/256PIDs/networknone/read-only root and source snapshot/private tmp. Before/after original source manifest must match; process receipt must report read_only,exit0,no cancellation/truncation; no owner-labelled guest may remain.",
+    "cleanup": "Synchronous Run must unwind before recovery. Fresh bounded cleanup reconciles owned guests/journals, explicitly releases the disposable workspace cache and removes the private fixture root only after success. Failure retains/logs recovery state; ordinary project caches and campaign state are untouched."
+  },
+  "sourceOnlyChecks": {
+    "go": {
+      "path": "docs/evidence/phase2-build-multiprocessing-acceptance/compile-skip.jsonl",
+      "sha256": "6c30032addc04bf59165e0191a9f30295789bfb0883cd308e6bfd80d90c711c7",
+      "command": "env -u GEMMA_TEST_DOCKER_IMAGE GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race -json ./internal/execution -run ^TestDockerLiveNPMBuildWorkerAndPythonSpawnSQLite$ -count=1",
+      "compiled": true,
+      "liveTestSkipped": true,
+      "liveAssertionsExecuted": false
+    },
+    "syntax": {
+      "path": "docs/evidence/phase2-build-multiprocessing-acceptance/syntax-checks.json",
+      "sha256": "1802fdd237f97006a75bcca19d41d6bb3d75b5979d74362308d34bbd66143038"
+    },
+    "qualification": "Go compiles and skips with opt-in unset. Own embedded JavaScript passed node --check, Python passed ast.parse; neither program was executed. TypeScript/runtime/process semantics remain pending the real Docker run."
+  },
+  "limits": [
+    "This closes a prepared-test coverage gap only. It does not yet prove npm lifecycle, multiprocessing spawn, shared SQLite concurrency or guest loopback behavior under the actual Docker runtime.",
+    "After explicit campaign-completed authorization, run the exact opt-in test once with the pinned campaign image and retain complete log/exit/source identity as separate live evidence. Do not relabel this compile/skip as a pass.",
+    "No production source, campaign, frozen grades, Docker settings/images/services or frontend dist changed. Existing evidence is preserved.",
+    "Guest loopback HTTP remains inside the isolated container; it does not expose a host port or grant external networking.",
+    "Executor acceptance fixtures are independent synthetic workloads, not evidence that a model completed a development task or that a Harness revision qualifies for promotion."
+  ]
+}

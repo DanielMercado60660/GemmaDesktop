@@ -1,0 +1,1 @@
+{"private": true, "scripts": {"test": "node public_test.cjs"}}

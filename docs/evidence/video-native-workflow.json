@@ -1,0 +1,195 @@
+{
+  "recordedAt": "2026-10-27T20:53:22.629214+00:00",
+  "profile": "/Users/danielmercado/GemmaDesktop/.runtime/video-runtime-qa",
+  "scope": "Native Wails app through CUA, plus read-only saved state. Final visual-polish screenshot recorded separately.",
+  "restart": {
+    "savedClipReady": true,
+    "sameReadyIndex": true,
+    "persistedEarlierAnswers": 7
+  },
+  "nativeCancellation": {
+    "jobs": [
+      {
+        "id": "92f6f05fcd9cafabf05b1ecbfa0d8daa",
+        "workspaceId": "8d2a4c5f6c4e85127367790ec434c725",
+        "clipId": "c635b2f663a132bba09ba4c678e1c183",
+        "kind": "index",
+        "status": "cancelled",
+        "stage": "embedding",
+        "completed": 6,
+        "total": 30,
+        "error": "Ollama request: Post \"http://127.0.0.1:11434/api/show\": context canceled",
+        "createdAt": "2026-10-27T20:52:36.343947Z",
+        "finishedAt": "2026-10-27T20:52:38.54548Z"
+      }
+    ],
+    "stagesObserved": [
+      "index working",
+      "embedding cancelled 6/30",
+      "ready old index retained"
+    ],
+    "unpublishedIndexes": 0,
+    "limits": "UI cancellation and saved state verified. GPU kernel completion latency was not measured."
+  },
+  "nativeQuestion": [
+    {
+      "id": "df63bd1d829f38f657c3f44b1aeed8e7",
+      "workspaceId": "8d2a4c5f6c4e85127367790ec434c725",
+      "clipId": "c635b2f663a132bba09ba4c678e1c183",
+      "jobId": "42ff22501aaaa2e17052eb7f11f73a61",
+      "question": "How many purple objects are visible, and what shape are they?",
+      "text": "There are two purple objects visible in frames [F002, F003], and they are circular in shape.",
+      "model": "gemma4:12b-mlx",
+      "modelDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+      "runtimeVersion": "0.40.11",
+      "indexId": "e5267db84f2823ca2eb09b0759d24df1",
+      "status": "completed",
+      "evidence": [
+        {
+          "frameId": "848cdbdbe3278a2b991ada01bb646d18",
+          "timeSeconds": 5,
+          "score": 0.5966930545998816,
+          "sha256": "ea93afd361b138f6bee991612b4f83921f49e086a0f5f891ae67f3efa8f00b71",
+          "label": "F001"
+        },
+        {
+          "frameId": "9a0b3b6097211f18771a177231bca5e8",
+          "timeSeconds": 21,
+          "score": 0.6983843492287857,
+          "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+          "label": "F002"
+        },
+        {
+          "frameId": "2f985fc941fef582c8df44286798efdb",
+          "timeSeconds": 23,
+          "score": 0.6983843492287857,
+          "sha256": "1bde3b6320957c5f109d9dee6aa8697c21dc56b917ecff33aad923ae54b01c0b",
+          "label": "F003"
+        }
+      ],
+      "citations": [
+        {
+          "frameId": "9a0b3b6097211f18771a177231bca5e8",
+          "timeSeconds": 21,
+          "label": "F002"
+        },
+        {
+          "frameId": "2f985fc941fef582c8df44286798efdb",
+          "timeSeconds": 23,
+          "label": "F003"
+        }
+      ],
+      "createdAt": "2026-10-27T20:52:52.777326Z"
+    }
+  ],
+  "nativeObservations": [
+    "Playback displayed the red circle and advanced to11seconds before pause.",
+    "F002 citation moved player to21seconds; correct two purple circles visible.",
+    "Final native bridge ask using12B completed with two purple circular objects and validated F002/F003 citations."
+  ],
+  "resourceSnapshot": {
+    "kind": "point-in-time after native12Banswer; not peak or delta",
+    "swap": "vm.swapusage: total = 1024.00M  used = 131.19M  free = 892.81M  (encrypted)",
+    "ollamaPS": {
+      "models": [
+        {
+          "name": "gemma4:12b-mlx",
+          "model": "gemma4:12b-mlx",
+          "size": 8343961540,
+          "digest": "ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+          "details": {
+            "parent_model": "",
+            "format": "safetensors",
+            "family": "",
+            "families": null,
+            "parameter_size": "",
+            "quantization_level": ""
+          },
+          "expires_at": "2026-10-27T15:58:03.086878-05:00",
+          "size_vram": 8343961540,
+          "context_length": 16384,
+          "runner": "mlx"
+        },
+        {
+          "name": "embeddinggemma-2:440m-mxfp8-text-vision",
+          "model": "embeddinggemma-2:440m-mxfp8-text-vision",
+          "size": 745474144,
+          "digest": "fc94c176e27b3109d869852b27871835b890dcc6742b1ef3d0fb2341f61e1263",
+          "details": {
+            "parent_model": "",
+            "format": "safetensors",
+            "family": "",
+            "families": null,
+            "parameter_size": "",
+            "quantization_level": "mxfp8"
+          },
+          "expires_at": "2026-10-27T15:57:52.879088-05:00",
+          "size_vram": 745474144,
+          "context_length": 8192,
+          "runner": "mlx"
+        },
+        {
+          "name": "gemma4:26b-mlx",
+          "model": "gemma4:26b-mlx",
+          "size": 25937303268,
+          "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+          "details": {
+            "parent_model": "",
+            "format": "safetensors",
+            "family": "",
+            "families": null,
+            "parameter_size": "",
+            "quantization_level": "nvfp4"
+          },
+          "expires_at": "2026-10-27T15:55:56.533696-05:00",
+          "size_vram": 25937303268,
+          "context_length": 16384,
+          "runner": "mlx"
+        }
+      ]
+    },
+    "mediaFileBytes": 1167510
+  },
+  "normalProfileSettings": {
+    "unchanged": true,
+    "current": {
+      "contextSize": 46080,
+      "defaultModel": "gemma4:12b-mlx",
+      "id": "default",
+      "maxSteps": 30,
+      "mode": "approval",
+      "ollamaUrl": "http://127.0.0.1:11434",
+      "theme": "dark"
+    },
+    "bodySHA256": "a5897e0409c9c61ae74648af632bc9a4e9bdce73549f37b639d2af87a63b1927",
+    "scope": "Compared saved settings object; no original whole-database baseline was recorded."
+  },
+  "finalPackagedPresentationReview": {
+    "verifiedAt": "2026-10-27T20:56:00.043040+00:00",
+    "binarySHA256": "2d7f71b332a41020481ba1b10855d51df505f89e93515981ec138b9c8da9fa82",
+    "sourceFingerprint": "eba46c8d7006450402a93934750af2f5017c8c6d05a53c15e5f25561504bea54",
+    "observations": [
+      "Final packaged Wails window loads ready30-frame index after restart.",
+      "Cancellation is plain language and old index remains available.",
+      "12Banswer persists with F002/F003 citations and all three correct evidence thumbnails.",
+      "Clicking evidence F001 seeks to5seconds; F002 citation then seeks to21seconds, confirmed by native playback elapsed/slider and purple-circle pixels.",
+      "Player height is capped; only newest finished job appears."
+    ],
+    "screenshots": [
+      {
+        "path": "docs/evidence/screenshots/native-video-citation-seek.png",
+        "sha256": "65b42df866d2d094cebcdad39d4bc15a8d3b7072af1693e22d4c377906da0d11"
+      },
+      {
+        "path": "docs/evidence/screenshots/native-video-answer-evidence.png",
+        "sha256": "a3d7e686cf90d1945d6a87fc7feb3966e1b2da8fd7ddf318bda9652a980870e7"
+      }
+    ]
+  },
+  "runtimeOwnership": {
+    "nativeQAWindow": "left open paused on saved answer for review; profile .runtime/video-runtime-qa",
+    "developmentServers": "stopped",
+    "ollama": "user installation left running; no replacement daemon",
+    "inferenceJobs": "none active"
+  }
+}

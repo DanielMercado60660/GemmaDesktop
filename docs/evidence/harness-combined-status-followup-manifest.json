@@ -1,0 +1,49 @@
+{
+  "createdAt": "2026-10-28T00:44:12.942433+00:00",
+  "scope": "Combined source-only native and upstream experiment status metadata correction, relative to source before either status follow-up. No packaged binary/resources/dist rebuilt; live campaign remains on immutable packaged binary identified by parent as prefix 42bd. Live results must not be attributed to this follow-up build.",
+  "productionFiles": [
+    {
+      "path": "internal/harness/manager.go",
+      "beforeSha256": "1b67cbdf23fbf0d3f53ea3f2d2147371052d8498068af8febdd9fa8d5c6d521d",
+      "afterSha256": "40315abc61c81afbfd7a419ea9f869d92cb7a251418e2d43226df6a44f34712d"
+    },
+    {
+      "path": "internal/harness/packets.go",
+      "beforeSha256": "7b7342c8bcd2d418fdfb55277f20658648f55d5bff1820d1a69c1b4f75fcff69",
+      "afterSha256": "9e777a8df435eabfd9245e250d30ef3ffe718cc1df6f6b9436a0a05d786e07be"
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "internal/harness/native_status_test.go",
+      "sha256": "d1a6feffa872c9202a4719c3ffdf7537b94fa70f6e8b0446f1601c9fc1aa2c8c",
+      "newFile": true
+    },
+    {
+      "path": "internal/app/harness_status_test.go",
+      "sha256": "4b2863895073ba57e6dd8f26c011911f0e582049b6247fda595afe2eb45ff204",
+      "newFile": true
+    }
+  ],
+  "diff": "docs/evidence/harness-combined-status-followup.patch",
+  "diffSha256": "7117c92b319b135d7c6da4409cb0e9fa5cdc80a0206a4e4a239d5f1afbe712f5",
+  "nativeRegressionBefore": "docs/evidence/harness-native-status-before-tests.txt",
+  "upstreamRegressionBefore": "docs/evidence/harness-upstream-status-before-tests.txt",
+  "intermediateRaceFinding": "docs/evidence/harness-combined-status-intermediate-race-tests.txt",
+  "regressionAfter": "docs/evidence/harness-combined-status-followup-tests.txt",
+  "tests": {
+    "topLevelPassExecutions": 21,
+    "includingSubtestsPassExecutions": 33,
+    "failed": 0,
+    "repetitions": 3
+  },
+  "notes": [
+    "New adapter-start status uses a private snapshot so returning Advance metadata is not concurrently mutated.",
+    "Terminal failure updates serialize with cancellation.",
+    "Pinned upstream Python source, RPC protocol, stage order, solver, grading and immutable proposal/spec hashes are unchanged."
+  ],
+  "inference": false,
+  "runtimeDataModified": false,
+  "frontendModified": false,
+  "packagedResourcesModified": false
+}

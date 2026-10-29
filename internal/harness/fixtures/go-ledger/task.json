@@ -1,0 +1,138 @@
+{
+  "id": "go-ledger",
+  "name": "Reconcile payment events",
+  "stack": "go",
+  "split": "development",
+  "prompt": "Read README.md, repair reconcile payment events, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport \"sort\"\nvar _ = sort.Strings\nfunc solve(x map[string]any) any {seen:=map[string]bool{};out:=map[string]float64{};for _,raw:=range x[\"events\"].([]any){e:=raw.(map[string]any);id:=e[\"id\"].(string);if seen[id]{continue};seen[id]=true;if false{out[e[\"account\"].(string)]+=e[\"amount\"].(float64)}};return out}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/go-ledger\n\ngo 1.23\n",
+    "logic_test.go": "package main\nimport(\"testing\";\"encoding/json\";\"reflect\")\nfunc TestPublic(t *testing.T){var inputs []map[string]any;_ = json.Unmarshal([]byte(`[{\"events\": []}, {\"events\": [{\"id\": \"a\", \"account\": \"shop\", \"amount\": 100, \"status\": \"posted\"}]}]`),&inputs);var expected []any;_ = json.Unmarshal([]byte(`[{}, {\"shop\": 100}]`),&expected);for i,x:=range inputs{b,_:=json.Marshal(solve(x));var actual any;_ = json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected[i]){t.Fatalf(\"case %d: got %v want %v\",i,actual,expected[i])}}}\n",
+    "README.md": "# Reconcile payment events\n\nRepair this go service module and add regression tests.\n\nReturn an object of account totals in integer cents. Include only status posted. Deduplicate by event id, keeping its first occurrence even when pending. Signed amounts include refunds. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `go test ./...` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"events\": [\n    {\n      \"id\": \"a\",\n      \"account\": \"shop\",\n      \"amount\": 100,\n      \"status\": \"posted\"\n    },\n    {\n      \"id\": \"b\",\n      \"account\": \"shop\",\n      \"amount\": -25,\n      \"status\": \"posted\"\n    },\n    {\n      \"id\": \"c\",\n      \"account\": \"other\",\n      \"amount\": 70,\n      \"status\": \"pending\"\n    }\n  ]\n}\n```\nExpected result:\n```json\n{\n  \"shop\": 75\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "ledger-1",
+      "input": {
+        "events": []
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "ledger-2",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "shop",
+            "amount": 100,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "shop": 100
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-3",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "shop",
+            "amount": 100,
+            "status": "posted"
+          },
+          {
+            "id": "b",
+            "account": "shop",
+            "amount": -25,
+            "status": "posted"
+          },
+          {
+            "id": "c",
+            "account": "other",
+            "amount": 70,
+            "status": "pending"
+          }
+        ]
+      },
+      "expected": {
+        "shop": 75
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-4",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "x",
+            "amount": 9,
+            "status": "pending"
+          },
+          {
+            "id": "a",
+            "account": "x",
+            "amount": 50,
+            "status": "posted"
+          },
+          {
+            "id": "b",
+            "account": "y",
+            "amount": 0,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "y": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-5",
+      "input": {
+        "events": [
+          {
+            "id": "x",
+            "account": "a",
+            "amount": 3,
+            "status": "posted"
+          },
+          {
+            "id": "x",
+            "account": "a",
+            "amount": 3,
+            "status": "posted"
+          },
+          {
+            "id": "z",
+            "account": "a",
+            "amount": -5,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "a": -2
+      },
+      "critical": false
+    }
+  ]
+}

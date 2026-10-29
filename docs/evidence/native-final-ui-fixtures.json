@@ -1,0 +1,64 @@
+{
+  "profile": "/Users/danielmercado/GemmaDesktop/.runtime/native-final-qa",
+  "workspaceId": "e336c52fced83d7ba4dcdd3cde4e722f",
+  "sessionId": "726a014f4bb219095044a06f448c2067",
+  "runIds": [
+    "18a18dcb103c792ac6149444ba139bc6",
+    "e2267e4fb9f34c2dd0de5fba3e3075a3",
+    "f82befeaa76cd49d4e8c20849d640639"
+  ],
+  "scope": "Synthetic UI persistence fixture only; no inference or coding acceptance evidence",
+  "observedAt": "2026-10-27T18:22:21.361250+00:00",
+  "binarySHA256": "7fdf4a2a8a2806e332c30abe9c029fdf3a86ac28c0ddc853d309cbfc9b06f1ee",
+  "historyChecks": [
+    "Historical incomplete body retains Incomplete response and reason after later completed turn",
+    "Ordinary failed-run body says Run failed rather than Incomplete response",
+    "Labels and bodies persist after native app quit/reopen",
+    "Unexecuted schema validation event is visibly failed in activity"
+  ],
+  "workflowChecks": [
+    "Created fanout node in actual native editor",
+    "Numeric item rejected without saving",
+    "Literal multiline/empty/Unicode items saved, reopened, saved again",
+    "Persisted SQLite items exactly match original strings; no inference executed"
+  ],
+  "workflow": {
+    "description": "",
+    "edges": [],
+    "id": "1426e80bcb4c9771ccda381b456e0566",
+    "name": "UI fixture · fan-out round trip",
+    "nodes": [
+      {
+        "id": "step_bbfeeb95-8cd2-4023-a879-cd5e279da2e0",
+        "items": [
+          "first line\nsecond line",
+          "",
+          "雪 🚀"
+        ],
+        "label": "Dynamic fan-out",
+        "position": {
+          "x": 80,
+          "y": 80
+        },
+        "type": "fanout"
+      }
+    ]
+  },
+  "screenshots": [
+    "screenshots/native-historical-outcomes-fixture.png",
+    "screenshots/native-fanout-round-trip.png"
+  ],
+  "binarySHA256Meaning": "SHA256 of the production input executable before re-signing it for the separate QA bundle identifier. It is not the signature-dependent hash of the QA executable.",
+  "finalPackageSmoke": {
+    "observedAt": "2026-10-27T18:27:21.015630+00:00",
+    "productionBinarySHA256": "3ed2104275adc6cce55d5e438f24a7c89feebe2f25e63b2e3b71d542a1c61994",
+    "qaResignedBinarySHA256": "80e5faca7091dc04690485bff75e656b29364a6c09aba59dce784e8baf18eed5",
+    "qaBundleID": "app.gemmadesktop.validation",
+    "checks": [
+      "Historical incomplete/failed labels still visible",
+      "Recorded run model displayed per message and final outcome, independent of composer default",
+      "Native setValue JSON entry retains straight quotes with Unicode and newline escapes after text-correction attributes",
+      "Valid JSON saved; persisted items unchanged"
+    ]
+  }
+}

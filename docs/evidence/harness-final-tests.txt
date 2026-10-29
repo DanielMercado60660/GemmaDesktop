@@ -1,0 +1,44 @@
+test_capture_is_required_and_clears_stale_manifest (test_build_info.BuildInfoTests.test_capture_is_required_and_clears_stale_manifest) ... ok
+test_documentation_drift_does_not_claim_different_compiled_inputs (test_build_info.BuildInfoTests.test_documentation_drift_does_not_claim_different_compiled_inputs) ... ok
+test_generated_frontend_edit_is_rejected (test_build_info.BuildInfoTests.test_generated_frontend_edit_is_rejected) ... ok
+test_head_change_is_rejected_even_with_identical_input_files (test_build_info.BuildInfoTests.test_head_change_is_rejected_even_with_identical_input_files) ... ok
+test_matching_inputs_include_ignored_frontend_and_signed_binary_digest (test_build_info.BuildInfoTests.test_matching_inputs_include_ignored_frontend_and_signed_binary_digest) ... ok
+test_missing_frontend_cannot_be_captured (test_build_info.BuildInfoTests.test_missing_frontend_cannot_be_captured) ... ok
+test_source_deletion_is_rejected (test_build_info.BuildInfoTests.test_source_deletion_is_rejected) ... ok
+test_source_edit_is_rejected (test_build_info.BuildInfoTests.test_source_edit_is_rejected) ... ok
+test_untracked_source_addition_is_rejected (test_build_info.BuildInfoTests.test_untracked_source_addition_is_rejected) ... ok
+test_authorized_prior_changes_and_policy_are_preserved (test_realistic_e2e.ContinuationTests.test_authorized_prior_changes_and_policy_are_preserved) ... ok
+test_cached_call_id_replay_after_edit_is_not_fresh_verification (test_realistic_e2e.ContinuationTests.test_cached_call_id_replay_after_edit_is_not_fresh_verification) ... ok
+test_cursor_pages_include_later_mutation_and_failed_check (test_realistic_e2e.ContinuationTests.test_cursor_pages_include_later_mutation_and_failed_check) ... ok
+test_followup_report_links_parent_reuses_identity_and_checks_continuity (test_realistic_e2e.ContinuationTests.test_followup_report_links_parent_reuses_identity_and_checks_continuity) ... ok
+test_frozen_manifest_and_acceptance_changes_are_rejected (test_realistic_e2e.ContinuationTests.test_frozen_manifest_and_acceptance_changes_are_rejected) ... ok
+test_harness_source_drift_invalidates_otherwise_passing_qualification (test_realistic_e2e.ContinuationTests.test_harness_source_drift_invalidates_otherwise_passing_qualification) ... ok
+test_later_failed_check_supersedes_success_and_fresh_success_can_recover (test_realistic_e2e.ContinuationTests.test_later_failed_check_supersedes_success_and_fresh_success_can_recover) ... ok
+test_missing_receipt_or_call_identity_cannot_borrow_earlier_success (test_realistic_e2e.ContinuationTests.test_missing_receipt_or_call_identity_cannot_borrow_earlier_success) ... ok
+test_model_overrides_are_explicit_and_do_not_change_permissions_or_parent (test_realistic_e2e.ContinuationTests.test_model_overrides_are_explicit_and_do_not_change_permissions_or_parent) ... ok
+test_pass_requires_receipt_discovered_tests_and_nine_acceptance_cases (test_realistic_e2e.ContinuationTests.test_pass_requires_receipt_discovered_tests_and_nine_acceptance_cases) ... ok
+test_protected_and_git_changes_are_rejected (test_realistic_e2e.ContinuationTests.test_protected_and_git_changes_are_rejected) ... ok
+test_temperature_variant_is_frozen_and_validated (test_realistic_e2e.ContinuationTests.test_temperature_variant_is_frozen_and_validated) ... ok
+test_unrecorded_source_changes_are_rejected (test_realistic_e2e.ContinuationTests.test_unrecorded_source_changes_are_rejected) ... ok
+test_wrong_profile_or_agent_config_is_rejected (test_realistic_e2e.ContinuationTests.test_wrong_profile_or_agent_config_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 2.952s
+
+OK
+{
+  "passed": true,
+  "attemptKind": "followup-turn",
+  "runId": "run-2",
+  "evidence": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmprzfr8xbm/reports/realistic-followup-20261027-131551-150568e1.json",
+  "workspace": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmprzfr8xbm/.runtime/realistic-20261027-131551-664d74/workspace",
+  "durationSeconds": 0.01
+}
+{
+  "passed": false,
+  "attemptKind": "followup-turn",
+  "runId": "run-2",
+  "evidence": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmp_dkjyn_z/reports/realistic-followup-20261027-131552-3681d810.json",
+  "workspace": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmp_dkjyn_z/.runtime/realistic-20261027-131552-f73cd0/workspace",
+  "durationSeconds": 0.009
+}

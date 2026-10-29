@@ -1,0 +1,9 @@
+test_failed_incomplete_denominators_and_recorded_medians (__main__.SummaryTests.test_failed_incomplete_denominators_and_recorded_medians) ... ok
+test_saved_gate_only_completed_and_duplicates_not_discarded (__main__.SummaryTests.test_saved_gate_only_completed_and_duplicates_not_discarded) ... ok
+test_transport_uses_only_harnessctl_read_calls (__main__.SummaryTests.test_transport_uses_only_harnessctl_read_calls) ... ok
+test_unknown_fixture_identity_never_invents_partition_denominator (__main__.SummaryTests.test_unknown_fixture_identity_never_invents_partition_denominator) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK

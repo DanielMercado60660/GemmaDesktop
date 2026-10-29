@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "experimentId": "a05bc05ba66db8b2a7987497fcf50b76",
+  "startedAt": "2026-10-27T23:23:34.367926Z",
+  "finishedAt": "2026-10-27T23:36:11.46586Z",
+  "sourceReport": "/Users/danielmercado/GemmaDesktop/.runtime/phase2-live-20261027b/pilot-report.json",
+  "sourceReportSHA256": "1568bc8ec45fa4d7ac5f036f9c12fa3b544b53e9a32ab21b88896a4b626ed373",
+  "conditions": {
+    "id": "a05bc05ba66db8b2a7987497fcf50b76",
+    "mode": "native",
+    "workspaceId": "7903773247cff207e3f2497ab9b10207",
+    "agentId": "595dee985f4e12e86fe88b5c0ab10ff6",
+    "taskIds": [
+      "python-ledger",
+      "node-inventory",
+      "go-inventory"
+    ],
+    "baseRevisionId": "95388edc111d212e83b73ec2808481071ba7a500a2559e799c47aedf4eae04e2",
+    "model": "gemma4:26b-mlx",
+    "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "runtimeVersion": "0.40.11",
+    "agent": {
+      "capabilityProfileId": "904dc5c8c478717aae271da8564cc676",
+      "id": "595dee985f4e12e86fe88b5c0ab10ff6",
+      "instructions": "Inspect the complete public project contract before editing. Repair the implementation, add meaningful regression tests, and execute the prescribed verification after the final change. Keep original tests and requirements intact. Use the exact Linux command names provided by the tool. Do not stop at a plan.",
+      "maxOutputTokens": 16384,
+      "maxSteps": 80,
+      "mode": "approval",
+      "model": "gemma4:26b-mlx",
+      "name": "26B coding qualification",
+      "temperature": 1,
+      "thinking": "on",
+      "toolProtocol": "native"
+    },
+    "contextSize": 65536,
+    "frozenCapability": {
+      "agent": {
+        "capabilityProfileId": "904dc5c8c478717aae271da8564cc676",
+        "id": "595dee985f4e12e86fe88b5c0ab10ff6",
+        "instructions": "Inspect the complete public project contract before editing. Repair the implementation, add meaningful regression tests, and execute the prescribed verification after the final change. Keep original tests and requirements intact. Use the exact Linux command names provided by the tool. Do not stop at a plan.",
+        "maxOutputTokens": 16384,
+        "maxSteps": 80,
+        "mode": "approval",
+        "model": "gemma4:26b-mlx",
+        "name": "26B coding qualification",
+        "temperature": 1,
+        "thinking": "on",
+        "toolProtocol": "native"
+      },
+      "profile": {
+        "version": 1,
+        "revision": 1,
+        "id": "904dc5c8c478717aae271da8564cc676",
+        "name": "Pilot coding tools",
+        "tools": [
+          "edit_file",
+          "list_files",
+          "make_directory",
+          "read_file",
+          "run_command",
+          "search_files",
+          "write_file"
+        ],
+        "skillIds": [],
+        "mcp": [],
+        "delegateAgentIds": [],
+        "executionProfile": "docker",
+        "projectGuidance": true
+      },
+      "skills": null,
+      "mcpGrants": null,
+      "digest": "746ac4b0fdbb3913512b05234bd4c5d4604672441b78bcc83f7cac9e1f7fc619",
+      "executionPrivatePaths": [
+        "node_modules",
+        ".venv",
+        "__pycache__",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        ".cache"
+      ],
+      "executionImage": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c"
+    },
+    "executorIdentity": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+    "toolchainVersion": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+    "graderVersion": "gemma-harness-v1-json-contract:sha256:81bc6db8f40b17f2f7cb5be1efa33d7eb3af36f4b03c6ab773c1d28270281b80",
+    "fixtureDigest": "5a510b4f9ee292f51688649dc15b946e725a319f369065a3dd5cadddd304c703",
+    "appVersion": "sha256:81bc6db8f40b17f2f7cb5be1efa33d7eb3af36f4b03c6ab773c1d28270281b80",
+    "solverTools": [
+      "list_files",
+      "read_file",
+      "search_files",
+      "write_file",
+      "edit_file",
+      "make_directory",
+      "run_command"
+    ],
+    "approvedSkills": {},
+    "frozenAgents": {
+      "595dee985f4e12e86fe88b5c0ab10ff6": {
+        "agent": {
+          "capabilityProfileId": "904dc5c8c478717aae271da8564cc676",
+          "id": "595dee985f4e12e86fe88b5c0ab10ff6",
+          "instructions": "Inspect the complete public project contract before editing. Repair the implementation, add meaningful regression tests, and execute the prescribed verification after the final change. Keep original tests and requirements intact. Use the exact Linux command names provided by the tool. Do not stop at a plan.",
+          "maxOutputTokens": 16384,
+          "maxSteps": 80,
+          "mode": "approval",
+          "model": "gemma4:26b-mlx",
+          "name": "26B coding qualification",
+          "temperature": 1,
+          "thinking": "on",
+          "toolProtocol": "native"
+        },
+        "profile": {
+          "version": 1,
+          "revision": 1,
+          "id": "904dc5c8c478717aae271da8564cc676",
+          "name": "Pilot coding tools",
+          "tools": [
+            "edit_file",
+            "list_files",
+            "make_directory",
+            "read_file",
+            "run_command",
+            "search_files",
+            "write_file"
+          ],
+          "skillIds": [],
+          "mcp": [],
+          "delegateAgentIds": [],
+          "executionProfile": "docker",
+          "projectGuidance": true
+        },
+        "skills": null,
+        "mcpGrants": null,
+        "digest": "746ac4b0fdbb3913512b05234bd4c5d4604672441b78bcc83f7cac9e1f7fc619",
+        "executionPrivatePaths": [
+          "node_modules",
+          ".venv",
+          "__pycache__",
+          ".pytest_cache",
+          ".mypy_cache",
+          ".ruff_cache",
+          ".cache"
+        ],
+        "executionImage": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c"
+      }
+    },
+    "budgetSeconds": 1200,
+    "createdAt": "2026-10-27T23:23:34.366282Z",
+    "hash": "4e273c79933092750369457a718f9a848966efef43bbc76db8ba8143417a3a3b"
+  },
+  "results": [
+    {
+      "taskId": "python-ledger",
+      "trialId": "e554367506210ce23712c47809c97298",
+      "status": "completed",
+      "passed": false,
+      "durationSeconds": 220.527,
+      "toolCalls": 16,
+      "inputTokens": 140389,
+      "outputTokens": 9412,
+      "failedChecks": [
+        "prescribed verification after final edit"
+      ],
+      "passedChecks": [
+        "candidate CLI completed",
+        "JSON result count",
+        "ledger-1",
+        "ledger-2",
+        "ledger-3",
+        "ledger-4",
+        "ledger-5",
+        "integrity: original public tests and requirements retained",
+        "new regression test artifact present (meaningfulness requires independent review)",
+        "independent public command",
+        "independent SQLite reopen, deduplication, refund and integrity"
+      ]
+    },
+    {
+      "taskId": "node-inventory",
+      "trialId": "a3b7c8faef0194f274f16fc23f7eff8a",
+      "status": "completed",
+      "passed": false,
+      "durationSeconds": 236.812,
+      "toolCalls": 18,
+      "inputTokens": 160952,
+      "outputTokens": 9218,
+      "failedChecks": [
+        "prescribed verification after final edit"
+      ],
+      "passedChecks": [
+        "candidate CLI completed",
+        "JSON result count",
+        "inventory-1",
+        "inventory-2",
+        "inventory-3",
+        "inventory-4",
+        "inventory-5",
+        "integrity: original public tests and requirements retained",
+        "new regression test artifact present (meaningfulness requires independent review)",
+        "independent public command",
+        "independent TypeScript build and out-of-order worker correlation"
+      ]
+    },
+    {
+      "taskId": "go-inventory",
+      "trialId": "e7d9c2e9c0f9154c31f490bb4d1860e3",
+      "status": "completed",
+      "passed": false,
+      "durationSeconds": 286.556,
+      "toolCalls": 22,
+      "inputTokens": 211063,
+      "outputTokens": 10309,
+      "failedChecks": [
+        "prescribed verification after final edit"
+      ],
+      "passedChecks": [
+        "candidate CLI completed",
+        "JSON result count",
+        "inventory-1",
+        "inventory-2",
+        "inventory-3",
+        "inventory-4",
+        "inventory-5",
+        "integrity: original public tests and requirements retained",
+        "new regression test artifact present (meaningfulness requires independent review)",
+        "independent public command",
+        "independent Go HTTP process, routing and malformed-request observations"
+      ]
+    }
+  ],
+  "qualification": "Three fresh model-completed attempts; failures retained. This is pilot evidence, not promotion."
+}

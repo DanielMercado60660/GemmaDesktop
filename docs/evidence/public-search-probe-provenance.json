@@ -1,0 +1,8 @@
+{
+  "createdAt": "2026-10-27T20:05:25.215342+00:00",
+  "source": "docs/evidence/public-search-probe.py",
+  "sha256": "c6b6b8f2e4a200b7d342c757ccf3573fb96ad92cf7247a219f8421ceeb942262",
+  "cases": 6,
+  "scope": "Supplemental public README/review contract checks frozen before final candidate verification. Separate from original nine-test acceptance gate; no hidden suite imported or read by author.",
+  "candidateRunInProgress": "fb27b23696d40d334aa4e4b5e72a68a7"
+}

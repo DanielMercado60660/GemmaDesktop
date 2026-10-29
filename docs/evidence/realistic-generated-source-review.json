@@ -1,0 +1,172 @@
+{
+  "schema": "realistic-generated-source-review-v1",
+  "reviewedAt": "2026-10-27T17:38:37.721193+00:00",
+  "status": "final-review-of-failed-run",
+  "runId": "9c44237c6fa1685237020dbf3e1fadf1",
+  "workspace": "/Users/danielmercado/GemmaDesktop/.runtime/realistic-20261027-120618-ef9699/workspace",
+  "scope": "Static review of the exact final generated files from this failed run. All recorded source hashes were rechecked after termination. Future follow-up edits require a new review.",
+  "method": {
+    "fixtureMutated": false,
+    "candidateCodeExecuted": false,
+    "modelInferenceStarted": false,
+    "independentAcceptanceExecuted": false,
+    "isolatedSQLiteExpressionCheck": {
+      "sqliteVersion": "3.51.3",
+      "candidateCodeExecuted": false,
+      "database": ":memory:",
+      "title": "ÉTUDE",
+      "query": "É",
+      "pythonLowerQuery": "é",
+      "sqliteLowerTitle": "Étude",
+      "currentExpressionMatches": false,
+      "originalLiteralMatches": true
+    }
+  },
+  "sources": {
+    "README.md": {
+      "sha256": "1cac561d91ad9f7a8004f58af9934ce7893ce6075b523e21ce06bd60359df749",
+      "lines": 27
+    },
+    "tests/test_existing.py": {
+      "sha256": "f9d8ce1fc037c0197a15097d2ea7e11f1148faf77273498e510eee818961e08d",
+      "lines": 51
+    },
+    "tests/test_regressions.py": {
+      "sha256": "ae528efc3e151994ecead31b248cf61b0a36871d2e859ddfcdc016d6603e37db",
+      "lines": 83
+    },
+    "tracker/repository.py": {
+      "sha256": "6a6d97298ff82e2a21878497cdeb8cda7f916d13ede8e58a69f1a9b593c48781",
+      "lines": 67
+    },
+    "tracker/csv_export.py": {
+      "sha256": "3660652d6bea67e36c8be22feeb90a5058872b070beb2d7e4ae445127e337b60",
+      "lines": 31
+    },
+    "tracker/service.py": {
+      "sha256": "cd3e575ac5bed94a2d651ca638d8b3e3a84948399684c9d6c9efc8ef4d7c7e23",
+      "lines": 54
+    },
+    "tracker/cli.py": {
+      "sha256": "845106d1130d81c2ed6381f8c7dc869645aad2e62c3491a58fd46c6c145d845d",
+      "lines": 45
+    }
+  },
+  "findings": [
+    {
+      "id": "csv-record-terminators",
+      "severity": "must-fix",
+      "path": "tracker/csv_export.py",
+      "lines": [
+        13,
+        29
+      ],
+      "publicRequirement": "README: UTF-8 without BOM and LF record terminators.",
+      "observation": "csv.writer uses its default CRLF record terminator. Opening the destination with newline=\"\\n\" does not replace CRLF already serialized into the string.",
+      "suggestion": "Set the CSV writer record terminator explicitly and assert the file bytes, while retaining normal CSV quoting."
+    },
+    {
+      "id": "export-arbitrary-cap",
+      "severity": "must-fix",
+      "path": "tracker/service.py",
+      "lines": [
+        53
+      ],
+      "publicRequirement": "README: export all matching tasks; the listing limit must not truncate exports.",
+      "observation": "A hardcoded search limit of 1,000,000 silently truncates a sufficiently large export. This is not an unbounded/all-rows implementation.",
+      "suggestion": "Use an unbounded repository query or complete deterministic pagination instead of substituting a larger finite cap."
+    },
+    {
+      "id": "ascii-filter-folding",
+      "severity": "must-fix",
+      "path": "tracker/repository.py",
+      "lines": [
+        25,
+        26
+      ],
+      "publicRequirement": "README: ASCII case-insensitive literal title substring; punctuation is data.",
+      "observation": "Python query.lower() folds non-ASCII characters, while SQLite LOWER(title) uses ASCII folding in this runtime. An exact non-ASCII uppercase literal can stop matching itself. The isolated SQLite expression above demonstrates title ÉTUDE, query É without importing or executing candidate code.",
+      "suggestion": "Keep query/title folding semantics consistent with the ASCII-only contract and preserve literal escaping and bound parameters."
+    },
+    {
+      "id": "incorrect-order-test",
+      "severity": "test-defect",
+      "path": "tests/test_regressions.py",
+      "lines": [
+        30,
+        31
+      ],
+      "publicRequirement": "README: newest created_at first, then highest id first.",
+      "observation": "The test expects Task1 before Task2 although Task2 was created later and has the larger ID. This rejects the specified descending order.",
+      "suggestion": "Use explicit timestamps/ties and assert decoded ordered IDs against the required descending order."
+    },
+    {
+      "id": "incorrect-csv-encoding-test",
+      "severity": "test-defect",
+      "path": "tests/test_regressions.py",
+      "lines": [
+        55
+      ],
+      "publicRequirement": "README: standard CSV quoting preserves commas, double quotes and embedded newlines.",
+      "observation": "Searching for the unescaped original title within serialized CSV rejects correct doubled-quote encoding.",
+      "suggestion": "Decode the CSV with csv.reader or csv.DictReader and compare the recovered title exactly; check record terminator bytes separately."
+    },
+    {
+      "id": "large-export-test-not-large",
+      "severity": "coverage-gap",
+      "path": "tests/test_regressions.py",
+      "lines": [
+        75
+      ],
+      "publicRequirement": "README: listing maximum 100 must not truncate exports.",
+      "observation": "The large-limit test creates only 5 tasks. It cannot detect a 100-row export truncation or paging failure.",
+      "suggestion": "Create more than 100 matching tasks plus excluded tasks, then assert count, full decoded rows and deterministic ordering."
+    },
+    {
+      "id": "duplicate-repository-definitions",
+      "severity": "cleanup",
+      "path": "tracker/repository.py",
+      "lines": [
+        1,
+        6,
+        10,
+        15
+      ],
+      "publicRequirement": "Maintainable source; no new behavior requirement.",
+      "observation": "Datetime/Task imports and _task are duplicated. The repeated definitions are identical here, so this is not a demonstrated behavior failure.",
+      "suggestion": "Remove the redundant block when next editing this file."
+    }
+  ],
+  "coverageAssessment": {
+    "complete": false,
+    "meaningfulExistingNewAssertions": [
+      "Real export file and basic returned row count",
+      "Header-only export when no tasks match",
+      "Simple status-filter row count"
+    ],
+    "missingOrInadequatePublicCoverage": [
+      "More than 100 exported matches and complete deterministic ordering",
+      "CSV Unicode/quotes/commas/newlines verified by decoding",
+      "LF record terminators and no UTF-8 BOM verified as bytes",
+      "CLI export JSON, exit return and real file contents",
+      "Combined status/query export filters and literal wildcard/backslash/quote queries",
+      "Invalid export status",
+      "Stable multi-page ordering and total independent of pagination",
+      "Non-ASCII literal preservation under ASCII-only case folding"
+    ],
+    "originalTests": "Immutable original tests cover basic reopen durability, filter intersection, descending order and basic validation. They do not replace the missing export edge cases.",
+    "sourcePositives": "Static inspection shows transaction-backed status updates, AND-combined parameterized filters, created_at/id descending ordering, and CLI delegation to TaskService.export_csv; this is not an execution verdict.",
+    "acceptanceBoundary": "Derived from the public README and generated source/tests, not hidden-case feedback. No hidden test data or failure output is included. Hidden acceptance is bounded and is not an exhaustive proof; it may not cover every source-review finding."
+  },
+  "finalizedAt": "2026-10-27T17:38:52.937584+00:00",
+  "runEvidence": {
+    "path": "docs/evidence/realistic-followup-20261027-123031-b40b716a.json",
+    "sha256": "d6b50bf65b580dac2a5d7f0e721e4e7309f684f78ee55689fb2c6f09f39dacc6",
+    "status": "failed",
+    "error": "model response is incomplete: Ollama reached its generation length limit",
+    "finishedAt": "2026-10-27T17:38:02.721514Z",
+    "codingPassed": false,
+    "passed": false,
+    "sourceHashesRecheckedAfterTermination": true
+  }
+}

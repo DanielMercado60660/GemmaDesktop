@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-10-27T19:15:23.631366+00:00",
+  "loaded": {
+    "models": [
+      {
+        "name": "gemma4:26b-mlx",
+        "model": "gemma4:26b-mlx",
+        "size": 18272032468,
+        "digest": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+        "details": {
+          "parent_model": "",
+          "format": "safetensors",
+          "family": "",
+          "families": null,
+          "parameter_size": "",
+          "quantization_level": "nvfp4"
+        },
+        "expires_at": "2026-10-27T14:30:23.62999-05:00",
+        "size_vram": 18272032468,
+        "context_length": 65536,
+        "runner": "mlx"
+      }
+    ]
+  },
+  "cacheReset": "Model unloaded and reloaded after capacity probe, before coding followup"
+}

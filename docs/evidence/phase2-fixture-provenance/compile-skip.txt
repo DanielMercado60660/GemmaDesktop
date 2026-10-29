@@ -1,0 +1,5 @@
+=== RUN   TestHarnessLiveDockerFixtureReferences
+    harness_integration_test.go:125: opt-in installed immutable toolchain; no inference
+--- SKIP: TestHarnessLiveDockerFixtureReferences (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	0.319s

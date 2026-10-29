@@ -1,0 +1,277 @@
+{
+  "schema": "ollama-version-source-audit-v1",
+  "recordedDate": "2026-10-27",
+  "old": {
+    "tag": "v0.32.3",
+    "sha": "fce745fe5e4f0c7741ca46fc5484c9471c997d00"
+  },
+  "new": {
+    "tag": "v0.40.11",
+    "sha": "675150d6ad2747df1e218ef59de9194bc4a7e538"
+  },
+  "commitsAhead": 379,
+  "method": "Official GitHub compare API pages 1-4 (379 commits); focused official tag files and commit diffs, fetched read-only. No inference or environment changes.",
+  "hostUpdate": "Parent verified installed client and daemon 0.40.11; not independently queried by this audit.",
+  "commits": [
+    {
+      "sha": "6a261db7d87b13d76c5197cec636a0a3951afb36",
+      "url": "https://github.com/ollama/ollama/commit/6a261db7d87b13d76c5197cec636a0a3951afb36",
+      "date": "2026-08-12T04:47:51Z",
+      "title": "api: stop applying repeat_penalty 1.1 to models that don't set one",
+      "files": [
+        "api/types.go",
+        "docs/modelfile.mdx"
+      ]
+    },
+    {
+      "sha": "f348c7e3f55b77da4f6269f007d1b21aacee453a",
+      "url": "https://github.com/ollama/ollama/commit/f348c7e3f55b77da4f6269f007d1b21aacee453a",
+      "date": "2026-09-01T21:52:07Z",
+      "title": "Honor model generation defaults (#16471)",
+      "files": [
+        "api/types_test.go",
+        "fs/gguf/keyvalue.go",
+        "server/images.go",
+        "server/images_test.go",
+        "server/routes.go",
+        "server/routes_options_test.go",
+        "types/model/config.go",
+        "types/model/generation.go",
+        "types/model/generation_test.go",
+        "x/create/client/create.go",
+        "x/create/client/create_test.go"
+      ]
+    },
+    {
+      "sha": "d0c8cdb795d4640890d87c146d674cc311df4138",
+      "url": "https://github.com/ollama/ollama/commit/d0c8cdb795d4640890d87c146d674cc311df4138",
+      "date": "2026-09-18T21:10:53Z",
+      "title": "api: expose model thinking levels and defaults (#18473)",
+      "files": [
+        "anthropic/anthropic.go",
+        "anthropic/thinking_test.go",
+        "api/types.go",
+        "api/types_test.go",
+        "app/cmd/app/codex_app_darwin.go",
+        "app/cmd/app/codex_app_darwin_test.go",
+        "cmd/cmd.go",
+        "cmd/cmd_test.go",
+        "cmd/launch/codex.go",
+        "cmd/launch/codex_app.go",
+        "cmd/launch/codex_app_test.go",
+        "cmd/launch/codex_test.go",
+        "cmd/launch/launch.go",
+        "cmd/launch/launch_test.go",
+        "internal/proxy/codex_desktop.go",
+        "internal/proxy/codex_desktop_normalize.go",
+        "internal/proxy/codex_desktop_test.go",
+        "middleware/anthropic.go",
+        "middleware/openai.go",
+        "middleware/thinking.go",
+        "middleware/thinking_test.go",
+        "model/renderers/cogito.go",
+        "model/renderers/cohere.go",
+        "model/renderers/deepseek3.go",
+        "model/renderers/functiongemma.go",
+        "model/renderers/gemma4.go",
+        "model/renderers/glimmer.go",
+        "model/renderers/glm47.go",
+        "model/renderers/glmocr.go",
+        "model/renderers/laguna.go",
+        "model/renderers/lfm2.go",
+        "model/renderers/nemotron3nano.go",
+        "model/renderers/olmo3.go",
+        "model/renderers/olmo3_think.go",
+        "model/renderers/qwen35.go",
+        "model/renderers/qwen38_test.go",
+        "model/renderers/qwen3coder.go",
+        "model/renderers/qwen3vl.go",
+        "model/renderers/renderer.go",
+        "model/renderers/renderer_test.go",
+        "model/renderers/thinking.go",
+        "model/renderers/thinking_test.go",
+        "openai/openai.go",
+        "openai/responses.go",
+        "openai/thinking_test.go",
+        "server/images.go",
+        "server/model_show_cache.go",
+        "server/model_thinking.go",
+        "server/model_thinking_test.go",
+        "server/routes.go",
+        "types/model/thinking.go",
+        "types/model/thinking_test.go"
+      ]
+    },
+    {
+      "sha": "195f4cdca1183165d6248453c6cb98e9488f4881",
+      "url": "https://github.com/ollama/ollama/commit/195f4cdca1183165d6248453c6cb98e9488f4881",
+      "date": "2026-10-04T14:45:15Z",
+      "title": "mlx: match publisher tokenizer semantics (#18779)",
+      "files": [
+        ".github/workflows/test-tokenizer.yaml",
+        "mlxrunner/tokenizer/tokenizer.go",
+        "mlxrunner/tokenizer/tokenizer_added.go",
+        "mlxrunner/tokenizer/tokenizer_bpe.go",
+        "mlxrunner/tokenizer/tokenizer_bpe_spans_test.go",
+        "mlxrunner/tokenizer/tokenizer_config_test.go",
+        "mlxrunner/tokenizer/tokenizer_correctness_test.go",
+        "mlxrunner/tokenizer/tokenizer_encode.go",
+        "mlxrunner/tokenizer/tokenizer_load.go",
+        "mlxrunner/tokenizer/tokenizer_load_test.go",
+        "mlxrunner/tokenizer/tokenizer_normalization_test.go",
+        "mlxrunner/tokenizer/tokenizer_pretokenizer.go",
+        "mlxrunner/tokenizer/tokenizer_pretokenizer_test.go",
+        "mlxrunner/tokenizer/tokenizer_reference_benchmark_test.go",
+        "mlxrunner/tokenizer/tokenizer_reference_model_test.go",
+        "mlxrunner/tokenizer/tokenizer_reference_test.go"
+      ]
+    },
+    {
+      "sha": "144893850fa778c8c81ff931f26614d62e6689c1",
+      "url": "https://github.com/ollama/ollama/commit/144893850fa778c8c81ff931f26614d62e6689c1",
+      "date": "2026-08-05T23:31:56Z",
+      "title": "mlxrunner: stop cache rewind refills from corrupting later lazy snapshots",
+      "files": [
+        "x/mlxrunner/cache/kvcache.go"
+      ]
+    },
+    {
+      "sha": "e0c95a5ffdc4868afe541d9a2b1ec874585d46ec",
+      "url": "https://github.com/ollama/ollama/commit/e0c95a5ffdc4868afe541d9a2b1ec874585d46ec",
+      "date": "2026-08-19T22:14:50Z",
+      "title": "server: don't wedge chat and generate on a mid-stream parser error (#17883)",
+      "files": [
+        "server/routes.go",
+        "server/routes_parse_error_test.go"
+      ]
+    },
+    {
+      "sha": "f52b9e742d8c9a308f7b23cd1f0ab52c7ddb694d",
+      "url": "https://github.com/ollama/ollama/commit/f52b9e742d8c9a308f7b23cd1f0ab52c7ddb694d",
+      "date": "2026-10-23T14:12:11Z",
+      "title": "Update gemma renderers (#19241)",
+      "files": [
+        "mlxrunner/model/dflash/dflash.go",
+        "mlxrunner/model/gemma4/gemma4.go",
+        "model/renderers/gemma4.go",
+        "model/renderers/gemma4_reference_test.go",
+        "model/renderers/renderer.go",
+        "model/renderers/renderer_test.go",
+        "model/renderers/testdata/gemma4_nemotron_chat_template.jinja2",
+        "model/renderers/thinking_test.go",
+        "server/show_safetensors.go",
+        "server/show_safetensors_test.go"
+      ]
+    },
+    {
+      "sha": "855f4bf989da9e6b43b2c0af288e668e2105c00d",
+      "url": "https://github.com/ollama/ollama/commit/855f4bf989da9e6b43b2c0af288e668e2105c00d",
+      "date": "2026-09-02T16:30:44Z",
+      "title": "Report cached prompt tokens (#17943)",
+      "files": [
+        "anthropic/anthropic.go",
+        "anthropic/anthropic_test.go",
+        "api/metrics_test.go",
+        "api/types.go",
+        "cmd/bench/bench.go",
+        "cmd/bench/bench_test.go",
+        "cmd/tui/chat/render.go",
+        "cmd/tui/chat/render_test.go",
+        "docs/api.md",
+        "docs/api/usage.mdx",
+        "docs/openapi.yaml",
+        "llm/llama_server.go",
+        "llm/llama_server_test.go",
+        "llm/server.go",
+        "middleware/anthropic.go",
+        "middleware/anthropic_test.go",
+        "middleware/metrics.go",
+        "middleware/openai.go",
+        "middleware/openai_test.go",
+        "middleware/responses_web_search_test.go",
+        "openai/openai.go",
+        "openai/openai_test.go",
+        "openai/responses.go",
+        "openai/responses_test.go",
+        "server/routes.go",
+        "server/routes_cloud_test.go",
+        "server/routes_generate_test.go",
+        "x/mlxrunner/client.go",
+        "x/mlxrunner/client_test.go",
+        "x/mlxrunner/mtp_test.go",
+        "x/mlxrunner/pipeline.go"
+      ]
+    },
+    {
+      "sha": "36a6e994d2f6c4ab94b3555185154d069e5dba87",
+      "url": "https://github.com/ollama/ollama/commit/36a6e994d2f6c4ab94b3555185154d069e5dba87",
+      "date": "2026-10-18T00:31:52Z",
+      "title": "api: populate show renderer/parser fields and add template_source (#19095)",
+      "files": [
+        "api/types.go",
+        "cmd/cmd.go",
+        "cmd/cmd_test.go",
+        "docs/openapi.yaml",
+        "server/images.go",
+        "server/routes.go",
+        "server/routes_test.go"
+      ]
+    },
+    {
+      "sha": "1b45aa19dac5b42d97f345b8ba68bb8cf0b08cf8",
+      "url": "https://github.com/ollama/ollama/commit/1b45aa19dac5b42d97f345b8ba68bb8cf0b08cf8",
+      "date": "2026-09-08T21:42:03Z",
+      "title": "server/openai: retry compaction after context overflow (#18324)",
+      "files": [
+        "openai/responses_compact.go",
+        "openai/responses_compact_test.go",
+        "server/responses_compact.go",
+        "server/responses_compact_test.go"
+      ]
+    }
+  ],
+  "installedModelMetadataSource": "docs/evidence/ollama040-model-metadata.json",
+  "installedModelMetadata": {
+    "gemma4:26b-mlx": {
+      "thinking": {
+        "values": [
+          false,
+          true
+        ],
+        "default": true
+      },
+      "renderer": "gemma4-large",
+      "parser": "gemma4",
+      "template_source": "renderer_parser",
+      "parameters": "temperature                    1\ntop_k                          64\ntop_p                          0.95",
+      "model_info": {
+        "gemma4.block_count": 30,
+        "gemma4.context_length": 262144,
+        "gemma4.embedding_length": 2816,
+        "general.architecture": "gemma4",
+        "general.parameter_count": 26225562962
+      }
+    },
+    "gemma4:12b-mlx": {
+      "thinking": {
+        "values": [
+          false,
+          true
+        ],
+        "default": true
+      },
+      "renderer": "gemma4-large",
+      "parser": "gemma4",
+      "template_source": "renderer_parser",
+      "parameters": "top_k                          64\ntop_p                          0.95\ntemperature                    1",
+      "model_info": {
+        "gemma4_unified.block_count": 48,
+        "gemma4_unified.context_length": 262144,
+        "gemma4_unified.embedding_length": 3840,
+        "general.architecture": "gemma4_unified",
+        "general.parameter_count": 12382568756
+      }
+    }
+  },
+  "thinkingDefaultCorrection": "The generic renderer fallback false is overridden by server/Model.Thinking to preserve local default true; both installed models advertise true. No Auto default change is established."
+}

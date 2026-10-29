@@ -1,0 +1,74 @@
+Fetch only https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz
+Verify sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==
+Official image pins: node@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d, golang@sha256:632dff7351799a5a9954a48dc06670ade72ee44e8c351cdc0e5a57af2fea21af, python@sha256:21206b8f02efda6d737e402e1c716b650ad30605843a36e4bcb55463a7ebdf37
+Build operation: /usr/local/bin/docker --host unix:///Users/danielmercado/.docker/run/docker.sock build --platform=linux/arm64 --network=none --pull --iidfile /var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/gemma-toolchain-cwrmlpbf/image-id --tag gemma-desktop-toolchain:local --file /var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/gemma-toolchain-cwrmlpbf/build-context/Dockerfile /var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/gemma-toolchain-cwrmlpbf/build-context
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.21kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+#2 DONE 0.4s
+
+#3 [internal] load metadata for docker.io/library/golang@sha256:632dff7351799a5a9954a48dc06670ade72ee44e8c351cdc0e5a57af2fea21af
+#3 DONE 0.4s
+
+#4 [internal] load metadata for docker.io/library/python@sha256:21206b8f02efda6d737e402e1c716b650ad30605843a36e4bcb55463a7ebdf37
+#4 DONE 0.4s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [node 1/1] FROM docker.io/library/node@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+#6 resolve docker.io/library/node@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d 0.0s done
+#6 DONE 0.0s
+
+#7 [stage-2 1/7] FROM docker.io/library/python@sha256:21206b8f02efda6d737e402e1c716b650ad30605843a36e4bcb55463a7ebdf37
+#7 resolve docker.io/library/python@sha256:21206b8f02efda6d737e402e1c716b650ad30605843a36e4bcb55463a7ebdf37 0.0s done
+#7 DONE 0.0s
+
+#8 [golang 1/1] FROM docker.io/library/golang@sha256:632dff7351799a5a9954a48dc06670ade72ee44e8c351cdc0e5a57af2fea21af
+#8 resolve docker.io/library/golang@sha256:632dff7351799a5a9954a48dc06670ade72ee44e8c351cdc0e5a57af2fea21af 0.0s done
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 4.38MB 0.0s done
+#9 DONE 0.0s
+
+#10 [stage-2 2/7] COPY --from=node /usr/local/bin/node /usr/local/bin/node
+#10 CACHED
+
+#11 [stage-2 4/7] COPY --from=golang /usr/local/go /usr/local/go
+#11 CACHED
+
+#12 [stage-2 6/7] COPY typescript.tgz /tmp/typescript.tgz
+#12 CACHED
+
+#13 [stage-2 3/7] COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+#13 CACHED
+
+#14 [stage-2 5/7] RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+#14 CACHED
+
+#15 [stage-2 7/7] RUN npm install --global --offline --ignore-scripts --no-audit --no-fund /tmp/typescript.tgz && rm /tmp/typescript.tgz
+#15 CACHED
+
+#16 exporting to image
+#16 exporting layers done
+#16 exporting manifest sha256:8779ceb1d27d655f6b4a265d7ab841334ea1d831c42b864c1cf9993ca1f6cd98 done
+#16 exporting config sha256:165d6f0de2ef38700a7af63e154805cd7f60da39d5dfdb6512234bba35af485c done
+#16 exporting attestation manifest sha256:7917e0122c2fc1560bbdc4084e49fde936091389c1d46bd242bf6cbea71c0e9a done
+#16 exporting manifest list sha256:9fe85a89850dcb6fb5e8f06f9d6cac92c49ef362af9db2c7f11fd5e079803b62 done
+#16 naming to docker.io/library/gemma-desktop-toolchain:local done
+#16 unpacking to docker.io/library/gemma-desktop-toolchain:local done
+#16 DONE 0.0s
+{
+  "imageId": "sha256:9fe85a89850dcb6fb5e8f06f9d6cac92c49ef362af9db2c7f11fd5e079803b62",
+  "platform": "linux/arm64",
+  "typescriptIntegrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+  "dockerfileSHA256": "9adffc01ad2a9937c56ef00bd0723134548b6d4d54b05975519155a0b8ed8fc7",
+  "tag": "gemma-desktop-toolchain:local",
+  "note": "Select this inspected image in Gemma Desktop Execution settings. Setup does not change app settings or promise bit-for-bit reproducible image bytes."
+}

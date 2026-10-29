@@ -1,0 +1,70 @@
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.13s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.13s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.13s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.793s
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.51s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.04s)
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+--- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (2.44s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (1.40s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (1.04s)
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet
+--- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit (0.24s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver (0.11s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet (0.13s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.46s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.02s)
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+--- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (2.44s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (1.40s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (1.04s)
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet
+--- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit (0.24s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver (0.11s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet (0.13s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.46s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.02s)
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+--- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (2.42s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (1.41s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (1.01s)
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet
+--- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit (0.24s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver (0.11s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet (0.13s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	16.906s

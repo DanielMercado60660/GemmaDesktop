@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "/root/ollama_model_research",
+  "reviewedAt": "2026-10-28T03:35:03.394564+00:00",
+  "verdict": "test-only issues corrected; ready for separately authorized real Docker qualification after the campaign",
+  "scope": {
+    "productionChanges": false,
+    "testSource": {
+      "path": "internal/execution/docker_connection_loss_test.go",
+      "sha256": "0b83bcdfbe44649ddb88d591b989a0e7906568237e770e774cc4f99f2abfd005"
+    },
+    "before": {
+      "path": "docs/evidence/docker-connection-loss-review/before-test.go.txt",
+      "sha256": "787355e2b8c2de6ed8705d1aa3912a2b5e35974533e37454f6030f4e66974846"
+    },
+    "patch": {
+      "path": "docs/evidence/docker-connection-loss-review/test-only-fixes.patch",
+      "sha256": "3632e8024a375ccbe0f16fdf7a78a24fd972a1ca57932299daaa210ee873a6eb"
+    },
+    "dockerInvoked": false,
+    "liveInference": false,
+    "campaignTouched": false,
+    "distRebuilt": false
+  },
+  "correctedFindings": [
+    {
+      "id": "unjoined-run-cleanup",
+      "finding": "Original early-Fatal cleanup cancelled Run but immediately reconciled and deleted TempDirs without joining its worker. This could race an active worker/lease or erase ownership records.",
+      "correction": "Dedicated completion signal; cleanup cancels and closes the owned proxy, waits for Run, and reconciles journals only after join. A bounded emergency path removes only owner-checked test guests if join times out, waits again, and skips journal recovery if still active. Manually owned state/workspace directories are retained and logged on unjoined worker or failed recovery; they are removed only following successful reconciliation."
+    },
+    {
+      "id": "asymmetric-half-close",
+      "finding": "The upstream-to-client EOF path closed both sockets, potentially discarding final client-to-upstream bytes even though the peer only half-closed its output.",
+      "correction": "Both copy directions now CloseWrite their destination and wait for the other direction; explicit proxy close still closes all active sockets and joins its workers. Local Unix fixtures exercise client-first and server-first half-close ordering plus eight concurrent closes while streams are active."
+    },
+    {
+      "id": "child-readiness-evidence",
+      "finding": "Parent readiness originally raced the first detached-child heartbeat, and a merely existing heartbeat could be stale when recovery began.",
+      "correction": "Guest waits for the child heartbeat before signalling ready; test then requires heartbeat advancement after socket loss and before recovery, followed by stable heartbeat after guest removal."
+    },
+    {
+      "id": "bounded-recovery-assertions",
+      "finding": "Post-loss CLI/reconciliation/fresh-run assertions relied only on the overall test context.",
+      "correction": "A separate one-minute deadline bounds the qualification recovery phase; cleanup uses fresh bounded contexts."
+    }
+  ],
+  "reviewedProperties": [
+    "Proxy drops only its temporary Unix listener and accepted sockets; it does not stop or reconfigure Docker Desktop or affect other clients.",
+    "Proxy listener and forwarding workers participate in a WaitGroup; admission/close tracking is serialized with the mutex, close is idempotent through sync.Once, and active socket closure unblocks both copy loops.",
+    "The fresh executor uses the real configured Docker socket and unique test state owner label. Recovery admission, unpublished source preservation/discard, owned container removal, child heartbeat stop and fresh read-only command assertions remain present.",
+    "Test-owned filesystem state is retained for explicit recovery rather than silently removed if the bounded cleanup cannot establish completion."
+  ],
+  "validation": {
+    "log": {
+      "path": "docs/evidence/docker-connection-loss-review/local-proxy-tests-reviewed.jsonl",
+      "sha256": "92856056a6352fb2804ffc4106504a990fc0ee1c141ead76d574cd1ade0da6cc"
+    },
+    "race": true,
+    "repetitions": 5,
+    "topLevelPassExecutions": 10,
+    "includingSubtestsPassExecutions": 20,
+    "failures": 0,
+    "liveCaseSkips": 5,
+    "command": "env -u GEMMA_TEST_DOCKER_IMAGE GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race -json ./internal/execution -run '^TestDocker(SocketProxy.*|LiveConnectionLossDiscardsAndRecoversOwnedGuest)$' -count=5",
+    "qualification": "Only local Unix listeners were enabled. The real Docker test compiled and skipped five times because GEMMA_TEST_DOCKER_IMAGE was explicitly unset."
+  },
+  "remainingLimits": [
+    "No actual Docker attach, connectivity-loss recovery, detached-child termination or source-discard result is claimed by this review. The real opt-in test remains pending until after campaign completion.",
+    "The test simulates a client transport loss through an owned proxy. It does not qualify a Docker daemon/VM crash, host power loss, or actual application restart; the fresh executor object qualifies durable ownership recovery within the same test process.",
+    "If Docker itself is unavailable during cleanup or the worker cannot be joined after bounded emergency removal, the test fails and retains/logs its private recovery paths for explicit maintenance. It cannot guarantee remote guest termination while the daemon is unreachable."
+  ]
+}

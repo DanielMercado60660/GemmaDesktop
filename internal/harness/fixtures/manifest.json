@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "python-ledger",
+      "stack": "python",
+      "split": "development",
+      "publicFiles": 6,
+      "cases": 5,
+      "integrationProject": true
+    },
+    {
+      "id": "python-inventory",
+      "stack": "python",
+      "split": "development",
+      "publicFiles": 4,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "python-orders",
+      "stack": "python",
+      "split": "validation",
+      "publicFiles": 4,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "python-usage",
+      "stack": "python",
+      "split": "validation",
+      "publicFiles": 4,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "python-intervals",
+      "stack": "python",
+      "split": "heldout",
+      "publicFiles": 4,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "python-config",
+      "stack": "python",
+      "split": "heldout",
+      "publicFiles": 4,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "node-ledger",
+      "stack": "node",
+      "split": "development",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "node-inventory",
+      "stack": "node",
+      "split": "development",
+      "publicFiles": 7,
+      "cases": 5,
+      "integrationProject": true
+    },
+    {
+      "id": "node-orders",
+      "stack": "node",
+      "split": "validation",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "node-usage",
+      "stack": "node",
+      "split": "validation",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "node-intervals",
+      "stack": "node",
+      "split": "heldout",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "node-config",
+      "stack": "node",
+      "split": "heldout",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "go-ledger",
+      "stack": "go",
+      "split": "development",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "go-inventory",
+      "stack": "go",
+      "split": "development",
+      "publicFiles": 7,
+      "cases": 5,
+      "integrationProject": true
+    },
+    {
+      "id": "go-orders",
+      "stack": "go",
+      "split": "validation",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "go-usage",
+      "stack": "go",
+      "split": "validation",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "go-intervals",
+      "stack": "go",
+      "split": "heldout",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    },
+    {
+      "id": "go-config",
+      "stack": "go",
+      "split": "heldout",
+      "publicFiles": 5,
+      "cases": 5,
+      "integrationProject": false
+    }
+  ],
+  "scope": "18 local coding fixtures: three multi-module integration feature projects (SQLite service, TypeScript worker service, Go HTTP API) plus fifteen bounded contract regression tasks. Six per stack, six per split. Not Google benchmark replication."
+}

@@ -15,6 +15,9 @@ import (
 	"sync"
 	"syscall"
 	"time"
+	"unicode/utf8"
+
+	"gemmadesktop.local/app/internal/workspace"
 )
 
 var ErrUnavailable = errors.New("qualified macOS process sandbox is unavailable; model process execution is disabled")
@@ -47,6 +50,7 @@ func Require(ctx context.Context, fn Authorizer, a Approval) error {
 
 type Request struct {
 	Workspace        string
+	WorkingDirectory string // relative to Workspace; empty means its root
 	Executable       string
 	Args             []string
 	Timeout          time.Duration
@@ -54,18 +58,35 @@ type Request struct {
 	ReadOnly         bool
 	AllowGitMetadata bool
 }
+
+// Executor is selected by a host-frozen execution profile, never model arguments.
+type Executor interface {
+	Run(context.Context, Request) (Result, error)
+	Description() string
+}
 type Result struct {
-	Stdout      string `json:"stdout"`
-	Stderr      string `json:"stderr"`
-	ExitCode    int    `json:"exitCode"`
-	Truncated   bool   `json:"truncated"`
-	DurationMS  int64  `json:"durationMs"`
-	Cancelled   bool   `json:"cancelled"`
-	Environment string `json:"environment"`
-	Signal      string `json:"signal,omitempty"`
+	Stdout           string                    `json:"stdout"`
+	Stderr           string                    `json:"stderr"`
+	ExitCode         int                       `json:"exitCode"`
+	Truncated        bool                      `json:"truncated"`
+	DurationMS       int64                     `json:"durationMs"`
+	Cancelled        bool                      `json:"cancelled"`
+	Environment      string                    `json:"environment"`
+	Signal           string                    `json:"signal,omitempty"`
+	WorkingDirectory string                    `json:"workingDirectory"`
+	ReadOnly         bool                      `json:"readOnly"`
+	CommandID        string                    `json:"commandId,omitempty"`
+	Image            string                    `json:"image,omitempty"`
+	SnapshotDigest   string                    `json:"snapshotDigest,omitempty"`
+	DependencyDigest string                    `json:"dependencyDigest,omitempty"`
+	Publication      string                    `json:"publication,omitempty"`
+	WorkspaceChanged bool                      `json:"workspaceChanged,omitempty"`
+	Changes          []workspace.CommandChange `json:"changes,omitempty"`
+	JournalPath      string                    `json:"journalPath,omitempty"`
 }
 
-// BoundedBuffer counts discarded bytes without blocking the subprocess's pipes.
+// BoundedBuffer retains both the beginning and end of output, so a noisy test
+// cannot hide its final traceback. It always drains the subprocess's pipes.
 type BoundedBuffer struct {
 	mu      sync.Mutex
 	data    []byte
@@ -77,20 +98,75 @@ func (b *BoundedBuffer) Write(p []byte) (int, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	n := len(p)
-	keep := min(n, max(0, b.Limit-len(b.data)))
-	b.data = append(b.data, p[:keep]...)
-	b.Dropped += int64(n - keep)
+	limit := max(0, b.Limit)
+	if b.Dropped == 0 && len(b.data)+n <= limit {
+		b.data = append(b.data, p...)
+		return n, nil
+	}
+	total := int64(len(b.data)) + b.Dropped + int64(n)
+	headSize := limit / 2
+	tailSize := limit - headSize
+	retained := make([]byte, 0, limit)
+	retained = append(retained, b.data[:min(headSize, len(b.data))]...)
+	if len(retained) < headSize {
+		retained = append(retained, p[:min(len(p), headSize-len(retained))]...)
+	}
+	if n >= tailSize {
+		retained = append(retained, p[n-tailSize:]...)
+	} else {
+		start := max(0, len(b.data)-(tailSize-n))
+		retained = append(retained, b.data[start:]...)
+		retained = append(retained, p...)
+	}
+	b.data = retained
+	b.Dropped = total - int64(len(retained))
 	return n, nil
 }
 func (b *BoundedBuffer) Snapshot() (string, bool) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return strings.ToValidUTF8(string(b.data), "�"), b.Dropped > 0
+	limit := max(0, b.Limit)
+	if b.Dropped == 0 {
+		return outputPrefix(string(b.data), limit), false
+	}
+	const marker = "\n[output truncated]\n"
+	if limit <= len(marker) {
+		return outputSuffix(string(b.data), limit), true
+	}
+	budget := limit - len(marker)
+	headSize := min(len(b.data), limit/2)
+	return outputPrefix(string(b.data[:headSize]), budget/2) + marker + outputSuffix(string(b.data[headSize:]), budget-budget/2), true
+}
+
+func outputPrefix(s string, limit int) string {
+	s = strings.ToValidUTF8(s, "�")
+	if len(s) <= limit {
+		return s
+	}
+	s = s[:limit]
+	for !utf8.ValidString(s) {
+		s = s[:len(s)-1]
+	}
+	return s
+}
+func outputSuffix(s string, limit int) string {
+	s = strings.ToValidUTF8(s, "�")
+	if len(s) <= limit {
+		return s
+	}
+	s = s[len(s)-limit:]
+	for !utf8.ValidString(s) {
+		s = s[1:]
+	}
+	return s
 }
 
 type Runner struct{}
 
 func NewRunner() *Runner { return &Runner{} }
+func (*Runner) Description() string {
+	return "macOS single-process sandbox; network and child processes denied; no host fallback"
+}
 
 func policyName(name string) string {
 	var b strings.Builder
@@ -122,7 +198,7 @@ func sandboxProfile(readOnly, allowGit bool) string {
 	if allowGit {
 		gitRule = ""
 	}
-	protected := policyNames(".ssh", ".aws", ".gnupg", ".codex", ".gemmadesktop", ".gemma-desktop") + "|" + policyName(".env") + "([.][^/]+)?"
+	protected := policyNames(".ssh", ".aws", ".gnupg", ".codex", ".gemmadesktop", ".gemma-desktop", ".npmrc", ".pypirc", ".netrc", ".git-credentials", ".docker", ".kube", ".azure") + "|" + policyName(".env") + "([.][^/]+)?"
 	writeProtected := policyNames(".git", ".agents", "agents.md")
 	return `(version 1)
 (deny default)
@@ -165,6 +241,15 @@ func (r *Runner) Prepare(ctx context.Context, req Request) (*exec.Cmd, func(), e
 	if err != nil || !inf.IsDir() {
 		return nil, nil, errors.New("workspace directory is required")
 	}
+	scope, err := workspace.Open(root)
+	if err != nil {
+		return nil, nil, err
+	}
+	workingDirectory, err := scope.DirectoryPath(req.WorkingDirectory)
+	scope.Close()
+	if err != nil {
+		return nil, nil, fmt.Errorf("working directory: %w", err)
+	}
 	if req.Executable == "" || len(req.Args) > 256 {
 		return nil, nil, errors.New("invalid process arguments")
 	}
@@ -191,7 +276,9 @@ func (r *Runner) Prepare(ctx context.Context, req Request) (*exec.Cmd, func(), e
 		}
 		executable = found
 	}
-	executable, err = filepath.EvalSymlinks(executable)
+	// Preserve the reviewed launch path: Python uses a virtualenv executable's
+	// original location to find pyvenv.cfg, even when its binary is a symlink.
+	resolvedExecutable, err := filepath.EvalSymlinks(executable)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -203,21 +290,28 @@ func (r *Runner) Prepare(ctx context.Context, req Request) (*exec.Cmd, func(), e
 	cleanup := func() { _ = os.RemoveAll(tmp) }
 	// This fixed launcher uses only shell builtins and then execs the reviewed
 	// argv. The limits survive exec and do not require a fork-capable wrapper.
-	args := []string{"-D", "WORKSPACE=" + root, "-D", "PRIVATE_TMP=" + tmp, "-D", "EXECUTABLE=" + executable, "-p", sandboxProfile(req.ReadOnly, req.AllowGitMetadata), "/bin/sh", "-c", `set -e; ulimit -c 0; ulimit -t 120; ulimit -f 65536; ulimit -n 128; exec "$@"`, "gemma-exec", executable}
+	args := []string{"-D", "WORKSPACE=" + root, "-D", "PRIVATE_TMP=" + tmp, "-D", "EXECUTABLE=" + resolvedExecutable, "-p", sandboxProfile(req.ReadOnly, req.AllowGitMetadata), "/bin/sh", "-c", `set -e; ulimit -c 0; ulimit -t 120; ulimit -f 65536; ulimit -n 128; exec "$@"`, "gemma-exec", executable}
 	args = append(args, req.Args...)
 	cmd := exec.CommandContext(ctx, "/usr/bin/sandbox-exec", args...)
-	cmd.Dir = root
+	cmd.Dir = workingDirectory
 	cmd.Env = []string{"PATH=" + SafePATH, "HOME=" + tmp, "TMPDIR=" + tmp, "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "CI=1", "TERM=dumb", "GIT_CONFIG_NOSYSTEM=1", "GIT_CONFIG_GLOBAL=/dev/null", "GIT_TERMINAL_PROMPT=0", "GIT_PAGER=cat", "GIT_OPTIONAL_LOCKS=0", "GOCACHE=" + filepath.Join(tmp, "gocache"), "GOPATH=" + filepath.Join(tmp, "gopath"), "GOTOOLCHAIN=local", "npm_config_cache=" + filepath.Join(tmp, "npm"), "npm_config_update_notifier=false", "PYTHONDONTWRITEBYTECODE=1"}
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Cancel = func() error {
 		if cmd.Process == nil {
 			return nil
 		}
-		err := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-		if errors.Is(err, syscall.ESRCH) {
+		// A single process can move itself into another process group/session.
+		// Target its owned process handle as well, instead of waiting for the
+		// pipe-drain timeout to eventually kill a process that left the group.
+		groupErr := syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
+		processErr := cmd.Process.Kill()
+		if groupErr == nil || processErr == nil {
+			return nil
+		}
+		if errors.Is(processErr, os.ErrProcessDone) {
 			return os.ErrProcessDone
 		}
-		return err
+		return errors.Join(groupErr, processErr)
 	}
 	cmd.WaitDelay = 2 * time.Second
 	return cmd, cleanup, nil
@@ -247,12 +341,11 @@ func (r *Runner) Run(ctx context.Context, req Request) (Result, error) {
 	cmd.Stderr = stderr
 	start := time.Now()
 	err = cmd.Run()
-	if cmd.Process != nil {
-		_ = syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-	}
+	// Fork is denied by the profile, so there are no workload descendants to
+	// reap after this process exits. Do not signal a potentially reused PGID.
 	stdout, ot := out.Snapshot()
 	errout, et := stderr.Snapshot()
-	res := Result{Stdout: stdout, Stderr: errout, Truncated: ot || et, DurationMS: time.Since(start).Milliseconds(), Environment: "macOS Seatbelt · single process · network denied"}
+	res := Result{Stdout: stdout, Stderr: errout, Truncated: ot || et, DurationMS: time.Since(start).Milliseconds(), WorkingDirectory: cmd.Dir, ReadOnly: req.ReadOnly, Environment: "macOS Seatbelt · single process · network denied"}
 	if cmd.ProcessState != nil {
 		res.ExitCode = cmd.ProcessState.ExitCode()
 		if status, ok := cmd.ProcessState.Sys().(syscall.WaitStatus); ok && status.Signaled() {

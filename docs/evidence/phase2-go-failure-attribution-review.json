@@ -1,0 +1,1116 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T03:00:41.802359+00:00",
+  "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+  "kind": "read-only-terminal-failure-attribution",
+  "sourceReviewReference": {
+    "path": "docs/evidence/phase2-go-paired-source-review.json",
+    "sha256": "ee326e1d52db9a527356586d2e7b0fd733f9f7a0b51c87b520dc9948bb50b5c9"
+  },
+  "trials": [
+    {
+      "trialId": "277f7139830e8696eec17adbe11d0a45",
+      "taskId": "go-config",
+      "status": "failed",
+      "rawIncomplete": false,
+      "error": "context deadline exceeded",
+      "durationMs": 1200116,
+      "attribution": "Observed repair failures are explained by model-authored invalid source/commands and incorrect revision arguments. No stale cached read, altered successful write payload, or incorrect revision rejection is demonstrated. Terminal deadline/length outcome remains a failure.",
+      "readAudit": {
+        "total": 19,
+        "full": 13,
+        "ranged": 6,
+        "hashOrSliceMismatches": [],
+        "checks": [
+          {
+            "sequence": 2,
+            "path": "README.md",
+            "fullRead": true,
+            "reportedHash": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 6,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 8,
+            "path": "main.go",
+            "fullRead": true,
+            "reportedHash": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 10,
+            "path": "logic_test.go",
+            "fullRead": true,
+            "reportedHash": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 22,
+            "path": "regression_test.go",
+            "fullRead": true,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 28,
+            "path": "regression_test.go",
+            "fullRead": true,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 32,
+            "path": "regression_test.go",
+            "fullRead": true,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 44,
+            "path": "regression_test.go",
+            "fullRead": false,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": null,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 46,
+            "path": "regression_test.go",
+            "fullRead": false,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": null,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 48,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 50,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 56,
+            "path": "regression_test.go",
+            "fullRead": false,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": null,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 58,
+            "path": "regression_test.go",
+            "fullRead": false,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": null,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 62,
+            "path": "regression_test.go",
+            "fullRead": false,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": null,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 66,
+            "path": "regression_test.go",
+            "fullRead": false,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": null,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 74,
+            "path": "logic_test.go",
+            "fullRead": true,
+            "reportedHash": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 76,
+            "path": "main.go",
+            "fullRead": true,
+            "reportedHash": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 80,
+            "path": "regression_test.go",
+            "fullRead": true,
+            "reportedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 86,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "34a76ff478d03dea47889adae97412746e8b438e97560781a660d8c1d20c7921",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          }
+        ]
+      },
+      "successfulMutationChecks": [
+        {
+          "sequence": 18,
+          "path": "regression_test.go",
+          "expectedHash": "missing",
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "afterHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": null,
+          "byteIdenticalRewrite": false,
+          "oldTextOccurrences": null
+        },
+        {
+          "sequence": 34,
+          "path": "regression_test.go",
+          "expectedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "beforeHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "afterHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": true,
+          "byteIdenticalRewrite": true,
+          "oldTextOccurrences": null
+        },
+        {
+          "sequence": 52,
+          "path": "logic.go",
+          "expectedHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+          "beforeHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+          "afterHash": "34a76ff478d03dea47889adae97412746e8b438e97560781a660d8c1d20c7921",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": true,
+          "byteIdenticalRewrite": false,
+          "oldTextOccurrences": null
+        },
+        {
+          "sequence": 82,
+          "path": "regression_test.go",
+          "expectedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "beforeHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "afterHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": true,
+          "byteIdenticalRewrite": true,
+          "oldTextOccurrences": null
+        }
+      ],
+      "missingObservationMetadata": [
+        {
+          "sequence": 42,
+          "callId": "call_hizox7m5",
+          "savedContentBytes": 32792,
+          "observationTruncated": true
+        }
+      ],
+      "timeline": [
+        {
+          "sequence": 14,
+          "callId": "call_qnb1ohdj",
+          "tool": "write_file",
+          "interpretation": "write_file proposes an unobserved hash for a new regression test; rejected.",
+          "recordedError": "revision conflict for \"regression_test.go\": file changed since it was read; read it again before editing; call read_file with path \"regression_test.go\" before retrying with that file's returned hash",
+          "path": "regression_test.go",
+          "expectedHash": "6e5397456a15796e7f1f9587752d40384f56b4d6079a1661913622351a678f94"
+        },
+        {
+          "sequence": 16,
+          "callId": "call_x5gw3oup",
+          "tool": "write_file",
+          "interpretation": "Empty expectedHash rejected with explicit use-missing-or-current-SHA instruction.",
+          "recordedError": "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file",
+          "path": "regression_test.go",
+          "expectedHash": ""
+        },
+        {
+          "sequence": 18,
+          "callId": "call_4uctiytk",
+          "tool": "write_file",
+          "interpretation": "Creates the test with expectedHash=missing. Generated bytes already contain the invalid ] at line136.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "expectedHash": "missing",
+          "receipt": {
+            "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "afterHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "created": true
+          }
+        },
+        {
+          "sequence": 20,
+          "callId": "call_kxz7cn6t",
+          "tool": "run_command",
+          "interpretation": "go test returns exact regression_test.go:136:2 expected operand found ] compiler diagnostic.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "./..."
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "# fixture.local/go-config\nregression_test.go:136:2: expected operand, found ']'\n",
+          "stdoutExcerpt": "FAIL\tfixture.local/go-config [setup failed]\nFAIL\n"
+        },
+        {
+          "sequence": 22,
+          "callId": "call_g3vjq51r",
+          "tool": "read_file",
+          "interpretation": "Complete read returns the same actual test bytes/hash, including the syntax defect.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "read": {
+            "hash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "startLine": 1,
+            "endLine": 166,
+            "totalLines": 166,
+            "size": 2498,
+            "truncated": false
+          }
+        },
+        {
+          "sequence": 30,
+          "callId": "call_w9gfq9ve",
+          "tool": "write_file",
+          "interpretation": "Attempts expectedHash=missing on the existing test; rejected.",
+          "recordedError": "revision conflict for \"regression_test.go\": file changed since it was read; read it again before editing; call read_file with path \"regression_test.go\" before retrying with that file's returned hash",
+          "path": "regression_test.go",
+          "expectedHash": "missing"
+        },
+        {
+          "sequence": 34,
+          "callId": "call_cwa05mu8",
+          "tool": "write_file",
+          "interpretation": "Uses the correct hash but rewrites byte-identical test content; beforeHash equals afterHash.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "expectedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "receipt": {
+            "beforeHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "afterHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "created": false
+          }
+        },
+        {
+          "sequence": 38,
+          "callId": "call_i4qgwbrj",
+          "tool": "run_command",
+          "interpretation": "cat receives argv [cat,regression_test.go], treating the extra cat as a filename; normal file-not-found diagnostic returned.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "cat",
+            "args": [
+              "cat",
+              "regression_test.go"
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "cat: cat: No such file or directory\n"
+        },
+        {
+          "sequence": 42,
+          "callId": "call_hizox7m5",
+          "tool": "run_command",
+          "interpretation": "/bin/cat receives argv [/bin/cat,regression_test.go], printing its own binary and the source. Saved observation exceeds32768 bytes and drops structured Data; exact command status cannot be recovered from this projected trace.",
+          "recordedError": "",
+          "command": {
+            "executable": "/bin/cat",
+            "args": [
+              "/bin/cat",
+              "regression_test.go"
+            ]
+          },
+          "exitCode": null
+        },
+        {
+          "sequence": 52,
+          "callId": "call_1muxzkzy",
+          "tool": "write_file",
+          "interpretation": "Writes corrected merge logic using the current SHA; payload hash equals afterHash.",
+          "recordedError": "",
+          "path": "logic.go",
+          "expectedHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+          "receipt": {
+            "beforeHash": "cb9e2eca2050651caf7fa96b3f2979b4dd581fe15fbbabca8871a663c874427d",
+            "afterHash": "34a76ff478d03dea47889adae97412746e8b438e97560781a660d8c1d20c7921",
+            "created": false
+          }
+        },
+        {
+          "sequence": 54,
+          "callId": "call_q88fd320",
+          "tool": "run_command",
+          "interpretation": "Tests still fail at unchanged regression_test.go line136; merge repair does not address syntax.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "./..."
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "# fixture.local/go-config\nregression_test.go:136:2: expected operand, found ']'\n",
+          "stdoutExcerpt": "FAIL\tfixture.local/go-config [setup failed]\nFAIL\n"
+        },
+        {
+          "sequence": 62,
+          "callId": "call_u2lscn6s",
+          "tool": "read_file",
+          "interpretation": "Ranged read includes line136 and matches the known source slice exactly.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "read": {
+            "hash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "startLine": 130,
+            "endLine": 139,
+            "totalLines": 166,
+            "size": 2498,
+            "truncated": true
+          }
+        },
+        {
+          "sequence": 68,
+          "callId": "call_ltwn4wrx",
+          "tool": "run_command",
+          "interpretation": "sed receives literal quote characters in argv and returns unknown-command diagnostic.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "sed",
+            "args": [
+              "-n",
+              "'1,165p'",
+              "regression_test.go"
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "sed: -e expression #1, char 1: unknown command: `''\n"
+        },
+        {
+          "sequence": 70,
+          "callId": "call_l5h30zwj",
+          "tool": "run_command",
+          "interpretation": "Corrected unquoted sed argv succeeds; command protocol does not implicitly invoke a shell.",
+          "recordedError": "",
+          "command": {
+            "executable": "sed",
+            "args": [
+              "-n",
+              "1,165p",
+              "regression_test.go"
+            ]
+          },
+          "exitCode": 0
+        },
+        {
+          "sequence": 78,
+          "callId": "call_xiegvlga",
+          "tool": "write_file",
+          "interpretation": "A 16-character non-current hash is rejected.",
+          "recordedError": "revision conflict for \"regression_test.go\": file changed since it was read; read it again before editing; call read_file with path \"regression_test.go\" before retrying with that file's returned hash",
+          "path": "regression_test.go",
+          "expectedHash": "f52107dd373eb79f"
+        },
+        {
+          "sequence": 80,
+          "callId": "call_bcb4k85g",
+          "tool": "read_file",
+          "interpretation": "Fresh complete read again returns the unchanged regression test and its full SHA.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "read": {
+            "hash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "startLine": 1,
+            "endLine": 166,
+            "totalLines": 166,
+            "size": 2498,
+            "truncated": false
+          }
+        },
+        {
+          "sequence": 82,
+          "callId": "call_wh3ohj54",
+          "tool": "write_file",
+          "interpretation": "Again rewrites the same invalid test bytes with beforeHash=afterHash.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "expectedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "receipt": {
+            "beforeHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "afterHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+            "created": false
+          }
+        },
+        {
+          "sequence": 84,
+          "callId": "call_4sm4cfkg",
+          "tool": "edit_file",
+          "interpretation": "Attempts to edit logic.go using the regression test SHA; correctly rejected.",
+          "recordedError": "revision conflict for \"logic.go\": file changed since it was read; read it again before editing; call read_file with path \"logic.go\" before retrying with that file's returned hash",
+          "path": "logic.go",
+          "expectedHash": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb"
+        },
+        {
+          "sequence": 86,
+          "callId": "call_fewjcb5y",
+          "tool": "read_file",
+          "interpretation": "Fresh logic.go read returns its newer post-seq52 SHA, disproving a stale-read hypothesis for this transition.",
+          "recordedError": "",
+          "path": "logic.go",
+          "read": {
+            "hash": "34a76ff478d03dea47889adae97412746e8b438e97560781a660d8c1d20c7921",
+            "startLine": 1,
+            "endLine": 36,
+            "totalLines": 36,
+            "size": 675,
+            "truncated": false
+          }
+        },
+        {
+          "sequence": 88,
+          "callId": "call_92xep17z",
+          "tool": "run_command",
+          "interpretation": "go test mixes package . and named files; returns named files must be .go files: . before terminal deadline.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "-v",
+              ".",
+              "regression_test.go",
+              "logic.go",
+              "main.go"
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "named files must be .go files: .\n"
+        }
+      ],
+      "finalSourceHashes": [
+        {
+          "path": "README.md",
+          "sha256": "854f453661dde7d72ce24e43fe58f2a5ee014bbe3b1f20a80f53a38c3c7283fe",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "logic.go",
+          "sha256": "34a76ff478d03dea47889adae97412746e8b438e97560781a660d8c1d20c7921",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "logic_test.go",
+          "sha256": "f6f830269162c65a499857389012c435b0860c37be16407f94a20e96e5e0069d",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "regression_test.go",
+          "sha256": "b79a16c48954eb655605b2dbdabdcbef0a0e28a9c0a6a17af4e722eb7a2f69eb",
+          "matchesRecordedEvolution": true
+        }
+      ]
+    },
+    {
+      "trialId": "f65f9f9d52dbf7bfa42a8db9f22ad619",
+      "taskId": "go-intervals",
+      "status": "failed",
+      "rawIncomplete": true,
+      "error": "model response is incomplete: Ollama reached its generation length limit",
+      "durationMs": 918441,
+      "attribution": "Observed repair failures are explained by model-authored invalid source/commands and incorrect revision arguments. No stale cached read, altered successful write payload, or incorrect revision rejection is demonstrated. Terminal deadline/length outcome remains a failure.",
+      "readAudit": {
+        "total": 7,
+        "full": 7,
+        "ranged": 0,
+        "hashOrSliceMismatches": [],
+        "checks": [
+          {
+            "sequence": 2,
+            "path": "README.md",
+            "fullRead": true,
+            "reportedHash": "0b43fbdf79b765d4256a3bb980ae973db5c5096e274aacb6b93cd9afe9e91604",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 6,
+            "path": "main.go",
+            "fullRead": true,
+            "reportedHash": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 8,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 10,
+            "path": "logic_test.go",
+            "fullRead": true,
+            "reportedHash": "4448204baf881d80779047b2394afad2a282d3ff3b75e7e94443ecba283ab14a",
+            "bytesMatchHash": true,
+            "matchesKnownHash": null,
+            "matchesKnownSlice": null
+          },
+          {
+            "sequence": 20,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 24,
+            "path": "logic.go",
+            "fullRead": true,
+            "reportedHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          },
+          {
+            "sequence": 48,
+            "path": "regression_test.go",
+            "fullRead": true,
+            "reportedHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+            "bytesMatchHash": true,
+            "matchesKnownHash": true,
+            "matchesKnownSlice": true
+          }
+        ]
+      },
+      "successfulMutationChecks": [
+        {
+          "sequence": 26,
+          "path": "logic.go",
+          "expectedHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+          "beforeHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+          "afterHash": "e4dd53a959660445bfe7b2175ccaab6c6382940d8eaaab12e28c6a35e3317003",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": true,
+          "byteIdenticalRewrite": false,
+          "oldTextOccurrences": null
+        },
+        {
+          "sequence": 34,
+          "path": "logic.go",
+          "expectedHash": "e4dd53a959660445bfe7b2175ccaab6c6382940d8eaaab12e28c6a35e3317003",
+          "beforeHash": "e4dd53a959660445bfe7b2175ccaab6c6382940d8eaaab12e28c6a35e3317003",
+          "afterHash": "847ab6bc524b81d50ea2f09d181b7188a466f240c65ad8cc127e27d59044d3dc",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": true,
+          "byteIdenticalRewrite": false,
+          "oldTextOccurrences": null
+        },
+        {
+          "sequence": 38,
+          "path": "regression_test.go",
+          "expectedHash": "missing",
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "afterHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": null,
+          "byteIdenticalRewrite": false,
+          "oldTextOccurrences": null
+        },
+        {
+          "sequence": 50,
+          "path": "regression_test.go",
+          "expectedHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+          "beforeHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+          "afterHash": "57d306362b94f976f1482a9d762f27c8885c1b466abb0d3a9c6604ee9bdfca16",
+          "payloadOrReplacementMatchesAfterHash": true,
+          "beforeMatchesKnown": true,
+          "byteIdenticalRewrite": false,
+          "oldTextOccurrences": 1
+        }
+      ],
+      "missingObservationMetadata": [],
+      "timeline": [
+        {
+          "sequence": 14,
+          "callId": "call_48dznrjy",
+          "tool": "run_command",
+          "interpretation": "Invents a go -e invocation; command rejects unsupported flag.",
+          "recordedError": "process exited with code 2",
+          "command": {
+            "executable": "go",
+            "args": [
+              "-e'{\"windows\": [[5, 8], [1, 3], [3, 5], [9, 10]]}'",
+              "main.go"
+            ]
+          },
+          "exitCode": 2,
+          "stderrExcerpt": "flag provided but not defined: -e'{\"windows\": [[5, 8], [1, 3], [3, 5], [9, 10]]}'\nGo is a tool for managing Go source code.\n\nUsage:\n\n\tgo <command> [arguments]\n\nThe commands are:\n\n\tbug         start a bug report\n\tbuild       compile packages and dependencies\n\tclean       remove object files and cached files\n\tdoc         show documentation for package or symbol\n\tenv         print Go environment information\n\tfix         apply fixes suggested by static checkers\n\tfmt         gofmt (reformat) package sources\n\tgenerate    generate Go files by processing source\n\tget         add dependencies to current module and install them\n\tinstall     compile and "
+        },
+        {
+          "sequence": 16,
+          "callId": "call_6099o7f0",
+          "tool": "run_command",
+          "interpretation": "go run main.go omits the separate logic module and fails; subsequent go run . executes the package.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "go",
+            "args": [
+              "run",
+              "main.go",
+              "[{\"windows\": [[5, 8], [1, 3], [3, 5], [9, 10]]}]"
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "# command-line-arguments\n./main.go:3:157: undefined: solve\n"
+        },
+        {
+          "sequence": 20,
+          "callId": "call_p8acd7ao",
+          "tool": "read_file",
+          "interpretation": "Read returns original logic.go and its actual full hash.",
+          "recordedError": "",
+          "path": "logic.go",
+          "read": {
+            "hash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+            "startLine": 1,
+            "endLine": 5,
+            "totalLines": 5,
+            "size": 489,
+            "truncated": false
+          }
+        },
+        {
+          "sequence": 22,
+          "callId": "call_z4ubcxdw",
+          "tool": "write_file",
+          "interpretation": "Attempts expectedHash=missing for existing logic.go; rejected.",
+          "recordedError": "revision conflict for \"logic.go\": file changed since it was read; read it again before editing; call read_file with path \"logic.go\" before retrying with that file's returned hash",
+          "path": "logic.go",
+          "expectedHash": "missing"
+        },
+        {
+          "sequence": 24,
+          "callId": "call_m2ujfqos",
+          "tool": "read_file",
+          "interpretation": "Fresh read returns unchanged original bytes/hash.",
+          "recordedError": "",
+          "path": "logic.go",
+          "read": {
+            "hash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+            "startLine": 1,
+            "endLine": 5,
+            "totalLines": 5,
+            "size": 489,
+            "truncated": false
+          }
+        },
+        {
+          "sequence": 26,
+          "callId": "call_b7o3hp85",
+          "tool": "write_file",
+          "interpretation": "Correct SHA permits exact write. New implementation initially returns nil slice for empty windows.",
+          "recordedError": "",
+          "path": "logic.go",
+          "expectedHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+          "receipt": {
+            "beforeHash": "b729bd02f40455b0868f45c28c5d8e28376245e39fd31ee6ac1151f28ce7e5b3",
+            "afterHash": "e4dd53a959660445bfe7b2175ccaab6c6382940d8eaaab12e28c6a35e3317003",
+            "created": false
+          }
+        },
+        {
+          "sequence": 28,
+          "callId": "call_6f5fpw40",
+          "tool": "run_command",
+          "interpretation": "Public test failure reports got <nil> want [], retained in stdout with exit1.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "./..."
+            ]
+          },
+          "exitCode": 1,
+          "stdoutExcerpt": "--- FAIL: TestPublic (0.00s)\n    logic_test.go:3: case 0: got <nil> want []\nFAIL\nFAIL\tfixture.local/go-intervals\t0.002s\nFAIL\n"
+        },
+        {
+          "sequence": 30,
+          "callId": "call_t0nufuty",
+          "tool": "run_command",
+          "interpretation": "Further go -e command is rejected as unsupported.",
+          "recordedError": "process exited with code 2",
+          "command": {
+            "executable": "go",
+            "args": [
+              "-e'package main; import (\"encoding/json\"; \"fmt\"); func main(){var out [][2]float64; b, _ := json.Marshal(out); fmt.Println(string(b))}'",
+              "main.go"
+            ]
+          },
+          "exitCode": 2,
+          "stderrExcerpt": "flag provided but not defined: -e'package main; import (\"encoding/json\"; \"fmt\"); func main(){var out [][2]float64; b, _ :\nGo is a tool for managing Go source code.\n\nUsage:\n\n\tgo <command> [arguments]\n\nThe commands are:\n\n\tbug         start a bug report\n\tbuild       compile packages and dependencies\n\tclean       remove object files and cached files\n\tdoc         show documentation for package or symbol\n\tenv         print Go environment information\n\tfix         apply fixes suggested by static checkers\n\tfmt         gofmt (reformat) package sources\n\tgenerate    generate Go files by processing source\n\tget         add dependencies to current module an"
+        },
+        {
+          "sequence": 32,
+          "callId": "call_uwqr0ys9",
+          "tool": "run_command",
+          "interpretation": "go run -e is also rejected; tool preserves explicit argv instead of shell interpretation.",
+          "recordedError": "process exited with code 2",
+          "command": {
+            "executable": "go",
+            "args": [
+              "run",
+              "-e'package main; import (\"encoding/json\"; \"fmt\"); func main(){var out [][2]float64; b, _ := json.Marshal(out); fmt.Println(string(b))}'",
+              "main.go"
+            ]
+          },
+          "exitCode": 2,
+          "stderrExcerpt": "flag provided but not defined: -e'package main; import (\"encoding/json\"; \"fmt\"); func main(){var out [][2]float64; b, _ :\nusage: go run [build flags] [-exec xprog] package [arguments...]\nRun 'go help run' for details.\n"
+        },
+        {
+          "sequence": 34,
+          "callId": "call_sza3m6ft",
+          "tool": "write_file",
+          "interpretation": "Correct existing SHA permits exact write changing to non-nil empty output.",
+          "recordedError": "",
+          "path": "logic.go",
+          "expectedHash": "e4dd53a959660445bfe7b2175ccaab6c6382940d8eaaab12e28c6a35e3317003",
+          "receipt": {
+            "beforeHash": "e4dd53a959660445bfe7b2175ccaab6c6382940d8eaaab12e28c6a35e3317003",
+            "afterHash": "847ab6bc524b81d50ea2f09d181b7188a466f240c65ad8cc127e27d59044d3dc",
+            "created": false
+          }
+        },
+        {
+          "sequence": 36,
+          "callId": "call_27qizyt5",
+          "tool": "run_command",
+          "interpretation": "Public tests return exit0 after that source correction.",
+          "recordedError": "",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "./..."
+            ]
+          },
+          "exitCode": 0,
+          "stdoutExcerpt": "ok  \tfixture.local/go-intervals\t0.001s\n"
+        },
+        {
+          "sequence": 38,
+          "callId": "call_ii2kudhx",
+          "tool": "write_file",
+          "interpretation": "Creates an incomplete regression test with expectedHash=missing; imports and declared cases have no execution loop.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "expectedHash": "missing",
+          "receipt": {
+            "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "afterHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+            "created": true
+          }
+        },
+        {
+          "sequence": 40,
+          "callId": "call_9bokrq1i",
+          "tool": "write_file",
+          "interpretation": "Attempts missing again on the now-existing regression test; rejected.",
+          "recordedError": "revision conflict for \"regression_test.go\": file changed since it was read; read it again before editing; call read_file with path \"regression_test.go\" before retrying with that file's returned hash",
+          "path": "regression_test.go",
+          "expectedHash": "missing"
+        },
+        {
+          "sequence": 44,
+          "callId": "call_ozlf7pt0",
+          "tool": "run_command",
+          "interpretation": "Compiler returns unused encoding/json, unused reflect and unused testCases diagnostics.",
+          "recordedError": "process exited with code 1",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "./..."
+            ]
+          },
+          "exitCode": 1,
+          "stderrExcerpt": "# fixture.local/go-intervals [fixture.local/go-intervals.test]\n./regression_test.go:4:2: \"encoding/json\" imported and not used\n./regression_test.go:5:2: \"reflect\" imported and not used\n./regression_test.go:15:2: declared and not used: testCases\n",
+          "stdoutExcerpt": "FAIL\tfixture.local/go-intervals [build failed]\nFAIL\n"
+        },
+        {
+          "sequence": 46,
+          "callId": "call_yoo8yxwr",
+          "tool": "write_file",
+          "interpretation": "Uses literal 843 (the file byte length) as expectedHash; rejected.",
+          "recordedError": "revision conflict for \"regression_test.go\": file changed since it was read; read it again before editing; call read_file with path \"regression_test.go\" before retrying with that file's returned hash",
+          "path": "regression_test.go",
+          "expectedHash": "843"
+        },
+        {
+          "sequence": 48,
+          "callId": "call_msg6ta9o",
+          "tool": "read_file",
+          "interpretation": "Fresh complete test-file read returns843 bytes and a distinct64-character SHA.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "read": {
+            "hash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+            "startLine": 1,
+            "endLine": 28,
+            "totalLines": 28,
+            "size": 843,
+            "truncated": false
+          }
+        },
+        {
+          "sequence": 50,
+          "callId": "call_ocy4bt1h",
+          "tool": "edit_file",
+          "interpretation": "Exact whole-file edit with that SHA succeeds; oldText hash equals the prior file, replacement hash equals receipt afterHash.",
+          "recordedError": "",
+          "path": "regression_test.go",
+          "expectedHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+          "receipt": {
+            "beforeHash": "0bae84c416312d333be282838051605a95516f4f8b532dfda29b8249e064c6b4",
+            "afterHash": "57d306362b94f976f1482a9d762f27c8885c1b466abb0d3a9c6604ee9bdfca16",
+            "created": false
+          }
+        },
+        {
+          "sequence": 52,
+          "callId": "call_fwdmqsic",
+          "tool": "run_command",
+          "interpretation": "go test ./... returns exit0 after final source/test changes.",
+          "recordedError": "",
+          "command": {
+            "executable": "go",
+            "args": [
+              "test",
+              "./..."
+            ]
+          },
+          "exitCode": 0,
+          "stdoutExcerpt": "ok  \tfixture.local/go-intervals\t0.001s\n"
+        },
+        {
+          "sequence": 54,
+          "callId": "call_psxhi4bu",
+          "tool": "run_command",
+          "interpretation": "go run . returns the README example result. Later generation reaches its output length limit; successful tools do not make the overall attempt complete.",
+          "recordedError": "",
+          "command": {
+            "executable": "go",
+            "args": [
+              "run",
+              ".",
+              "[{\"windows\": [[5, 8], [1, 3], [3, 5], [9, 10]]}]"
+            ]
+          },
+          "exitCode": 0,
+          "stdoutExcerpt": "[[[1,8],[9,10]]]\n"
+        }
+      ],
+      "finalSourceHashes": [
+        {
+          "path": "README.md",
+          "sha256": "0b43fbdf79b765d4256a3bb980ae973db5c5096e274aacb6b93cd9afe9e91604",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "logic.go",
+          "sha256": "847ab6bc524b81d50ea2f09d181b7188a466f240c65ad8cc127e27d59044d3dc",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "logic_test.go",
+          "sha256": "4448204baf881d80779047b2394afad2a282d3ff3b75e7e94443ecba283ab14a",
+          "matchesRecordedEvolution": true
+        },
+        {
+          "path": "regression_test.go",
+          "sha256": "57d306362b94f976f1482a9d762f27c8885c1b466abb0d3a9c6604ee9bdfca16",
+          "matchesRecordedEvolution": true
+        }
+      ]
+    }
+  ],
+  "hostFindings": [
+    {
+      "id": "oversized-harness-observation-drops-metadata",
+      "category": "audit-completeness",
+      "causalFailureDemonstrated": false,
+      "trialId": "277f7139830e8696eec17adbe11d0a45",
+      "sequence": 42,
+      "finding": "Saved Harness observation truncates Content above32768 bytes and clears all Data, losing command exit/readOnly/publication metadata for this oversized binary-producing command. The callback source returns the separate untruncated r to engine, so this does not show missing error/model output or a stale read.",
+      "source": "internal/app/harness_solver.go:165",
+      "scope": "One projected observation; no evidence it caused the preceding repeated syntax repair mistakes."
+    }
+  ],
+  "conclusion": {
+    "staleReadDefectFound": false,
+    "successfulWriteTransportDefectFound": false,
+    "wrongRevisionRejectionFound": false,
+    "historicalErrorRenderingDefectProven": false,
+    "checkedFullReads": 20,
+    "checkedRangedReads": 6,
+    "exactSuccessfulMutations": 8,
+    "observedFailureModes": [
+      "wrong or missing revision selectors",
+      "byte-identical rewrites retaining syntax defect",
+      "wrong-file SHA supplied for an edit",
+      "file length mistaken for revision hash",
+      "invalid Go flags/argument composition and literal shell quoting",
+      "incomplete generated test and nil-versus-empty output mistake, later repaired",
+      "generation length/deadline reached without successful completion"
+    ]
+  },
+  "sourcePointers": [
+    {
+      "path": "internal/app/harness_solver.go",
+      "lines": [
+        154,
+        164,
+        165,
+        178
+      ],
+      "sha256": "71e3c9e0b6f4362810c94154c67521e115f822f9d3326e93df17595d45a1eca0",
+      "purpose": "Direct Manager.Execute call; trace truncation affects saved entry while callback returns original result separately."
+    },
+    {
+      "path": "internal/tools/manager.go",
+      "lines": [
+        177,
+        189,
+        213,
+        233,
+        285
+      ],
+      "sha256": "3aa02a90d12b52fc55c4b2a3d30f5d44b9f4334c5e9236eecfea5a6be56a159b",
+      "purpose": "Explicit expectedHash checks; each read calls workspace.Read; exact write/edit returns before/after hashes."
+    },
+    {
+      "path": "internal/workspace/workspace.go",
+      "lines": [
+        187,
+        308,
+        404,
+        426
+      ],
+      "sha256": "a63e7e7319b9cfaa3946116837740976c9d408811d38eac90f53c8a485448836",
+      "purpose": "Root-scoped file reads and revision-checked exact mutations."
+    },
+    {
+      "path": "internal/engine/engine.go",
+      "lines": [
+        155,
+        162,
+        169,
+        172
+      ],
+      "sha256": "12f9d8203d18840a8dd398439879d3795756011e96c00357ca0dc2268122bcbb",
+      "purpose": "Tool error string and structured Data preserved together for ADK response."
+    },
+    {
+      "path": "internal/engine/tool_presentation.go",
+      "lines": [
+        20,
+        25,
+        41,
+        71
+      ],
+      "sha256": "8914bb33b72140575274505aaf2cf03667f0950baec7e3afb5ae4bc2e6b2b9ed",
+      "purpose": "Read source/command stdout/stderr presented literally; error and exit metadata retained."
+    },
+    {
+      "path": "internal/engine/engine_test.go",
+      "lines": [
+        299,
+        304,
+        310
+      ],
+      "sha256": "f86b29603e2e213aefac23302b95a4d203573f0be1112ebdacf7efd889b1beb7",
+      "purpose": "Existing error-response regression asserts nonzero command diagnostic retention; not rerun for this read-only audit."
+    },
+    {
+      "path": "internal/engine/tool_presentation_test.go",
+      "lines": [
+        59,
+        62,
+        71
+      ],
+      "sha256": "a63d385418125cd71c9a79226683c562e3b71478801c26c39cede9102413abb2",
+      "purpose": "Existing literal stderr/metadata presentation regression; not rerun for this audit."
+    }
+  ],
+  "limitations": [
+    "No hidden graders, active workspaces, candidate imports/execution, compiler/test invocation, Docker/model processes, runtime mutation, production changes or optimization packets.",
+    "Actual historical tool request/response records establish file-hash evolution and returned diagnostics. Exact serialized model-facing HTTP messages were not retained in these trial projections; source paths and prior fake-wire regressions are supporting evidence, not historical wire proof.",
+    "Current source hashes are recorded as read-only implementation references; another lane is making post-freeze usage-accounting changes and the campaign binary remains unchanged.",
+    "A ranged read reports the whole-file revision hash, so hashing only its displayed slice should differ. All six ranges match the reconstructed full source exactly. totalLines includes a trailing empty split element for newline-terminated files, explaining166 reported lines versus wc -l165 without stale content.",
+    "No claim about model internal reasoning or why its final generation failed to stop is made. The recorded deadline/length errors remain failed outcomes."
+  ]
+}

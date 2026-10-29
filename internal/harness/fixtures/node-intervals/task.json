@@ -1,0 +1,148 @@
+{
+  "id": "node-intervals",
+  "name": "Normalize maintenance windows",
+  "stack": "node",
+  "split": "heldout",
+  "prompt": "Read README.md, repair normalize maintenance windows, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "node",
+    "public_test.cjs"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.cjs"
+  ],
+  "public": {
+    "logic.cjs": "exports.solve=function(x){const out=[];const rows=x.windows.filter(([a,b])=>a<b).map(r=>[...r]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);for(const [a,b] of rows){if(out.length&&false)out[out.length-1][1]=Math.max(out[out.length-1][1],b);else out.push([a,b]);}return out;};\n",
+    "main.cjs": "const {solve}=require(\"./logic.cjs\");console.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "package.json": "{\"private\": true, \"scripts\": {\"test\": \"node public_test.cjs\"}}",
+    "public_test.cjs": "const assert=require(\"node:assert/strict\"),{execFileSync}=require(\"node:child_process\");const cases=[{\"windows\": []}, {\"windows\": [[2, 4]]}],expected=[[], [[2, 4]]];assert.deepEqual(JSON.parse(execFileSync(process.execPath,[\"main.cjs\",JSON.stringify(cases)],{encoding:\"utf8\"})),expected);console.log(\"2 public cases passed\");\n\nconst fs=require(\"node:fs\");for(const file of fs.readdirSync(\".\").filter(x=>x.endsWith(\".test.cjs\")))require(\"./\"+file);\n",
+    "README.md": "# Normalize maintenance windows\n\nRepair this node service module and add regression tests.\n\nReturn sorted merged half-open [start,end] windows. Discard empty or reversed windows, merge overlapping AND touching windows, retain negative endpoints, and do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `node public_test.cjs` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"windows\": [\n    [\n      5,\n      8\n    ],\n    [\n      1,\n      3\n    ],\n    [\n      3,\n      5\n    ],\n    [\n      9,\n      10\n    ]\n  ]\n}\n```\nExpected result:\n```json\n[\n  [\n    1,\n    8\n  ],\n  [\n    9,\n    10\n  ]\n]\n```\n"
+  },
+  "cases": [
+    {
+      "name": "intervals-1",
+      "input": {
+        "windows": []
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "intervals-2",
+      "input": {
+        "windows": [
+          [
+            2,
+            4
+          ]
+        ]
+      },
+      "expected": [
+        [
+          2,
+          4
+        ]
+      ],
+      "critical": false
+    },
+    {
+      "name": "intervals-3",
+      "input": {
+        "windows": [
+          [
+            5,
+            8
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            9,
+            10
+          ]
+        ]
+      },
+      "expected": [
+        [
+          1,
+          8
+        ],
+        [
+          9,
+          10
+        ]
+      ],
+      "critical": false
+    },
+    {
+      "name": "intervals-4",
+      "input": {
+        "windows": [
+          [
+            3,
+            3
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            -4,
+            -1
+          ],
+          [
+            -2,
+            1
+          ]
+        ]
+      },
+      "expected": [
+        [
+          -4,
+          1
+        ]
+      ],
+      "critical": false
+    },
+    {
+      "name": "intervals-5",
+      "input": {
+        "windows": [
+          [
+            1,
+            8
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            10,
+            11
+          ]
+        ]
+      },
+      "expected": [
+        [
+          1,
+          8
+        ],
+        [
+          10,
+          11
+        ]
+      ],
+      "critical": false
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-28T08:19:17.607690+00:00",
+  "reviewer": "/root/desktop_research",
+  "method": "Direct visual inspection of all three saved images using view_image at original resolution; filesystem reads only for encoding, dimensions and SHA256.",
+  "verdict": "Visible populated workbench is consistent with retained campaign evidence; no blocking visual defect observed.",
+  "operatorContext": {
+    "declaredAppVersion": "0.2.1",
+    "declaredInspectionDataDirectory": ".runtime/phase2-correction-ui-20261028",
+    "declaredDataPurpose": "Inspection copy of completed campaign database, not the original frozen campaign",
+    "declaredActions": "No activation or lesson-status actions; no correction inference during this UI inspection",
+    "verifiedFromScreenshots": false
+  },
+  "screenshots": [
+    {
+      "path": "docs/evidence/phase2-native-correction-campaign-final.png",
+      "sha256": "7d87eaa5e337177457e4f11f55e012d8ef79ff9912badf82a4e1057e49080cd9",
+      "bytes": 387366,
+      "width": 2998,
+      "height": 2022,
+      "actualEncoding": "JPEG",
+      "filenameExtension": ".png"
+    },
+    {
+      "path": "docs/evidence/phase2-native-correction-lessons.png",
+      "sha256": "89770604779945bffd4fe7cad0e3acc9648b5122468d72c5499f4727080d5e1d",
+      "bytes": 431324,
+      "width": 2998,
+      "height": 2022,
+      "actualEncoding": "JPEG",
+      "filenameExtension": ".png"
+    },
+    {
+      "path": "docs/evidence/phase2-native-correction-revisions.png",
+      "sha256": "ddef98ab050bc54b780a9a333de520a9a4f86a52f177731abee63d0389920090",
+      "bytes": 401661,
+      "width": 2998,
+      "height": 2022,
+      "actualEncoding": "JPEG",
+      "filenameExtension": ".png"
+    }
+  ],
+  "campaignView": {
+    "evaluationIdPrefixVisible": "68381c81596b",
+    "completionBadge": "Completed",
+    "pairedProgressText": "72 / 72 paired trials recorded, including failures",
+    "heldOutSuccessText": "Held-out successes: 0 baseline \u00b7 1 candidate",
+    "costDisclosure": "Complete token accounting is unavailable for these results. No cost comparison is established.",
+    "gateReason": "critical integrity/measurement checks are incomplete or failed",
+    "activationButtonVisible": false,
+    "costRatioVisible": false,
+    "inspectEvidenceButtonVisible": true,
+    "reviewQueueWaiting": 0,
+    "qualificationInterpretation": "Visible completion describes recorded evaluation completion. Failure reason and unavailable-cost disclosure support an ineligible gate; this screenshot does not display the literal independent-review verdict rejected.",
+    "modelContext": "Campaign row identifies Gemma 26B. The global selector reads gemma4:12b-mlx; it is separate from the historical campaign model and does not demonstrate a running model."
+  },
+  "lessonsView": {
+    "visibleLessonCount": 2,
+    "visibleStatuses": [
+      "provisional",
+      "provisional"
+    ],
+    "visibleThemes": [
+      "Regression-test discovery under the prescribed runner",
+      "Final governed read-only verification after the last mutation"
+    ],
+    "evidenceReferencesPerCard": [
+      3,
+      3
+    ],
+    "inspectLineageVisible": true,
+    "markAcceptedAndRejectedControlsVisible": true,
+    "statusChangeNotDemonstrated": true,
+    "presentation": "Both cards, body text and controls are visible without clipping. Guidance explicitly limits its development evidence and does not claim qualification."
+  },
+  "revisionsView": {
+    "visibleRevisionCount": 4,
+    "revisionPrefixes": [
+      "e3ebe7dc737b",
+      "66f8537dad53",
+      "1728c41f11ee",
+      "3e5a9718673c"
+    ],
+    "fullHashesVisible": true,
+    "authorAndTimestampMetadataVisible": true,
+    "inspectRevisionControlsVisible": true,
+    "activationOrPromotionNotDemonstrated": true,
+    "presentation": "Rows and their full hashes remain within the panel at the captured size; no overlap or horizontal overflow is visible."
+  },
+  "nonBlockingObservations": [
+    {
+      "area": "Evaluation result status",
+      "severity": "minor clarity",
+      "observation": "Completed is the only status badge on the visible qualification card. The failure reason is present, but the imported independent-review verdict rejected is not explicitly shown in this screenshot. An explicit review/gate badge could make the distinction faster to read.",
+      "requiredForThisEvidence": false
+    }
+  ],
+  "artifactFormatNote": "All three files have .png names but contain JPEG bytes. The viewer rendered them successfully; hashes cover the actual unchanged JPEG bytes. No conversion or renaming was performed.",
+  "boundaries": [
+    "Saved-image review only: no live UI, runtime/API calls, builds, models, containers or candidate execution.",
+    "No buttons were clicked; screenshots do not prove action behavior, keyboard accessibility, responsive layouts at other sizes, or backend enforcement.",
+    "Version 0.2.1 and inspection-copy provenance are operator-provided context, not independently provable from these pixels.",
+    "The original frozen 0.2.0 campaign evidence remains separate. Rendering historical results in 0.2.1 is not a rerun or retroactive cost correction.",
+    "The literal rejected verdict and absence of persisted promotion are established by the separate export/DB review, not by inferring them from a missing button.",
+    "Only this review JSON was written; screenshots, database records and production code were not modified."
+  ],
+  "relatedEvidence": "docs/evidence/phase2-native-final-export-independent-review.json"
+}

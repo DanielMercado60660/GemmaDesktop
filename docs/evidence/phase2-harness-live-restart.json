@@ -1,0 +1,464 @@
+{
+  "recordedAt": "2026-10-28T00:35:05.475693+00:00",
+  "binarySHA256": "42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+  "passed": true,
+  "before": {
+    "active": false,
+    "available": true,
+    "cacheCleanup": {
+      "failed": 0,
+      "pending": 0
+    },
+    "evaluations": [],
+    "experiments": [
+      {
+        "createdAt": "2026-10-28T00:01:58.38458Z",
+        "id": "e3f1b402a830bf8d04efbf45f55ee3ae",
+        "improvementStages": 0,
+        "packetIds": [],
+        "rollouts": 0,
+        "spec": {
+          "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+          "appVersion": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+          "budgetSeconds": 1200,
+          "contextSize": 65536,
+          "createdAt": "2026-10-28T00:01:58.384403Z",
+          "executorIdentity": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "fixtureDigest": "5a510b4f9ee292f51688649dc15b946e725a319f369065a3dd5cadddd304c703",
+          "graderVersion": "gemma-harness-v1-json-contract:sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "hash": "5bb4e522ba2dc026bd57596cbd07a8dfb54b9788558455e899f1a1618131d8f1",
+          "id": "e3f1b402a830bf8d04efbf45f55ee3ae",
+          "mode": "upstream",
+          "model": "gemma4:26b-mlx",
+          "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+          "pythonIdentity": "sha256:00c930710866f4d7e0f4c6b4cf8bede680d86e799d9e882d2f5ddefe94f35a3c version:3.12.13 (main, Jun  2 2026, 22:42:28) [Clang 22.1.3 ]\n",
+          "runtimeVersion": "0.40.11",
+          "solverTools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "edit_file",
+            "make_directory",
+            "run_command"
+          ],
+          "taskIds": [
+            "python-ledger"
+          ],
+          "toolchainVersion": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "upstreamAdapterHash": "bcc71d301384d61d24c4e02b2aac9594bde2dbf6a753b5f95fb4dc2fb819c01d",
+          "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+        },
+        "status": "ready",
+        "taskIndex": 0,
+        "trialIds": []
+      },
+      {
+        "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "createdAt": "2026-10-28T00:01:58.312802Z",
+        "id": "3c1f216827db7eef221ce7565c9936d6",
+        "improvementStages": 3,
+        "packetIds": [
+          "cc74d4ff3fee267e459f6aeb3835eae2",
+          "6e740c4bf178007035b8c7930d4aabf8",
+          "da762828258d03fc86d4d80344f515dd",
+          "d8346dcbc2688042f256d79ff5eb07ff"
+        ],
+        "rollouts": 4,
+        "spec": {
+          "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+          "appVersion": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+          "budgetSeconds": 1200,
+          "contextSize": 65536,
+          "createdAt": "2026-10-28T00:01:58.312479Z",
+          "executorIdentity": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "fixtureDigest": "5a510b4f9ee292f51688649dc15b946e725a319f369065a3dd5cadddd304c703",
+          "graderVersion": "gemma-harness-v1-json-contract:sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "hash": "65255cf82e40df3f83b5dcd2750bc505ef9ce3d1e1a88ede0be45f254a3c5181",
+          "id": "3c1f216827db7eef221ce7565c9936d6",
+          "mode": "native",
+          "model": "gemma4:26b-mlx",
+          "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+          "runtimeVersion": "0.40.11",
+          "solverTools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "edit_file",
+            "make_directory",
+            "run_command"
+          ],
+          "taskIds": [
+            "python-ledger"
+          ],
+          "toolchainVersion": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+        },
+        "status": "awaiting_codex",
+        "taskIndex": 0,
+        "trialIds": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7",
+          "1d271c8c0d97b1490ab6869873e578ae",
+          "6275aefd7125eeb031ce669a461dac69",
+          "f0e7550ec9dd1ff9af94e40707bbce02"
+        ]
+      }
+    ],
+    "lessons": [],
+    "methodVersion": "gemma-harness-v1",
+    "packets": [
+      {
+        "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "createdAt": "2026-10-28T00:12:32.097179Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "cc74d4ff3fee267e459f6aeb3835eae2",
+        "mission": "Codex: propose a bounded change to transferable execution guidance using the public task and observed baseline. Do not change security, solver settings, test oracle, or claim hidden evaluation results. Return declarative content and evidence-based notes.",
+        "requestHash": "628e7d9f5bd3c2cf5b381d4d429668cdab8c5831255daea71c399180d0e7f862",
+        "revisionId": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+        "stage": "proposal_inv",
+        "status": "submitted",
+        "taskId": "python-ledger"
+      },
+      {
+        "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "createdAt": "2026-10-28T00:12:32.098285Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "6e740c4bf178007035b8c7930d4aabf8",
+        "mission": "Codex: propose a bounded change to task-domain execution guidance using the public task and observed baseline. Do not change security, solver settings, test oracle, or claim hidden evaluation results. Return declarative content and evidence-based notes.",
+        "requestHash": "35b77b6387145386e64617ab05953a4f2aa712a3c136f9a75a60f4e3e9c5c488",
+        "revisionId": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+        "stage": "proposal_dom",
+        "status": "submitted",
+        "taskId": "python-ledger"
+      },
+      {
+        "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "createdAt": "2026-10-28T00:23:17.872291Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7",
+          "1d271c8c0d97b1490ab6869873e578ae",
+          "6275aefd7125eeb031ce669a461dac69"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "da762828258d03fc86d4d80344f515dd",
+        "mission": "Codex: compose the supported improvements from both candidate revisions and their actual probes. Retain baseline behavior when evidence does not support a change. Return declarative content and contrastive notes.",
+        "requestHash": "5257410eaec33fa8cd774eb86afd9c5bda5cde3c249a7c0857151ec69461bcb5",
+        "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "stage": "compose",
+        "status": "submitted",
+        "taskId": "python-ledger"
+      },
+      {
+        "baseRevisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "createdAt": "2026-10-28T00:31:08.994374Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7",
+          "1d271c8c0d97b1490ab6869873e578ae",
+          "6275aefd7125eeb031ce669a461dac69",
+          "f0e7550ec9dd1ff9af94e40707bbce02"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "d8346dcbc2688042f256d79ff5eb07ff",
+        "mission": "Independent Codex reviewer: inspect the actual four rollouts and harness changes. Approve or reject the evidence-supported reflection, identify limits, and retain only transferable lessons. This is not hidden-test grading or production promotion.",
+        "requestHash": "909f128441687f78469b96b035ac40083f09fc651c4919b85d0f1e70b20e1ead",
+        "stage": "reflection",
+        "status": "awaiting_codex",
+        "taskId": "python-ledger"
+      }
+    ],
+    "promotions": [],
+    "revisions": [
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "ff4f1ff298817acc3de64f128bcb8c8c",
+          "kind": "baseline"
+        },
+        "createdAt": "2026-10-28T00:01:58.312499Z",
+        "hash": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "id": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      },
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "/root",
+          "kind": "codex"
+        },
+        "createdAt": "2026-10-28T00:13:56.728254Z",
+        "hash": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+        "id": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+        "parentId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      },
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "/root",
+          "kind": "codex"
+        },
+        "createdAt": "2026-10-28T00:13:56.730619Z",
+        "hash": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+        "id": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+        "parentId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      },
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "/root",
+          "kind": "codex"
+        },
+        "createdAt": "2026-10-28T00:27:07.130303Z",
+        "hash": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "id": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "parentId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      }
+    ],
+    "upstreamRevision": "1cfe254e8d25b15f37048c3730134686abe60335"
+  },
+  "after": {
+    "active": false,
+    "available": true,
+    "cacheCleanup": {
+      "failed": 0,
+      "pending": 0
+    },
+    "evaluations": [],
+    "experiments": [
+      {
+        "createdAt": "2026-10-28T00:01:58.38458Z",
+        "id": "e3f1b402a830bf8d04efbf45f55ee3ae",
+        "improvementStages": 0,
+        "packetIds": [],
+        "rollouts": 0,
+        "spec": {
+          "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+          "appVersion": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+          "budgetSeconds": 1200,
+          "contextSize": 65536,
+          "createdAt": "2026-10-28T00:01:58.384403Z",
+          "executorIdentity": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "fixtureDigest": "5a510b4f9ee292f51688649dc15b946e725a319f369065a3dd5cadddd304c703",
+          "graderVersion": "gemma-harness-v1-json-contract:sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "hash": "5bb4e522ba2dc026bd57596cbd07a8dfb54b9788558455e899f1a1618131d8f1",
+          "id": "e3f1b402a830bf8d04efbf45f55ee3ae",
+          "mode": "upstream",
+          "model": "gemma4:26b-mlx",
+          "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+          "pythonIdentity": "sha256:00c930710866f4d7e0f4c6b4cf8bede680d86e799d9e882d2f5ddefe94f35a3c version:3.12.13 (main, Jun  2 2026, 22:42:28) [Clang 22.1.3 ]\n",
+          "runtimeVersion": "0.40.11",
+          "solverTools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "edit_file",
+            "make_directory",
+            "run_command"
+          ],
+          "taskIds": [
+            "python-ledger"
+          ],
+          "toolchainVersion": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "upstreamAdapterHash": "bcc71d301384d61d24c4e02b2aac9594bde2dbf6a753b5f95fb4dc2fb819c01d",
+          "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+        },
+        "status": "ready",
+        "taskIndex": 0,
+        "trialIds": []
+      },
+      {
+        "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "createdAt": "2026-10-28T00:01:58.312802Z",
+        "id": "3c1f216827db7eef221ce7565c9936d6",
+        "improvementStages": 3,
+        "packetIds": [
+          "cc74d4ff3fee267e459f6aeb3835eae2",
+          "6e740c4bf178007035b8c7930d4aabf8",
+          "da762828258d03fc86d4d80344f515dd",
+          "d8346dcbc2688042f256d79ff5eb07ff"
+        ],
+        "rollouts": 4,
+        "spec": {
+          "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+          "appVersion": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+          "budgetSeconds": 1200,
+          "contextSize": 65536,
+          "createdAt": "2026-10-28T00:01:58.312479Z",
+          "executorIdentity": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "fixtureDigest": "5a510b4f9ee292f51688649dc15b946e725a319f369065a3dd5cadddd304c703",
+          "graderVersion": "gemma-harness-v1-json-contract:sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+          "hash": "65255cf82e40df3f83b5dcd2750bc505ef9ce3d1e1a88ede0be45f254a3c5181",
+          "id": "3c1f216827db7eef221ce7565c9936d6",
+          "mode": "native",
+          "model": "gemma4:26b-mlx",
+          "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+          "runtimeVersion": "0.40.11",
+          "solverTools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "edit_file",
+            "make_directory",
+            "run_command"
+          ],
+          "taskIds": [
+            "python-ledger"
+          ],
+          "toolchainVersion": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+        },
+        "status": "awaiting_codex",
+        "taskIndex": 0,
+        "trialIds": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7",
+          "1d271c8c0d97b1490ab6869873e578ae",
+          "6275aefd7125eeb031ce669a461dac69",
+          "f0e7550ec9dd1ff9af94e40707bbce02"
+        ]
+      }
+    ],
+    "lessons": [],
+    "methodVersion": "gemma-harness-v1",
+    "packets": [
+      {
+        "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "createdAt": "2026-10-28T00:12:32.097179Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "cc74d4ff3fee267e459f6aeb3835eae2",
+        "mission": "Codex: propose a bounded change to transferable execution guidance using the public task and observed baseline. Do not change security, solver settings, test oracle, or claim hidden evaluation results. Return declarative content and evidence-based notes.",
+        "requestHash": "628e7d9f5bd3c2cf5b381d4d429668cdab8c5831255daea71c399180d0e7f862",
+        "revisionId": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+        "stage": "proposal_inv",
+        "status": "submitted",
+        "taskId": "python-ledger"
+      },
+      {
+        "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "createdAt": "2026-10-28T00:12:32.098285Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "6e740c4bf178007035b8c7930d4aabf8",
+        "mission": "Codex: propose a bounded change to task-domain execution guidance using the public task and observed baseline. Do not change security, solver settings, test oracle, or claim hidden evaluation results. Return declarative content and evidence-based notes.",
+        "requestHash": "35b77b6387145386e64617ab05953a4f2aa712a3c136f9a75a60f4e3e9c5c488",
+        "revisionId": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+        "stage": "proposal_dom",
+        "status": "submitted",
+        "taskId": "python-ledger"
+      },
+      {
+        "baseRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "createdAt": "2026-10-28T00:23:17.872291Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7",
+          "1d271c8c0d97b1490ab6869873e578ae",
+          "6275aefd7125eeb031ce669a461dac69"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "da762828258d03fc86d4d80344f515dd",
+        "mission": "Codex: compose the supported improvements from both candidate revisions and their actual probes. Retain baseline behavior when evidence does not support a change. Return declarative content and contrastive notes.",
+        "requestHash": "5257410eaec33fa8cd774eb86afd9c5bda5cde3c249a7c0857151ec69461bcb5",
+        "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "stage": "compose",
+        "status": "submitted",
+        "taskId": "python-ledger"
+      },
+      {
+        "baseRevisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "createdAt": "2026-10-28T00:31:08.994374Z",
+        "evidence": [
+          "3ebb61ddd33a6dfd426ee4090b2f67e7",
+          "1d271c8c0d97b1490ab6869873e578ae",
+          "6275aefd7125eeb031ce669a461dac69",
+          "f0e7550ec9dd1ff9af94e40707bbce02"
+        ],
+        "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+        "id": "d8346dcbc2688042f256d79ff5eb07ff",
+        "mission": "Independent Codex reviewer: inspect the actual four rollouts and harness changes. Approve or reject the evidence-supported reflection, identify limits, and retain only transferable lessons. This is not hidden-test grading or production promotion.",
+        "requestHash": "909f128441687f78469b96b035ac40083f09fc651c4919b85d0f1e70b20e1ead",
+        "stage": "reflection",
+        "status": "awaiting_codex",
+        "taskId": "python-ledger"
+      }
+    ],
+    "promotions": [],
+    "revisions": [
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "ff4f1ff298817acc3de64f128bcb8c8c",
+          "kind": "baseline"
+        },
+        "createdAt": "2026-10-28T00:01:58.312499Z",
+        "hash": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "id": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      },
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "/root",
+          "kind": "codex"
+        },
+        "createdAt": "2026-10-28T00:13:56.728254Z",
+        "hash": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+        "id": "1728c41f11ee82a4641239e80b4dfa19ac8e565695b225a407cca488ea4a939b",
+        "parentId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      },
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "/root",
+          "kind": "codex"
+        },
+        "createdAt": "2026-10-28T00:13:56.730619Z",
+        "hash": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+        "id": "66f8537dad53795c748026081fede4e4df27c4b86381ee104496a46f3e5972b1",
+        "parentId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      },
+      {
+        "agentId": "ff4f1ff298817acc3de64f128bcb8c8c",
+        "authoredBy": {
+          "identity": "/root",
+          "kind": "codex"
+        },
+        "createdAt": "2026-10-28T00:27:07.130303Z",
+        "hash": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "id": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+        "parentId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+        "workspaceId": "b5b80320d4b2748745677f45bf8f5bca"
+      }
+    ],
+    "upstreamRevision": "1cfe254e8d25b15f37048c3730134686abe60335"
+  },
+  "trialIds": [
+    "3ebb61ddd33a6dfd426ee4090b2f67e7",
+    "1d271c8c0d97b1490ab6869873e578ae",
+    "6275aefd7125eeb031ce669a461dac69",
+    "f0e7550ec9dd1ff9af94e40707bbce02"
+  ],
+  "terminalTrials": 4,
+  "automaticInferenceOrReplay": false,
+  "scope": "Actual same-binary restart at native reflection checkpoint; request hashes, revisions and stable trial identifiers retained; inactive before and after."
+}

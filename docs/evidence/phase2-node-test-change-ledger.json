@@ -1,0 +1,1464 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T06:13:34.096452+00:00",
+  "scope": "All24Node trials; successful solver file-write/edit or command-publication metadata for generated test/diagnostic files, plus protected public-test edits. No assertion oracle or model thinking.",
+  "semantics": "beforeHash is exactly the receipt value. For created files, beforeState=missing (file-tool receipts use empty-byte SHA as beforeHash). For command publications without beforeHash, absence is explicitly notRecorded rather than invented.",
+  "trials": [
+    {
+      "trialId": "329f5ac633d2a43dd6bc72acadd0b105",
+      "taskId": "node-config",
+      "arm": "baseline",
+      "repeat": 0,
+      "changes": [],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        }
+      ]
+    },
+    {
+      "trialId": "1bdc643edafa0698ed402be4aa3c3a1e",
+      "taskId": "node-config",
+      "arm": "candidate",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_dvhlui66",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "5314ce1514113c2aee9dfa48feb21b67bfc28e8f5ab2de6db078dbb5921cacc4",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_85v37132",
+          "startSequence": 21,
+          "sequence": 22,
+          "beforeHash": "5314ce1514113c2aee9dfa48feb21b67bfc28e8f5ab2de6db078dbb5921cacc4",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "b41f7550d9cce3e6e31d47029f70f2c6f6582c9a877d2beaf7b6160f7f455a83",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_j5xwc2bt",
+          "startSequence": 27,
+          "sequence": 28,
+          "beforeHash": "b41f7550d9cce3e6e31d47029f70f2c6f6582c9a877d2beaf7b6160f7f455a83",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "15ba0af878e336ec57610e74cf91c13bfe12f023fe166f46065c8e8b7ecf9f08",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 797,
+          "sha256": "15ba0af878e336ec57610e74cf91c13bfe12f023fe166f46065c8e8b7ecf9f08",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "97b1e933d011bc05ce7ea38919e09f23",
+      "taskId": "node-config",
+      "arm": "candidate",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_pfcpexmg",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "358d39db28fbd45088cfe5bc135fc10c09e55e6201317e6feb1c6cf2b2a42978",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1386,
+          "sha256": "358d39db28fbd45088cfe5bc135fc10c09e55e6201317e6feb1c6cf2b2a42978",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "628c152edbb93639be63baed99f94cfc",
+      "taskId": "node-config",
+      "arm": "baseline",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_fcgpxm8h",
+          "startSequence": 15,
+          "sequence": 16,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "f6c24762b9cac256e4ef77ad9c33e392bcb7ff4257fa22821a77d4d0e94d6f58",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_taxw2hwx",
+          "startSequence": 29,
+          "sequence": 30,
+          "beforeHash": "f6c24762b9cac256e4ef77ad9c33e392bcb7ff4257fa22821a77d4d0e94d6f58",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "fa5ea7a064a5136a569c59528954bad3d587e565ffb03deaaddceb73bd379f6f",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_qquh0axp",
+          "startSequence": 31,
+          "sequence": 32,
+          "beforeHash": "fa5ea7a064a5136a569c59528954bad3d587e565ffb03deaaddceb73bd379f6f",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "cddb056d8d01d56f9d8f7b2c9edf9e991ee276bdb415080a721ceb40a0f6e4fb",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_pfkm2xk1",
+          "startSequence": 33,
+          "sequence": 34,
+          "beforeHash": "cddb056d8d01d56f9d8f7b2c9edf9e991ee276bdb415080a721ceb40a0f6e4fb",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "e580f0883f322e13ab0e8a4480e9d96c618ff9984c635cf818e4becbee18fd36",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_vhyhwmqx",
+          "startSequence": 35,
+          "sequence": 36,
+          "beforeHash": "e580f0883f322e13ab0e8a4480e9d96c618ff9984c635cf818e4becbee18fd36",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "53874ed93e164b855b64db027f36295403befa11710eec5eed57698c1fc04644",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_arz6jwa6",
+          "startSequence": 37,
+          "sequence": 38,
+          "beforeHash": "53874ed93e164b855b64db027f36295403befa11710eec5eed57698c1fc04644",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "3b7eea3f5643b06494e3dd0d33bf88b9f94f9fdb104dc0a20b8a917c33d53c7c",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_7ym5bk33",
+          "startSequence": 39,
+          "sequence": 40,
+          "beforeHash": "3b7eea3f5643b06494e3dd0d33bf88b9f94f9fdb104dc0a20b8a917c33d53c7c",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "7ce46ebdc692869b08d23d4f04338efb2718bb4caf82289da98e44298286f373",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_u02a3t0e",
+          "startSequence": 41,
+          "sequence": 42,
+          "beforeHash": "7ce46ebdc692869b08d23d4f04338efb2718bb4caf82289da98e44298286f373",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "a89c1b495915d5b4fbe285a5252bf7f1d247f3d86c3a757463e460053678b96d",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_7o3j6o6b",
+          "startSequence": 43,
+          "sequence": 44,
+          "beforeHash": "a89c1b495915d5b4fbe285a5252bf7f1d247f3d86c3a757463e460053678b96d",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "6ddd2d06859e8caa758062e828ed15b095b5459c3f458cbb036847ce517457fe",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_4e3pbhyp",
+          "startSequence": 45,
+          "sequence": 46,
+          "beforeHash": "6ddd2d06859e8caa758062e828ed15b095b5459c3f458cbb036847ce517457fe",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "038c180e31697ecda730da6bfc572f600e9e30506d0f75231b4563f38e6f37ff",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_gflrc6tg",
+          "startSequence": 47,
+          "sequence": 48,
+          "beforeHash": "038c180e31697ecda730da6bfc572f600e9e30506d0f75231b4563f38e6f37ff",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "c11de349da8a2c73a226fdd3f76b75a0080a09f0eb8866bd69649d570e037e55",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_h0hirqg8",
+          "startSequence": 49,
+          "sequence": 50,
+          "beforeHash": "c11de349da8a2c73a226fdd3f76b75a0080a09f0eb8866bd69649d570e037e55",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "b4795f7edf71bf0e27c51a9c97b95b1713ddb19ae795f94cfa468859a8c5ac86",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_1367ctdn",
+          "startSequence": 53,
+          "sequence": 54,
+          "beforeHash": "b4795f7edf71bf0e27c51a9c97b95b1713ddb19ae795f94cfa468859a8c5ac86",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "382438c13bc26b19cb3eb821d0244926b601f0bb7f9052965689c2c1da38f86d",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_ax0owwex",
+          "startSequence": 55,
+          "sequence": 56,
+          "beforeHash": "382438c13bc26b19cb3eb821d0244926b601f0bb7f9052965689c2c1da38f86d",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "174e37474df5763ba50baa47c5843a92af89d9ede92616031f601fbb89fde5e3",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1420,
+          "sha256": "174e37474df5763ba50baa47c5843a92af89d9ede92616031f601fbb89fde5e3",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "01b04a09d340ac1b41d504d2896e82b2",
+      "taskId": "node-config",
+      "arm": "baseline",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "test_null.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "write_file",
+          "callId": "call_j4qr32nb",
+          "startSequence": 15,
+          "sequence": 16,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "4297aa8dd33939fcdd9f938b0fa0c72cfd6a24e2afdea11010d44d2108b7ae1c",
+          "created": true
+        },
+        {
+          "path": "test_merge.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "write_file",
+          "callId": "call_ffzsudjo",
+          "startSequence": 19,
+          "sequence": 20,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "b8eda8f13c283b35ba324061ed40591baa4ca05a39874151967a663f89d54962",
+          "created": true
+        },
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_q41j64qz",
+          "startSequence": 29,
+          "sequence": 30,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "2440561eb45e7b702b2958273a43f61dadb760edf2ab2a5191d017e6098f90aa",
+          "created": true
+        },
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_oav7zc9r",
+          "startSequence": 31,
+          "sequence": 32,
+          "beforeHash": "2440561eb45e7b702b2958273a43f61dadb760edf2ab2a5191d017e6098f90aa",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "34508166fc8d9f31c3540467c50cd16369c6856eada2bc70831caf1b71071a8f",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_test.cjs",
+          "bytes": 1241,
+          "sha256": "34508166fc8d9f31c3540467c50cd16369c6856eada2bc70831caf1b71071a8f",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "test_merge.cjs",
+          "bytes": 885,
+          "sha256": "b8eda8f13c283b35ba324061ed40591baa4ca05a39874151967a663f89d54962",
+          "role": "added-diagnostic-script"
+        },
+        {
+          "path": "test_null.cjs",
+          "bytes": 397,
+          "sha256": "4297aa8dd33939fcdd9f938b0fa0c72cfd6a24e2afdea11010d44d2108b7ae1c",
+          "role": "added-diagnostic-script"
+        }
+      ]
+    },
+    {
+      "trialId": "f6b10c493eb667e5d44bfbae3be3d895",
+      "taskId": "node-config",
+      "arm": "candidate",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_c1pt6p16",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "459b222a070f2441bf17dea5ccb7112865f15b4d2192ce8ad3dc2a5be2e35f91",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_9kasmc4e",
+          "startSequence": 17,
+          "sequence": 18,
+          "beforeHash": "459b222a070f2441bf17dea5ccb7112865f15b4d2192ce8ad3dc2a5be2e35f91",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "e35bb249632aa7926639cb79b79c999cbcce2792f46013bdc84bf9ff9478d63e",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_4jz8tcws",
+          "startSequence": 25,
+          "sequence": 26,
+          "beforeHash": "e35bb249632aa7926639cb79b79c999cbcce2792f46013bdc84bf9ff9478d63e",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "e35bb249632aa7926639cb79b79c999cbcce2792f46013bdc84bf9ff9478d63e",
+          "created": false
+        },
+        {
+          "path": "test_example.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "write_file",
+          "callId": "call_n54z6dcg",
+          "startSequence": 31,
+          "sequence": 32,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "bde4e968c6241a7b83c96a14b69e9c0053f68716d11f045d9d10af649973dc66",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1009,
+          "sha256": "e35bb249632aa7926639cb79b79c999cbcce2792f46013bdc84bf9ff9478d63e",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "test_example.cjs",
+          "bytes": 281,
+          "sha256": "bde4e968c6241a7b83c96a14b69e9c0053f68716d11f045d9d10af649973dc66",
+          "role": "added-diagnostic-script"
+        }
+      ]
+    },
+    {
+      "trialId": "66d273312742688bfc2bc024a09c0d1e",
+      "taskId": "node-intervals",
+      "arm": "baseline",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_z37up94b",
+          "startSequence": 23,
+          "sequence": 24,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "bbea0824378380ea86fd309c9edb7b1efed12efd7223e83dda61067fe44ee2d0",
+          "created": true
+        },
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_e7nle6ua",
+          "startSequence": 37,
+          "sequence": 38,
+          "beforeHash": "bbea0824378380ea86fd309c9edb7b1efed12efd7223e83dda61067fe44ee2d0",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "98b87ed27dd79289a05d1c1b4a073d7257f061e998dfbfe867c467fa6dfaa1bb",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "8c9c4d2b0c5d6cded0d957a09c82acba3d5b7cb1feb73dfc3186279f647e3586",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_test.cjs",
+          "bytes": 1375,
+          "sha256": "98b87ed27dd79289a05d1c1b4a073d7257f061e998dfbfe867c467fa6dfaa1bb",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "257cadcefd7f75bcd356b5e6b7c46b18",
+      "taskId": "node-intervals",
+      "arm": "candidate",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_6qimlxcc",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "d2dda917324093adf7c65351901f82242a52390fe4ac3bd46178af237bb6693e",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_g9zpfcqk",
+          "startSequence": 15,
+          "sequence": 16,
+          "beforeHash": "d2dda917324093adf7c65351901f82242a52390fe4ac3bd46178af237bb6693e",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "ef2b898d70cafb815e906eb4e598adcec649845870c8ba01625ba5fdf0e7cb3c",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "8c9c4d2b0c5d6cded0d957a09c82acba3d5b7cb1feb73dfc3186279f647e3586",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 625,
+          "sha256": "ef2b898d70cafb815e906eb4e598adcec649845870c8ba01625ba5fdf0e7cb3c",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "edcfd5d2977e6ca2c7a4991b4f79ed84",
+      "taskId": "node-intervals",
+      "arm": "candidate",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_f1ilahuk",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "8d99d973ddef4474c723c1065ae02783fb5ee0adda34be46c5660069709e7f3d",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "8c9c4d2b0c5d6cded0d957a09c82acba3d5b7cb1feb73dfc3186279f647e3586",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 831,
+          "sha256": "8d99d973ddef4474c723c1065ae02783fb5ee0adda34be46c5660069709e7f3d",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "fb0c52c0200ae56979d0c77fb6dcfc38",
+      "taskId": "node-intervals",
+      "arm": "baseline",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "regression_tests.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_85r3srxm",
+          "startSequence": 17,
+          "sequence": 18,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "438ed55c441d2c9192116f065bf02a7fba8709c6ebadcfdfcf8e41055b817f5d",
+          "created": true
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_9tetn2oh",
+          "startSequence": 29,
+          "sequence": 30,
+          "beforeHash": "438ed55c441d2c9192116f065bf02a7fba8709c6ebadcfdfcf8e41055b817f5d",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "bb8aa908492e2585d4f4db6fb264409de0a71ca7a8fbd7cf7e61c23cc6b6005f",
+          "created": false
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_9506lnmd",
+          "startSequence": 33,
+          "sequence": 34,
+          "beforeHash": "bb8aa908492e2585d4f4db6fb264409de0a71ca7a8fbd7cf7e61c23cc6b6005f",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "d51cf91d8e24284eaa0ea6d6d0af292179716fec18c19d720857bd311b259ab1",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "8c9c4d2b0c5d6cded0d957a09c82acba3d5b7cb1feb73dfc3186279f647e3586",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "bytes": 958,
+          "sha256": "d51cf91d8e24284eaa0ea6d6d0af292179716fec18c19d720857bd311b259ab1",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "1ff4eddf3f539205e09790ad02588f70",
+      "taskId": "node-intervals",
+      "arm": "baseline",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "example_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "run_command",
+          "callId": "call_0nrn9iy3",
+          "startSequence": 21,
+          "sequence": 22,
+          "beforeHash": null,
+          "beforeHashRecorded": false,
+          "beforeState": "notRecorded",
+          "afterHash": "af7260a4455820b1282538940e872e34afe025acef08b673643aa98141449e71",
+          "created": null
+        },
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "run_command",
+          "callId": "call_9f11h8s2",
+          "startSequence": 31,
+          "sequence": 32,
+          "beforeHash": null,
+          "beforeHashRecorded": false,
+          "beforeState": "notRecorded",
+          "afterHash": "2791426531f04d0ab9c14f1b0e0d4668f4ecf38dae1bb385db5dac14825b6d3d",
+          "created": null
+        },
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_6xdkx6og",
+          "startSequence": 37,
+          "sequence": 38,
+          "beforeHash": "2791426531f04d0ab9c14f1b0e0d4668f4ecf38dae1bb385db5dac14825b6d3d",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "e84ef22af6be7c2d0e1cc4de05de81579561313e11bce731b60c2725e2e79c99",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "example_test.cjs",
+          "bytes": 337,
+          "sha256": "af7260a4455820b1282538940e872e34afe025acef08b673643aa98141449e71",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "8c9c4d2b0c5d6cded0d957a09c82acba3d5b7cb1feb73dfc3186279f647e3586",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_test.cjs",
+          "bytes": 782,
+          "sha256": "e84ef22af6be7c2d0e1cc4de05de81579561313e11bce731b60c2725e2e79c99",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "0529c100900a3793016327673fad3884",
+      "taskId": "node-intervals",
+      "arm": "candidate",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "repro.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_zlu78wrz",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "1dc00b567dc5a70f86060ce80d516232dbab6f2c0f005707dfd3002281d706a6",
+          "created": true
+        },
+        {
+          "path": "debug.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "write_file",
+          "callId": "call_w4z4nnok",
+          "startSequence": 27,
+          "sequence": 28,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "703e36aeaf9d62e6d607bfd876f964ba9bfd772f7ccf061246f6a6858f0f17e1",
+          "created": true
+        },
+        {
+          "path": "debug_loop.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "write_file",
+          "callId": "call_uqaa0dkd",
+          "startSequence": 33,
+          "sequence": 34,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "f219246841ba99fec478984fbbf9e11bd47060dfbd215f032980870eee6f49f4",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_fzfg9c2y",
+          "startSequence": 41,
+          "sequence": 42,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "050b1f5655e1af7494cb33ccbed0b14d15e1181f6dba4cc531ae6ef41d4932a5",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "debug.cjs",
+          "bytes": 137,
+          "sha256": "703e36aeaf9d62e6d607bfd876f964ba9bfd772f7ccf061246f6a6858f0f17e1",
+          "role": "added-diagnostic-script"
+        },
+        {
+          "path": "debug_loop.cjs",
+          "bytes": 640,
+          "sha256": "f219246841ba99fec478984fbbf9e11bd47060dfbd215f032980870eee6f49f4",
+          "role": "added-diagnostic-script"
+        },
+        {
+          "path": "public_test.cjs",
+          "bytes": 448,
+          "sha256": "8c9c4d2b0c5d6cded0d957a09c82acba3d5b7cb1feb73dfc3186279f647e3586",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 637,
+          "sha256": "050b1f5655e1af7494cb33ccbed0b14d15e1181f6dba4cc531ae6ef41d4932a5",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "repro.test.cjs",
+          "bytes": 337,
+          "sha256": "1dc00b567dc5a70f86060ce80d516232dbab6f2c0f005707dfd3002281d706a6",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "f62a00d2ff0175173729f15631ac064d",
+      "taskId": "node-orders",
+      "arm": "baseline",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_1xmv1erb",
+          "startSequence": 29,
+          "sequence": 30,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "d07f3757751ca414da06dd20ec6bb50da82b7c67a734f3e8e3e4126c9a5b2b91",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 482,
+          "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_test.cjs",
+          "bytes": 868,
+          "sha256": "d07f3757751ca414da06dd20ec6bb50da82b7c67a734f3e8e3e4126c9a5b2b91",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "4865d2a5008715d7b2784f852c39b6cc",
+      "taskId": "node-orders",
+      "arm": "candidate",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_lg1vcu68",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "a9b8305f7525098cc24c2b49534fc211d65f8daee64599020af374e7b6d3c3ab",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_xg4lofhh",
+          "startSequence": 35,
+          "sequence": 36,
+          "beforeHash": "a9b8305f7525098cc24c2b49534fc211d65f8daee64599020af374e7b6d3c3ab",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "61b7ad9fb5ca0387922c5c8eec29db43e20e1f6a874dbd12709ce18450246fb7",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_01b8ekyj",
+          "startSequence": 39,
+          "sequence": 40,
+          "beforeHash": "61b7ad9fb5ca0387922c5c8eec29db43e20e1f6a874dbd12709ce18450246fb7",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "b6039887e034d0405a4f20bd785b8bb2048872a5759a39b895f6b3474b175a84",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 482,
+          "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1020,
+          "sha256": "b6039887e034d0405a4f20bd785b8bb2048872a5759a39b895f6b3474b175a84",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "12aa68ef03e97871f150a68b9c4f0fe0",
+      "taskId": "node-orders",
+      "arm": "candidate",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_rn3ose8m",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_nlx60za4",
+          "startSequence": 33,
+          "sequence": 34,
+          "beforeHash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "42aa1ba04bdea21b504c47e81a86696c84871f87388829a80eab999b3c62c316",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 482,
+          "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1256,
+          "sha256": "42aa1ba04bdea21b504c47e81a86696c84871f87388829a80eab999b3c62c316",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "1a7bf0844c6c92c1e514b7d48314ddb4",
+      "taskId": "node-orders",
+      "arm": "baseline",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_rx2ipz0i",
+          "startSequence": 25,
+          "sequence": 26,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "1ea5db418efd48e505782cb16189b1d711d95c705ec9386bf49fe916791a4be4",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 482,
+          "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1233,
+          "sha256": "1ea5db418efd48e505782cb16189b1d711d95c705ec9386bf49fe916791a4be4",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "a73296fbf73a04bb41315a8eb2b4deaf",
+      "taskId": "node-orders",
+      "arm": "baseline",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "regression_test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_ggnwkgy7",
+          "startSequence": 25,
+          "sequence": 26,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "ee1fe4d9f48d733269a2b8006018b4e36ffe979887e8a2d34cfcfdd21307a62f",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 482,
+          "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_test.cjs",
+          "bytes": 1440,
+          "sha256": "ee1fe4d9f48d733269a2b8006018b4e36ffe979887e8a2d34cfcfdd21307a62f",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "927a568882c464c3008a25a08a8f820d",
+      "taskId": "node-orders",
+      "arm": "candidate",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_4uzp53xy",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "dc0c0083851f40655027090ddb5f9cb72e62296814469e6aefdfbbeb72a7ba13",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "edit_file",
+          "callId": "call_ua90hr2r",
+          "startSequence": 25,
+          "sequence": 26,
+          "beforeHash": "dc0c0083851f40655027090ddb5f9cb72e62296814469e6aefdfbbeb72a7ba13",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "20989f347601372ae8ae9e7fdf65a1802a004d429956e71a7183767fb53cb787",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 482,
+          "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1061,
+          "sha256": "20989f347601372ae8ae9e7fdf65a1802a004d429956e71a7183767fb53cb787",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "d7335d06ba1dec7a58e7766b0ab97da3",
+      "taskId": "node-usage",
+      "arm": "baseline",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "reproduction.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_06qptktt",
+          "startSequence": 29,
+          "sequence": 30,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "093900e54c5df22bcaa69931a84ae919dc291bf9bece0c6b722f254594a85e0d",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_eu5ccm85",
+          "startSequence": 41,
+          "sequence": 42,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "b9af521f440fb1c254aedc4fb086ea7fa9f1844755f62efc37903fc3fc853533",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 827,
+          "sha256": "b9af521f440fb1c254aedc4fb086ea7fa9f1844755f62efc37903fc3fc853533",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "reproduction.test.cjs",
+          "bytes": 450,
+          "sha256": "093900e54c5df22bcaa69931a84ae919dc291bf9bece0c6b722f254594a85e0d",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "5c38e3e1bf102fe30edad94868ae2f9e",
+      "taskId": "node-usage",
+      "arm": "candidate",
+      "repeat": 0,
+      "changes": [
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_bbyvi695",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "16c594cabc93dfe4fa1eb388a6ebbe9dd28bf7dba0f309018803136f7ce6b45b",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_2esdr8g2",
+          "startSequence": 21,
+          "sequence": 22,
+          "beforeHash": "16c594cabc93dfe4fa1eb388a6ebbe9dd28bf7dba0f309018803136f7ce6b45b",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "454a69e14afc91b155e0b208829ff151e55f5e34ddfa4818f14743c95ccf2440",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 709,
+          "sha256": "454a69e14afc91b155e0b208829ff151e55f5e34ddfa4818f14743c95ccf2440",
+          "role": "added-regression-test"
+        }
+      ]
+    },
+    {
+      "trialId": "2b3d280e7299c221a83542e524c5ee7d",
+      "taskId": "node-usage",
+      "arm": "candidate",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "repro.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "write_file",
+          "callId": "call_6qc72cg0",
+          "startSequence": 13,
+          "sequence": 14,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "c3baf1405a6b17a82448bc3562393d5a77f4f7821631aa910f0fb719e6fa0572",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_udwb5ync",
+          "startSequence": 23,
+          "sequence": 24,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "b4d5c7e8d673969c5075420c47ee90d90be5cb300fa2ca621b4c48dd6fd8c249",
+          "created": true
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_wmz1eefv",
+          "startSequence": 25,
+          "sequence": 26,
+          "beforeHash": "b4d5c7e8d673969c5075420c47ee90d90be5cb300fa2ca621b4c48dd6fd8c249",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "774207f40158c6142d6ac88892ccbfeb32f772d001c3bae86bb98eebe62b215a",
+          "created": false
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1901,
+          "sha256": "774207f40158c6142d6ac88892ccbfeb32f772d001c3bae86bb98eebe62b215a",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "repro.cjs",
+          "bytes": 164,
+          "sha256": "c3baf1405a6b17a82448bc3562393d5a77f4f7821631aa910f0fb719e6fa0572",
+          "role": "added-diagnostic-script"
+        }
+      ]
+    },
+    {
+      "trialId": "27a20d6b163b76460ec594ae04021c90",
+      "taskId": "node-usage",
+      "arm": "baseline",
+      "repeat": 1,
+      "changes": [
+        {
+          "path": "reproduce_issue.cjs",
+          "ownership": "solver-generated",
+          "role": "added-diagnostic-script",
+          "tool": "run_command",
+          "callId": "call_pnfguyh2",
+          "startSequence": 17,
+          "sequence": 18,
+          "beforeHash": null,
+          "beforeHashRecorded": false,
+          "beforeState": "notRecorded",
+          "afterHash": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+          "created": null
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "run_command",
+          "callId": "call_n3esl7y5",
+          "startSequence": 31,
+          "sequence": 32,
+          "beforeHash": null,
+          "beforeHashRecorded": false,
+          "beforeState": "notRecorded",
+          "afterHash": "f7bd8c56f85db814a16c36d88ab01b284f17c41ef4673b400345cd9d8807ea62",
+          "created": null
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "run_command",
+          "callId": "call_lxyob7ni",
+          "startSequence": 33,
+          "sequence": 34,
+          "beforeHash": "f7bd8c56f85db814a16c36d88ab01b284f17c41ef4673b400345cd9d8807ea62",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+          "created": null
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "bytes": 1087,
+          "sha256": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+          "role": "added-regression-test"
+        },
+        {
+          "path": "reproduce_issue.cjs",
+          "bytes": 629,
+          "sha256": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+          "role": "added-diagnostic-script"
+        }
+      ]
+    },
+    {
+      "trialId": "1d2ac62096b06bce0a1afde6af850c37",
+      "taskId": "node-usage",
+      "arm": "baseline",
+      "repeat": 2,
+      "changes": [],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 527,
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "role": "original-public-test"
+        }
+      ]
+    },
+    {
+      "trialId": "e2fed027b609eb35fc88095d27925e9b",
+      "taskId": "node-usage",
+      "arm": "candidate",
+      "repeat": 2,
+      "changes": [
+        {
+          "path": "public_test.cjs",
+          "ownership": "protected-original-public-test",
+          "role": "original-public-test",
+          "tool": "edit_file",
+          "callId": "call_4yb1o96l",
+          "startSequence": 15,
+          "sequence": 16,
+          "beforeHash": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "beforeHashRecorded": true,
+          "beforeState": "existing",
+          "afterHash": "4cedda885825a5b412f6f57ad79ac1b8969bc0b282eee09a215864c9a5a5c164",
+          "created": false
+        },
+        {
+          "path": "regression.test.cjs",
+          "ownership": "solver-generated",
+          "role": "added-regression-test",
+          "tool": "write_file",
+          "callId": "call_1q75k61y",
+          "startSequence": 19,
+          "sequence": 20,
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "beforeHashRecorded": true,
+          "beforeState": "missing",
+          "afterHash": "b948fc139f1ceaedcada4d3abd66b4b33b58edf2970357d2143b395ab7229862",
+          "created": true
+        }
+      ],
+      "finalFiles": [
+        {
+          "path": "public_test.cjs",
+          "bytes": 690,
+          "sha256": "4cedda885825a5b412f6f57ad79ac1b8969bc0b282eee09a215864c9a5a5c164",
+          "role": "original-public-test"
+        },
+        {
+          "path": "regression.test.cjs",
+          "bytes": 1078,
+          "sha256": "b948fc139f1ceaedcada4d3abd66b4b33b58edf2970357d2143b395ab7229862",
+          "role": "added-regression-test"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "testsPassed": 272,
+  "topLevelTestsPassed": 149,
+  "packagesPassed": [
+    "gemmadesktop.local/app/internal/browser",
+    "gemmadesktop.local/app/internal/workspace",
+    "gemmadesktop.local/app/internal/store",
+    "gemmadesktop.local/app/internal/mcp",
+    "gemmadesktop.local/app/internal/inference",
+    "gemmadesktop.local/app/internal/execution",
+    "gemmadesktop.local/app/internal/tools",
+    "gemmadesktop.local/app/internal/workflow",
+    "gemmadesktop.local/app/internal/engine",
+    "gemmadesktop.local/app/internal/app"
+  ],
+  "skippedTests": [
+    "TestLiveChrome",
+    "TestRealUserTerminal",
+    "TestLiveOllamaRejectsContextOverflow",
+    "TestLiveOllamaToolAndSnapshot"
+  ],
+  "failures": []
+}

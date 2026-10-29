@@ -1,0 +1,28 @@
+{"Time":"2026-10-27T18:22:28.288823-05:00","Action":"start","Package":"gemmadesktop.local/app/internal/app"}
+{"Time":"2026-10-27T18:22:28.581566-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision"}
+{"Time":"2026-10-27T18:22:28.581655-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision","Output":"=== RUN   TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision\n"}
+{"Time":"2026-10-27T18:22:28.701631-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision","Output":"--- PASS: TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision (0.12s)\n"}
+{"Time":"2026-10-27T18:22:28.701659-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision","Elapsed":0.12}
+{"Time":"2026-10-27T18:22:28.703516-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportResumesAfterPublicationAndDatabaseFailure"}
+{"Time":"2026-10-27T18:22:28.703531-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportResumesAfterPublicationAndDatabaseFailure","Output":"=== RUN   TestSkillImportResumesAfterPublicationAndDatabaseFailure\n"}
+{"Time":"2026-10-27T18:22:28.753409-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportResumesAfterPublicationAndDatabaseFailure","Output":"--- PASS: TestSkillImportResumesAfterPublicationAndDatabaseFailure (0.05s)\n"}
+{"Time":"2026-10-27T18:22:28.753435-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportResumesAfterPublicationAndDatabaseFailure","Elapsed":0.05}
+{"Time":"2026-10-27T18:22:28.753473-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportRejectsConflictingUnrecordedDirectory"}
+{"Time":"2026-10-27T18:22:28.753485-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportRejectsConflictingUnrecordedDirectory","Output":"=== RUN   TestSkillImportRejectsConflictingUnrecordedDirectory\n"}
+{"Time":"2026-10-27T18:22:28.765335-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportRejectsConflictingUnrecordedDirectory","Output":"--- PASS: TestSkillImportRejectsConflictingUnrecordedDirectory (0.01s)\n"}
+{"Time":"2026-10-27T18:22:28.765361-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestSkillImportRejectsConflictingUnrecordedDirectory","Elapsed":0.01}
+{"Time":"2026-10-27T18:22:28.765477-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacySkillFreezesDigestAndPreservesSelectedID"}
+{"Time":"2026-10-27T18:22:28.765487-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacySkillFreezesDigestAndPreservesSelectedID","Output":"=== RUN   TestLegacySkillFreezesDigestAndPreservesSelectedID\n"}
+{"Time":"2026-10-27T18:22:28.810367-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacySkillFreezesDigestAndPreservesSelectedID","Output":"--- PASS: TestLegacySkillFreezesDigestAndPreservesSelectedID (0.04s)\n"}
+{"Time":"2026-10-27T18:22:28.810388-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacySkillFreezesDigestAndPreservesSelectedID","Elapsed":0.04}
+{"Time":"2026-10-27T18:22:28.811132-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Output":"PASS\n"}
+{"Time":"2026-10-27T18:22:29.818358-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Output":"ok  \tgemmadesktop.local/app/internal/app\t1.529s\n"}
+{"Time":"2026-10-27T18:22:29.818506-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Elapsed":1.53}
+{"Time":"2026-10-27T18:22:36.14857-05:00","Action":"start","Package":"gemmadesktop.local/app/internal/app"}
+{"Time":"2026-10-27T18:22:36.433313-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacyComparisonPersistsFinalBoundCapabilityDigest"}
+{"Time":"2026-10-27T18:22:36.43337-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacyComparisonPersistsFinalBoundCapabilityDigest","Output":"=== RUN   TestLegacyComparisonPersistsFinalBoundCapabilityDigest\n"}
+{"Time":"2026-10-27T18:22:36.522967-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacyComparisonPersistsFinalBoundCapabilityDigest","Output":"--- PASS: TestLegacyComparisonPersistsFinalBoundCapabilityDigest (0.09s)\n"}
+{"Time":"2026-10-27T18:22:36.523002-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Test":"TestLegacyComparisonPersistsFinalBoundCapabilityDigest","Elapsed":0.09}
+{"Time":"2026-10-27T18:22:36.523024-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Output":"PASS\n"}
+{"Time":"2026-10-27T18:22:37.529723-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/app","Output":"ok  \tgemmadesktop.local/app/internal/app\t1.381s\n"}
+{"Time":"2026-10-27T18:22:37.529845-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/app","Elapsed":1.381}

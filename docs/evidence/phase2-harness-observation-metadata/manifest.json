@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T03:11:35.638534+00:00",
+  "status": "source-frozen-tests-pass-not-deployed",
+  "cause": "Oversized run_command saved observations cleared all Data, losing execution status/provenance even though the model callback retained the original result.",
+  "change": {
+    "textLimit": 32768,
+    "textSuffix": "\n[Observation truncated]",
+    "textBehavior": "unchanged",
+    "metadataMaxJSONBytes": 16384,
+    "maxChangeSummaries": 8,
+    "projection": "Fixed metadata allowlist with explicit payload, unknown-field, invalid/oversized-metadata and change-count omission flags. stdout/stderr/content/body excluded from saved Data; existing bounded Content remains. Exact scalar status retained; oversized identities omitted rather than clipped.",
+    "modelResult": "Original content and map remain untouched; saved projection builds fresh nested maps.",
+    "scope": "Only oversized run_command observations. Small observations and other tool truncation retain prior behavior."
+  },
+  "sourceFiles": [
+    {
+      "path": "internal/app/harness_solver.go",
+      "sha256": "b0df19e90be25eedb32e130ffb890a31d4c171696a8720fbbe1250cdbb105e0b",
+      "change": "narrow observation branch"
+    },
+    {
+      "path": "internal/app/harness_observation.go",
+      "sha256": "16a14c8ac21b551af42d3210e3e2c11e4333917028fb6d054dcdeacb3a603c56",
+      "change": "new helper"
+    },
+    {
+      "path": "internal/app/harness_observation_test.go",
+      "sha256": "06ddaba29a3333fe9d0360b969a60e56bcb8d1d3795bc118c3c645a040f1e4fd",
+      "change": "new tests"
+    }
+  ],
+  "beforeSolverSHA256": "71e3c9e0b6f4362810c94154c67521e115f822f9d3326e93df17595d45a1eca0",
+  "patch": {
+    "path": "docs/evidence/phase2-harness-observation-metadata/change.patch",
+    "sha256": "9fc7f5a4ed6b592a68089bdcb6f68c470e8b664501819d662fb4ce91d92714c5",
+    "accountingLaneExcluded": true,
+    "note": "Pre-edit solver snapshot already contains C lane final TokenAccounting field; patch does not modify it."
+  },
+  "checks": [
+    {
+      "command": "GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race ./internal/app -run '^TestHarness(LargeCommandObservationRetainsStatusAndProvenance|CommandObservationMetadataBoundsAndExplicitOmissions|SmallObservationsAndOtherToolBoundsUnchanged|VerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt)$' -count=1 -v",
+      "exitCode": 0,
+      "stdout": "=== RUN   TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt\n--- PASS: TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt (0.00s)\n=== RUN   TestHarnessLargeCommandObservationRetainsStatusAndProvenance\n=== RUN   TestHarnessLargeCommandObservationRetainsStatusAndProvenance/0\n=== RUN   TestHarnessLargeCommandObservationRetainsStatusAndProvenance/17\n--- PASS: TestHarnessLargeCommandObservationRetainsStatusAndProvenance (0.03s)\n    --- PASS: TestHarnessLargeCommandObservationRetainsStatusAndProvenance/0 (0.02s)\n    --- PASS: TestHarnessLargeCommandObservationRetainsStatusAndProvenance/17 (0.01s)\n=== RUN   TestHarnessCommandObservationMetadataBoundsAndExplicitOmissions\n--- PASS: TestHarnessCommandObservationMetadataBoundsAndExplicitOmissions (0.01s)\n=== RUN   TestHarnessSmallObservationsAndOtherToolBoundsUnchanged\n--- PASS: TestHarnessSmallObservationsAndOtherToolBoundsUnchanged (0.00s)\nPASS\nok  \tgemmadesktop.local/app/internal/app\t1.435s\n"
+    },
+    {
+      "command": "GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race ./internal/app -count=1",
+      "exitCode": 0,
+      "stdout": "ok  \tgemmadesktop.local/app/internal/app\t11.932s\n"
+    }
+  ],
+  "coverage": [
+    "Large success and nonzero/error outputs retain exact exitCode/readOnly/cancelled/truncated/status/provenance/receipt identity.",
+    "Large stdout/stderr are excluded from metadata; existing text prefix bound unchanged.",
+    "Pathological control-character paths, long identities,1000 available changes with original count1234 and unknown/body payloads remain within16KiB with explicit omissions.",
+    "Projection and nested change maps do not mutate the original result.",
+    "Serialization/restoration of a genuine readOnly:true exit0 observation preserves final verification after an edit; nonzero and writable cases remain rejected.",
+    "Small/boundary-sized observations and non-command truncation unchanged."
+  ],
+  "limits": [
+    "Source-only correction: no distribution rebuild or running binary replacement.",
+    "No live inference, Docker/process execution fixtures, campaign/profile/candidate changes or rewriting old trial records.",
+    "Final-verification regression uses synthetic typed execution results and the real predicate, not an actual Docker command.",
+    "This preserves evidence for future runs after deployment; historical missing structured metadata cannot be reconstructed by this patch."
+  ]
+}

@@ -1,0 +1,1 @@
+[{"events":[{"user":"a","at":90,"units":3},{"user":"a","at":100,"units":2}],"now":100,"window":10},{"events":[{"user":"__proto__","at":100,"units":1}],"now":100,"window":10},{"events":[{"user":"constructor","at":100,"units":1}],"now":100,"window":10}]

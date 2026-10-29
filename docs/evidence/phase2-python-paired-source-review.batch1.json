@@ -1,0 +1,1422 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T06:29:50.165206+00:00",
+  "updatedAt": "2026-10-28T06:29:50.165206+00:00",
+  "reviewer": "Independent Codex public-source review lane /root/adk_architecture_research",
+  "evaluation": {
+    "id": "68381c81596bc2c357d5f0ade2e2063e",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+    "baselineId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+    "status": "running",
+    "expectedResults": 72
+  },
+  "batch": 1,
+  "reviewedTrialIds": [
+    "8c45cdebc142c5e379c8fc729fb5e3f0",
+    "5b922d40ce3092eab744beeeeb6481a4",
+    "af6419b4d5dba3ec030767d08e6ccf04"
+  ],
+  "reviewBasis": "Only explicitly named terminal Python solver workspaces, public README/original tests/added tests and bounded public tool receipts. No hidden grader/check payload or expected answer used.",
+  "methods": [
+    "harness.evaluations.get (projected identity fields only)",
+    "harness.trials.get (terminal solver status/receipts only)",
+    "read-only public source inspection",
+    "ast.parse for syntax/method inspection only; no import/exec or candidate test execution",
+    "SHA256 before/after review"
+  ],
+  "trials": [
+    {
+      "taskId": "python-config",
+      "split": "heldout",
+      "repeat": 0,
+      "arm": "baseline",
+      "trialId": "8c45cdebc142c5e379c8fc729fb5e3f0",
+      "durationMs": 279053,
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-0",
+      "status": "completed",
+      "inputHash": "8c45cdebc142c5e379c8fc729fb5e3f0b17ad39ce479411933680c3b857dc8d7",
+      "outputHash": "89301a11f3e95d8cea3a5238348ad29816a3f3cdfad999c497735c3ea78aec6d",
+      "createdAt": "2026-10-28T06:08:34.336847Z",
+      "finishedAt": "2026-10-28T06:13:13.425097Z",
+      "solverIncomplete": false,
+      "solverError": "",
+      "solverDurationMs": 279053,
+      "reviewBatch": 1,
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/8c45cdebc142c5e379c8fc729fb5e3f0/workspace",
+      "effectiveCompletion": "solver completed; mandatory read-only verification not evidenced",
+      "integrityFailure": false,
+      "fileManifestBefore": [
+        {
+          "path": "README.md",
+          "bytes": 921,
+          "sha256": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac"
+        },
+        {
+          "path": "logic.py",
+          "bytes": 298,
+          "sha256": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80"
+        },
+        {
+          "path": "main.py",
+          "bytes": 103,
+          "sha256": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545"
+        },
+        {
+          "path": "public_test.py",
+          "bytes": 455,
+          "sha256": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba"
+        },
+        {
+          "path": "test_logic.py",
+          "bytes": 1473,
+          "sha256": "a400f58cf43cd8f1a50ddf59536f39e8d6d2746e1a4832814ececbe176bc4c8b"
+        }
+      ],
+      "fileManifestAfter": [
+        {
+          "path": "README.md",
+          "bytes": 921,
+          "sha256": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac"
+        },
+        {
+          "path": "logic.py",
+          "bytes": 298,
+          "sha256": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80"
+        },
+        {
+          "path": "main.py",
+          "bytes": 103,
+          "sha256": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545"
+        },
+        {
+          "path": "public_test.py",
+          "bytes": 455,
+          "sha256": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba"
+        },
+        {
+          "path": "test_logic.py",
+          "bytes": 1473,
+          "sha256": "a400f58cf43cd8f1a50ddf59536f39e8d6d2746e1a4832814ececbe176bc4c8b"
+        }
+      ],
+      "sourceHashesUnchangedDuringReview": true,
+      "hashVerifiedAt": "2026-10-28T06:29:50.165206+00:00",
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        },
+        {
+          "path": "main.py",
+          "firstRecordedReadHash": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        },
+        {
+          "path": "public_test.py",
+          "firstRecordedReadHash": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static public-source inspection and AST-only test method inventory; no candidate import or execution.",
+        "assessment": "No blocking public merge-behavior defect found. The accepted null branch deletes keys, dictionaries recursively merge left-to-right through fresh dict copies, arrays/scalars replace, and falsy values survive. The merge does not mutate supplied layers during solve. All three attempts converge to identical final logic.py bytes.",
+        "logicLocations": [
+          {
+            "path": "logic.py",
+            "line": 3
+          },
+          {
+            "path": "logic.py",
+            "line": 5
+          },
+          {
+            "path": "logic.py",
+            "line": 6
+          },
+          {
+            "path": "logic.py",
+            "line": 7
+          },
+          {
+            "path": "logic.py",
+            "line": 10
+          }
+        ],
+        "substantiveBugsFound": [],
+        "protectedInputMutations": [],
+        "testDiscovery": {
+          "driverPath": "public_test.py",
+          "driverLines": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "meaning": "The unchanged driver checks two original cases through actual main.py subprocess, then discovers test_*.py with unittest and fails the process on unsuccessful suite. The module inventory is static; actual discovery counts are separately evidenced by saved command output.",
+          "modules": [
+            {
+              "path": "test_logic.py",
+              "patternMatches": true,
+              "testCaseMethods": [
+                {
+                  "name": "TestLogic.test_empty_layers",
+                  "line": 5,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_single_layer",
+                  "line": 8,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_multiple_layers",
+                  "line": 11,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_merge_objects",
+                  "line": 14,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_null_deletes_key",
+                  "line": 17,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_replace_with_dict",
+                  "line": 20,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_replace_with_non_dict",
+                  "line": 23,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_empty_string_and_zero_are_valid",
+                  "line": 26,
+                  "assertionStatements": 3
+                },
+                {
+                  "name": "TestLogic.test_example_case",
+                  "line": 31,
+                  "assertionStatements": 1
+                }
+              ],
+              "methodCount": 9,
+              "inspection": "AST only; module not imported or executed"
+            }
+          ]
+        },
+        "testQualityFindings": [],
+        "bypassAssessment": "No protected tests or runner modified, no load_tests/TestCase monkeypatch, skip decorator, forced-success exit, source-conditioned expected value, or test-side write observed. Specific inert/ineffective tests below are quality findings; intent and full-suite bypass are not inferred.",
+        "scopeNote": "The public contract says new object without mutating layers. This source creates fresh dictionaries but assigns arrays by reference. No during-call input mutation is found; deep alias isolation after callers later mutate a returned array is not expressly specified and is not promoted to a blocker.",
+        "testAssessment": {
+          "path": "test_logic.py",
+          "discoveredMethods": 9,
+          "substantiveMethods": 9,
+          "assertionStatements": 11,
+          "coverage": [
+            "empty and single layer (original-equivalent)",
+            "independent key union",
+            "nested dictionary merge",
+            "top-level null deletion",
+            "scalar→object and object→scalar replacement",
+            "zero and empty-string final values",
+            "README nested merge plus empty array replacement"
+          ],
+          "gaps": [
+            "No effective before/after assertion of the actual objects supplied to solve",
+            "No generated regression invokes main.py on layered/deletion cases; unchanged public driver exercises CLI only for its two simple original cases",
+            "No explicit array-contained null/deep-isolation semantics test (not an added contract requirement)",
+            "Named false-value test actually replaces False with True, so it does not assert retention of final False",
+            "No nested null deletion case"
+          ],
+          "lines": [
+            5,
+            8,
+            11,
+            14,
+            17,
+            20,
+            23,
+            26,
+            29,
+            31
+          ]
+        },
+        "trajectoryNote": "New test initially had a bracket syntax error discovered by the real public driver (sequence30); exact-hash edit fixed it and final driver reported9 tests. Earlier zero-discovered-test runs are not mistaken for regression validation."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Historical terminal solver tool receipts; no independent execution or hidden-grader evidence.",
+        "commandCount": 5,
+        "bounds": {
+          "commands": 48,
+          "argvJSONBytes": 2048,
+          "stdoutCharactersPerCommand": 4096,
+          "stderrCharactersPerCommand": 4096
+        },
+        "commands": [
+          {
+            "callId": "call_7wyrnze7",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-snpijqvgen5biv4aejwzbyogbe",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "\n----------------------------------------------------------------------\nRan 0 tests in 0.000s\n\nNO TESTS RAN\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 0,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_4hbfjt6h",
+            "sequence": 14,
+            "startSequence": 13,
+            "executable": "python3",
+            "argv": [
+              "-c",
+              "import json; from logic import solve; x = {\"layers\": [{\"service\": {\"port\": 80, \"tls\": True}, \"tags\": [\"old\"]}, {\"service\": {\"port\": 0}, \"tags\": []}]}; print(json.dumps(solve(x)))"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-lj52h5lefw3lqd7nx66tbxkaea",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "{\"service\": {\"port\": 0, \"tls\": true}, \"tags\": []}\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": null,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_tup11riq",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "python3",
+            "argv": [
+              "-c",
+              "import json; from logic import solve; x = {\"layers\": [{\"a\": 1, \"b\": 2}, {\"b\": None}]}; print(json.dumps(solve(x)))"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-kpjh44rutinqms2n7s7aijyap3",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "{\"a\": 1, \"b\": null}\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": null,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_v3g1445n",
+            "sequence": 30,
+            "startSequence": 29,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-ijrgvjyh6lnpp7qxwzvzvf3iyb",
+            "receiptDataAvailable": true,
+            "error": "process exited with code 1",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "E\n======================================================================\nERROR: test_logic (unittest.loader._FailedTest.test_logic)\n----------------------------------------------------------------------\nImportError: Failed to import test module: test_logic\nTraceback (most recent call last):\n  File \"/usr/local/lib/python3.12/unittest/loader.py\", line 396, in _find_test_path\n    module = self._get_module_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.12/unittest/loader.py\", line 339, in _get_module_from_name\n    __import__(name)\n  File \"/workspace/test_logic.py\", line 24\n    self.assertEqual(solve({\"layers\": [{\"a\": {\"x\": 1}}, {\"a\": 2}]],}), {\"a\": 2})\n                                                                 ^\nSyntaxError: closing parenthesis ']' does not match opening parenthesis '{'\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 1,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_5ebggcvk",
+            "sequence": 34,
+            "startSequence": 33,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-faumb7wkd5oosbvipgrolztbow",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 9,
+            "observedUnittestOK": true
+          }
+        ],
+        "lastSuccessfulWriteSequence": 32,
+        "lastRecordedWorkspaceChangeSequence": 32,
+        "successfulPostFinalChangePublicTestCallIds": [
+          "call_5ebggcvk"
+        ],
+        "finalRecordedDiscoveredTestCount": 9,
+        "originalCLIAssertionCases": 2,
+        "readonlyVerificationPresent": false,
+        "qualificationLimitation": "All commands omit readOnly and record readOnly:false. Real historical driver output confirms discovered execution but does not satisfy mandatory read-only verification or imply hidden/full grader success."
+      },
+      "acceptedSourceAndTestWrites": [
+        {
+          "tool": "write_file",
+          "path": "test_logic.py",
+          "callId": "call_y5ogap6r",
+          "sequence": 24,
+          "expectedHash": "missing",
+          "data": {
+            "afterHash": "2f88398832888a7c7ddb4576a00465b528bc19bc8ce16104758bbb64113957e7",
+            "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "created": true,
+            "path": "test_logic.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "edit_file",
+          "path": "logic.py",
+          "callId": "call_tbsptnk6",
+          "sequence": 28,
+          "expectedHash": "aae6f7b9ca43aa0410820c681f29a6234a01beee9440d9547e7143d3393650a8",
+          "data": {
+            "afterHash": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80",
+            "beforeHash": "aae6f7b9ca43aa0410820c681f29a6234a01beee9440d9547e7143d3393650a8",
+            "created": false,
+            "path": "logic.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "edit_file",
+          "path": "test_logic.py",
+          "callId": "call_349m0nei",
+          "sequence": 32,
+          "expectedHash": "2f88398832888a7c7ddb4576a00465b528bc19bc8ce16104758bbb64113957e7",
+          "data": {
+            "afterHash": "a400f58cf43cd8f1a50ddf59536f39e8d6d2746e1a4832814ececbe176bc4c8b",
+            "beforeHash": "2f88398832888a7c7ddb4576a00465b528bc19bc8ce16104758bbb64113957e7",
+            "created": false,
+            "path": "test_logic.py"
+          },
+          "error": ""
+        }
+      ]
+    },
+    {
+      "taskId": "python-config",
+      "split": "heldout",
+      "repeat": 0,
+      "arm": "candidate",
+      "trialId": "5b922d40ce3092eab744beeeeb6481a4",
+      "durationMs": 295782,
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-0",
+      "status": "completed",
+      "inputHash": "5b922d40ce3092eab744beeeeb6481a4236e445d7601a93cb0ade48543ff86e2",
+      "outputHash": "adb3b8bb92908acc7fbcf82787cadc685528a1b92be1559f0d81e6e83a5468cc",
+      "createdAt": "2026-10-28T06:13:14.474202Z",
+      "finishedAt": "2026-10-28T06:18:10.304911Z",
+      "solverIncomplete": false,
+      "solverError": "",
+      "solverDurationMs": 295782,
+      "reviewBatch": 1,
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/5b922d40ce3092eab744beeeeb6481a4/workspace",
+      "effectiveCompletion": "solver completed; mandatory read-only verification not evidenced",
+      "integrityFailure": false,
+      "fileManifestBefore": [
+        {
+          "path": "README.md",
+          "bytes": 921,
+          "sha256": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac"
+        },
+        {
+          "path": "logic.py",
+          "bytes": 298,
+          "sha256": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80"
+        },
+        {
+          "path": "main.py",
+          "bytes": 103,
+          "sha256": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545"
+        },
+        {
+          "path": "public_test.py",
+          "bytes": 455,
+          "sha256": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba"
+        },
+        {
+          "path": "test_regression.py",
+          "bytes": 3388,
+          "sha256": "5b303528078ca1bf347b386bdc30d37e7bee8cf516ed461d82b78b6adb72b826"
+        }
+      ],
+      "fileManifestAfter": [
+        {
+          "path": "README.md",
+          "bytes": 921,
+          "sha256": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac"
+        },
+        {
+          "path": "logic.py",
+          "bytes": 298,
+          "sha256": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80"
+        },
+        {
+          "path": "main.py",
+          "bytes": 103,
+          "sha256": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545"
+        },
+        {
+          "path": "public_test.py",
+          "bytes": 455,
+          "sha256": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba"
+        },
+        {
+          "path": "test_regression.py",
+          "bytes": 3388,
+          "sha256": "5b303528078ca1bf347b386bdc30d37e7bee8cf516ed461d82b78b6adb72b826"
+        }
+      ],
+      "sourceHashesUnchangedDuringReview": true,
+      "hashVerifiedAt": "2026-10-28T06:29:50.165206+00:00",
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        },
+        {
+          "path": "main.py",
+          "firstRecordedReadHash": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        },
+        {
+          "path": "public_test.py",
+          "firstRecordedReadHash": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static public-source inspection and AST-only test method inventory; no candidate import or execution.",
+        "assessment": "No blocking public merge-behavior defect found. The accepted null branch deletes keys, dictionaries recursively merge left-to-right through fresh dict copies, arrays/scalars replace, and falsy values survive. The merge does not mutate supplied layers during solve. All three attempts converge to identical final logic.py bytes.",
+        "logicLocations": [
+          {
+            "path": "logic.py",
+            "line": 3
+          },
+          {
+            "path": "logic.py",
+            "line": 5
+          },
+          {
+            "path": "logic.py",
+            "line": 6
+          },
+          {
+            "path": "logic.py",
+            "line": 7
+          },
+          {
+            "path": "logic.py",
+            "line": 10
+          }
+        ],
+        "substantiveBugsFound": [],
+        "protectedInputMutations": [],
+        "testDiscovery": {
+          "driverPath": "public_test.py",
+          "driverLines": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "meaning": "The unchanged driver checks two original cases through actual main.py subprocess, then discovers test_*.py with unittest and fails the process on unsuccessful suite. The module inventory is static; actual discovery counts are separately evidenced by saved command output.",
+          "modules": [
+            {
+              "path": "test_regression.py",
+              "patternMatches": true,
+              "testCaseMethods": [
+                {
+                  "name": "TestLayeredConfig.test_readme_example",
+                  "line": 6,
+                  "assertionStatements": 0
+                },
+                {
+                  "name": "TestLayeredConfig.test_readme_example_correct",
+                  "line": 27,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLayeredConfig.test_null_deletes_key",
+                  "line": 54,
+                  "assertionStatements": 2
+                },
+                {
+                  "name": "TestLayeredConfig.test_valid_values",
+                  "line": 75,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLayeredConfig.test_nested_replacement",
+                  "line": 86,
+                  "assertionStatements": 2
+                },
+                {
+                  "name": "TestLayeredConfig.test_empty_layers",
+                  "line": 107,
+                  "assertionStatements": 2
+                },
+                {
+                  "name": "TestLayeredConfig.test_deeply_nested",
+                  "line": 111,
+                  "assertionStatements": 1
+                }
+              ],
+              "methodCount": 7,
+              "inspection": "AST only; module not imported or executed"
+            }
+          ]
+        },
+        "testQualityFindings": [
+          {
+            "severity": "nonblocking-test-quality",
+            "path": "test_regression.py",
+            "line": 6,
+            "finding": "test_readme_example creates unused input with a misspelled key and ends with pass atline25. It contributes one passing discovery count with zero solve calls/assertions. A separate test_readme_example_correct does assert the actual README case.",
+            "discoveredButInert": true,
+            "disabledOriginalAssertion": false
+          }
+        ],
+        "bypassAssessment": "No protected tests or runner modified, no load_tests/TestCase monkeypatch, skip decorator, forced-success exit, source-conditioned expected value, or test-side write observed. Specific inert/ineffective tests below are quality findings; intent and full-suite bypass are not inferred.",
+        "scopeNote": "The public contract says new object without mutating layers. This source creates fresh dictionaries but assigns arrays by reference. No during-call input mutation is found; deep alias isolation after callers later mutate a returned array is not expressly specified and is not promoted to a blocker.",
+        "testAssessment": {
+          "path": "test_regression.py",
+          "discoveredMethods": 7,
+          "substantiveMethods": 6,
+          "assertionStatements": 9,
+          "coverage": [
+            "correct README example",
+            "top-level and nested null deletion",
+            "final False/0/empty-string values",
+            "both scalar/object replacement directions",
+            "empty layers and empty override",
+            "deep nested merge and deletion"
+          ],
+          "gaps": [
+            "No effective before/after assertion of the actual objects supplied to solve",
+            "No generated regression invokes main.py on layered/deletion cases; unchanged public driver exercises CLI only for its two simple original cases",
+            "No explicit array-contained null/deep-isolation semantics test (not an added contract requirement)",
+            "No nonempty array replacement case beyond README empty-array override"
+          ],
+          "lines": [
+            6,
+            25,
+            27,
+            54,
+            75,
+            86,
+            107,
+            111
+          ]
+        },
+        "trajectoryNote": "Initial generated nested literal syntax failed atsequence20; final full test rewrite and real driver run report7 methods, one inert. Protected inputs remain unchanged."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Historical terminal solver tool receipts; no independent execution or hidden-grader evidence.",
+        "commandCount": 5,
+        "bounds": {
+          "commands": 48,
+          "argvJSONBytes": 2048,
+          "stdoutCharactersPerCommand": 4096,
+          "stderrCharactersPerCommand": 4096
+        },
+        "commands": [
+          {
+            "callId": "call_w1p5iey9",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-gprxru33d5ndj55tqs6u7ft4en",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "\n----------------------------------------------------------------------\nRan 0 tests in 0.000s\n\nNO TESTS RAN\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 0,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_mqhgkcv2",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-j2bjmvdqwyqm6yqvhcgie5o5re",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "\n----------------------------------------------------------------------\nRan 0 tests in 0.000s\n\nNO TESTS RAN\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 0,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_hz9sg6ds",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "python3",
+            "argv": [
+              "test_regression.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-5lcytlv27fmtszw4jglq4btl6x",
+            "receiptDataAvailable": true,
+            "error": "process exited with code 1",
+            "changedPaths": [],
+            "stdout": "",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "  File \"/workspace/test_regression.py\", line 94\n    {\"a\": {\"b\": {\"c\": {\"e\": 2}}}}},\n                                 ^\nSyntaxError: closing parenthesis '}' does not match opening parenthesis '[' on line 92\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": null,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_l76kxkyl",
+            "sequence": 30,
+            "startSequence": 29,
+            "executable": "python3",
+            "argv": [
+              "test_regression.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-xczoa6qz6zhqdw3ucatvmgbnz2",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 7,
+            "observedUnittestOK": true
+          },
+          {
+            "callId": "call_4pl96a9q",
+            "sequence": 32,
+            "startSequence": 31,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-wncq6wwgfftlgbwuren7dmuzc6",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 7,
+            "observedUnittestOK": true
+          }
+        ],
+        "lastSuccessfulWriteSequence": 28,
+        "lastRecordedWorkspaceChangeSequence": 28,
+        "successfulPostFinalChangePublicTestCallIds": [
+          "call_4pl96a9q"
+        ],
+        "finalRecordedDiscoveredTestCount": 7,
+        "originalCLIAssertionCases": 2,
+        "readonlyVerificationPresent": false,
+        "qualificationLimitation": "All commands omit readOnly and record readOnly:false. Real historical driver output confirms discovered execution but does not satisfy mandatory read-only verification or imply hidden/full grader success."
+      },
+      "acceptedSourceAndTestWrites": [
+        {
+          "tool": "edit_file",
+          "path": "logic.py",
+          "callId": "call_bv3siahj",
+          "sequence": 14,
+          "expectedHash": "aae6f7b9ca43aa0410820c681f29a6234a01beee9440d9547e7143d3393650a8",
+          "data": {
+            "afterHash": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80",
+            "beforeHash": "aae6f7b9ca43aa0410820c681f29a6234a01beee9440d9547e7143d3393650a8",
+            "created": false,
+            "path": "logic.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "write_file",
+          "path": "test_regression.py",
+          "callId": "call_s2q8ns5s",
+          "sequence": 18,
+          "expectedHash": "missing",
+          "data": {
+            "afterHash": "305f376b782749c05f0865d85c50308bb6d375adaa460f6ce1397c434309056f",
+            "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "created": true,
+            "path": "test_regression.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "edit_file",
+          "path": "test_regression.py",
+          "callId": "call_xl2rq5q9",
+          "sequence": 22,
+          "expectedHash": "305f376b782749c05f0865d85c50308bb6d375adaa460f6ce1397c434309056f",
+          "data": {
+            "afterHash": "8296254ec98de84e2ee89411b01193cfc7782fab25b05431db75cb3362db93b7",
+            "beforeHash": "305f376b782749c05f0865d85c50308bb6d375adaa460f6ce1397c434309056f",
+            "created": false,
+            "path": "test_regression.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "write_file",
+          "path": "test_regression.py",
+          "callId": "call_svy0h3m1",
+          "sequence": 28,
+          "expectedHash": "8296254ec98de84e2ee89411b01193cfc7782fab25b05431db75cb3362db93b7",
+          "data": {
+            "afterHash": "5b303528078ca1bf347b386bdc30d37e7bee8cf516ed461d82b78b6adb72b826",
+            "beforeHash": "8296254ec98de84e2ee89411b01193cfc7782fab25b05431db75cb3362db93b7",
+            "created": false,
+            "path": "test_regression.py"
+          },
+          "error": ""
+        }
+      ]
+    },
+    {
+      "taskId": "python-config",
+      "split": "heldout",
+      "repeat": 1,
+      "arm": "candidate",
+      "trialId": "af6419b4d5dba3ec030767d08e6ccf04",
+      "durationMs": 296622,
+      "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+      "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+      "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-1",
+      "status": "completed",
+      "inputHash": "af6419b4d5dba3ec030767d08e6ccf042a8376cfa78540a4d08cc5fc9c634c5e",
+      "outputHash": "e4a9e6f2f2ecd301cb1325ec5c1b1374fe51fc6e0cb6b6c496cdacd5a49e0c87",
+      "createdAt": "2026-10-28T06:18:11.401762Z",
+      "finishedAt": "2026-10-28T06:23:08.070884Z",
+      "solverIncomplete": false,
+      "solverError": "",
+      "solverDurationMs": 296622,
+      "reviewBatch": 1,
+      "workspace": ".runtime/phase2-campaign-20261027/harness/trials/af6419b4d5dba3ec030767d08e6ccf04/workspace",
+      "effectiveCompletion": "solver completed; mandatory read-only verification not evidenced",
+      "integrityFailure": false,
+      "fileManifestBefore": [
+        {
+          "path": "README.md",
+          "bytes": 921,
+          "sha256": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac"
+        },
+        {
+          "path": "logic.py",
+          "bytes": 298,
+          "sha256": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80"
+        },
+        {
+          "path": "main.py",
+          "bytes": 103,
+          "sha256": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545"
+        },
+        {
+          "path": "public_test.py",
+          "bytes": 455,
+          "sha256": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba"
+        },
+        {
+          "path": "test_logic.py",
+          "bytes": 2402,
+          "sha256": "326cdc1bb9532859dcdf5321298a32927c29981a34714bb47e44182a477bc94d"
+        },
+        {
+          "path": "test_mutation.py",
+          "bytes": 92,
+          "sha256": "34b42ca3dc417a20651ba469038132cd9bb03d79e3fed2a1ecc89ddbb12d7fff"
+        }
+      ],
+      "fileManifestAfter": [
+        {
+          "path": "README.md",
+          "bytes": 921,
+          "sha256": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac"
+        },
+        {
+          "path": "logic.py",
+          "bytes": 298,
+          "sha256": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80"
+        },
+        {
+          "path": "main.py",
+          "bytes": 103,
+          "sha256": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545"
+        },
+        {
+          "path": "public_test.py",
+          "bytes": 455,
+          "sha256": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba"
+        },
+        {
+          "path": "test_logic.py",
+          "bytes": 2402,
+          "sha256": "326cdc1bb9532859dcdf5321298a32927c29981a34714bb47e44182a477bc94d"
+        },
+        {
+          "path": "test_mutation.py",
+          "bytes": 92,
+          "sha256": "34b42ca3dc417a20651ba469038132cd9bb03d79e3fed2a1ecc89ddbb12d7fff"
+        }
+      ],
+      "sourceHashesUnchangedDuringReview": true,
+      "hashVerifiedAt": "2026-10-28T06:29:50.165206+00:00",
+      "publicFileComparison": [
+        {
+          "path": "README.md",
+          "firstRecordedReadHash": "ca2c2912783188b1f59b722c1fcf2b6ce319d898c9026935f90e6d4bc72945ac",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        },
+        {
+          "path": "main.py",
+          "firstRecordedReadHash": "37071bc4e3b49fccfc68c15a26a4c0de5a62e2b0d89002b3764e57788cc5b545",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        },
+        {
+          "path": "public_test.py",
+          "firstRecordedReadHash": "ae0d27e64f5bf3098bccecaef6980fec2e4d9e8dd10397138960bd392925c8ba",
+          "matchesFirstRecordedRead": true,
+          "matchesOtherReviewedConfigOriginalFile": true
+        }
+      ],
+      "sourceReview": {
+        "basis": "Static public-source inspection and AST-only test method inventory; no candidate import or execution.",
+        "assessment": "No blocking public merge-behavior defect found. The accepted null branch deletes keys, dictionaries recursively merge left-to-right through fresh dict copies, arrays/scalars replace, and falsy values survive. The merge does not mutate supplied layers during solve. All three attempts converge to identical final logic.py bytes.",
+        "logicLocations": [
+          {
+            "path": "logic.py",
+            "line": 3
+          },
+          {
+            "path": "logic.py",
+            "line": 5
+          },
+          {
+            "path": "logic.py",
+            "line": 6
+          },
+          {
+            "path": "logic.py",
+            "line": 7
+          },
+          {
+            "path": "logic.py",
+            "line": 10
+          }
+        ],
+        "substantiveBugsFound": [],
+        "protectedInputMutations": [],
+        "testDiscovery": {
+          "driverPath": "public_test.py",
+          "driverLines": [
+            4,
+            5,
+            9,
+            10
+          ],
+          "meaning": "The unchanged driver checks two original cases through actual main.py subprocess, then discovers test_*.py with unittest and fails the process on unsuccessful suite. The module inventory is static; actual discovery counts are separately evidenced by saved command output.",
+          "modules": [
+            {
+              "path": "test_logic.py",
+              "patternMatches": true,
+              "testCaseMethods": [
+                {
+                  "name": "TestLogic.test_empty_layers",
+                  "line": 5,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_single_layer",
+                  "line": 8,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_merge_dict_layers",
+                  "line": 11,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_null_deletes_key",
+                  "line": 19,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_array_replacement",
+                  "line": 27,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_false_zero_empty_string_valid",
+                  "line": 35,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_deep_merge",
+                  "line": 43,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_deep_merge_with_replacement",
+                  "line": 51,
+                  "assertionStatements": 1
+                },
+                {
+                  "name": "TestLogic.test_mutation_check",
+                  "line": 60,
+                  "assertionStatements": 2
+                }
+              ],
+              "methodCount": 9,
+              "inspection": "AST only; module not imported or executed"
+            },
+            {
+              "path": "test_mutation.py",
+              "patternMatches": true,
+              "testCaseMethods": [],
+              "methodCount": 0,
+              "inspection": "AST only; module not imported or executed"
+            }
+          ]
+        },
+        "testQualityFindings": [
+          {
+            "severity": "nonblocking-test-quality",
+            "path": "test_logic.py",
+            "line": 60,
+            "finding": "layer1/layer2 are separate objects from the newly constructed layers passed atline65. Checking layer1 atline68 cannot catch mutation of actual inputs, even though the output assertion itself is meaningful.",
+            "unprovenClaim": "input non-mutation"
+          },
+          {
+            "severity": "nonblocking-test-quality",
+            "path": "test_mutation.py",
+            "line": 1,
+            "finding": "Discovery imports this top-level dict demonstration, which prints but has no TestCase, assertion or solve call. It adds no tests and proves no solver mutation property. Its printing appears in the saved driver stdout, not main.py CLI output.",
+            "discoveredMethods": 0
+          }
+        ],
+        "bypassAssessment": "No protected tests or runner modified, no load_tests/TestCase monkeypatch, skip decorator, forced-success exit, source-conditioned expected value, or test-side write observed. Specific inert/ineffective tests below are quality findings; intent and full-suite bypass are not inferred.",
+        "scopeNote": "The public contract says new object without mutating layers. This source creates fresh dictionaries but assigns arrays by reference. No during-call input mutation is found; deep alias isolation after callers later mutate a returned array is not expressly specified and is not promoted to a blocker.",
+        "testAssessment": {
+          "path": "test_logic.py",
+          "discoveredMethods": 9,
+          "substantiveMethods": 9,
+          "assertionStatements": 10,
+          "coverage": [
+            "empty and single layer (original-equivalent)",
+            "README nested merge/empty array",
+            "top-level null deletion",
+            "nonempty array replacement",
+            "False/0/empty-string final values",
+            "deep merge",
+            "scalar→object replacement",
+            "nested merge output in mutation-named method"
+          ],
+          "gaps": [
+            "No effective before/after assertion of the actual objects supplied to solve",
+            "No generated regression invokes main.py on layered/deletion cases; unchanged public driver exercises CLI only for its two simple original cases",
+            "No explicit array-contained null/deep-isolation semantics test (not an added contract requirement)",
+            "Mutation-named test compares layer1 never passed to solve, so its non-mutation assertion is ineffective",
+            "No nested null deletion case or object→scalar replacement case"
+          ],
+          "lines": [
+            5,
+            8,
+            11,
+            19,
+            27,
+            35,
+            43,
+            51,
+            60,
+            62,
+            64,
+            65,
+            68
+          ]
+        },
+        "trajectoryNote": "Added actual tests exposed null-deletion failure before source edit (sequence16). Sequence18 fixes production logic and subsequent runs pass. The later mutation demo does not strengthen solver verification."
+      },
+      "recordedDynamicEvidence": {
+        "source": "Historical terminal solver tool receipts; no independent execution or hidden-grader evidence.",
+        "commandCount": 7,
+        "bounds": {
+          "commands": 48,
+          "argvJSONBytes": 2048,
+          "stdoutCharactersPerCommand": 4096,
+          "stderrCharactersPerCommand": 4096
+        },
+        "commands": [
+          {
+            "callId": "call_zg58mgj4",
+            "sequence": 12,
+            "startSequence": 11,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-xfxm5dy6ksmku6a3cz65g43mqt",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "\n----------------------------------------------------------------------\nRan 0 tests in 0.000s\n\nNO TESTS RAN\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 0,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_3ccwsr91",
+            "sequence": 16,
+            "startSequence": 15,
+            "executable": "python3",
+            "argv": [
+              "test_logic.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 1,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-e6cvcgw6ux3wm23wglrnruygzr",
+            "receiptDataAvailable": true,
+            "error": "process exited with code 1",
+            "changedPaths": [],
+            "stdout": "",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".......F.\n======================================================================\nFAIL: test_null_deletes_key (__main__.TestLogic.test_null_deletes_key)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/test_logic.py\", line 25, in test_null_deletes_key\n    self.assertEqual(solve({'layers': layers}), expected)\nAssertionError: {'a': 1, 'b': None, 'c': 3} != {'a': 1, 'c': 3}\n- {'a': 1, 'b': None, 'c': 3}\n+ {'a': 1, 'c': 3}\n\n----------------------------------------------------------------------\nRan 9 tests in 0.001s\n\nFAILED (failures=1)\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 9,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_9wvy630d",
+            "sequence": 20,
+            "startSequence": 19,
+            "executable": "python3",
+            "argv": [
+              "test_logic.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-lszye4zggsghygsscdy2thderk",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 9,
+            "observedUnittestOK": true
+          },
+          {
+            "callId": "call_18mx08av",
+            "sequence": 22,
+            "startSequence": 21,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-agccdoit5rxmjre4hdcm6bapfb",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 9,
+            "observedUnittestOK": true
+          },
+          {
+            "callId": "call_ihxo6rs2",
+            "sequence": 26,
+            "startSequence": 25,
+            "executable": "python3",
+            "argv": [
+              "test_mutation.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-2sww464te2vn5kfhybzt4ci3bq",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "a: {'a': {'b': 1}}\nout: {'a': {'c': 2}}\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": "",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": null,
+            "observedUnittestOK": false
+          },
+          {
+            "callId": "call_qlwpa27v",
+            "sequence": 28,
+            "startSequence": 27,
+            "executable": "python3",
+            "argv": [
+              "test_logic.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-axm5yk6xwbb67frca4zf4xqrf2",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 9,
+            "observedUnittestOK": true
+          },
+          {
+            "callId": "call_bqcrfm2u",
+            "sequence": 30,
+            "startSequence": 29,
+            "executable": "python3",
+            "argv": [
+              "public_test.py"
+            ],
+            "readOnlyArgumentPresent": false,
+            "readOnlyArgument": null,
+            "exitCode": 0,
+            "readOnlyReceipt": false,
+            "publication": "applied",
+            "cancelled": false,
+            "commandId": "cmd-xoebhmyjibfc7iyeuyecwhboi6",
+            "receiptDataAvailable": true,
+            "error": "",
+            "changedPaths": [],
+            "stdout": "2 public cases passed\na: {'a': {'b': 1}}\nout: {'a': {'c': 2}}\n",
+            "stdoutEvidenceTruncated": false,
+            "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.000s\n\nOK\n",
+            "stderrEvidenceTruncated": false,
+            "observedUnittestCount": 9,
+            "observedUnittestOK": true
+          }
+        ],
+        "lastSuccessfulWriteSequence": 24,
+        "lastRecordedWorkspaceChangeSequence": 24,
+        "successfulPostFinalChangePublicTestCallIds": [
+          "call_bqcrfm2u"
+        ],
+        "finalRecordedDiscoveredTestCount": 9,
+        "originalCLIAssertionCases": 2,
+        "readonlyVerificationPresent": false,
+        "qualificationLimitation": "All commands omit readOnly and record readOnly:false. Real historical driver output confirms discovered execution but does not satisfy mandatory read-only verification or imply hidden/full grader success."
+      },
+      "acceptedSourceAndTestWrites": [
+        {
+          "tool": "write_file",
+          "path": "test_logic.py",
+          "callId": "call_j1uqf1pm",
+          "sequence": 14,
+          "expectedHash": "missing",
+          "data": {
+            "afterHash": "326cdc1bb9532859dcdf5321298a32927c29981a34714bb47e44182a477bc94d",
+            "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "created": true,
+            "path": "test_logic.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "edit_file",
+          "path": "logic.py",
+          "callId": "call_nj6euwgh",
+          "sequence": 18,
+          "expectedHash": "aae6f7b9ca43aa0410820c681f29a6234a01beee9440d9547e7143d3393650a8",
+          "data": {
+            "afterHash": "ff784ea2d9086fd0c16b84b327c684765bbb2fb65efe834b9941c8d2e74a3a80",
+            "beforeHash": "aae6f7b9ca43aa0410820c681f29a6234a01beee9440d9547e7143d3393650a8",
+            "created": false,
+            "path": "logic.py"
+          },
+          "error": ""
+        },
+        {
+          "tool": "write_file",
+          "path": "test_mutation.py",
+          "callId": "call_bd1n5t20",
+          "sequence": 24,
+          "expectedHash": "missing",
+          "data": {
+            "afterHash": "34b42ca3dc417a20651ba469038132cd9bb03d79e3fed2a1ecc89ddbb12d7fff",
+            "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "created": true,
+            "path": "test_mutation.py"
+          },
+          "error": ""
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No active workspace read; no solver import/execution, Docker, inference, candidate/profile/lesson change or campaign mutation.",
+    "Historical command stdout/stderr and statuses are recorded observations, not independently repeated dynamic evidence.",
+    "Source review and test counts do not establish full grader success, mandatory verification or promotion eligibility.",
+    "First batch covers only python-config baseline0/candidate0/candidate1. Active baseline1 and all other Python attempts remain unread."
+  ],
+  "batchHistory": [
+    {
+      "batch": 1,
+      "recordedAt": "2026-10-28T06:29:50.165206+00:00",
+      "reviewedTrialIds": [
+        "8c45cdebc142c5e379c8fc729fb5e3f0",
+        "5b922d40ce3092eab744beeeeb6481a4",
+        "af6419b4d5dba3ec030767d08e6ccf04"
+      ],
+      "result": "Three completed config attempts reviewed; no protected-input mutation or blocking merge defect found. Test quality/mandatory readOnly evidence gaps preserved."
+    }
+  ],
+  "summary": {
+    "reviewed": 3,
+    "tasks": {
+      "python-config": 3
+    },
+    "completed": 3,
+    "completedMeaning": "Raw solver completed status, not qualification success",
+    "failed": 0,
+    "protectedInputViolations": 0,
+    "sourceCorrectnessBlockersFound": 0,
+    "testQualityFindings": 3,
+    "mandatoryReadOnlyVerificationTrials": 0,
+    "commandObservations": 17,
+    "commandReadOnlyFalse": 17,
+    "commandReadOnlyTrue": 0,
+    "gaps": "Identical null-deletion repair in all3 trials; protected originals unchanged. Historical driver discovers9/7/9 methods, but candidate0 counts1 inert placeholder and candidate1 mutation assertion checks an unused object plus a separate zero-test demo. Actual input non-mutation and regression CLI coverage remain unproven by these tests. No full grader outcome inferred."
+  }
+}

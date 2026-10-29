@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n out=dict(x[\"stock\"])\n for r in x[\"reservations\"]:\n  if r[\"sku\"] in out and r[\"expires\"]>x[\"now\"]: out[r[\"sku\"]]-=r[\"quantity\"]\n return {k:max(0,v) for k,v in out.items()}\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass Regression(unittest.TestCase):\n def test_readme_example(self):self.assertEqual(solve({'stock': {'a': 8, 'b': 2}, 'reservations': [{'sku': 'a', 'quantity': 3, 'expires': 11}, {'sku': 'b', 'quantity': 9, 'expires': 20}], 'now': 10}),{'a': 5, 'b': 0})\n"
+}

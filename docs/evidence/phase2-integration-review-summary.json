@@ -1,0 +1,47 @@
+{
+  "scope": "Execution integration reporting and settings concurrency review fixes",
+  "backendEvidence": "docs/evidence/phase2-integration-review-final.jsonl",
+  "backendCounts": {
+    "pass": 21
+  },
+  "backendTopLevelCounts": {
+    "pass": 21
+  },
+  "packages": [
+    {
+      "package": "gemmadesktop.local/app/internal/app",
+      "action": "pass",
+      "elapsed": 2.16
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/execution",
+      "action": "pass",
+      "elapsed": 2.2439999999999998
+    },
+    {
+      "package": "gemmadesktop.local/app/internal/store",
+      "action": "pass",
+      "elapsed": 2.35
+    }
+  ],
+  "frontend": {
+    "typecheck": "passed",
+    "receiptAndConversationTests": {
+      "passed": 9,
+      "failed": 0
+    }
+  },
+  "changes": [
+    "Status inspects current local recovery journals and distinguishes an active owner lease.",
+    "Recovery-required command outcomes count as unresolved and retain bounded execution provenance in recovery context.",
+    "General settings merge only their allowed fields into the current record under the shared admission lock, retaining a concurrent Docker image selection.",
+    "Status reports observed logical storage bytes and entries with complete/error/time/scope metadata under a 750 ms scan deadline.",
+    "UI explicitly describes the 2 GiB/100000-entry monitor as soft and excludes Docker images/VM allocation."
+  ],
+  "limits": [
+    "No inference or pilot workspace access.",
+    "Storage scan is non-atomic and reports logical sizes, not allocated disk blocks; incomplete scans are labeled.",
+    "No automatic pruning or runtime installation."
+  ],
+  "developmentAttempt": "phase2-integration-review-fixture-attempt.jsonl preserves two fixture setup failures corrected before final regression."
+}

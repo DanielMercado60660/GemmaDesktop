@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-10-28T03:06:16.943648+00:00",
+  "purpose": "Pre-edit source snapshot for narrow saved-observation metadata correction; includes C lane TokenAccounting mapping and does not claim that mapping as this patch.",
+  "before": [
+    {
+      "path": "internal/app/harness_solver.go",
+      "sha256": "71e3c9e0b6f4362810c94154c67521e115f822f9d3326e93df17595d45a1eca0"
+    }
+  ],
+  "runtimeChanged": false
+}

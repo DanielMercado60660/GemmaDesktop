@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/test_evaluation_summary.py", line 8, in <module>
+    spec.loader.exec_module(summary)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 755, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 893, in get_code
+  File "<frozen importlib._bootstrap_external>", line 823, in source_to_code
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/Users/danielmercado/GemmaDesktop/.runtime/phase2-campaign-20261027/evaluation_summary.py", line 128
+    for row in summary["byArm"] + summary["byPartitionArm"] + summary["byTaskArm"]
+                                                                                  ^
+SyntaxError: expected ':'

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"syscall"
 
 	"google.golang.org/adk/v2/tool/skilltoolset/skill"
 )
@@ -21,6 +22,8 @@ type skillEntry struct {
 	resources    map[string][]byte
 }
 type skillSource struct{ entries map[string]skillEntry }
+
+func openSkillRoot(p string) (*os.Root, error) { return os.OpenRoot(filepath.Dir(p)) }
 
 // loadSkills snapshots approved packages, rejecting symlinks and special files.
 // The resulting ADK source has no live access to the host filesystem.
@@ -113,7 +116,14 @@ func loadSkills(paths []string) (*skillSource, error) {
 }
 
 func readSkillFile(root *os.Root, name string) ([]byte, error) {
-	f, err := root.Open(name)
+	before, err := root.Lstat(name)
+	if err != nil {
+		return nil, err
+	}
+	if !before.Mode().IsRegular() {
+		return nil, fmt.Errorf("skill file must be regular and not a symlink")
+	}
+	f, err := root.OpenFile(name, os.O_RDONLY|syscall.O_NOFOLLOW|syscall.O_NONBLOCK, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +132,14 @@ func readSkillFile(root *os.Root, name string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !info.Mode().IsRegular() {
-		return nil, fmt.Errorf("skill file must be regular")
+	if !info.Mode().IsRegular() || !os.SameFile(before, info) {
+		return nil, fmt.Errorf("skill file changed while opening")
+	}
+	if stat, ok := info.Sys().(*syscall.Stat_t); ok && stat.Nlink != 1 {
+		return nil, fmt.Errorf("skill hardlinks are not allowed")
+	}
+	if info.Size() > 1<<20 {
+		return nil, fmt.Errorf("skill file exceeds 1 MiB")
 	}
 	b, err := io.ReadAll(io.LimitReader(f, (1<<20)+1))
 	if err != nil {
@@ -131,6 +147,13 @@ func readSkillFile(root *os.Root, name string) ([]byte, error) {
 	}
 	if len(b) > 1<<20 {
 		return nil, fmt.Errorf("skill file exceeds 1 MiB")
+	}
+	after, e := f.Stat()
+	if e != nil {
+		return nil, e
+	}
+	if !os.SameFile(info, after) || info.Size() != after.Size() || !info.ModTime().Equal(after.ModTime()) || int64(len(b)) != after.Size() {
+		return nil, fmt.Errorf("skill file changed while reading")
 	}
 	return b, nil
 }
@@ -185,6 +208,9 @@ func (s *skillSource) LoadResource(ctx context.Context, name, p string) (io.Read
 	b, ok := e.resources[p]
 	if !ok {
 		return nil, skill.ErrResourceNotFound
+	}
+	if !skillText(b) {
+		return nil, fmt.Errorf("binary skill assets must be materialized through an explicitly authorized artifact operation")
 	}
 	return io.NopCloser(bytes.NewReader(b)), nil
 }

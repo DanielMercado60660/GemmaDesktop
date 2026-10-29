@@ -1,0 +1,4 @@
+{
+  "logic.cjs": "exports.solve=function(x){const out={};for(const e of x.events){if(e.at>=x.now-x.window&&e.at<=x.now)out[e.user]=(out[e.user]||0)+e.units;}return out;};\n",
+  "regression.test.cjs": "const assert=require(\"node:assert/strict\"),{solve}=require(\"./logic.cjs\");assert.deepEqual(solve({\"events\": [{\"user\": \"a\", \"at\": 90, \"units\": 3}, {\"user\": \"a\", \"at\": 100, \"units\": 2}, {\"user\": \"b\", \"at\": 101, \"units\": 9}], \"now\": 100, \"window\": 10}),{\"a\": 5});\n"
+}

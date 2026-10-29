@@ -1,0 +1,125 @@
+{
+  "id": "python-usage",
+  "name": "Aggregate bounded usage windows",
+  "stack": "python",
+  "split": "validation",
+  "prompt": "Read README.md, repair aggregate bounded usage windows, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "python3",
+    "public_test.py"
+  ],
+  "gradeCommand": [
+    "python3",
+    "main.py"
+  ],
+  "public": {
+    "logic.py": "def solve(x):\n out={}\n for e in x[\"events\"]:\n  if x[\"now\"]-x[\"window\"]<e[\"at\"]<x[\"now\"]: out[e[\"user\"]]=out.get(e[\"user\"],0)+e[\"units\"]\n return out\n",
+    "main.py": "import json,sys\nfrom logic import solve\nprint(json.dumps([solve(x) for x in json.loads(sys.argv[1])]))\n",
+    "public_test.py": "import json,subprocess,sys\ncases=[{'events': [], 'now': 100, 'window': 10}, {'events': [{'user': 'a', 'at': 95, 'units': 2}], 'now': 100, 'window': 10}]\nexpected=[{}, {'a': 2}]\np=subprocess.run([sys.executable,\"main.py\",json.dumps(cases)],capture_output=True,text=True,check=True)\nassert json.loads(p.stdout)==expected,(p.stdout,expected)\nprint(\"2 public cases passed\")\n\nimport unittest\nsuite=unittest.defaultTestLoader.discover(\".\",pattern=\"test_*.py\")\nif not unittest.TextTestRunner().run(suite).wasSuccessful():raise SystemExit(1)\n",
+    "README.md": "# Aggregate bounded usage windows\n\nRepair this python service module and add regression tests.\n\nReturn per-user total units for events in the closed time interval [now-window, now]. Include zero-unit users when an event qualifies. Exclude future and older events. Units are nonnegative integers. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `python3 public_test.py` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"events\": [\n    {\n      \"user\": \"a\",\n      \"at\": 90,\n      \"units\": 3\n    },\n    {\n      \"user\": \"a\",\n      \"at\": 100,\n      \"units\": 2\n    },\n    {\n      \"user\": \"b\",\n      \"at\": 101,\n      \"units\": 9\n    }\n  ],\n  \"now\": 100,\n  \"window\": 10\n}\n```\nExpected result:\n```json\n{\n  \"a\": 5\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "usage-1",
+      "input": {
+        "events": [],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "usage-2",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 95,
+            "units": 2
+          }
+        ],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {
+        "a": 2
+      },
+      "critical": false
+    },
+    {
+      "name": "usage-3",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 90,
+            "units": 3
+          },
+          {
+            "user": "a",
+            "at": 100,
+            "units": 2
+          },
+          {
+            "user": "b",
+            "at": 101,
+            "units": 9
+          }
+        ],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {
+        "a": 5
+      },
+      "critical": false
+    },
+    {
+      "name": "usage-4",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 89,
+            "units": 10
+          },
+          {
+            "user": "z",
+            "at": 90,
+            "units": 0
+          }
+        ],
+        "now": 100,
+        "window": 10
+      },
+      "expected": {
+        "z": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "usage-5",
+      "input": {
+        "events": [
+          {
+            "user": "a",
+            "at": 0,
+            "units": 1
+          },
+          {
+            "user": "a",
+            "at": 1,
+            "units": 2
+          }
+        ],
+        "now": 0,
+        "window": 0
+      },
+      "expected": {
+        "a": 1
+      },
+      "critical": false
+    }
+  ]
+}

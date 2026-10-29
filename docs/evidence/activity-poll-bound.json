@@ -1,0 +1,15 @@
+{
+  "qualified": true,
+  "validation": "go test -race ./internal/store ./internal/app",
+  "aggregateStoredJSONBytes": 2097152,
+  "rowLimit": 500,
+  "exception": "One complete oversized newest event is preserved; this is a soft aggregate cap.",
+  "checks": [
+    "Newest approval and failure remain visible",
+    "Complete older history remains available through SessionEvents",
+    "Chronological display restored after newest-first selection",
+    "Oversized newest event remains valid complete JSON"
+  ],
+  "source": "internal/store/event_page.go",
+  "tests": "internal/store/event_page_test.go"
+}

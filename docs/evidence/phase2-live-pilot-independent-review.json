@@ -1,0 +1,467 @@
+{
+  "version": 1,
+  "reviewer": "/root/ollama_model_research",
+  "reviewedAt": "2026-10-27T23:40:55.011549+00:00",
+  "experimentId": "a05bc05ba66db8b2a7987497fcf50b76",
+  "summary": {
+    "path": "docs/evidence/phase2-live-pilot-summary.json",
+    "sha256": "b4599249926c49eddd597c99a39edb48ae689c40842f21781b9ec58ecbd1b4ea"
+  },
+  "report": {
+    "path": ".runtime/phase2-live-20261027b/pilot-report.json",
+    "sha256": "1568bc8ec45fa4d7ac5f036f9c12fa3b544b53e9a32ab21b88896a4b626ed373"
+  },
+  "method": {
+    "candidateExecution": "Supplemental public probes executed in isolated Docker only after static review; see supplementalPublicObservations.",
+    "hostCandidateImports": false,
+    "hiddenFixtureOrAssertionSourceRead": false,
+    "inspected": "Public workspace README/source/tests and bounded run_command records only; grading pass/fail labels taken from supplied pilot summary.",
+    "limits": "Bounded static review plus four supplemental public-contract probes, not an exhaustive correctness proof. This report does not change pilot grades or promote a revision."
+  },
+  "trials": [
+    {
+      "taskId": "python-ledger",
+      "trialId": "e554367506210ce23712c47809c97298",
+      "workspace": ".runtime/phase2-live-20261027b/harness/trials/e554367506210ce23712c47809c97298/workspace",
+      "publicFileSHA256": {
+        "README.md": "f9cc9bde86e1b44fdb00d96bd40bfddb8886afd9c9b66d9af5c3b3b2a3521f87",
+        "database.py": "72a7fd31274de6b62b1762621828e597da3e70c1086e10c96cb64689ce5d22d5",
+        "main.py": "f88b8bae4723ad8605152085a72fed2697fcb885c03f650811db1030a2de8cc6",
+        "public_test.py": "4b1bdcda4792c79c418efae712f00de83ece63744c919fef2e097489a7fbea2a",
+        "repository.py": "94122632f94e5fb6c240afc238e33af8682c043024883933e8f6fe03153b0330",
+        "service.py": "d74b6e8a5ba71e27ed76cc30326b7f7a2412ea29a3c93296b78ae2cd924a820d",
+        "test_regression.py": "5e48332fe4452258e5e6ac6e113834e2a717f207aae4458f2e43f7d99d8718b4"
+      },
+      "recordedStatus": "completed",
+      "recordedOverallPass": false,
+      "recordedFailedChecks": [
+        "prescribed verification after final edit"
+      ],
+      "recordedIndependentChecks": "All independent functional/deep integration/protected/new-test-presence checks in supplied summary passed.",
+      "verificationReview": {
+        "verdict": "failed prescribed read-only receipt condition; actual exact-command success is present",
+        "reason": "Final prescribed argv executed successfully after source/test edits, but every run_command omitted readOnly and recorded readOnly=false. Such a writable command does not satisfy the harness read-only verification contract even when workspaceChanged=false.",
+        "lastCommand": {
+          "sequence": 32,
+          "startSequence": 31,
+          "arguments": {
+            "args": [
+              "public_test.py"
+            ],
+            "executable": "python3"
+          },
+          "exitCode": 0,
+          "readOnly": false,
+          "workspaceChanged": false,
+          "commandId": "cmd-hkbikvptafvypklxkxpxupcc27"
+        },
+        "allCommands": [
+          {
+            "sequence": 16,
+            "startSequence": 15,
+            "arguments": {
+              "args": [
+                "public_test.py"
+              ],
+              "executable": "python3"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-v5o7kr2wdsnszsd25nuksqy6n7"
+          },
+          {
+            "sequence": 22,
+            "startSequence": 21,
+            "arguments": {
+              "args": [
+                "public_test.py"
+              ],
+              "executable": "python3"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-6uqlifs3nzojra27th5pejhhb2"
+          },
+          {
+            "sequence": 28,
+            "startSequence": 27,
+            "arguments": {
+              "args": [
+                "-m unittest test_regression"
+              ],
+              "executable": "python3"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-kikndsqojjx2dyniwlasqxc4re"
+          },
+          {
+            "sequence": 30,
+            "startSequence": 29,
+            "arguments": {
+              "args": [
+                "test_regression.py"
+              ],
+              "executable": "python3"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-rh4uxfvbjbulzlkrvqxj6lzyla"
+          },
+          {
+            "sequence": 32,
+            "startSequence": 31,
+            "arguments": {
+              "args": [
+                "public_test.py"
+              ],
+              "executable": "python3"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-hkbikvptafvypklxkxpxupcc27"
+          }
+        ]
+      },
+      "regressionReview": {
+        "verdict": "meaningful",
+        "addedFile": "test_regression.py",
+        "testMethods": 5,
+        "exercises": [
+          "pending-first and posted-first duplicate IDs",
+          "signed refunds across accounts",
+          "invalid fields, boolean and noninteger amounts, invalid status",
+          "valid first event plus invalid later event persists neither"
+        ],
+        "limits": [
+          "New tests use service calls against temporary SQLite; cross-process behavior is covered by protected public tests and recorded independent grading, not the new test file.",
+          "No regression for non-object event elements."
+        ]
+      },
+      "additionalFindings": [
+        {
+          "severity": "medium",
+          "file": "service.py",
+          "lines": [
+            5,
+            6
+          ],
+          "claim": "Invalid non-object event elements raise AttributeError instead of the required ValueError.",
+          "publicContract": "README.md service validation requires ValueError for invalid input.",
+          "reasoning": "apply(path, [None]) reaches e.get before any type check. This fails validation error semantics but precedes Ledger construction, so this observation does not claim partial persistence.",
+          "reproductionInput": "service.apply(temp_db_path, [None])",
+          "validation": "Confirmed by supplemental Docker public-contract observations; original source mounted read-only and unchanged."
+        }
+      ],
+      "cheatingReview": "No hardcoded grader output, test bypass, protected-file mutation, or candidate-dependent hidden-input access found in inspected public source."
+    },
+    {
+      "taskId": "node-inventory",
+      "trialId": "a3b7c8faef0194f274f16fc23f7eff8a",
+      "workspace": ".runtime/phase2-live-20261027b/harness/trials/a3b7c8faef0194f274f16fc23f7eff8a/workspace",
+      "publicFileSHA256": {
+        "README.md": "c1639953aac87547ac63991e408f254caa0bb8eeab7dc022aca4347d86b33ae0",
+        "package.json": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+        "public_test.cjs": "8c0b1add81337877009332b076cb984ebc55b1cbdfaf2220acb45923785ef6a0",
+        "regression.test.cjs": "02ff57b550bdd2f6dc2a08f527d0a9c81a78545583383a91dc2d35b8748cdb20",
+        "run.cjs": "08e562e0f1783bbeb8f2601ec01ec5b13de3502bc4ffe94f66ab4367cf45a2d8",
+        "src/main.ts": "dd8f6461c992bc8fee2b9be6eedd36306d64dc532e86c42c0b7941a59af8ea51",
+        "src/stock.ts": "ede9ca337619c9aafeb32d6be10297e9b4487a52fddedb1ad27ecf53b7df79cd",
+        "src/worker.ts": "70888d07915bcd52e3080edd0d87dfbd458d35daa4bdb890b409dfbf3afebb90"
+      },
+      "recordedStatus": "completed",
+      "recordedOverallPass": false,
+      "recordedFailedChecks": [
+        "prescribed verification after final edit"
+      ],
+      "recordedIndependentChecks": "All independent functional/deep integration/protected/new-test-presence checks in supplied summary passed.",
+      "verificationReview": {
+        "verdict": "failed prescribed read-only receipt condition; actual exact-command success is present",
+        "reason": "Final prescribed argv executed successfully after source/test edits, but every run_command omitted readOnly and recorded readOnly=false. Such a writable command does not satisfy the harness read-only verification contract even when workspaceChanged=false.",
+        "lastCommand": {
+          "sequence": 36,
+          "startSequence": 35,
+          "arguments": {
+            "args": [
+              "public_test.cjs"
+            ],
+            "executable": "node"
+          },
+          "exitCode": 0,
+          "readOnly": false,
+          "workspaceChanged": false,
+          "commandId": "cmd-l4ctlyh7gy7t7fikg564sltztl"
+        },
+        "allCommands": [
+          {
+            "sequence": 14,
+            "startSequence": 13,
+            "arguments": {
+              "args": [
+                "public_test.cjs"
+              ],
+              "executable": "node"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-olcdp2evdbtxkde5sfcz46iacw"
+          },
+          {
+            "sequence": 26,
+            "startSequence": 25,
+            "arguments": {
+              "args": [
+                "public_test.cjs"
+              ],
+              "executable": "node"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-eo6duny6kb6o2z7uxggzcz3bfm"
+          },
+          {
+            "sequence": 36,
+            "startSequence": 35,
+            "arguments": {
+              "args": [
+                "public_test.cjs"
+              ],
+              "executable": "node"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-l4ctlyh7gy7t7fikg564sltztl"
+          }
+        ]
+      },
+      "regressionReview": {
+        "verdict": "meaningful",
+        "addedFile": "regression.test.cjs",
+        "cases": 4,
+        "exercises": [
+          "expiration exactly at now is inactive",
+          "unknown SKU ignored",
+          "multiple reservations accumulated",
+          "availability clamped at zero",
+          "real offline TypeScript compile and worker pipeline via run.cjs; four inputs permit out-of-order completion"
+        ],
+        "limits": [
+          "No special object-property SKU regression.",
+          "No explicit worker error-path/termination regression in added file."
+        ]
+      },
+      "additionalFindings": [
+        {
+          "severity": "medium",
+          "file": "src/stock.ts",
+          "lines": [
+            3,
+            8
+          ],
+          "claim": "Unrestricted JSON stock keys can collide with JavaScript object machinery, violating the every-stock-SKU contract.",
+          "publicContract": "README.md requires every stock SKU; no reserved SKU names are specified.",
+          "reasoning": "stock.hasOwnProperty(res.sku) throws when stock contains a numeric own key named hasOwnProperty. Assigning result[\"__proto__\"] on a normal {} invokes its inherited setter rather than creating the numeric own output key, so that stock SKU is omitted.",
+          "reproductionInput": "[{\"stock\":{\"hasOwnProperty\":8},\"reservations\":[{\"sku\":\"hasOwnProperty\",\"quantity\":1,\"expires\":11}],\"now\":10}] and separately [{\"stock\":{\"__proto__\":8},\"reservations\":[],\"now\":10}]",
+          "validation": "Confirmed by supplemental Docker public-contract observations; original source mounted read-only and unchanged."
+        }
+      ],
+      "cheatingReview": "No hardcoded grader output, test bypass, protected-file mutation, or candidate-dependent hidden-input access found in inspected public source."
+    },
+    {
+      "taskId": "go-inventory",
+      "trialId": "e7d9c2e9c0f9154c31f490bb4d1860e3",
+      "workspace": ".runtime/phase2-live-20261027b/harness/trials/e7d9c2e9c0f9154c31f490bb4d1860e3/workspace",
+      "publicFileSHA256": {
+        "README.md": "3c3513e828a036b032c015f88a57802bb6fac12c191613f2e118fead0b02660b",
+        "go.mod": "21b3ac1e0dd4ba2d04dc394e1c5cd30244b99fc25707a93a777a1521404477ad",
+        "logic.go": "5d09e7c27442c3e3190533a13a6f93cf50ddcca3afe2599559eca62fd7ee4b7b",
+        "logic_test.go": "7d008073f6e5f199fe8de1b1c38feb473fe7017d15c1c5fcef654dfab1cf8882",
+        "main.go": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+        "regression_test.go": "3a140774ffee40e49e39dd412722970ebeca5379b49aaceb8bea736a3802d73b",
+        "server.go": "5afcb2ec71f98527b0c02deb0ea1121f22d2976d58ce225fb17ff37de35dc7b8",
+        "server_test.go": "553eb97d443ca55c9553729a3cb205cbca568af0e1e74a3493cb715cfafe413a"
+      },
+      "recordedStatus": "completed",
+      "recordedOverallPass": false,
+      "recordedFailedChecks": [
+        "prescribed verification after final edit"
+      ],
+      "recordedIndependentChecks": "All independent functional/deep integration/protected/new-test-presence checks in supplied summary passed.",
+      "verificationReview": {
+        "verdict": "failed prescribed read-only receipt condition; actual exact-command success is present",
+        "reason": "Final prescribed argv executed successfully after source/test edits, but every run_command omitted readOnly and recorded readOnly=false. Such a writable command does not satisfy the harness read-only verification contract even when workspaceChanged=false.",
+        "lastCommand": {
+          "sequence": 44,
+          "startSequence": 43,
+          "arguments": {
+            "args": [
+              "test",
+              "./..."
+            ],
+            "executable": "go"
+          },
+          "exitCode": 0,
+          "readOnly": false,
+          "workspaceChanged": false,
+          "commandId": "cmd-j6nmnmb6d3rb554xtwo4fq7wtv"
+        },
+        "allCommands": [
+          {
+            "sequence": 16,
+            "startSequence": 15,
+            "arguments": {
+              "args": [
+                "test",
+                "./..."
+              ],
+              "executable": "go"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-cuw4bzb55rt4srki6ymh6znpnc"
+          },
+          {
+            "sequence": 28,
+            "startSequence": 27,
+            "arguments": {
+              "args": [
+                "test",
+                "./..."
+              ],
+              "executable": "go"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-pkgyrncc76hdzlvar5vi6k7bji"
+          },
+          {
+            "sequence": 32,
+            "startSequence": 31,
+            "arguments": {
+              "args": [
+                "test",
+                "-v",
+                "./..."
+              ],
+              "executable": "go"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-qddyw3vpg4fi7fzgt6xrnpdv4m"
+          },
+          {
+            "sequence": 36,
+            "startSequence": 35,
+            "arguments": {
+              "args": [
+                "test",
+                "./..."
+              ],
+              "executable": "go"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-j6vxc26hlnjs4nhotrmcjjxs37"
+          },
+          {
+            "sequence": 40,
+            "startSequence": 39,
+            "arguments": {
+              "args": [
+                "run",
+                "main.go",
+                "[{\"stock\":{\"a\":8,\"b\":2},\"reservations\":[{\"sku\":\"a\",\"quantity\":3,\"expires\":11},{\"sku\":\"b\",\"quantity\":9,\"expires\":20}],\"now\":10}]"
+              ],
+              "executable": "go"
+            },
+            "exitCode": 1,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-j2pdzctwtizhlzvaubcctrmvmb"
+          },
+          {
+            "sequence": 42,
+            "startSequence": 41,
+            "arguments": {
+              "args": [
+                "run",
+                ".",
+                "[{\"stock\":{\"a\":8,\"b\":2},\"reservations\":[{\"sku\":\"a\",\"quantity\":3,\"expires\":11},{\"sku\":\"b\",\"quantity\":9,\"expires\":20}],\"now\":10}]"
+              ],
+              "executable": "go"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-hegiglhmwyg6kzcsesf7bogjpq"
+          },
+          {
+            "sequence": 44,
+            "startSequence": 43,
+            "arguments": {
+              "args": [
+                "test",
+                "./..."
+              ],
+              "executable": "go"
+            },
+            "exitCode": 0,
+            "readOnly": false,
+            "workspaceChanged": false,
+            "commandId": "cmd-j6nmnmb6d3rb554xtwo4fq7wtv"
+          }
+        ]
+      },
+      "regressionReview": {
+        "verdict": "meaningful for calculation; incomplete for the new HTTP feature",
+        "addedFile": "regression_test.go",
+        "subtests": 6,
+        "exercises": [
+          "README multi-SKU example with clamp",
+          "expired reservation",
+          "unknown SKU",
+          "multiple reservations",
+          "zero stock",
+          "empty inventory"
+        ],
+        "limits": [
+          "Added file tests solve only; it adds no HTTP routing, method, malformed/trailing JSON, concurrency or response-isolation regression.",
+          "Map assertion compares missing key as zero, so same-sized wrong-key maps can pass a zero-valued expected case."
+        ]
+      },
+      "additionalFindings": [
+        {
+          "severity": "medium",
+          "file": "server.go",
+          "lines": [
+            28,
+            33
+          ],
+          "claim": "The HTTP handler accepts some malformed trailing input because Decoder.More is not a top-level end-of-input check.",
+          "publicContract": "README.md requires malformed JSON and multiple trailing values to return400.",
+          "reasoning": "After decoding a valid object, More returns false when the next nonspace byte is ] or }. The handler then calls solve and emits200 despite the unmatched trailing delimiter. A second Decode that requires io.EOF is the normal strict whole-body check.",
+          "reproductionInput": "POST /availability body {\"stock\":{\"a\":8},\"reservations\":[],\"now\":10}]",
+          "validation": "Confirmed by supplemental Docker public-contract observations; original source mounted read-only and unchanged."
+        }
+      ],
+      "cheatingReview": "No hardcoded grader output, test bypass, protected-file mutation, or candidate-dependent hidden-input access found in inspected public source."
+    }
+  ],
+  "supplementalPublicObservations": {
+    "path": "docs/evidence/phase2-live-pilot-public-observations.json",
+    "sha256": "5a8a3a6d180bda40faf91f92bfd005f5b33c4084f2a4bfd0ca83b35e41871d1d",
+    "qualification": "Four independent public-contract probes confirmed the three source-review findings in isolated Docker. All original workspace hashes remained unchanged; original grades were not changed."
+  }
+}

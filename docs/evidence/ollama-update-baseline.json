@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-27T18:55:12.640414+00:00",
+  "priorRuntimeVersion": "0.32.3",
+  "runtimeVersion": "0.40.11",
+  "modelDigests": {
+    "gemma4:26b-mlx": "f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "gemma4:12b-mlx": "ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970"
+  },
+  "hardwareBytes": 68719476736,
+  "baselineBinarySHA256": "3ed2104275adc6cce55d5e438f24a7c89feebe2f25e63b2e3b71d542a1c61994",
+  "profile": ".runtime/context-runtime-qa",
+  "settings": {
+    "contextSize": 32768,
+    "maxOutputTokens": 8192,
+    "thinking": "on",
+    "temperature": 1.0
+  },
+  "scope": "Fresh challenge using preceding final app binary; runtime update is the sole intended policy/runtime change. Separate random fixture markers and stochastic generations prevent a strict deterministic paired experiment."
+}

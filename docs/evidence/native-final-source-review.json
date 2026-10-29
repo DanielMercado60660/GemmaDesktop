@@ -1,0 +1,23 @@
+{
+  "reviewedAtUTC": "2026-10-27T20:36:47.835341+00:00",
+  "previousReview": "docs/evidence/native-literal-public-review.json",
+  "changedFiles": [
+    "tests/test_regressions.py"
+  ],
+  "sha256": {
+    "README.md": "1cac561d91ad9f7a8004f58af9934ce7893ce6075b523e21ce06bd60359df749",
+    "tracker/__init__.py": "cf1f4b0e3f26a34023d5c82e285dd60224acc6f56c872444cf00f7b74a758cd8",
+    "tracker/cli.py": "667713bae647c955db8cf2bc2129a398154c3cf08f3cc4ae8f0dd980775774c7",
+    "tracker/csv_export.py": "eb9a50bc543c62a0aff5862ede1f449762e45bc0845251bf1346c43f165f0f73",
+    "tracker/db.py": "44c0cf050975fe9176050977bd839eb9e4ae534005ae0afa0d478cec2ad99706",
+    "tracker/models.py": "31721a2d1e94b5346e0f998acd7e712ea0a38449410948087ecbd4c0acc810d8",
+    "tracker/repository.py": "c79c5ca999c20f20a4c9b4d7eb3f3ab415843560febd452fddb66603adeec2d2",
+    "tracker/service.py": "6a37da33230a53f52d2ab946ba1b6d0d114fa5a9f278e65c366d1a4db09acac9",
+    "tests/__init__.py": "4ba4362ceed406c8448494900f44d1561a47edb40f1e20c6d845c311b9f18049",
+    "tests/test_existing.py": "f9d8ce1fc037c0197a15097d2ea7e11f1148faf77273498e510eee818961e08d",
+    "tests/test_regressions.py": "61ca6725304eaa442254e4a896b745d84b8120dd528dbc56a29fb1a5e779f586"
+  },
+  "finding": "Only the new regression file changed. The model replaced Éclair/éclair fixtures with É/é to isolate the non-ASCII case boundary from ASCII a matching, retaining both exact non-ASCII title assertions and the two Apple/apple case-insensitive matches. No tests were disabled or skipped; all prior production-source review observations remain applicable.",
+  "verifiedBy": "Static diff review, actual model-executed14-test command, independent9-case suite, frozen6-case search probe, protected-input hash verification.",
+  "scope": "Multi-turn guided coding qualification; earlier failures retained. No manual candidate edits."
+}

@@ -1,0 +1,1091 @@
+[
+  {
+    "id": "f62a00d2ff0175173729f15631ac064d",
+    "taskId": "node-orders",
+    "label": "eval-68381c81596bc2c357d5f0ade2e2063e-baseline-0",
+    "status": "completed",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "revisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+    "inputHash": "f62a00d2ff0175173729f15631ac064d5da963bbf2bf5b9774e8d5c1b8b316e6",
+    "outputHash": "52e5affa211c56d07f1d563e423bdc9a584a73a266b5d3b68a50fc0c70d93c67",
+    "createdAt": "2026-10-28T05:25:37.03784Z",
+    "finishedAt": "2026-10-28T05:29:07.410423Z",
+    "error": null,
+    "observedAt": "2026-10-28T05:38:32.573141+00:00",
+    "resultSummary": {
+      "incomplete": false,
+      "durationMs": 210325,
+      "usage": {
+        "eval_count": 9203,
+        "eval_duration": 194796561836,
+        "load_duration": 252491376,
+        "prompt_eval_count": 139301,
+        "prompt_eval_duration": 11182415791,
+        "total_duration": 206335551628
+      },
+      "tokenAccounting": null
+    },
+    "toolObservations": [
+      {
+        "tool": "read_file",
+        "callId": "call_dvyza21n",
+        "sequence": 2,
+        "startSequence": 1,
+        "error": null,
+        "arguments": {
+          "path": "README.md"
+        },
+        "data": {
+          "path": "README.md",
+          "hash": "504b5b7784238efdc2dcdcd7122c4b4195dfc5f03cdc0c9dcec2fa9c633378d2"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_xaswtca5",
+        "sequence": 6,
+        "startSequence": 5,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "hash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_sjur2jk7",
+        "sequence": 8,
+        "startSequence": 7,
+        "error": null,
+        "arguments": {
+          "path": "main.cjs"
+        },
+        "data": {
+          "path": "main.cjs",
+          "hash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_ut9pzil1",
+        "sequence": 10,
+        "startSequence": 9,
+        "error": null,
+        "arguments": {
+          "path": "public_test.cjs"
+        },
+        "data": {
+          "path": "public_test.cjs",
+          "hash": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3"
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_d7hk7ret",
+        "sequence": 12,
+        "startSequence": 11,
+        "error": "process exited with code 1",
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "-e",
+            "const {solve} = require('./logic.cjs'); console.log(JSON.stringify(solve({orders: [{id: 'b', updatedAt: 3, status: 'cancelled'}, {id: 'b', updatedAt: 1, status: 'open'}, {id: 'a', updatedAt: 2, status: 'open'}]}));"
+          ]
+        },
+        "data": {
+          "exitCode": 1,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-rrpeuarfustcsldnzysjaek7ef",
+          "changes": [],
+          "durationMs": 563
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_q65hqzd2",
+        "sequence": 14,
+        "startSequence": 13,
+        "error": "process exited with code 1",
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "-e",
+            "const {solve} = require('./logic.cjs'); console.log(JSON.stringify(solve({orders: [{id: 'b', updatedAt: 3, status: 'cancelled'}, {id: 'b', updatedAt: 1, status: 'open'}, {id: 'a', updatedAt: 2, status: 'open'}]}));"
+          ]
+        },
+        "data": {
+          "exitCode": 1,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-h7u7x3hwsisgjkvdduq4lp3ivt",
+          "changes": [],
+          "durationMs": 472
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_oy01hmqn",
+        "sequence": 16,
+        "startSequence": 15,
+        "error": "process exited with code 1",
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "-e",
+            "const {solve} = require(\"./logic.cjs\"); console.log(JSON.stringify(solve({orders: [{id: 'b', updatedAt: 3, status: 'cancelled'}, {id: 'b', updatedAt: 1, status: 'open'}, {id: 'a', updatedAt: 2, status: 'open'}]}));"
+          ]
+        },
+        "data": {
+          "exitCode": 1,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-udsqtjtjsvox72ll27rf2dz4sz",
+          "changes": [],
+          "durationMs": 468
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_goslcyqj",
+        "sequence": 18,
+        "startSequence": 17,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "-e",
+            "console.log(\"hi\");"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-bx7s5svfztvwjv6f7ffyfsbeqc",
+          "changes": [],
+          "durationMs": 481
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_8ujyz0o9",
+        "sequence": 20,
+        "startSequence": 19,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-vcjy3zcgujb27hkg6druja7sy2",
+          "changes": [],
+          "durationMs": 478
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_wyb9h5g5",
+        "sequence": 22,
+        "startSequence": 21,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs",
+          "expectedHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "beforeHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6",
+          "afterHash": "425b9e3c0d1e8a9685fe4a704258af4d8330875692caa441f7c73f89c03186bf",
+          "created": false
+        }
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_8kny9owh",
+        "sequence": 24,
+        "startSequence": 23,
+        "error": "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file",
+        "arguments": {
+          "path": "regression_test.cjs",
+          "expectedHash": ""
+        },
+        "data": {}
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_qveu2g72",
+        "sequence": 26,
+        "startSequence": 25,
+        "error": "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file",
+        "arguments": {
+          "path": "regression_test.cjs",
+          "expectedHash": ""
+        },
+        "data": {}
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_4rekop6l",
+        "sequence": 28,
+        "startSequence": 27,
+        "error": "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file",
+        "arguments": {
+          "path": "regression_test.cjs",
+          "expectedHash": ""
+        },
+        "data": {}
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_1xmv1erb",
+        "sequence": 30,
+        "startSequence": 29,
+        "error": null,
+        "arguments": {
+          "path": "regression_test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {
+          "path": "regression_test.cjs",
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "afterHash": "d07f3757751ca414da06dd20ec6bb50da82b7c67a734f3e8e3e4126c9a5b2b91",
+          "created": true
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_c5iqqv3h",
+        "sequence": 32,
+        "startSequence": 31,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-5q5tdcq2cyakae34xozlfx7t45",
+          "changes": [],
+          "durationMs": 567
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_xbu9vy27",
+        "sequence": 34,
+        "startSequence": 33,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "regression_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-yc2k2fqqryr33gs3zjgs2nl2o7",
+          "changes": [],
+          "durationMs": 475
+        }
+      }
+    ],
+    "workspace": ".runtime/phase2-campaign-20261027/harness/trials/f62a00d2ff0175173729f15631ac064d/workspace",
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 900,
+        "sha256": "504b5b7784238efdc2dcdcd7122c4b4195dfc5f03cdc0c9dcec2fa9c633378d2"
+      },
+      {
+        "path": "logic.cjs",
+        "bytes": 279,
+        "sha256": "425b9e3c0d1e8a9685fe4a704258af4d8330875692caa441f7c73f89c03186bf"
+      },
+      {
+        "path": "main.cjs",
+        "bytes": 106,
+        "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+      },
+      {
+        "path": "package.json",
+        "bytes": 62,
+        "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+      },
+      {
+        "path": "public_test.cjs",
+        "bytes": 482,
+        "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3"
+      },
+      {
+        "path": "regression_test.cjs",
+        "bytes": 868,
+        "sha256": "d07f3757751ca414da06dd20ec6bb50da82b7c67a734f3e8e3e4126c9a5b2b91"
+      }
+    ]
+  },
+  {
+    "id": "4865d2a5008715d7b2784f852c39b6cc",
+    "taskId": "node-orders",
+    "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-0",
+    "status": "completed",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+    "inputHash": "4865d2a5008715d7b2784f852c39b6cc926ab13958f6841cdab7c99ef5dbb918",
+    "outputHash": "ce38ff8834bbdc415dd2874d9c88f484825eb41f7102c891ac1dfa394867825d",
+    "createdAt": "2026-10-28T05:29:08.355272Z",
+    "finishedAt": "2026-10-28T05:32:24.526502Z",
+    "error": null,
+    "observedAt": "2026-10-28T05:38:32.575300+00:00",
+    "resultSummary": {
+      "incomplete": false,
+      "durationMs": 196120,
+      "usage": {
+        "eval_count": 8747,
+        "eval_duration": 178316769709,
+        "load_duration": 333715124,
+        "prompt_eval_count": 199943,
+        "prompt_eval_duration": 12660159374,
+        "total_duration": 191460588667
+      },
+      "tokenAccounting": null
+    },
+    "toolObservations": [
+      {
+        "tool": "read_file",
+        "callId": "call_bifxnfbu",
+        "sequence": 2,
+        "startSequence": 1,
+        "error": null,
+        "arguments": {
+          "path": "README.md"
+        },
+        "data": {
+          "path": "README.md",
+          "hash": "504b5b7784238efdc2dcdcd7122c4b4195dfc5f03cdc0c9dcec2fa9c633378d2"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_hqgll78r",
+        "sequence": 6,
+        "startSequence": 5,
+        "error": null,
+        "arguments": {
+          "path": "main.cjs"
+        },
+        "data": {
+          "path": "main.cjs",
+          "hash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_74id5vbe",
+        "sequence": 8,
+        "startSequence": 7,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "hash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_ce8ebqu5",
+        "sequence": 10,
+        "startSequence": 9,
+        "error": null,
+        "arguments": {
+          "path": "public_test.cjs"
+        },
+        "data": {
+          "path": "public_test.cjs",
+          "hash": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3"
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_hacela4v",
+        "sequence": 12,
+        "startSequence": 11,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-7bxrmtbo254ydpxpcfktmtuplo",
+          "changes": [],
+          "durationMs": 792
+        }
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_lg1vcu68",
+        "sequence": 14,
+        "startSequence": 13,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "afterHash": "a9b8305f7525098cc24c2b49534fc211d65f8daee64599020af374e7b6d3c3ab",
+          "created": true
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_bsxmku34",
+        "sequence": 16,
+        "startSequence": 15,
+        "error": "process exited with code 1",
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 1,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-p76duco7r4yxqlzlxg2427aek6",
+          "changes": [],
+          "durationMs": 570
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_bx5rjynq",
+        "sequence": 18,
+        "startSequence": 17,
+        "error": "revision conflict for \"logic.cjs\": file changed since it was read; read it again before editing; call read_file with path \"logic.cjs\" before retrying with that file's returned hash",
+        "arguments": {
+          "path": "logic.cjs",
+          "expectedHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f9-wait-it-was-not-this-hash-it-was-the-one-from-read-file-let-me-check"
+        },
+        "data": {}
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_vij0l7jv",
+        "sequence": 20,
+        "startSequence": 19,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "hash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_v8wq2z5i",
+        "sequence": 22,
+        "startSequence": 21,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs",
+          "expectedHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "beforeHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6",
+          "afterHash": "1c8a77fe96e4cb1515c33b5934ff7640eb34be6c1e316fe3f960ac1a5df63634",
+          "created": false
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_2iakyhy7",
+        "sequence": 24,
+        "startSequence": 23,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-fvo3wbgf3ex2ep5ua432phef56",
+          "changes": [],
+          "durationMs": 559
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_ve7ncyeq",
+        "sequence": 26,
+        "startSequence": 25,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "regression.test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-lmcjxawrb465omueji4rudhjyj",
+          "changes": [],
+          "durationMs": 477
+        }
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_e28eejr0",
+        "sequence": 28,
+        "startSequence": 27,
+        "error": "revision conflict for \"regression.test.cjs\": file changed since it was read; read it again before editing; call read_file with path \"regression.test.cjs\" before retrying with that file's returned hash",
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {}
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_tjk3gl4m",
+        "sequence": 30,
+        "startSequence": 29,
+        "error": "revision conflict for \"regression.test.cjs\": file changed since it was read; read it again before editing; call read_file with path \"regression.test.cjs\" before retrying with that file's returned hash",
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {}
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_oss1t5hp",
+        "sequence": 34,
+        "startSequence": 33,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "hash": "a9b8305f7525098cc24c2b49534fc211d65f8daee64599020af374e7b6d3c3ab"
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_xg4lofhh",
+        "sequence": 36,
+        "startSequence": 35,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "a9b8305f7525098cc24c2b49534fc211d65f8daee64599020af374e7b6d3c3ab"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "beforeHash": "a9b8305f7525098cc24c2b49534fc211d65f8daee64599020af374e7b6d3c3ab",
+          "afterHash": "61b7ad9fb5ca0387922c5c8eec29db43e20e1f6a874dbd12709ce18450246fb7",
+          "created": false
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_s270lmxe",
+        "sequence": 38,
+        "startSequence": 37,
+        "error": "process exited with code 1",
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "regression.test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 1,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-tegrm7dyr55hscwhtcedoiojsp",
+          "changes": [],
+          "durationMs": 573
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_01b8ekyj",
+        "sequence": 40,
+        "startSequence": 39,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "61b7ad9fb5ca0387922c5c8eec29db43e20e1f6a874dbd12709ce18450246fb7"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "beforeHash": "61b7ad9fb5ca0387922c5c8eec29db43e20e1f6a874dbd12709ce18450246fb7",
+          "afterHash": "b6039887e034d0405a4f20bd785b8bb2048872a5759a39b895f6b3474b175a84",
+          "created": false
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_gz5bisno",
+        "sequence": 42,
+        "startSequence": 41,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "regression.test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-y2e37kg5egvudxcaqg2gd4ykdp",
+          "changes": [],
+          "durationMs": 576
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_5nop8vfg",
+        "sequence": 44,
+        "startSequence": 43,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-m2tbiupxwgaecjdnw36jse73s2",
+          "changes": [],
+          "durationMs": 483
+        }
+      }
+    ],
+    "workspace": ".runtime/phase2-campaign-20261027/harness/trials/4865d2a5008715d7b2784f852c39b6cc/workspace",
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 900,
+        "sha256": "504b5b7784238efdc2dcdcd7122c4b4195dfc5f03cdc0c9dcec2fa9c633378d2"
+      },
+      {
+        "path": "logic.cjs",
+        "bytes": 240,
+        "sha256": "1c8a77fe96e4cb1515c33b5934ff7640eb34be6c1e316fe3f960ac1a5df63634"
+      },
+      {
+        "path": "main.cjs",
+        "bytes": 106,
+        "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+      },
+      {
+        "path": "package.json",
+        "bytes": 62,
+        "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+      },
+      {
+        "path": "public_test.cjs",
+        "bytes": 482,
+        "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3"
+      },
+      {
+        "path": "regression.test.cjs",
+        "bytes": 1020,
+        "sha256": "b6039887e034d0405a4f20bd785b8bb2048872a5759a39b895f6b3474b175a84"
+      }
+    ]
+  },
+  {
+    "id": "12aa68ef03e97871f150a68b9c4f0fe0",
+    "taskId": "node-orders",
+    "label": "eval-68381c81596bc2c357d5f0ade2e2063e-candidate-1",
+    "status": "completed",
+    "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+    "revisionId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+    "inputHash": "12aa68ef03e97871f150a68b9c4f0fe035ef1ebf8ba57d8359d9e859251729f1",
+    "outputHash": "fa099333a456a8ca7394204b65bf44f4b61f26e1b5b85c6287815629bca94c6d",
+    "createdAt": "2026-10-28T05:32:25.451354Z",
+    "finishedAt": "2026-10-28T05:36:46.588688Z",
+    "error": null,
+    "observedAt": "2026-10-28T05:38:32.577643+00:00",
+    "resultSummary": {
+      "incomplete": false,
+      "durationMs": 261090,
+      "usage": {
+        "eval_count": 11945,
+        "eval_duration": 239378097708,
+        "load_duration": 313755125,
+        "prompt_eval_count": 165029,
+        "prompt_eval_duration": 18350015918,
+        "total_duration": 258167301166
+      },
+      "tokenAccounting": null
+    },
+    "toolObservations": [
+      {
+        "tool": "read_file",
+        "callId": "call_p4hufryq",
+        "sequence": 4,
+        "startSequence": 3,
+        "error": null,
+        "arguments": {
+          "path": "README.md"
+        },
+        "data": {
+          "path": "README.md",
+          "hash": "504b5b7784238efdc2dcdcd7122c4b4195dfc5f03cdc0c9dcec2fa9c633378d2"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_hg2055sj",
+        "sequence": 6,
+        "startSequence": 5,
+        "error": null,
+        "arguments": {
+          "path": "main.cjs"
+        },
+        "data": {
+          "path": "main.cjs",
+          "hash": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_qezvt8tv",
+        "sequence": 8,
+        "startSequence": 7,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "hash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_6iawa8sl",
+        "sequence": 10,
+        "startSequence": 9,
+        "error": null,
+        "arguments": {
+          "path": "public_test.cjs"
+        },
+        "data": {
+          "path": "public_test.cjs",
+          "hash": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3"
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_k6gipu4e",
+        "sequence": 12,
+        "startSequence": 11,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-sl6pp53ova6nn6irkf4fcysyy6",
+          "changes": [],
+          "durationMs": 549
+        }
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_rn3ose8m",
+        "sequence": 14,
+        "startSequence": 13,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "beforeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "afterHash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b",
+          "created": true
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_6fljvlmz",
+        "sequence": 16,
+        "startSequence": 15,
+        "error": "process exited with code 1",
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 1,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-ta5fsduzi5fsaw4nww7kpqnqfb",
+          "changes": [],
+          "durationMs": 594
+        }
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_63drgzkf",
+        "sequence": 18,
+        "startSequence": 17,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "hash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_meegvbek",
+        "sequence": 20,
+        "startSequence": 19,
+        "error": null,
+        "arguments": {
+          "path": "logic.cjs",
+          "expectedHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6"
+        },
+        "data": {
+          "path": "logic.cjs",
+          "beforeHash": "f4711b967142a2a39bf92e8e1764739cf1e8f122d65c89d6cb15d4ead8f93fd6",
+          "afterHash": "461566ba84e9a87afad9517c23570a1b2feb77f453812e4fc6a69edaa8d705b1",
+          "created": false
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_az601itc",
+        "sequence": 22,
+        "startSequence": 21,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-pfuxj6xggtevc3bfoy4rwtqniq",
+          "changes": [],
+          "durationMs": 635
+        }
+      },
+      {
+        "tool": "edit_file",
+        "callId": "call_40vru2c0",
+        "sequence": 24,
+        "startSequence": 23,
+        "error": "oldText was not found. Re-read the file and use a shorter unique span with actual newlines; do not copy JSON escape sequences. You may instead use write_file with the complete content and a fresh hash",
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b"
+        },
+        "data": {}
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_4dp303zs",
+        "sequence": 26,
+        "startSequence": 25,
+        "error": "revision conflict for \"regression.test.cjs\": file changed since it was read; read it again before editing; call read_file with path \"regression.test.cjs\" before retrying with that file's returned hash",
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {}
+      },
+      {
+        "tool": "read_file",
+        "callId": "call_4bvoi2f7",
+        "sequence": 30,
+        "startSequence": 29,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "hash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b"
+        }
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_onx6ebfz",
+        "sequence": 32,
+        "startSequence": 31,
+        "error": "revision conflict for \"regression.test.cjs\": file changed since it was read; read it again before editing; call read_file with path \"regression.test.cjs\" before retrying with that file's returned hash",
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "missing"
+        },
+        "data": {}
+      },
+      {
+        "tool": "write_file",
+        "callId": "call_nlx60za4",
+        "sequence": 34,
+        "startSequence": 33,
+        "error": null,
+        "arguments": {
+          "path": "regression.test.cjs",
+          "expectedHash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b"
+        },
+        "data": {
+          "path": "regression.test.cjs",
+          "beforeHash": "9e00bfc6016470c7934af14d43cf27d2fd1112c96722cb25f5982ed35b62ee0b",
+          "afterHash": "42aa1ba04bdea21b504c47e81a86696c84871f87388829a80eab999b3c62c316",
+          "created": false
+        }
+      },
+      {
+        "tool": "run_command",
+        "callId": "call_xq8xbllh",
+        "sequence": 36,
+        "startSequence": 35,
+        "error": null,
+        "arguments": {
+          "executable": "node",
+          "args": [
+            "public_test.cjs"
+          ]
+        },
+        "data": {
+          "exitCode": 0,
+          "readOnly": false,
+          "publication": "applied",
+          "cancelled": false,
+          "truncated": false,
+          "commandId": "cmd-fxe44duyjoijet66gscdwbzsk5",
+          "changes": [],
+          "durationMs": 625
+        }
+      }
+    ],
+    "workspace": ".runtime/phase2-campaign-20261027/harness/trials/12aa68ef03e97871f150a68b9c4f0fe0/workspace",
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 900,
+        "sha256": "504b5b7784238efdc2dcdcd7122c4b4195dfc5f03cdc0c9dcec2fa9c633378d2"
+      },
+      {
+        "path": "logic.cjs",
+        "bytes": 236,
+        "sha256": "461566ba84e9a87afad9517c23570a1b2feb77f453812e4fc6a69edaa8d705b1"
+      },
+      {
+        "path": "main.cjs",
+        "bytes": 106,
+        "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d"
+      },
+      {
+        "path": "package.json",
+        "bytes": 62,
+        "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937"
+      },
+      {
+        "path": "public_test.cjs",
+        "bytes": 482,
+        "sha256": "e19312f209586b0659e00a63da3ec04a50130a8d36b59b7fd3f377d4f9c0d7d3"
+      },
+      {
+        "path": "regression.test.cjs",
+        "bytes": 1256,
+        "sha256": "42aa1ba04bdea21b504c47e81a86696c84871f87388829a80eab999b3c62c316"
+      }
+    ]
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "createdAt": "2026-10-28T01:03:26.040489+00:00",
+  "purpose": "Read-only saved-result aggregation; no inference, submission, activation, DB mutation or hidden assertion disclosure.",
+  "files": [
+    {
+      "path": ".runtime/phase2-campaign-20261027/evaluation_summary.py",
+      "sha256": "f2463fb8c05725cfcf3fbdd70f3b49e02e2b555b1bd31667709e5c3b6bee035a"
+    },
+    {
+      "path": ".runtime/phase2-campaign-20261027/test_evaluation_summary.py",
+      "sha256": "50a8a45b84b54e0e566e08ff17e72fdfcdcb96bea10ab3177999565b0b5e8c1c"
+    },
+    {
+      "path": "scripts/harnessctl.py",
+      "sha256": "fd907931f44c87f5cd6ce5f132250dbf9531d2deca86ae2d041bfe970505ad0d"
+    }
+  ],
+  "defaultExperiment": "3c1f216827db7eef221ce7565c9936d6",
+  "defaultURL": "http://127.0.0.1:8797",
+  "compileEvidence": "docs/evidence/harness-campaign-summary-helper-compile.txt",
+  "checks": [
+    {
+      "path": "docs/evidence/harness-campaign-summary-helper-tests.txt",
+      "returncode": 0,
+      "sha256": "4e664b71f52dc2513409ea064863e14613a1c2b00741dcb33be826ec7aec6653"
+    },
+    {
+      "path": "docs/evidence/harness-campaign-summary-current.txt",
+      "returncode": 0,
+      "sha256": "9ebfdd70716c7b4692b9feb51ddadc232543de00d7e3eebadd2d1a9b63a7aea5"
+    },
+    {
+      "path": "docs/evidence/harness-campaign-summary-current.json",
+      "returncode": 0,
+      "sha256": "b3fa9330115673e407dd4afa123be1ef7e8166a6ac120103a4c767ddd03a6c75"
+    }
+  ],
+  "testEvidence": "docs/evidence/harness-campaign-summary-helper-tests.txt",
+  "readOnlySmokeEvidence": {
+    "text": "docs/evidence/harness-campaign-summary-current.txt",
+    "json": "docs/evidence/harness-campaign-summary-current.json"
+  },
+  "observedStatus": "not_started",
+  "observedRecorded": 0,
+  "observedExpected": 72,
+  "method": "All recorded attempts included, failed/incomplete included; actual saved gates only after completion; fixture identity controls inferred denominators.",
+  "supersedes": "docs/evidence/harness-campaign-summary-helper-superseded-manifest.json",
+  "correction": "A missing colon in the last text-render formatting edit was fixed. This manifest was generated only after successful compilation, tests, and both actual API output modes; prior final-edit test claim was invalid."
+}

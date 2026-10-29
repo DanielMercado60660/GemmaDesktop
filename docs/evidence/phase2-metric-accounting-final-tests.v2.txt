@@ -1,0 +1,272 @@
+=== RUN   TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity
+--- PASS: TestWorkflowAndDelegateFrozenSelectionsBindRevisionIdentity (0.01s)
+=== RUN   TestLessonVersionsCompatibilityAndPacketSnapshot
+--- PASS: TestLessonVersionsCompatibilityAndPacketSnapshot (0.01s)
+=== RUN   TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets
+--- PASS: TestInterruptedTrialIsEvidenceNotReplayAndExportExcludesSecrets (0.02s)
+=== RUN   TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted
+--- PASS: TestEvaluationResumeSkipsRecordedTrialsAndDoesNotReplayInterrupted (0.03s)
+=== RUN   TestDeepFixturesRequireMultipleSourceFeatures
+--- PASS: TestDeepFixturesRequireMultipleSourceFeatures (0.01s)
+=== RUN   TestCancelDuringSolverCannotReopenExperiment
+--- PASS: TestCancelDuringSolverCannotReopenExperiment (0.01s)
+=== RUN   TestSubmittedReflectionRetryRepairsMissingLessonHead
+--- PASS: TestSubmittedReflectionRetryRepairsMissingLessonHead (0.02s)
+=== RUN   TestNativeFourRolloutsThreeStagesAndPacketIdentity
+--- PASS: TestNativeFourRolloutsThreeStagesAndPacketIdentity (0.13s)
+=== RUN   TestImmutablePermissionSurfaceAndAuthorSeparation
+--- PASS: TestImmutablePermissionSurfaceAndAuthorSeparation (0.01s)
+=== RUN   TestFixtureSplitAndOracleSeparation
+--- PASS: TestFixtureSplitAndOracleSeparation (0.01s)
+=== RUN   TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement
+--- PASS: TestPromotionGateRetainsFailuresAndRequiresHeldoutImprovement (0.00s)
+=== RUN   TestHeldoutExposureAcrossExperiments
+--- PASS: TestHeldoutExposureAcrossExperiments (0.01s)
+=== RUN   TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets
+--- PASS: TestNativeStatusDistinguishesActiveProbesFromUnansweredPackets (0.06s)
+=== RUN   TestEvaluationProgressFreezesScheduleAndQualifiesLegacyFallback
+--- PASS: TestEvaluationProgressFreezesScheduleAndQualifiesLegacyFallback (0.01s)
+=== RUN   TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures
+--- PASS: TestGateFailsClosedForPartialOrLegacyTokensWithoutDroppingFailures (0.00s)
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/partial_both
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed_both
+=== RUN   TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete
+--- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords (0.14s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_both (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_row (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/legacy_trial (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/partial_both (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/malformed_both (0.02s)
+    --- PASS: TestActivationRechecksAccountingAfterRestartAndPreservesLegacyRecords/complete (0.02s)
+=== RUN   TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals
+--- PASS: TestRestartDoesNotInferAccountingFromPositiveInterruptedTotals (0.00s)
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/partial
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/legacy
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_accounting
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_usage
+=== RUN   TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_output
+--- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost (0.02s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/partial (0.01s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/legacy (0.00s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_accounting (0.00s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_usage (0.00s)
+    --- PASS: TestIndependentReviewCanRejectUnchangedPartialAndLegacyCost/changed_output (0.00s)
+PASS
+ok  	gemmadesktop.local/app/internal/harness	1.700s
+=== RUN   TestAgentGenerationControlsValidateBeforePersisting
+--- PASS: TestAgentGenerationControlsValidateBeforePersisting (0.03s)
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/legacy
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/auto
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/on
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/off
+=== RUN   TestIntegrationAgentGenerationControlsReachPlainChat/structured
+--- PASS: TestIntegrationAgentGenerationControlsReachPlainChat (0.64s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/legacy (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/auto (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/on (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/off (0.12s)
+    --- PASS: TestIntegrationAgentGenerationControlsReachPlainChat/structured (0.15s)
+=== RUN   TestIntegrationWorkflowFreezesReferencedGenerationControls
+--- PASS: TestIntegrationWorkflowFreezesReferencedGenerationControls (0.19s)
+=== RUN   TestIntegrationEvaluationFreezesGenerationControlsAndRequest
+--- PASS: TestIntegrationEvaluationFreezesGenerationControlsAndRequest (0.10s)
+=== RUN   TestApprovalIsDurableAndSingleUse
+--- PASS: TestApprovalIsDurableAndSingleUse (0.01s)
+=== RUN   TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks
+--- PASS: TestFrozenEvaluationDoesNotIncludeSecretsOrFollowLinks (0.00s)
+=== RUN   TestSkillImportValidatesBeforePersisting
+--- PASS: TestSkillImportValidatesBeforePersisting (0.03s)
+=== RUN   TestCapabilityPublicListsNormalizeOmittedAndHistoricalNullArrays
+--- PASS: TestCapabilityPublicListsNormalizeOmittedAndHistoricalNullArrays (0.01s)
+=== RUN   TestGeneralSettingsKeepNewerToolchainConfiguration
+--- PASS: TestGeneralSettingsKeepNewerToolchainConfiguration (0.01s)
+=== RUN   TestExecutionStatusShowsNewRecoveryRequirement
+--- PASS: TestExecutionStatusShowsNewRecoveryRequirement (0.01s)
+=== RUN   TestDockerRecoveryReceiptRetainsUncertaintyAndProvenance
+--- PASS: TestDockerRecoveryReceiptRetainsUncertaintyAndProvenance (0.04s)
+=== RUN   TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs
+--- PASS: TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs (0.41s)
+=== RUN   TestIntegrationCancelledProposalIsNotExecutedOnNewTurn
+2026/10/27 22:13:32 adk: dropping function calls with no matching function response: ["write_once"]
+2026/10/27 22:13:32 adk: dropping function calls with no matching function response: ["write_once"]
+--- PASS: TestIntegrationCancelledProposalIsNotExecutedOnNewTurn (0.23s)
+=== RUN   TestConversationSnapshotEligibility
+=== RUN   TestConversationSnapshotEligibility/active
+=== RUN   TestConversationSnapshotEligibility/workflow_run
+=== RUN   TestConversationSnapshotEligibility/workflow_checkpoint
+=== RUN   TestConversationSnapshotEligibility/pending_approval
+=== RUN   TestConversationSnapshotEligibility/invalid_pending
+=== RUN   TestConversationSnapshotEligibility/missing_snapshot
+=== RUN   TestConversationSnapshotEligibility/unsupported_version
+=== RUN   TestConversationSnapshotEligibility/empty_snapshot
+=== RUN   TestConversationSnapshotEligibility/invalid_events
+--- PASS: TestConversationSnapshotEligibility (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/active (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/workflow_run (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/workflow_checkpoint (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/pending_approval (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/invalid_pending (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/missing_snapshot (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/unsupported_version (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/empty_snapshot (0.00s)
+    --- PASS: TestConversationSnapshotEligibility/invalid_events (0.00s)
+=== RUN   TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches
+--- PASS: TestHarnessDisposableCacheReleasePreservesEvidenceAndOrdinaryCaches (0.02s)
+=== RUN   TestHarnessCacheFailureIsDurableAndCannotQualify
+--- PASS: TestHarnessCacheFailureIsDurableAndCannotQualify (0.01s)
+=== RUN   TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials
+--- PASS: TestHarnessCacheRecoveryRetriesRecordedRootsOnlyAndSkipsActiveTrials (0.02s)
+=== RUN   TestHarnessWorkflowCapabilitiesCannotExpandParentOrModel
+--- PASS: TestHarnessWorkflowCapabilitiesCannotExpandParentOrModel (0.00s)
+=== RUN   TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt
+--- PASS: TestHarnessVerificationRequiresLatestSuccessfulCheckAfterEveryEffectAttempt (0.00s)
+=== RUN   TestHarnessSolverExistingEditHasDurableCheckpoint
+--- PASS: TestHarnessSolverExistingEditHasDurableCheckpoint (0.04s)
+=== RUN   TestLegacyComparisonPersistsFinalBoundCapabilityDigest
+--- PASS: TestLegacyComparisonPersistsFinalBoundCapabilityDigest (0.08s)
+=== RUN   TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire
+    harness_instruction_wire_test.go:114: Both serialized /api/chat system messages contained the exact revision Instructions, ToolGuidance, Lessons and appended readOnly:true verification guidance once, before and after the real read_file callback; native user/tool content remained separate.
+--- PASS: TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire (0.03s)
+=== RUN   TestHarnessUpstreamActualCoreStdioParity
+--- PASS: TestHarnessUpstreamActualCoreStdioParity (1.52s)
+=== RUN   TestHarnessLiveDockerFixtureReferences
+    harness_integration_test.go:124: opt-in installed immutable toolchain; no inference
+--- SKIP: TestHarnessLiveDockerFixtureReferences (0.00s)
+=== RUN   TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting
+--- PASS: TestHarnessUpstreamFailedFinalRetainsCompletedStageAccounting (1.02s)
+=== RUN   TestHarnessLargeCommandObservationRetainsStatusAndProvenance
+=== RUN   TestHarnessLargeCommandObservationRetainsStatusAndProvenance/0
+=== RUN   TestHarnessLargeCommandObservationRetainsStatusAndProvenance/17
+--- PASS: TestHarnessLargeCommandObservationRetainsStatusAndProvenance (0.02s)
+    --- PASS: TestHarnessLargeCommandObservationRetainsStatusAndProvenance/0 (0.01s)
+    --- PASS: TestHarnessLargeCommandObservationRetainsStatusAndProvenance/17 (0.01s)
+=== RUN   TestHarnessCommandObservationMetadataBoundsAndExplicitOmissions
+--- PASS: TestHarnessCommandObservationMetadataBoundsAndExplicitOmissions (0.01s)
+=== RUN   TestHarnessSmallObservationsAndOtherToolBoundsUnchanged
+--- PASS: TestHarnessSmallObservationsAndOtherToolBoundsUnchanged (0.00s)
+=== RUN   TestHarnessRunCommandReadOnlySchemaAndNativeTransport
+    harness_readonly_wire_test.go:177: Actual Harness outbound schema contains optional readOnly with exact casing and boolean type. A native fake-model readOnly:true survives ADK, frozen authorization, manager approval, typed executor request, completion receipt/event and next Ollama tool message; recording executor only, no Docker/process execution.
+--- PASS: TestHarnessRunCommandReadOnlySchemaAndNativeTransport (0.04s)
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+--- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (2.43s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (1.39s)
+    --- PASS: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (1.04s)
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver
+=== RUN   TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet
+--- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit (0.24s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/active_solver (0.11s)
+    --- PASS: TestHarnessUpstreamCancellationSurvivesLateSolverAndPacketExit/waiting_packet (0.13s)
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=false
+=== RUN   TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=true
+--- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed (0.44s)
+    --- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=false (0.22s)
+    --- PASS: TestIntegrationIncompleteReplyIsAuditedButNeverReplayed/legacy=true (0.22s)
+=== RUN   TestIntegrationApprovedToolJournalAndConversationContinuation
+--- PASS: TestIntegrationApprovedToolJournalAndConversationContinuation (0.26s)
+=== RUN   TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay
+--- PASS: TestIntegrationFollowupAfterFailureRetainsEffectsWithoutReplay (0.25s)
+=== RUN   TestIntegrationCancellationExpiresApprovalWithoutFileEffect
+--- PASS: TestIntegrationCancellationExpiresApprovalWithoutFileEffect (0.13s)
+=== RUN   TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode
+--- PASS: TestIntegrationDurableApprovalRecoveryDoesNotReplayCompletedNode (0.18s)
+=== RUN   TestIntegrationConsumedCheckpointCannotReplayAfterRestart
+--- PASS: TestIntegrationConsumedCheckpointCannotReplayAfterRestart (0.17s)
+=== RUN   TestIntegrationReadOnlyAgentCannotGainWriteTool
+--- PASS: TestIntegrationReadOnlyAgentCannotGainWriteTool (0.11s)
+=== RUN   TestIntegrationEvaluationFreezesInputAndRuntime
+--- PASS: TestIntegrationEvaluationFreezesInputAndRuntime (0.09s)
+=== RUN   TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference
+--- PASS: TestIntegrationExclusiveOwnershipAndShutdownCancelActiveInference (0.13s)
+=== RUN   TestCapabilityRevisionAndSkillBundleRemainFrozen
+--- PASS: TestCapabilityRevisionAndSkillBundleRemainFrozen (0.04s)
+=== RUN   TestHierarchicalContextAndPlanCAS
+--- PASS: TestHierarchicalContextAndPlanCAS (0.01s)
+=== RUN   TestDurableReadOnlyDelegateCannotReplayOrEscapeBudget
+--- PASS: TestDurableReadOnlyDelegateCannotReplayOrEscapeBudget (0.05s)
+=== RUN   TestPrivateExecutionPathsAndLegacySelectorsFreeze
+--- PASS: TestPrivateExecutionPathsAndLegacySelectorsFreeze (0.01s)
+=== RUN   TestWorkflowUsesFrozenReferencedCapabilities
+--- PASS: TestWorkflowUsesFrozenReferencedCapabilities (0.11s)
+=== RUN   TestContextInspectorSeparatesAdmissionAndRuntime
+--- PASS: TestContextInspectorSeparatesAdmissionAndRuntime (0.14s)
+=== RUN   TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision
+--- PASS: TestSelectedBinarySkillMaterializationRequiresApprovalAndRevision (0.09s)
+=== RUN   TestPhase2LivePilot
+    phase2_live_test.go:20: opt-in live Gemma/Docker qualification
+--- SKIP: TestPhase2LivePilot (0.00s)
+=== RUN   TestDurableToolReceiptsReachModelAndLinkPlanWithoutReplayingTools
+--- PASS: TestDurableToolReceiptsReachModelAndLinkPlanWithoutReplayingTools (0.23s)
+=== RUN   TestPlanReceiptScopeAndPayloadPreservation
+--- PASS: TestPlanReceiptScopeAndPayloadPreservation (0.02s)
+=== RUN   TestReceiptKeepsLatestEntriesAndExactOmissionFlag
+--- PASS: TestReceiptKeepsLatestEntriesAndExactOmissionFlag (0.27s)
+=== RUN   TestRecoveryHasTotalByteBoundAndRetainsOmittedUncertainty
+--- PASS: TestRecoveryHasTotalByteBoundAndRetainsOmittedUncertainty (0.38s)
+=== RUN   TestSnapshotArtifactMetadataAndExplicitFullGet
+--- PASS: TestSnapshotArtifactMetadataAndExplicitFullGet (0.03s)
+=== RUN   TestReceiptUsesOwnedToolOutcomesNotModelClaims
+--- PASS: TestReceiptUsesOwnedToolOutcomesNotModelClaims (0.03s)
+=== RUN   TestReceiptDoesNotInventVerificationForPlainAnswer
+--- PASS: TestReceiptDoesNotInventVerificationForPlainAnswer (0.02s)
+=== RUN   TestReceiptPreservesPublicationConflictSeparateFromProcessExit
+--- PASS: TestReceiptPreservesPublicationConflictSeparateFromProcessExit (0.02s)
+=== RUN   TestReceiptIncludesGovernedSetupAndBinaryMaterialization
+--- PASS: TestReceiptIncludesGovernedSetupAndBinaryMaterialization (0.03s)
+=== RUN   TestUnknownMCPOutcomeCannotBecomeVerifiedCompletion
+--- PASS: TestUnknownMCPOutcomeCannotBecomeVerifiedCompletion (0.04s)
+=== RUN   TestRunGraphFacadeIsReadOnlyAndRequiresAnExistingRun
+--- PASS: TestRunGraphFacadeIsReadOnlyAndRequiresAnExistingRun (0.01s)
+=== RUN   TestSkillImportResumesAfterPublicationAndDatabaseFailure
+--- PASS: TestSkillImportResumesAfterPublicationAndDatabaseFailure (0.04s)
+=== RUN   TestSkillImportRejectsConflictingUnrecordedDirectory
+--- PASS: TestSkillImportRejectsConflictingUnrecordedDirectory (0.01s)
+=== RUN   TestLegacySkillFreezesDigestAndPreservesSelectedID
+--- PASS: TestLegacySkillFreezesDigestAndPreservesSelectedID (0.03s)
+=== RUN   TestVideoMediaCapabilityRangesAndGuards
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/full
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/range
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/suffix
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/head
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/invalid
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/method
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/foreign-origin
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/foreign-host
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/cross-site
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/query
+=== RUN   TestVideoMediaCapabilityRangesAndGuards/native
+--- PASS: TestVideoMediaCapabilityRangesAndGuards (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/full (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/range (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/suffix (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/head (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/invalid (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/method (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/foreign-origin (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/foreign-host (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/cross-site (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/query (0.00s)
+    --- PASS: TestVideoMediaCapabilityRangesAndGuards/native (0.00s)
+=== RUN   TestVideoMediaBoundAndCancelledReads
+--- PASS: TestVideoMediaBoundAndCancelledReads (0.00s)
+=== RUN   TestCompletionSelectionsRejectEmbeddingOnlyModels
+--- PASS: TestCompletionSelectionsRejectEmbeddingOnlyModels (0.00s)
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval
+=== RUN   TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only
+--- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues (0.05s)
+    --- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/approval (0.03s)
+    --- PASS: TestStructuredActionsAcceptGovernedBuiltinCatalogues/read-only (0.01s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	11.965s

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Real two-agent workflow, human checkpoint, and frozen-input evaluation test."""
 import json, os, pathlib, time, urllib.request, urllib.error
+from evidence_helpers import conversation
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 BASE=os.environ.get('GEMMA_TEST_URL','http://127.0.0.1:8787')
 def api(method,params=None):
@@ -26,7 +27,7 @@ while time.time()<deadline:
     if result['status'] in ('completed','failed','cancelled','interrupted'):break
     time.sleep(.7)
 else:api('run.cancel',{'id':run['id']});raise RuntimeError('Workflow timed out')
-evidence={'run':result,'workflow':wf,'approvalCount':approved,'conversation':api('session.get',{'id':s['id']})}
+evidence={'run':result,'workflow':wf,'approvalCount':approved,'conversation':conversation(api,s['id'])}
 out=ROOT/'docs/evidence';out.mkdir(exist_ok=True)
 (out/'live-workflow.json').write_text(json.dumps(evidence,indent=2))
 assert result['status']=='completed',result

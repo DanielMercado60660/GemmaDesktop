@@ -1,0 +1,4 @@
+
+> gemma-desktop-frontend@0.2.0 typecheck
+> tsc -b
+

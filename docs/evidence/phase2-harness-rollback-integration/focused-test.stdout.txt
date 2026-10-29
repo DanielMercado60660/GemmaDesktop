@@ -1,0 +1,6 @@
+=== RUN   TestHarnessRollbackRestoresPersistedBindingAndIsolatesTargets
+--- PASS: TestHarnessRollbackRestoresPersistedBindingAndIsolatesTargets (0.64s)
+=== RUN   TestHarnessRollbackRejectsStaleActivationWithoutPersistingSuccess
+--- PASS: TestHarnessRollbackRejectsStaleActivationWithoutPersistingSuccess (0.62s)
+PASS
+ok  	gemmadesktop.local/app/internal/app	2.643s

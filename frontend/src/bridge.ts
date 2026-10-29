@@ -1,4 +1,5 @@
 import { Call, Browser } from "@wailsio/runtime";
+import { decodeApiResponse } from "./lib/apiResponse";
 type NativeWindow = Window & {
   _wails?: { environment?: unknown };
   wails?: { invoke?: unknown };
@@ -43,28 +44,5 @@ export async function api<T = unknown>(
     body: JSON.stringify({ method, params }),
   });
   const text = await response.text();
-  let value: unknown;
-  try {
-    value = JSON.parse(text);
-  } catch {
-    throw new Error(
-      response.ok
-        ? "The application returned an unreadable response."
-        : "Gemma Desktop backend is unavailable. Open the desktop app or start the development server.",
-    );
-  }
-  if (!response.ok)
-    throw new Error(
-      typeof value === "object" && value && "error" in value
-        ? String((value as { error: unknown }).error)
-        : `Request failed (${response.status})`,
-    );
-  if (
-    value &&
-    typeof value === "object" &&
-    "error" in value &&
-    (value as { error: unknown }).error
-  )
-    throw new Error(String((value as { error: unknown }).error));
-  return value as T;
+  return decodeApiResponse(text, response.status, response.ok) as T;
 }

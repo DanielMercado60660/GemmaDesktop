@@ -1,0 +1,10 @@
+{
+  "createdAt": "2026-10-27T20:28:07.946427+00:00",
+  "runId": "547f9a540964d437d09ac3c635410611",
+  "startedAt": "2026-10-27T20:28:02.913717Z",
+  "buildInfo": "docs/evidence/context-preservation-build-info.json",
+  "buildInfoSHA256": "fb5f91352aca47ba0120d4fd5c4d2be56d0d17a4f2598a29f8a9ea384659ea53",
+  "harnessSHA256": "8bcefe1c8b3bf9001469ab501b8820b9858d055bec0a44bda6268def2de7f2cc",
+  "promptSHA256": "8590fe8ead1608d400f40fb04b66cca07e00571e6c3aee3c0347739dd3b24ee1",
+  "scope": "Same-session multi-turn repair; previous failures remain unchanged. Rebuilt context restoration and tool revision diagnostics."
+}

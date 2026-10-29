@@ -1,0 +1,20 @@
+--- a/internal/app/harness_integration_test.go
++++ b/internal/app/harness_integration_test.go
+@@ -7,6 +7,7 @@
+ 	"gemmadesktop.local/app/internal/execution"
+ 	"gemmadesktop.local/app/internal/harness"
+ 	"gemmadesktop.local/app/internal/store"
++	"gemmadesktop.local/app/internal/workspace"
+ 	"os"
+ 	"path/filepath"
+ 	"reflect"
+@@ -153,6 +154,9 @@
+ 	if e != nil {
+ 		t.Fatal(e)
+ 	}
++	// This fixture runner supplies no additional private paths; both command
++	// executions use the Docker executor's default writable exclusions.
++	t.Logf("read-only fixture verification provenance: image=%s privatePaths=%q readOnly=true", image, workspace.DefaultPrivatePaths)
+ 	tasks, e := harness.LoadFixtures()
+ 	if e != nil {
+ 		t.Fatal(e)

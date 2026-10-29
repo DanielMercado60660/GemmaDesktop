@@ -1,0 +1,2245 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "/root/ollama_model_research",
+  "startedAt": "2026-10-28T07:48:24.526619+00:00",
+  "recipeSHA256": "f3d90ca293b35ac556761febeda6e4329287dbc2b9267809f73c94863ccc3118",
+  "controllerSHA256": "294f6433218d0195ab2fdb9a7dc13f7de03e670c74fd87cbd11767d70919a2ca",
+  "authorization": "Root explicitly authorized after all72 trials completed at2026-10-28T07:43:26Z; exclusive Docker lane.",
+  "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+  "runLabel": "53ggjtdv",
+  "status": "completed",
+  "results": [
+    {
+      "probeId": "go-usage-candidate-1",
+      "trialId": "01b7af929f33ffa5380d3799ca9a0bd4",
+      "startedAt": "2026-10-28T07:48:24.634031+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "logic.go",
+          "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c",
+          "bytes": 429
+        },
+        {
+          "path": "logic_regression_test.go",
+          "sha256": "2bbf1386d9003f79c3bf2f7f7fffe1c736f88af3921f15feff1c4d5ec327d00f",
+          "bytes": 2067
+        },
+        {
+          "path": "logic_test.go",
+          "sha256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+          "bytes": 544
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        },
+        {
+          "path": "logic.go",
+          "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c",
+          "bytes": 429
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        },
+        {
+          "path": "logic.go",
+          "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c",
+          "bytes": 429
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-0",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=go-usage-candidate-1",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/0/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "go",
+          "run",
+          ".",
+          "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":4611686018427387904},{\"user\":\"a\",\"at\":100,\"units\":4611686018427387904}],\"now\":100,\"window\":10}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.032,
+        "stdout": "3bc4bcc7fa945a9cab1c73271fa60bd2203fe539bb626b729dae93e5d6138983\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-0"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 2.084,
+        "stdout": "[{\"a\":5},{\"a\":-9223372036854775808}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "a": 5
+        },
+        {
+          "a": -9223372036854775808
+        }
+      ],
+      "caseMatches": [
+        true,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-0"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.016,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-0"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.017,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-0\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-0"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.018,
+        "stdout": "gemma-public-probe-53ggjtdv-0\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "logic.go",
+          "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c",
+          "bytes": 429
+        },
+        {
+          "path": "logic_regression_test.go",
+          "sha256": "2bbf1386d9003f79c3bf2f7f7fffe1c736f88af3921f15feff1c4d5ec327d00f",
+          "bytes": 2067
+        },
+        {
+          "path": "logic_test.go",
+          "sha256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+          "bytes": 544
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        },
+        {
+          "path": "logic.go",
+          "sha256": "9ac464c96c039e47194404e1787f8697bd13a9d2e3da44288908d0435190c97c",
+          "bytes": 429
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:26.817129+00:00"
+    },
+    {
+      "probeId": "go-usage-candidate-2",
+      "trialId": "f947f229824f07c7ec5bb71ee3b17b62",
+      "startedAt": "2026-10-28T07:48:26.817803+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "logic.go",
+          "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c",
+          "bytes": 401
+        },
+        {
+          "path": "logic_regression_test.go",
+          "sha256": "38598f7bfa05a1aa9c31c0a10778233beee18e1cbdc812c53330f086133240b7",
+          "bytes": 2173
+        },
+        {
+          "path": "logic_test.go",
+          "sha256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+          "bytes": 544
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        },
+        {
+          "path": "logic.go",
+          "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c",
+          "bytes": 401
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        },
+        {
+          "path": "logic.go",
+          "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c",
+          "bytes": 401
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-1",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=go-usage-candidate-2",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/1/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "go",
+          "run",
+          ".",
+          "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":4611686018427387904},{\"user\":\"a\",\"at\":100,\"units\":4611686018427387904}],\"now\":100,\"window\":10}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.032,
+        "stdout": "7a3dd7c0db5deef8785c5828d3a1e123a316e357850a6cd5a8252460fad99418\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-1"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 1.823,
+        "stdout": "[{\"a\":5},{\"a\":-9223372036854775808}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "a": 5
+        },
+        {
+          "a": -9223372036854775808
+        }
+      ],
+      "caseMatches": [
+        true,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-1"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.019,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-1"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.015,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-1\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-1"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.016,
+        "stdout": "gemma-public-probe-53ggjtdv-1\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.013,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "logic.go",
+          "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c",
+          "bytes": 401
+        },
+        {
+          "path": "logic_regression_test.go",
+          "sha256": "38598f7bfa05a1aa9c31c0a10778233beee18e1cbdc812c53330f086133240b7",
+          "bytes": 2173
+        },
+        {
+          "path": "logic_test.go",
+          "sha256": "30680e421becd509376f409663f33fa34c97a0db6615bab1d15be17992eb0f49",
+          "bytes": 544
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "0cbbaac8a422898b9d9c728aa7bd1ff83a8beaa488afb6e3fb28e0a2ce3a3d4f",
+          "bytes": 885
+        },
+        {
+          "path": "go.mod",
+          "sha256": "55c7bfaeb14dc16b91c660db59337599f36237142d7b8371e240baa04beef3a7",
+          "bytes": 39
+        },
+        {
+          "path": "main.go",
+          "sha256": "57ec98ef6f9c5fb36065cc7ff84d37681878d7c335fdd0a9da84de1bb949e6c1",
+          "bytes": 282
+        },
+        {
+          "path": "logic.go",
+          "sha256": "1ed4be287246c13a29802bb0e2bc3c11a26d0d055e665906e4949761ef6ca75c",
+          "bytes": 401
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:28.740797+00:00"
+    },
+    {
+      "probeId": "node-config-baseline-0",
+      "trialId": "329f5ac633d2a43dd6bc72acadd0b105",
+      "startedAt": "2026-10-28T07:48:28.741397+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a",
+          "bytes": 317
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "bytes": 448
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a",
+          "bytes": 317
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a",
+          "bytes": 317
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-2",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=node-config-baseline-0",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/2/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "node",
+          "main.cjs",
+          "[{\"layers\":[{\"mode\":\"local\"}]},{\"layers\":[{\"__proto__\":{\"mode\":\"local\"}}]}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.03,
+        "stdout": "6fc39cb19b9065d6cd6cb9a5c6103e310b54d7fef7f2f71d7a87f3b8b6ebb113\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-2"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.189,
+        "stdout": "[{\"mode\":\"local\"},{}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "mode": "local"
+        },
+        {}
+      ],
+      "caseMatches": [
+        true,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-2"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.02,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-2"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.016,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-2\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-2"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.019,
+        "stdout": "gemma-public-probe-53ggjtdv-2\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.013,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a",
+          "bytes": 317
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "bytes": 448
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "8cd8b73f54171cdc51e62c333d2df77a22a41d06686ad6947f373b39f3539f4a",
+          "bytes": 317
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:29.030577+00:00"
+    },
+    {
+      "probeId": "node-config-candidate-0",
+      "trialId": "1bdc643edafa0698ed402be4aa3c3a1e",
+      "startedAt": "2026-10-28T07:48:29.031237+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "bytes": 448
+        },
+        {
+          "path": "regression.test.cjs",
+          "sha256": "15ba0af878e336ec57610e74cf91c13bfe12f023fe166f46065c8e8b7ecf9f08",
+          "bytes": 797
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-3",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=node-config-candidate-0",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/3/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "node",
+          "main.cjs",
+          "[{\"layers\":[{\"mode\":\"local\"}]},{\"layers\":[{\"__proto__\":{\"mode\":\"local\"}}]}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.029,
+        "stdout": "ee28e912ae4c05756e7f41e6eef01a42aa73ba6ac58f9ae41cdb72e5fbd906bc\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-3"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.093,
+        "stdout": "[{\"mode\":\"local\"},{}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "mode": "local"
+        },
+        {}
+      ],
+      "caseMatches": [
+        true,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-3"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-3"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-3\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-3"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.017,
+        "stdout": "gemma-public-probe-53ggjtdv-3\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.013,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "bytes": 448
+        },
+        {
+          "path": "regression.test.cjs",
+          "sha256": "15ba0af878e336ec57610e74cf91c13bfe12f023fe166f46065c8e8b7ecf9f08",
+          "bytes": 797
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:29.215801+00:00"
+    },
+    {
+      "probeId": "node-config-candidate-1",
+      "trialId": "97b1e933d011bc05ce7ea38919e09f23",
+      "startedAt": "2026-10-28T07:48:29.216477+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "bytes": 448
+        },
+        {
+          "path": "regression.test.cjs",
+          "sha256": "358d39db28fbd45088cfe5bc135fc10c09e55e6201317e6feb1c6cf2b2a42978",
+          "bytes": 1386
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-4",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=node-config-candidate-1",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/4/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "node",
+          "main.cjs",
+          "[{\"layers\":[{\"mode\":\"local\"}]},{\"layers\":[{\"__proto__\":{\"mode\":\"local\"}}]}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.028,
+        "stdout": "8c209191348f42f59af574a9717abfa4e2b1be7e07c8aae7687cf67fa55e469c\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-4"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.096,
+        "stdout": "[{\"mode\":\"local\"},{}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "mode": "local"
+        },
+        {}
+      ],
+      "caseMatches": [
+        true,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-4"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-4"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.016,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-4\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-4"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.017,
+        "stdout": "gemma-public-probe-53ggjtdv-4\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "bda07f4948baa68765dc7a5d5fd241bfe56aa040836a11fb9b6b426922890f94",
+          "bytes": 448
+        },
+        {
+          "path": "regression.test.cjs",
+          "sha256": "358d39db28fbd45088cfe5bc135fc10c09e55e6201317e6feb1c6cf2b2a42978",
+          "bytes": 1386
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "86ed0a69acd96f7cd86c83c9f42017d4913806d83dc31964a1d6dac9d089a385",
+          "bytes": 917
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e2b5e3cf6e87bcc0f598a8a4192f14fefabee8b47b7b2ced67614d40f580e725",
+          "bytes": 320
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:29.405287+00:00"
+    },
+    {
+      "probeId": "node-usage-candidate-1",
+      "trialId": "2b3d280e7299c221a83542e524c5ee7d",
+      "startedAt": "2026-10-28T07:48:29.406057+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "bytes": 527
+        },
+        {
+          "path": "regression.test.cjs",
+          "sha256": "774207f40158c6142d6ac88892ccbfeb32f772d001c3bae86bb98eebe62b215a",
+          "bytes": 1901
+        },
+        {
+          "path": "repro.cjs",
+          "sha256": "c3baf1405a6b17a82448bc3562393d5a77f4f7821631aa910f0fb719e6fa0572",
+          "bytes": 164
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-5",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=node-usage-candidate-1",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/5/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "node",
+          "main.cjs",
+          "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"__proto__\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"constructor\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.029,
+        "stdout": "bb9b7c128de7e92c15326f410aac7d0249b0f98825e6943a0111e76ef90ed53a\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-5"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.098,
+        "stdout": "[{\"a\":5},{},{\"constructor\":\"function Object() { [native code] }1\"}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "a": 5
+        },
+        {},
+        {
+          "constructor": "function Object() { [native code] }1"
+        }
+      ],
+      "caseMatches": [
+        true,
+        false,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-5"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.013,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-5"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-5\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-5"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.018,
+        "stdout": "gemma-public-probe-53ggjtdv-5\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.013,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "bytes": 527
+        },
+        {
+          "path": "regression.test.cjs",
+          "sha256": "774207f40158c6142d6ac88892ccbfeb32f772d001c3bae86bb98eebe62b215a",
+          "bytes": 1901
+        },
+        {
+          "path": "repro.cjs",
+          "sha256": "c3baf1405a6b17a82448bc3562393d5a77f4f7821631aa910f0fb719e6fa0572",
+          "bytes": 164
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:29.595551+00:00"
+    },
+    {
+      "probeId": "node-usage-baseline-1",
+      "trialId": "27a20d6b163b76460ec594ae04021c90",
+      "startedAt": "2026-10-28T07:48:29.596259+00:00",
+      "sourceBefore": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "bytes": 527
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "sha256": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+          "bytes": 1087
+        },
+        {
+          "path": "reproduce_issue.cjs",
+          "sha256": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+          "bytes": 629
+        }
+      ],
+      "preparedBefore": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        }
+      ],
+      "disposableCopy": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        }
+      ],
+      "create": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "create",
+          "--name",
+          "gemma-public-probe-53ggjtdv-6",
+          "--label",
+          "com.gemmadesktop.public-review=53ggjtdv",
+          "--label",
+          "com.gemmadesktop.public-probe=node-usage-baseline-1",
+          "--pull=never",
+          "--platform=linux/arm64",
+          "--init",
+          "--network=none",
+          "--cpus=4",
+          "--memory=8g",
+          "--memory-swap=8g",
+          "--pids-limit=256",
+          "--cap-drop=ALL",
+          "--security-opt=no-new-privileges",
+          "--read-only",
+          "--user",
+          "501:20",
+          "--ulimit",
+          "nofile=1024:1024",
+          "--ulimit",
+          "core=0:0",
+          "--ulimit",
+          "fsize=67108864:67108864",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=536870912,mode=1777",
+          "--workdir",
+          "/source",
+          "--mount",
+          "type=bind,source=/private/tmp/gemma-public-probes-53ggjtdv/6/source,target=/source,readonly",
+          "--env",
+          "HOME=/tmp",
+          "--env",
+          "TMPDIR=/tmp",
+          "--env",
+          "GOTOOLCHAIN=local",
+          "--env",
+          "GOPROXY=off",
+          "--env",
+          "GOSUMDB=off",
+          "--env",
+          "GOCACHE=/tmp/gocache",
+          "--env",
+          "GOMODCACHE=/tmp/gomodcache",
+          "--env",
+          "GOPATH=/tmp/gopath",
+          "--env",
+          "GOFLAGS=-buildvcs=false",
+          "--env",
+          "LANG=C.UTF-8",
+          "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+          "node",
+          "main.cjs",
+          "[{\"events\":[{\"user\":\"a\",\"at\":90,\"units\":3},{\"user\":\"a\",\"at\":100,\"units\":2}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"__proto__\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10},{\"events\":[{\"user\":\"constructor\",\"at\":100,\"units\":1}],\"now\":100,\"window\":10}]"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.035,
+        "stdout": "b6f6530e992df8c62aea2323e1118eb229bfccb7e03406af0b25b6ad43cdb15b\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "run": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "start",
+          "--attach",
+          "gemma-public-probe-53ggjtdv-6"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.096,
+        "stdout": "[{\"a\":5},{},{\"constructor\":\"function Object() { [native code] }1\"}]\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "actualParsedOutput": [
+        {
+          "a": 5
+        },
+        {},
+        {
+          "constructor": "function Object() { [native code] }1"
+        }
+      ],
+      "caseMatches": [
+        true,
+        false,
+        false
+      ],
+      "verdict": "public-contract mismatch observed",
+      "cleanupInspect": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "inspect",
+          "--format",
+          "{{index .Config.Labels \"com.gemmadesktop.public-review\"}}",
+          "gemma-public-probe-53ggjtdv-6"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "53ggjtdv\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "stop": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "stop",
+          "--time=2",
+          "gemma-public-probe-53ggjtdv-6"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.014,
+        "stdout": "Flag --time has been deprecated, use --timeout instead\ngemma-public-probe-53ggjtdv-6\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "remove": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "rm",
+          "--force",
+          "gemma-public-probe-53ggjtdv-6"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.018,
+        "stdout": "gemma-public-probe-53ggjtdv-6\n",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "ownedGuestsAfter": {
+        "argv": [
+          "/usr/local/bin/docker",
+          "--host",
+          "unix:///Users/danielmercado/.docker/run/docker.sock",
+          "--config",
+          "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+          "ps",
+          "-aq",
+          "--filter",
+          "label=com.gemmadesktop.public-review=53ggjtdv"
+        ],
+        "exitCode": 0,
+        "durationSeconds": 0.013,
+        "stdout": "",
+        "stderr": "",
+        "timedOut": false,
+        "outputTruncated": false
+      },
+      "cleanupConfirmed": true,
+      "sourceAfter": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "public_test.cjs",
+          "sha256": "cf873fde36f7027e41022d89f5b16aeff36109359e9dccd94304338d7d5d2eac",
+          "bytes": 527
+        },
+        {
+          "path": "regression_tests.test.cjs",
+          "sha256": "6dd8ba0f21744799eeb0554097ed6e82dc1ab7df7c1d8d2823eaad14d12c7858",
+          "bytes": 1087
+        },
+        {
+          "path": "reproduce_issue.cjs",
+          "sha256": "5618b3f048904d4b2dbfa7e4627d1235960ef9362dc9dd9b78164eadf23accf5",
+          "bytes": 629
+        }
+      ],
+      "preparedAfter": [
+        {
+          "path": "README.md",
+          "sha256": "8c3df22e8d43c9f3b43391eb430f034018a54999ef9eee81e7781f7b70b600fd",
+          "bytes": 894
+        },
+        {
+          "path": "package.json",
+          "sha256": "ee79f3275d2a3242016254e63d98f6a018b8a84b7b39e5b99bcf72a85cd11937",
+          "bytes": 62
+        },
+        {
+          "path": "main.cjs",
+          "sha256": "d7e3d647918449ecfd00223bd502d22f616476e6b987e0804ae49a46cd9f535d",
+          "bytes": 106
+        },
+        {
+          "path": "logic.cjs",
+          "sha256": "e154c2dcc333ad93dc698f03e576a6c6d53598b70fe15337dd3bbc76c81958c9",
+          "bytes": 153
+        }
+      ],
+      "originalsUnchanged": true,
+      "finishedAt": "2026-10-28T07:48:29.789487+00:00"
+    }
+  ],
+  "qualification": "Supplemental public CLI observations only. Original trials/grades untouched; no hidden assertions, candidate host imports or inference.",
+  "imageInspection": {
+    "argv": [
+      "/usr/local/bin/docker",
+      "--host",
+      "unix:///Users/danielmercado/.docker/run/docker.sock",
+      "--config",
+      "/private/tmp/gemma-public-probes-53ggjtdv/docker-config",
+      "image",
+      "inspect",
+      "--format",
+      "{{.Id}} {{.Architecture}} {{.Os}}",
+      "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.107,
+    "stdout": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c arm64 linux\n",
+    "stderr": "",
+    "timedOut": false,
+    "outputTruncated": false
+  },
+  "finishedAt": "2026-10-28T07:48:29.790239+00:00",
+  "durationSeconds": 5.264,
+  "allOwnedGuestsRemoved": true
+}

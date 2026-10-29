@@ -1,0 +1,167 @@
+{
+  "id": "python-ledger",
+  "name": "Implement a validated persistent ledger service",
+  "stack": "python",
+  "split": "development",
+  "prompt": "Read README.md, repair reconcile payment events, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "python3",
+    "public_test.py"
+  ],
+  "gradeCommand": [
+    "python3",
+    "main.py"
+  ],
+  "public": {
+    "main.py": "import json,sys,tempfile,os\nfrom service import apply\ndef main():\n args=sys.argv[1:]; database=None\n if args[:1]==[\"--db\"]: database=args[1];args=args[2:]\n inputs=json.loads(args[0]);out=[]\n for x in inputs:\n  if database: out.append(apply(database,x[\"events\"]))\n  else:\n   with tempfile.TemporaryDirectory() as tmp:out.append(apply(os.path.join(tmp,\"ledger.db\"),x[\"events\"]))\n print(json.dumps(out))\nif __name__==\"__main__\":main()\n",
+    "public_test.py": "import json,subprocess,sys\ncases=[{'events': []}, {'events': [{'id': 'a', 'account': 'shop', 'amount': 100, 'status': 'posted'}]}]\nexpected=[{}, {'shop': 100}]\np=subprocess.run([sys.executable,\"main.py\",json.dumps(cases)],capture_output=True,text=True,check=True)\nassert json.loads(p.stdout)==expected,(p.stdout,expected)\nprint(\"2 public cases passed\")\n\nimport unittest\nsuite=unittest.defaultTestLoader.discover(\".\",pattern=\"test_*.py\")\nif not unittest.TextTestRunner().run(suite).wasSuccessful():raise SystemExit(1)\n\nimport os,tempfile\nwith tempfile.TemporaryDirectory() as tmp:\n db=os.path.join(tmp,\"ledger.db\")\n def run(events):\n  return json.loads(subprocess.check_output([sys.executable,\"main.py\",\"--db\",db,json.dumps([{ \"events\":events }])],text=True))[0]\n assert run([{\"id\":\"a\",\"account\":\"store\",\"amount\":100,\"status\":\"posted\"}])=={\"store\":100}\n assert run([])=={\"store\":100},\"a new process must retain committed state\"\nprint(\"cross-process persistence passed\")\n\nimport unittest\nsuite=unittest.defaultTestLoader.discover(\".\",pattern=\"test_*.py\")\nif not unittest.TextTestRunner().run(suite).wasSuccessful():raise SystemExit(1)\n\nfrom service import apply\nwith tempfile.TemporaryDirectory() as tmp:\n db=os.path.join(tmp,\"validation.db\")\n try:apply(db,[{\"id\":\"ok\",\"account\":\"a\",\"amount\":7,\"status\":\"posted\"},{\"id\":\"bad\",\"account\":\"a\",\"amount\":True,\"status\":\"posted\"}])\n except ValueError:pass\n else:raise AssertionError(\"boolean amount must be rejected\")\n assert apply(db,[])=={},\"validation must precede the complete batch mutation\"\nprint(\"service-layer atomic validation passed\")\n",
+    "README.md": "# Reconcile payment events\n\nRepair this python service module and add regression tests.\n\nReturn an object of account totals in integer cents. Include only status posted. Deduplicate by event id, keeping its first occurrence even when pending. Signed amounts include refunds. Do not mutate input.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `python3 public_test.py` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"events\": [\n    {\n      \"id\": \"a\",\n      \"account\": \"shop\",\n      \"amount\": 100,\n      \"status\": \"posted\"\n    },\n    {\n      \"id\": \"b\",\n      \"account\": \"shop\",\n      \"amount\": -25,\n      \"status\": \"posted\"\n    },\n    {\n      \"id\": \"c\",\n      \"account\": \"other\",\n      \"amount\": 70,\n      \"status\": \"pending\"\n    }\n  ]\n}\n```\nExpected result:\n```json\n{\n  \"shop\": 75\n}\n```\n\n## Feature work: durable ledger\n\nImplement `Ledger.record` and `Ledger.totals` in the supplied SQLite repository. Ingest the complete batch atomically; `id` is a permanent first-write-wins key, including pending events. `main.py --db PATH JSON` must persist across separate processes, and an empty events batch reads current totals. Keep the database, repository, service and CLI modules. Preserve original files `README.md`, `main.py`, `database.py`, and `public_test.py`; add regression tests in a new file and have the existing test command execute them (the runner discovers `test_*.py` below). Do not add dependencies.\n\n### Service validation feature\n\nImplement service.apply as well as the repository: validate the complete events batch before any database mutation. Each event needs nonempty string id and account, an integer amount (booleans are not amounts), and status posted or pending. Raise ValueError for invalid input; a batch with a valid first event and invalid later event must persist neither. Keep validation in the service module and durable transaction/deduplication in the repository module. The CLI may report validation failure with a nonzero exit status. Both service.py and repository.py are intended source changes.\n",
+    "database.py": "import sqlite3\ndef connect(path):\n db=sqlite3.connect(path)\n db.execute(\"CREATE TABLE IF NOT EXISTS events(id TEXT PRIMARY KEY, account TEXT NOT NULL, amount INTEGER NOT NULL, status TEXT NOT NULL)\")\n return db\n",
+    "repository.py": "from database import connect\nclass Ledger:\n def __init__(self,path): self.db=connect(path)\n def record(self,events):\n  # Implement atomic first-write-wins ingestion of posted AND pending events.\n  raise NotImplementedError(\"persistent event ingestion\")\n def totals(self):\n  # Return only posted account totals, including refunds and zero totals.\n  return {}\n def close(self): self.db.close()\n",
+    "service.py": "from repository import Ledger\ndef apply(path,events):\n # Feature: validate the COMPLETE batch before opening a write transaction.\n # id/account: nonempty strings; amount: integer, not bool; status: posted/pending.\n # Raise ValueError for invalid records. Then persist and return current totals.\n raise NotImplementedError(\"validated ledger service\")\n"
+  },
+  "cases": [
+    {
+      "name": "ledger-1",
+      "input": {
+        "events": []
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "ledger-2",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "shop",
+            "amount": 100,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "shop": 100
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-3",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "shop",
+            "amount": 100,
+            "status": "posted"
+          },
+          {
+            "id": "b",
+            "account": "shop",
+            "amount": -25,
+            "status": "posted"
+          },
+          {
+            "id": "c",
+            "account": "other",
+            "amount": 70,
+            "status": "pending"
+          }
+        ]
+      },
+      "expected": {
+        "shop": 75
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-4",
+      "input": {
+        "events": [
+          {
+            "id": "a",
+            "account": "x",
+            "amount": 9,
+            "status": "pending"
+          },
+          {
+            "id": "a",
+            "account": "x",
+            "amount": 50,
+            "status": "posted"
+          },
+          {
+            "id": "b",
+            "account": "y",
+            "amount": 0,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "y": 0
+      },
+      "critical": false
+    },
+    {
+      "name": "ledger-5",
+      "input": {
+        "events": [
+          {
+            "id": "x",
+            "account": "a",
+            "amount": 3,
+            "status": "posted"
+          },
+          {
+            "id": "x",
+            "account": "a",
+            "amount": 3,
+            "status": "posted"
+          },
+          {
+            "id": "z",
+            "account": "a",
+            "amount": -5,
+            "status": "posted"
+          }
+        ]
+      },
+      "expected": {
+        "a": -2
+      },
+      "critical": false
+    }
+  ],
+  "probe": {
+    "name": "independent SQLite reopen, deduplication, refund and integrity",
+    "command": [
+      "python3",
+      "_harness_probe.py"
+    ],
+    "files": {
+      "_harness_probe.py": "import json,subprocess,sys,tempfile,os,sqlite3\nwith tempfile.TemporaryDirectory() as tmp:\n db=os.path.join(tmp,\"persistent.db\")\n def run(events):return json.loads(subprocess.check_output([sys.executable,\"main.py\",\"--db\",db,json.dumps([{\"events\":events}])],text=True))[0]\n first=run([{\"id\":\"p\",\"account\":\"a\",\"amount\":900,\"status\":\"pending\"},{\"id\":\"x\",\"account\":\"a\",\"amount\":110,\"status\":\"posted\"}])\n second=run([{\"id\":\"p\",\"account\":\"a\",\"amount\":900,\"status\":\"posted\"},{\"id\":\"x\",\"account\":\"a\",\"amount\":999,\"status\":\"posted\"},{\"id\":\"r\",\"account\":\"a\",\"amount\":-25,\"status\":\"posted\"}])\n bad=subprocess.run([sys.executable,\"main.py\",\"--db\",db,json.dumps([{\"events\":[{\"id\":\"z\",\"account\":\"a\",\"amount\":5,\"status\":\"posted\"},{\"id\":\"bad\",\"account\":\"a\",\"amount\":True,\"status\":\"posted\"}]}])],capture_output=True,text=True)\n third=run([])\n with sqlite3.connect(db) as c:rows=c.execute(\"SELECT COUNT(*) FROM events\").fetchone()[0];integrity=c.execute(\"PRAGMA integrity_check\").fetchone()[0]\n print(json.dumps({\"first\":first,\"second\":second,\"third\":third,\"rows\":rows,\"integrity\":integrity,\"invalidRejected\":bad.returncode!=0}))\n"
+    },
+    "expected": {
+      "first": {
+        "a": 110
+      },
+      "second": {
+        "a": 85
+      },
+      "third": {
+        "a": 85
+      },
+      "rows": 3,
+      "integrity": "ok",
+      "invalidRejected": true
+    }
+  },
+  "protectedFiles": [
+    "README.md",
+    "main.py",
+    "database.py",
+    "public_test.py"
+  ]
+}

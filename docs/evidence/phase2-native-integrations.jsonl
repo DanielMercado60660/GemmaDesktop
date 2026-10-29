@@ -1,0 +1,16 @@
+{"Time":"2026-10-27T18:44:02.710037-05:00","Action":"start","Package":"gemmadesktop.local/app/internal/browser"}
+{"Time":"2026-10-27T18:44:02.90243-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/browser","Test":"TestLiveChrome"}
+{"Time":"2026-10-27T18:44:02.902502-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/browser","Test":"TestLiveChrome","Output":"=== RUN   TestLiveChrome\n"}
+{"Time":"2026-10-27T18:44:03.626423-05:00","Action":"start","Package":"gemmadesktop.local/app/internal/mcp"}
+{"Time":"2026-10-27T18:44:03.762973-05:00","Action":"run","Package":"gemmadesktop.local/app/internal/mcp","Test":"TestNativeKeychainCanaryLifecycle"}
+{"Time":"2026-10-27T18:44:03.763024-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/mcp","Test":"TestNativeKeychainCanaryLifecycle","Output":"=== RUN   TestNativeKeychainCanaryLifecycle\n"}
+{"Time":"2026-10-27T18:44:03.787661-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/mcp","Test":"TestNativeKeychainCanaryLifecycle","Output":"--- PASS: TestNativeKeychainCanaryLifecycle (0.02s)\n"}
+{"Time":"2026-10-27T18:44:03.787682-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/mcp","Test":"TestNativeKeychainCanaryLifecycle","Elapsed":0.02}
+{"Time":"2026-10-27T18:44:03.788034-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/mcp","Output":"PASS\n"}
+{"Time":"2026-10-27T18:44:04.800348-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/mcp","Output":"ok  \tgemmadesktop.local/app/internal/mcp\t1.174s\n"}
+{"Time":"2026-10-27T18:44:04.800426-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/mcp","Elapsed":1.174}
+{"Time":"2026-10-27T18:44:07.530704-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/browser","Test":"TestLiveChrome","Output":"--- PASS: TestLiveChrome (4.63s)\n"}
+{"Time":"2026-10-27T18:44:07.530738-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/browser","Test":"TestLiveChrome","Elapsed":4.63}
+{"Time":"2026-10-27T18:44:07.530756-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/browser","Output":"PASS\n"}
+{"Time":"2026-10-27T18:44:08.543985-05:00","Action":"output","Package":"gemmadesktop.local/app/internal/browser","Output":"ok  \tgemmadesktop.local/app/internal/browser\t5.834s\n"}
+{"Time":"2026-10-27T18:44:08.544103-05:00","Action":"pass","Package":"gemmadesktop.local/app/internal/browser","Elapsed":5.834}

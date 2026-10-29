@@ -1,0 +1,130 @@
+{
+  "id": "go-config",
+  "name": "Apply layered service configuration",
+  "stack": "go",
+  "split": "heldout",
+  "prompt": "Read README.md, repair apply layered service configuration, add meaningful regression tests, and run the prescribed public command. Keep the public CLI compatible.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport \"sort\"\nvar _ = sort.Strings\nfunc solve(x map[string]any) any {var merge func(map[string]any,map[string]any)map[string]any;merge=func(a,b map[string]any)map[string]any{out:=map[string]any{};for k,v:=range a{out[k]=v};for k,v:=range b{if false{delete(out,k)}else if obj,ok:=v.(map[string]any);ok{old,_:=out[k].(map[string]any);out[k]=merge(old,obj)}else{out[k]=v}};return out};out:=map[string]any{};for _,v:=range x[\"layers\"].([]any){out=merge(out,v.(map[string]any))};return out}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/go-config\n\ngo 1.23\n",
+    "logic_test.go": "package main\nimport(\"testing\";\"encoding/json\";\"reflect\")\nfunc TestPublic(t *testing.T){var inputs []map[string]any;_ = json.Unmarshal([]byte(`[{\"layers\": []}, {\"layers\": [{\"a\": 1}]}]`),&inputs);var expected []any;_ = json.Unmarshal([]byte(`[{}, {\"a\": 1}]`),&expected);for i,x:=range inputs{b,_:=json.Marshal(solve(x));var actual any;_ = json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected[i]){t.Fatalf(\"case %d: got %v want %v\",i,actual,expected[i])}}}\n",
+    "README.md": "# Apply layered service configuration\n\nRepair this go service module and add regression tests.\n\nMerge layers from left to right recursively for objects. Null deletes a key. Arrays and other values replace earlier values; false, zero and empty strings remain valid. Return a new object without mutating any layer.\n\nThe CLI accepts one JSON array argument and prints one JSON array of corresponding results, with no extra stdout. Preserve this interface and the separate logic module. Run `go test ./...` and report actual results. No external dependencies are needed.\n\nExample input:\n```json\n{\n  \"layers\": [\n    {\n      \"service\": {\n        \"port\": 80,\n        \"tls\": true\n      },\n      \"tags\": [\n        \"old\"\n      ]\n    },\n    {\n      \"service\": {\n        \"port\": 0\n      },\n      \"tags\": []\n    }\n  ]\n}\n```\nExpected result:\n```json\n{\n  \"service\": {\n    \"port\": 0,\n    \"tls\": true\n  },\n  \"tags\": []\n}\n```\n"
+  },
+  "cases": [
+    {
+      "name": "config-1",
+      "input": {
+        "layers": []
+      },
+      "expected": {},
+      "critical": false
+    },
+    {
+      "name": "config-2",
+      "input": {
+        "layers": [
+          {
+            "a": 1
+          }
+        ]
+      },
+      "expected": {
+        "a": 1
+      },
+      "critical": false
+    },
+    {
+      "name": "config-3",
+      "input": {
+        "layers": [
+          {
+            "service": {
+              "port": 80,
+              "tls": true
+            },
+            "tags": [
+              "old"
+            ]
+          },
+          {
+            "service": {
+              "port": 0
+            },
+            "tags": []
+          }
+        ]
+      },
+      "expected": {
+        "service": {
+          "port": 0,
+          "tls": true
+        },
+        "tags": []
+      },
+      "critical": false
+    },
+    {
+      "name": "config-4",
+      "input": {
+        "layers": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": null,
+            "b": false,
+            "c": ""
+          }
+        ]
+      },
+      "expected": {
+        "b": false,
+        "c": ""
+      },
+      "critical": false
+    },
+    {
+      "name": "config-5",
+      "input": {
+        "layers": [
+          {
+            "a": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          {
+            "a": {
+              "x": null,
+              "z": 3
+            }
+          },
+          {
+            "a": {
+              "y": 0
+            }
+          }
+        ]
+      },
+      "expected": {
+        "a": {
+          "y": 0,
+          "z": 3
+        }
+      },
+      "critical": false
+    }
+  ]
+}

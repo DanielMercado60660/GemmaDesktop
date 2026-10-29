@@ -1,0 +1,14 @@
+{
+  "publicInputsIdenticalAfterPathNormalization": true,
+  "proposalINVContentIdentical": true,
+  "proposalDOMContentIdentical": true,
+  "nativeProvisionalLessonsAbsentFromUpstreamProposalContext": true,
+  "baselineRevisionId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+  "nativeExperimentId": "3c1f216827db7eef221ce7565c9936d6",
+  "upstreamExperimentId": "e3f1b402a830bf8d04efbf45f55ee3ae",
+  "methodOrder": [
+    "native",
+    "upstream"
+  ],
+  "interpretation": "Matched local compatibility exercise with identical baseline and probe content; model samples have no paired random seed and do not establish causal method superiority."
+}

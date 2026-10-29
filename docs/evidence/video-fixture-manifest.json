@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-27T20:43:33.149290+00:00",
+  "workspace": "/Users/danielmercado/GemmaDesktop/.runtime/video-qa-input",
+  "clip": "visual-scenes.mp4",
+  "clipSHA256": "ccb42a708c68d27cd9604711c4eb70b28ed7a9eabf191176afe9d32296afc872",
+  "durationSeconds": 30,
+  "fps": 24,
+  "events": [
+    {
+      "query": "a red circle",
+      "fromSeconds": 0,
+      "toSeconds": 5,
+      "sceneSHA256": "768ec5c6af1524caf45cea6a34b9227d64520da971a20452c7fdac617118996b"
+    },
+    {
+      "query": "a blue square",
+      "fromSeconds": 5,
+      "toSeconds": 10,
+      "sceneSHA256": "65436a7bda0d62e43bd2c4c8e82e58549dce7895d4efc3efc48c2d063adabbbb"
+    },
+    {
+      "query": "a green triangle",
+      "fromSeconds": 10,
+      "toSeconds": 15,
+      "sceneSHA256": "888fe4f2bdea6b595e14dc0a9bd1ac931358b7563f6b673707ffbd12cfec1a67"
+    },
+    {
+      "query": "a yellow star",
+      "fromSeconds": 15,
+      "toSeconds": 20,
+      "sceneSHA256": "0b70cb787826c59f8ea0a05b0c4ee3bfd9a35e02ead9931e7abec071c3244636"
+    },
+    {
+      "query": "two purple circles",
+      "fromSeconds": 20,
+      "toSeconds": 25,
+      "sceneSHA256": "ea762d3df5a57fc006c629b1c93737226381d8a1b4b86b51878a6545a500603b"
+    },
+    {
+      "query": "an orange rectangle",
+      "fromSeconds": 25,
+      "toSeconds": 30,
+      "sceneSHA256": "b7cdab51846203a155f0a3029014ae99cf733e4d0961783c94492d4c8dbdfca4"
+    }
+  ],
+  "acceptance": "At least five of six text queries retrieve an overlapping interval among the top three evidence frames. Answer grounding and native playback are separately checked. Ground truth is not passed to the model."
+}

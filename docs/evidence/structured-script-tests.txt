@@ -1,0 +1,21 @@
+.........................
+----------------------------------------------------------------------
+Ran 25 tests in 2.477s
+
+OK
+{
+  "passed": true,
+  "attemptKind": "followup-turn",
+  "runId": "run-2",
+  "evidence": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmpae93r293/reports/realistic-followup-20261027-144837-fd76579d.json",
+  "workspace": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmpae93r293/.runtime/realistic-20261027-144837-7a6feb/workspace",
+  "durationSeconds": 0.009
+}
+{
+  "passed": false,
+  "attemptKind": "followup-turn",
+  "runId": "run-2",
+  "evidence": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmprql4zcsg/reports/realistic-followup-20261027-144837-0d51cb1d.json",
+  "workspace": "/var/folders/hw/1f2nk_wx3z7_65gj03t37j6w0000gn/T/tmprql4zcsg/.runtime/realistic-20261027-144837-d65f29/workspace",
+  "durationSeconds": 0.008
+}

@@ -1,0 +1,16 @@
+{
+  "createdAt": "2026-10-27T19:50:09.219904+00:00",
+  "codingRunId": "4837524d82d965119ca18d741e622627",
+  "buildEvidence": "docs/evidence/structured-build-info.json",
+  "buildEvidenceSHA256": "f42c91db9882ee397eb10bfdab46593b37c9a5c88dfd995279635b042192aceb",
+  "binarySHA256": "34b4c7875b372e77598790a889451110cc12ddcaeb7f1b6555db4238d8356e09",
+  "harnessSHA256": "f7ac12d7f7b31821d268262a60ee2e44c31d79f158efcf0eaa7a263ec7cc46b9",
+  "contextSize": 65536,
+  "model": "gemma4:26b-mlx",
+  "thinking": "off",
+  "temperature": 1,
+  "maxOutputTokens": 16384,
+  "toolProtocol": "structured_json",
+  "parentReport": "docs/evidence/realistic-followup-20261027-143046-4cb672aa.json",
+  "scope": "Combined experimental protocol and thinking-setting recovery variant; source scopes, permission checks and independent acceptance unchanged."
+}

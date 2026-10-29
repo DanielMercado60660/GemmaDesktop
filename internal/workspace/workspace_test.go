@@ -111,3 +111,46 @@ func TestMoveDeleteRevisionAndDestination(t *testing.T) {
 		t.Fatalf("delete: %+v %v", d, err)
 	}
 }
+
+func TestDirectoryBoundaryAndPythonSearch(t *testing.T) {
+	w, root := openTest(t)
+	outside := t.TempDir()
+	os.MkdirAll(filepath.Join(root, "package", "tests"), 0700)
+	os.Symlink(outside, filepath.Join(root, "escape"))
+	os.Mkdir(filepath.Join(root, ".aws"), 0700)
+	for _, p := range []string{"../outside", outside, "escape", "escape/nested", ".aws"} {
+		if _, err := w.DirectoryPath(p); err == nil {
+			t.Errorf("working directory accepted %q", p)
+		}
+	}
+	got, err := w.DirectoryPath("package/tests")
+	if err != nil || got != filepath.Join(w.Path, "package", "tests") {
+		t.Fatalf("working directory %q %v", got, err)
+	}
+	os.MkdirAll(filepath.Join(root, ".venv", "lib"), 0700)
+	os.WriteFile(filepath.Join(root, ".venv", "lib", "dependency.py"), []byte("needle"), 0600)
+	os.WriteFile(filepath.Join(root, "package", "store.py"), []byte("needle"), 0600)
+	r, err := w.Search(context.Background(), ".", "needle", false, 10)
+	if err != nil || len(r.Matches) != 1 || r.Matches[0].Path != "package/store.py" {
+		t.Fatalf("dependency search noise: %+v %v", r, err)
+	}
+}
+
+func TestReplaceMismatchExplainsRecoveryWithoutUnescaping(t *testing.T) {
+	w, _ := openTest(t)
+	content := "first\nsecond\nrepeat repeat\n"
+	f, err := w.Write("source.py", content, "missing")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = w.Replace("source.py", `first\nsecond`, "changed", f.AfterHash); err == nil || !strings.Contains(err.Error(), "was not found") || !strings.Contains(err.Error(), "JSON escape") {
+		t.Fatalf("missing match diagnostic: %v", err)
+	}
+	if _, err = w.Replace("source.py", "repeat", "changed", f.AfterHash); err == nil || !strings.Contains(err.Error(), "matched 2 times") || !strings.Contains(err.Error(), "surrounding text") {
+		t.Fatalf("ambiguous match diagnostic: %v", err)
+	}
+	got, err := w.Read("source.py")
+	if err != nil || got.Content != content || got.Hash != f.AfterHash {
+		t.Fatal("mismatch mutated the file")
+	}
+}

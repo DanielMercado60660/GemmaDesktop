@@ -1,0 +1,75 @@
+{
+  "version": "fieldnote-sqlite-csv-v1",
+  "createdAt": "2026-10-27T16:35:55.199446+00:00",
+  "purpose": "Known repair qualifies the oracle; these are not model-generated results",
+  "beforePublic": {
+    "argv": [
+      "/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "sandbox": "read-only candidate; private temporary writes; network and process-fork denied",
+    "exitCode": 1,
+    "timedOut": false,
+    "durationSeconds": 0.081,
+    "testCount": 5,
+    "output": "test_create_and_read (test_existing.ExistingBehavior.test_create_and_read) ... ok\ntest_filters_are_combined (test_existing.ExistingBehavior.test_filters_are_combined) ... FAIL\ntest_invalid_values_are_rejected (test_existing.ExistingBehavior.test_invalid_values_are_rejected) ... ok\ntest_newest_first_with_stable_ties (test_existing.ExistingBehavior.test_newest_first_with_stable_ties) ... FAIL\ntest_status_update_survives_reopen (test_existing.ExistingBehavior.test_status_update_survives_reopen) ... FAIL\n\n======================================================================\nFAIL: test_filters_are_combined (test_existing.ExistingBehavior.test_filters_are_combined)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tests/test_existing.py\", line 34, in test_filters_are_combined\n    self.assertEqual([task.id for task in page.items], [wanted.id])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [1, 2, 3] != [1]\n\nFirst list contains 2 additional elements.\nFirst extra element 1:\n2\n\n- [1, 2, 3]\n+ [1]\n\n======================================================================\nFAIL: test_newest_first_with_stable_ties (test_existing.ExistingBehavior.test_newest_first_with_stable_ties)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tests/test_existing.py\", line 41, in test_newest_first_with_stable_ties\n    self.assertEqual(self.service.list_tasks(limit=1).items[0].id, newest.id)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 3\n\n======================================================================\nFAIL: test_status_update_survives_reopen (test_existing.ExistingBehavior.test_status_update_survives_reopen)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tests/test_existing.py\", line 27, in test_status_update_survives_reopen\n    self.assertEqual(self.service.get_task(task.id).status, \"done\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'open' != 'done'\n- open\n+ done\n\n\n----------------------------------------------------------------------\nRan 5 tests in 0.007s\n\nFAILED (failures=3)\n",
+    "truncated": false
+  },
+  "beforeAcceptance": {
+    "argv": [
+      "/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+      "-B",
+      "-I",
+      "/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py",
+      "--candidate",
+      "/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate"
+    ],
+    "sandbox": "read-only candidate; private temporary writes; network and process-fork denied",
+    "exitCode": 1,
+    "timedOut": false,
+    "durationSeconds": 0.151,
+    "testCount": 9,
+    "output": "test_cli_uses_service_filter_and_writes_real_file (__main__.Acceptance.test_cli_uses_service_filter_and_writes_real_file) ... ERROR\ntest_csv_quotes_newlines_and_unicode_round_trip (__main__.Acceptance.test_csv_quotes_newlines_and_unicode_round_trip) ... ERROR\ntest_empty_export_header_and_invalid_filter (__main__.Acceptance.test_empty_export_header_and_invalid_filter) ... ERROR\ntest_export_is_not_limited_to_one_page (__main__.Acceptance.test_export_is_not_limited_to_one_page) ... ERROR\ntest_filter_intersection_and_filtered_total (__main__.Acceptance.test_filter_intersection_and_filtered_total) ... FAIL\ntest_literal_wildcards_and_quote_are_not_sql (__main__.Acceptance.test_literal_wildcards_and_quote_are_not_sql) ... ok\ntest_pages_are_disjoint_stable_and_newest_first (__main__.Acceptance.test_pages_are_disjoint_stable_and_newest_first) ... FAIL\ntest_status_is_durable_and_unknown_id_is_rejected (__main__.Acceptance.test_status_is_durable_and_unknown_id_is_rejected) ... FAIL\ntest_validation_survives_repairs (__main__.Acceptance.test_validation_survives_repairs) ... ok\n\n======================================================================\nERROR: test_cli_uses_service_filter_and_writes_real_file (__main__.Acceptance.test_cli_uses_service_filter_and_writes_real_file)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 124, in test_cli_uses_service_filter_and_writes_real_file\n    code = main([\"--database\", str(self.database), \"export\", str(path), \"--status\", \"done\", \"--query\", \"keep\"])\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tracker/cli.py\", line 33, in main\n    raise NotImplementedError(\"Wire the export subcommand to TaskService.export_csv\")\nNotImplementedError: Wire the export subcommand to TaskService.export_csv\n\n======================================================================\nERROR: test_csv_quotes_newlines_and_unicode_round_trip (__main__.Acceptance.test_csv_quotes_newlines_and_unicode_round_trip)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 89, in test_csv_quotes_newlines_and_unicode_round_trip\n    self.assertEqual(self.service.export_csv(path), 3)\n                     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tracker/service.py\", line 51, in export_csv\n    raise NotImplementedError(\"CSV export has not been implemented\")\nNotImplementedError: CSV export has not been implemented\n\n======================================================================\nERROR: test_empty_export_header_and_invalid_filter (__main__.Acceptance.test_empty_export_header_and_invalid_filter)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 112, in test_empty_export_header_and_invalid_filter\n    self.assertEqual(self.service.export_csv(path), 0)\n                     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tracker/service.py\", line 51, in export_csv\n    raise NotImplementedError(\"CSV export has not been implemented\")\nNotImplementedError: CSV export has not been implemented\n\n======================================================================\nERROR: test_export_is_not_limited_to_one_page (__main__.Acceptance.test_export_is_not_limited_to_one_page)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 104, in test_export_is_not_limited_to_one_page\n    self.assertEqual(self.service.export_csv(path, status=\"done\", query=\"keep\"), 205)\n                     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate/tracker/service.py\", line 51, in export_csv\n    raise NotImplementedError(\"CSV export has not been implemented\")\nNotImplementedError: CSV export has not been implemented\n\n======================================================================\nFAIL: test_filter_intersection_and_filtered_total (__main__.Acceptance.test_filter_intersection_and_filtered_total)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 55, in test_filter_intersection_and_filtered_total\n    self.assertEqual(page.total, 2)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\nAssertionError: 4 != 2\n\n======================================================================\nFAIL: test_pages_are_disjoint_stable_and_newest_first (__main__.Acceptance.test_pages_are_disjoint_stable_and_newest_first)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 74, in test_pages_are_disjoint_stable_and_newest_first\n    self.assertEqual(actual, expected)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: [1, 2, 3, 4, 5, 6, 7, 8] != [8, 7, 6, 5, 4, 3, 2, 1]\n\nFirst differing element 0:\n1\n8\n\n- [1, 2, 3, 4, 5, 6, 7, 8]\n+ [8, 7, 6, 5, 4, 3, 2, 1]\n\n======================================================================\nFAIL: test_status_is_durable_and_unknown_id_is_rejected (__main__.Acceptance.test_status_is_durable_and_unknown_id_is_rejected)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py\", line 45, in test_status_is_durable_and_unknown_id_is_rejected\n    self.assertEqual(self.service.get_task(task.id).status, \"in_progress\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'open' != 'in_progress'\n- open\n+ in_progress\n\n\n----------------------------------------------------------------------\nRan 9 tests in 0.062s\n\nFAILED (failures=3, errors=4)\n",
+    "truncated": false
+  },
+  "referencePublic": {
+    "argv": [
+      "/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "sandbox": "read-only candidate; private temporary writes; network and process-fork denied",
+    "exitCode": 0,
+    "timedOut": false,
+    "durationSeconds": 0.089,
+    "testCount": 5,
+    "output": "test_create_and_read (test_existing.ExistingBehavior.test_create_and_read) ... ok\ntest_filters_are_combined (test_existing.ExistingBehavior.test_filters_are_combined) ... ok\ntest_invalid_values_are_rejected (test_existing.ExistingBehavior.test_invalid_values_are_rejected) ... ok\ntest_newest_first_with_stable_ties (test_existing.ExistingBehavior.test_newest_first_with_stable_ties) ... ok\ntest_status_update_survives_reopen (test_existing.ExistingBehavior.test_status_update_survives_reopen) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.010s\n\nOK\n",
+    "truncated": false
+  },
+  "referenceAcceptance": {
+    "argv": [
+      "/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+      "-B",
+      "-I",
+      "/Users/danielmercado/GemmaDesktop/scripts/fixtures/realistic/acceptance_test.py",
+      "--candidate",
+      "/Users/danielmercado/GemmaDesktop/.runtime/gemma-fixture-qualification-ett33p13/candidate"
+    ],
+    "sandbox": "read-only candidate; private temporary writes; network and process-fork denied",
+    "exitCode": 0,
+    "timedOut": false,
+    "durationSeconds": 0.143,
+    "testCount": 9,
+    "output": "test_cli_uses_service_filter_and_writes_real_file (__main__.Acceptance.test_cli_uses_service_filter_and_writes_real_file) ... ok\ntest_csv_quotes_newlines_and_unicode_round_trip (__main__.Acceptance.test_csv_quotes_newlines_and_unicode_round_trip) ... ok\ntest_empty_export_header_and_invalid_filter (__main__.Acceptance.test_empty_export_header_and_invalid_filter) ... ok\ntest_export_is_not_limited_to_one_page (__main__.Acceptance.test_export_is_not_limited_to_one_page) ... ok\ntest_filter_intersection_and_filtered_total (__main__.Acceptance.test_filter_intersection_and_filtered_total) ... ok\ntest_literal_wildcards_and_quote_are_not_sql (__main__.Acceptance.test_literal_wildcards_and_quote_are_not_sql) ... ok\ntest_pages_are_disjoint_stable_and_newest_first (__main__.Acceptance.test_pages_are_disjoint_stable_and_newest_first) ... ok\ntest_status_is_durable_and_unknown_id_is_rejected (__main__.Acceptance.test_status_is_durable_and_unknown_id_is_rejected) ... ok\ntest_validation_survives_repairs (__main__.Acceptance.test_validation_survives_repairs) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.069s\n\nOK\n",
+    "truncated": false
+  }
+}

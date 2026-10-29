@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T00:30:11.362889+00:00",
+  "kind": "fake-http-transport-regression",
+  "verdict": "pass",
+  "test": {
+    "name": "TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire",
+    "command": "GOPATH=\"$PWD/.cache/go\" GOCACHE=\"$PWD/.cache/gobuild\" GOTOOLCHAIN=go1.26.10 go test -race ./internal/app -run '^TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire$' -count=1 -v",
+    "workingDirectory": "/Users/danielmercado/GemmaDesktop",
+    "exitCode": 0,
+    "reportedPackageSeconds": 1.408,
+    "toolCallWallSeconds": 4.031662375,
+    "stdout": "=== RUN   TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire\n    harness_instruction_wire_test.go:114: Both serialized /api/chat system messages contained the exact revision Instructions, ToolGuidance, Lessons and appended readOnly:true verification guidance once, before and after the real read_file callback; native user/tool content remained separate.\n--- PASS: TestHarnessRevisionInstructionsAndToolGuidanceReachOllamaSystemWire (0.04s)\nPASS\nok  \tgemmadesktop.local/app/internal/app\t1.408s\n",
+    "stdoutProvenance": "Exact completed exec_command output captured in this review; no rerun performed to create this record."
+  },
+  "observations": [
+    "Actual executeHarnessSolver ordinary no-workflow path reached engine, pinned ADK, adapter and the fake server through serialized HTTP.",
+    "Both /api/chat requests contained exact revision Instructions, ToolGuidance, Lessons and appended readOnly:true verification guidance once in the first system message.",
+    "Literal braces, Unicode and backslashes survived; revision fields retained their order.",
+    "A real read_file callback executed once between generations; native user and tool content remained separate from the system message.",
+    "Stale saved-profile instructions did not replace the selected revision instructions."
+  ],
+  "sourcePointers": [
+    {
+      "path": "internal/app/harness_instruction_wire_test.go",
+      "line": 20,
+      "sha256": "ef0abad7c46fe0b29267d245596ec60e0cd6997a5e25e677f3db4b137dd7d4be",
+      "purpose": "Actual production no-workflow solver regression with fake HTTP Ollama and a real read_file callback."
+    },
+    {
+      "path": "internal/app/harness_solver.go",
+      "line": 74,
+      "sha256": "3a259e0d36c40bb9d85fd83d83b4af7baf83726cf2af995ddd944d8ea8800ef6",
+      "purpose": "Concatenates default instructions, revision Instructions, ToolGuidance, Lessons and verification guidance into Request.Instructions."
+    },
+    {
+      "path": "internal/app/harness_solver.go",
+      "line": 190,
+      "sha256": "3a259e0d36c40bb9d85fd83d83b4af7baf83726cf2af995ddd944d8ea8800ef6",
+      "purpose": "Ordinary no-workflow path passes the request to Engine.Run."
+    },
+    {
+      "path": "internal/engine/engine.go",
+      "line": 231,
+      "sha256": "0d4dee27cddef5bcdeb31b64417605a6ced8b359f553fce42d445c4a499434d3",
+      "purpose": "ADK InstructionProvider returns Request.Instructions unchanged."
+    },
+    {
+      "path": ".cache/go/pkg/mod/google.golang.org/adk/v2@v2.6.0/internal/llminternal/instruction_processor.go",
+      "line": 80,
+      "sha256": "7192c0377d0ac119e78d80a6fbcb008365bfe8c8c4a7c2303330fa5c0d8d9e58",
+      "purpose": "Pinned ADK invokes InstructionProvider and appends its result directly, without placeholder interpolation."
+    },
+    {
+      "path": "internal/engine/adapter.go",
+      "line": 353,
+      "sha256": "b461253649bc47762b4baf7e74c6f25d4cd4a584fd34efd107821603b097fbb9",
+      "purpose": "Serializes ADK SystemInstruction text into an Ollama system message."
+    }
+  ],
+  "scopeLimits": [
+    "This is controlled fake HTTP transport proof, not evidence of historical live Ollama payloads.",
+    "The fixture returns deterministic tool/final responses; it does not measure model compliance, reasoning or inference quality.",
+    "No live inference, Docker command, distribution rebuild, model operation, campaign mutation or held-out/grader-source inspection occurred.",
+    "The exercised path is ordinary native-protocol Harness execution without a workflow or compaction trigger; other branches are not qualified by this test.",
+    "Source hashes describe files at evidence-record creation; only the regression test was added for this verification, and no production code was edited."
+  ]
+}

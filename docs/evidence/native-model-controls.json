@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-27T17:31:46.352008+00:00",
+  "app": "app.gemmadesktop.validation",
+  "profile": ".runtime/native-realistic-qa",
+  "binarySHA256": "9c0ad05b996a6a23ac220f9cc5bdffdd1cc6d3e98cd2a0c74427b6596c62b0d7",
+  "checks": {
+    "legacyAgentDisplaysAutoAnd8192": true,
+    "explicitThinkingOffPersistsAfterReopen": true,
+    "responseLimit1024PersistsAfterReopen": true,
+    "permissionModeUnchanged": true
+  },
+  "screenshot": "screenshots/native-model-controls.png",
+  "note": "Separate QA profile; the real coding qualification uses explicit Off/8192 in its own profile. No normal user profile was changed.",
+  "binarySHA256Meaning": "SHA256 of the production input executable before re-signing it for the separate QA bundle identifier. It is not the signature-dependent hash of the QA executable."
+}

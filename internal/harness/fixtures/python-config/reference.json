@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n def merge(a,b):\n  out=dict(a)\n  for k,v in b.items():\n   if v is None: out.pop(k,None)\n   elif isinstance(v,dict): out[k]=merge(out.get(k,{}) if isinstance(out.get(k),dict) else {},v)\n   else: out[k]=v\n  return out\n out={}\n for layer in x[\"layers\"]: out=merge(out,layer)\n return out\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass Regression(unittest.TestCase):\n def test_readme_example(self):self.assertEqual(solve({'layers': [{'service': {'port': 80, 'tls': True}, 'tags': ['old']}, {'service': {'port': 0}, 'tags': []}]}),{'service': {'port': 0, 'tls': True}, 'tags': []})\n"
+}

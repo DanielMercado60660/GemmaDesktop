@@ -1,0 +1,11 @@
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed
+    harness_status_test.go:78: active baseline reported ready: <nil>
+=== RUN   TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed
+    harness_status_test.go:78: active baseline reported ready: <nil>
+--- FAIL: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages (0.24s)
+    --- FAIL: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/completed (0.14s)
+    --- FAIL: TestHarnessUpstreamActualCoreReportsActiveAndWaitingStages/failed (0.11s)
+FAIL
+FAIL	gemmadesktop.local/app/internal/app	0.637s
+FAIL

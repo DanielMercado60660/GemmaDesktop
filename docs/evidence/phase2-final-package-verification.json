@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-28T08:21:56.270046+00:00",
+  "status": "passed",
+  "version": "0.2.1",
+  "build": "3",
+  "binarySHA256": "ebd1ba6e8bf39f81e655986cb0da5a5a71bb78c58e5189b2a1069fc4a47a4521",
+  "archiveSHA256": "4276b3277511a04636cc6fde5c4cd54216a756c918ff45243b48bed2452b0359",
+  "archiveBytes": 17289404,
+  "sourceFingerprint": "97a2aca560015dde610e15f4f32c50773f32f6c0426b9de81a8642ddb24a9e76",
+  "frontendFingerprint": "c52a5da5ff2299b16576f5a8aee4cf365b2921bcd593a7fee7c8a86f96f5e7b7",
+  "packagedHarnessResourceFingerprint": "8a4bf3cc5b8ae574fba873c8e55b51d6917d16ed64eaeac79bfce0a412edfe30",
+  "buildInputsStillMatch": true,
+  "archiveCRCValid": true,
+  "archivedBinaryMatchesBundle": true,
+  "codesign": {
+    "exitCode": 0,
+    "output": "/Users/danielmercado/GemmaDesktop/dist/Gemma Desktop.app: valid on disk\n/Users/danielmercado/GemmaDesktop/dist/Gemma Desktop.app: satisfies its Designated Requirement"
+  },
+  "frozenCampaignArchiveSHA256": "68bf6554c1fd25aa576f3b20845e126a7056b3cd81813cfcd69f5c73295045e0",
+  "frozenCampaignVersion": "0.2.0",
+  "boundaries": [
+    "Local ad-hoc signature, not Developer ID notarization.",
+    "Build input equality and byte checks are not a hermetic reproducible-build claim.",
+    "No historical trial or cost accounting was rewritten."
+  ]
+}

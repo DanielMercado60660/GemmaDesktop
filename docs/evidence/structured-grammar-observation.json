@@ -1,0 +1,6 @@
+{
+  "runtime": "Ollama 0.40.11 MLX",
+  "observedWarning": "[14:49:21] /Users/runner/work/ollama/ollama/build/darwin-arm64/mlx_metal_v4/_deps/xgrammar-src/cpp/json_schema_converter.cc:829: Warning: oneOf with overlapping or non-provably-disjoint branches cannot be represented exactly; falling back to anyOf semantics",
+  "interpretation": "xgrammar reports anyOf fallback for non-provably-disjoint oneOf. Generated top-level branches have distinct action/name constants, so their union is disjoint by construction; host validation still enforces the original full schema, including nested oneOf. This read probe is not exhaustive grammar keyword qualification.",
+  "hostRejectsMalformedOrInvalidBeforeDispatch": true
+}

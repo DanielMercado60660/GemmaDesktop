@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-28T07:57:09.543033+00:00",
+  "reviewer": "/root/ollama_model_research",
+  "proposer": "/root",
+  "verdict": "rejected",
+  "packetId": "3626b735b6eb018dbbb8863015a5b864",
+  "requestHash": "46358b1772d944f566169c2180cb62aab7f813d98bb6613d88652c0da159cb0d",
+  "evaluationId": "68381c81596bc2c357d5f0ade2e2063e",
+  "experimentId": "3c1f216827db7eef221ce7565c9936d6",
+  "candidateId": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+  "baselineId": "3e5a9718673c383d4f588dc1bd6da095776c6ca812180c11734f52ccb8615a00",
+  "sourceAndIdentity": {
+    "candidateRevisionHashReproduced": "e3ebe7dc737b5cbd8a0fc850ae288a3aa64be67b76e4225a7f78203224e7510b",
+    "evaluationEvidenceHashReproduced": "39bb275aa68d022fb18987689e02149346791061c16fef457d952606f4e1bead",
+    "hashMethod": "Reconstructed Go JSON field order and HTML escaping for persisted EvalResult/Grade/Check and revision identity tuple; both equal frozen stored IDs/hashes. No diagnostics or expected values emitted.",
+    "packetAndEvaluationCandidateMatch": true,
+    "frozenAppVersion": "sha256:42bd293e1ac85940b3f9948618a49b6e32b584478852d8786371f1367466e31d",
+    "model": "gemma4:26b-mlx",
+    "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "runtimeVersion": "0.40.11",
+    "image": "sha256:09c68348396bd61f72b3570279e009741490473e40f8cc70517531696767578c",
+    "fixtureDigest": "5a510b4f9ee292f51688649dc15b946e725a319f369065a3dd5cadddd304c703",
+    "contextSize": 65536,
+    "agentTemperature": 1,
+    "agentThinking": "on",
+    "maxOutputTokens": 16384,
+    "budgetSeconds": 1200
+  },
+  "recordedOutcome": {
+    "status": "completed",
+    "expected": 72,
+    "actual": 72,
+    "uniquePairedKeys": 72,
+    "automatedPasses": {
+      "baseline": 0,
+      "candidate": 3
+    },
+    "automatedAttemptsPerArm": 36,
+    "heldOutAutomatedPasses": {
+      "baseline": 0,
+      "candidate": 1
+    },
+    "heldOutAttemptsPerArm": 18,
+    "solverCompleted": 62,
+    "solverFailed": 10,
+    "terminalFailureClasses": {
+      "generation_length": 8,
+      "deadline": 1,
+      "stopped_without_answer_or_tool_call": 1
+    },
+    "recordedGate": {
+      "baselineSuccesses": 0,
+      "candidateSuccesses": 1,
+      "eligible": false,
+      "evidenceHash": "39bb275aa68d022fb18987689e02149346791061c16fef457d952606f4e1bead",
+      "reasons": [
+        "critical integrity/measurement checks are incomplete or failed"
+      ],
+      "timeRatio": 0.8193952952696569,
+      "tokenRatio": 1.0657539296441112
+    }
+  },
+  "sanitizedFailureCategories": {
+    "countUnit": "Distinct trials with each failed-check category; overlaps are intentional and cannot be summed.",
+    "all": {
+      "final_verification": 69,
+      "solver_incomplete": 10,
+      "semantic_execution_or_discovery": 9,
+      "protected_inputs": 5
+    },
+    "byArm": {
+      "baseline": {
+        "final_verification": 36,
+        "solver_incomplete": 8,
+        "semantic_execution_or_discovery": 6,
+        "protected_inputs": 1
+      },
+      "candidate": {
+        "final_verification": 33,
+        "solver_incomplete": 2,
+        "protected_inputs": 4,
+        "semantic_execution_or_discovery": 3
+      }
+    },
+    "semanticExecutionDiscoveryBreakdown": {
+      "independent_public_command": 3,
+      "regression_artifact_presence": 7,
+      "semantic_or_cli_result": 4
+    },
+    "disjointPrimaryBuckets": {
+      "verification_only": 54,
+      "solver_incomplete": 10,
+      "protected_inputs": 5,
+      "automated_pass": 3
+    },
+    "disjointByArm": {
+      "baseline": {
+        "verification_only": 27,
+        "solver_incomplete": 8,
+        "protected_inputs": 1
+      },
+      "candidate": {
+        "verification_only": 27,
+        "solver_incomplete": 2,
+        "protected_inputs": 4,
+        "automated_pass": 3
+      }
+    },
+    "bucketOrder": "Automated pass; otherwise protected-input violation; otherwise incomplete solver; otherwise verification-only. This priority does not erase overlapping failures.",
+    "verificationOnlyMeaning": "Only the saved automated final-verification check failed. This does not exclude independent public-source defects or test-quality limitations."
+  },
+  "publicSourceReview": {
+    "reviewedAttempts": 72,
+    "stacks": {
+      "go": 24,
+      "node": 24,
+      "python": 24
+    },
+    "protectedContentChanges": {
+      "go": 3,
+      "node": 1,
+      "python": 1
+    },
+    "interpretation": "Observed original-test modifications add/strengthen checks rather than removing assertions, but violate protected-input preservation. No intent inferred. Substantive implementation repairs coexist with incomplete deliveries, ineffective tests and discovery gaps. No static blocker found for a reviewed source is not proof of correctness.",
+    "freshReadOnlyReceiptAttempts": [
+      "97b1e933d011bc05ce7ea38919e09f23",
+      "2b3d280e7299c221a83542e524c5ee7d",
+      "fc47edcd321ec9d99f1c14b3be446b2e"
+    ],
+    "automatedPassesAreNotIndependentContractProof": true
+  },
+  "supplementalPublicProbes": {
+    "source": "docs/evidence/phase2-supplemental-public-probes/observations.v3.json",
+    "sha256": "c05f1a1b785aea402e0f56b9b894fa6dc544ebbe2ae511286cc06d4e590893be",
+    "recipeSHA256": "f3d90ca293b35ac556761febeda6e4329287dbc2b9267809f73c94863ccc3118",
+    "status": "completed",
+    "executedAfterEvaluationFinished": true,
+    "startedAt": "2026-10-28T07:48:24.526619+00:00",
+    "finishedAt": "2026-10-28T07:48:29.790239+00:00",
+    "count": 7,
+    "ordinaryControlsPassed": 7,
+    "targetedSourcesWithCounterexample": 7,
+    "rows": [
+      {
+        "probeId": "go-usage-candidate-1",
+        "trialId": "01b7af929f33ffa5380d3799ca9a0bd4",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": false,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      },
+      {
+        "probeId": "go-usage-candidate-2",
+        "trialId": "f947f229824f07c7ec5bb71ee3b17b62",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": false,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      },
+      {
+        "probeId": "node-config-baseline-0",
+        "trialId": "329f5ac633d2a43dd6bc72acadd0b105",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": false,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      },
+      {
+        "probeId": "node-config-candidate-0",
+        "trialId": "1bdc643edafa0698ed402be4aa3c3a1e",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": false,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      },
+      {
+        "probeId": "node-config-candidate-1",
+        "trialId": "97b1e933d011bc05ce7ea38919e09f23",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": true,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      },
+      {
+        "probeId": "node-usage-candidate-1",
+        "trialId": "2b3d280e7299c221a83542e524c5ee7d",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": true,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      },
+      {
+        "probeId": "node-usage-baseline-1",
+        "trialId": "27a20d6b163b76460ec594ae04021c90",
+        "ordinaryControlPassed": true,
+        "targetedCounterexampleObserved": true,
+        "wasRecordedAutomatedPass": false,
+        "originalsUnchanged": true,
+        "cleanupConfirmed": true
+      }
+    ],
+    "allOwnedGuestsRemoved": true,
+    "interpretation": "Targeted public-contract counterexamples, not a random sample or recomputed campaign score. Two exact Node automated passes have reproduced defects; Python automated pass was not dynamically reprobed. Node observations concern own JSON-key loss and inherited-name accumulator behavior, not demonstrated global prototype pollution.",
+    "isolation": "Exact frozen linux/arm64 image; private disposable copies; source read-only; network none; bounded CPU/RAM/PIDs/time/output; no original candidate mount, host candidate import, hidden oracle, downloads or inference."
+  },
+  "costQualification": {
+    "status": "unknown_for_legacy_campaign",
+    "rowsWithoutExplicitAccounting": 72,
+    "positiveDurationRows": 72,
+    "positiveRecordedTokenRows": 72,
+    "completeCostComparisonSupported": false,
+    "interpretation": "Recorded token totals are observed totals/lower bounds and may omit interrupted in-flight generations. Recorded positive durations and old ratios are preserved historical observations, not proof that the required complete-cost comparison is valid. Source-only v2 correction was independently reviewed but not deployed into this frozen campaign; no retroactive substitution."
+  },
+  "decisionReasons": [
+    "Saved promotion gate is ineligible; five protected-input violations remain.",
+    "Two automated candidate passes have independently reproduced public-contract counterexamples; seven targeted public sources exhibit the recorded edge defects.",
+    "69/72 attempts lack required final prescribed verification; ten terminal solver failures remain in the denominator.",
+    "All 72 legacy records lack complete terminal accounting, so the cost gate cannot be approved."
+  ],
+  "boundaries": [
+    "Only aggregate saved grade booleans/categories and terminal metadata were used from evaluation; no hidden assertion source or expected values were inspected or exposed.",
+    "Public-source reports were produced independently before their respective full grades were consulted; supplemental inputs were public-contract-derived and staged before campaign completion.",
+    "No original trial workspace, grade, candidate, frozen binary, model or campaign record was edited by this review.",
+    "No held-out-informed lessons, candidate tuning, response API submission or activation performed.",
+    "Parent separately owns post-campaign executor/reference tests; those product checks do not improve or replace the frozen campaign outcomes."
+  ],
+  "evidence": [
+    {
+      "path": ".runtime/phase2-campaign-20261027/3626b735b6eb018dbbb8863015a5b864-request.json",
+      "sha256": "66787a1e7d83f98e9dc667e8dacda37bdb28d84cfbe652b9843d0452bfecff64"
+    },
+    {
+      "path": "docs/evidence/phase2-paired-evaluation-final-summary.json",
+      "sha256": "3f050a7b77701fa042d8987ff8c55f1123631004904dcf02f85a77e9f5dd0813"
+    },
+    {
+      "path": "docs/evidence/phase2-go-paired-source-review.json",
+      "sha256": "50cf4b5e60d6804e732526981bb0494cbcd82854d425f1a0459f4c746965b181"
+    },
+    {
+      "path": "docs/evidence/phase2-go-paired-source-review.summary.json",
+      "sha256": "668b0d9878ff5d76a6a47a79315070daf3dea7092276d7d5e0b3cbe5c80f1866"
+    },
+    {
+      "path": "docs/evidence/phase2-node-paired-source-review.json",
+      "sha256": "fa7e2114954d82c3f01db6e4d4b36ad0505a7226d5781e9db6f1c9531f8439d5"
+    },
+    {
+      "path": "docs/evidence/phase2-node-test-change-ledger.json",
+      "sha256": "fe4dd5b748f5b387f88dd032857cf0c9f6c6837fe95cc99cc1caddc8c75ac63c"
+    },
+    {
+      "path": "docs/evidence/phase2-python-paired-source-review.json",
+      "sha256": "496516e9ee8836313033eca5dd231cab5b5e0b6322013e3a287b1a0de7122bfb"
+    },
+    {
+      "path": "docs/evidence/phase2-python-paired-source-review.summary.json",
+      "sha256": "0fa5c14acf020fc2f114cf3d4fbf9f4671854f9b1f147a7996e27bc0c8aaf70f"
+    },
+    {
+      "path": "docs/evidence/phase2-metric-completeness-review.json",
+      "sha256": "768ff22e8869bb6f8885408f0e504965f6e8af2be193e0cf4f9131e28d8fd6bb"
+    },
+    {
+      "path": "docs/evidence/phase2-metric-accounting-followup-manifest.v2.json",
+      "sha256": "2ded699cf18f878f78c1194b8b18ffc221c76330966177b285f712e4f3945261"
+    },
+    {
+      "path": "docs/evidence/phase2-accounting-independent-source-review.json",
+      "sha256": "f43957e34fe948aac7c81808f8ff1fba3e5a1da4dd6d19f16ca9572569459c50"
+    },
+    {
+      "path": "docs/evidence/phase2-supplemental-public-probes/recipe.v3.json",
+      "sha256": "f3d90ca293b35ac556761febeda6e4329287dbc2b9267809f73c94863ccc3118"
+    },
+    {
+      "path": "docs/evidence/phase2-supplemental-public-probes/observations.v3.json",
+      "sha256": "c05f1a1b785aea402e0f56b9b894fa6dc544ebbe2ae511286cc06d4e590893be"
+    }
+  ],
+  "response": {
+    "path": ".runtime/phase2-campaign-20261027/3626b735b6eb018dbbb8863015a5b864-response.json",
+    "sha256": "0f4c95bbb9d49427cfbdec4944c6e6f76b8e422c972ef040a53a97c927a685b8",
+    "submittedByReviewer": false,
+    "lessons": []
+  }
+}
