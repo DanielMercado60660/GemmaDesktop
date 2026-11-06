@@ -1,6 +1,6 @@
 # Calculation correctness, final delivery and measured results
 
-5–6 November 2026 · **model evidence closed; reviewed source changes applied; committed-source verification pending**
+5–6 November 2026 · **model evidence closed; reviewed source changes applied; source A verified locally; four known media qualification failures retained**
 
 Twenty full Harness² refinement rounds are complete. The selected specialist harness has
 mixed development evidence and misses the original fresh broad acceptance gate.
@@ -371,7 +371,7 @@ coding, missed final answers and one file-scope instruction breach. Those result
 support supervised experimentation with independent checks, not broad autonomous
 reliability.
 
-## Remaining closeout and deferred follow-up
+## Completed source verification and deferred follow-up
 
 | Work item | Recorded status |
 | --- | --- |
@@ -379,7 +379,7 @@ reliability.
 | Final safe checkpoint, actual-output audit and owned-stop bindings | Complete; exact SHA-256 identities below |
 | Product temperature default 1.0 | Exact reviewed thirteen-file proposal applied; focused checks passed; explicit saved 0.2/0 values preserved |
 | Opt-in public pointer-coverage sibling pack | Exact reviewed eight-file change applied; focused source/host controls passed; original corpus/reference/grades preserved |
-| Final committed-source clean-clone build/checks and GitHub ref | Pending source commit, clean-clone verification and remote-ref proof |
+| Committed-source clean-clone build/checks | Source A verified locally; four known media qualification failures retained; review branch linked below |
 | Prior 45-attempt repeated schedule | Never started; archived/preserved and deferred |
 | 12B quality comparison | Unexecuted follow-up only |
 | E4B requested 32K qualification and quality comparison | Unexecuted follow-up only; normal qualification remains a prerequisite |
@@ -445,29 +445,32 @@ no staging occurred in that exclusion step. Its safe metadata receipt SHA-256 is
 `94c2a68cf475fc1d275f82ea528aa5de12f69fc50d0a945e2a1abe5eb29d2ade`.
 The final staged inventory and clean clone still require their own checks.
 
-| Publication requirement | Current observation |
+| Committed-source verification | Recorded observation |
 | --- | --- |
-| Reviewed final source/docs and sanitized public evidence | Pending final review; private raw evaluations, historical held-out fixtures and model artifacts excluded |
-| Final committed source identity / publication ref | Pending; no public ref asserted |
-| Fresh local committed-source clone | Not yet verified for the final publication tree |
-| Clean-clone Ollama-only build, provenance and signature | Pending |
-| Clean-clone mocked ordinary-app delivery and appropriate tests | Pending; retain media failures and explicit skips |
-| Final build identity and sanitized verification evidence | Pending |
+| Reviewed source snapshot | [Commit `58cf9346c62d`](https://github.com/DanielMercado60660/GemmaDesktop/commit/58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff); [review branch](https://github.com/DanielMercado60660/GemmaDesktop/tree/codex/reliability-closeout-20261105) |
+| Clean local clone of A | No runtime/private fixture/cache/build-output copy; clean source state before/after build |
+| Ollama-only build | Passed in 62.5 seconds, including local ad-hoc signature and source/frontend input verification |
+| Managed resources | Explicitly omitted; both inclusion/verification flags false |
+| Standard race-test entry point | Exit 1 at Go stage after 61.53 seconds; only four known ffprobe 9.0.2 versus required 8.1 qualification failures |
+| Other tested Go packages | Twelve passed; desktop package has no tests |
+| Explicit Python/adapter follow-ups | 79 and 8 passed respectively, 0 skips |
+| Explicit frontend tests/typecheck/build | 76 Node + 75 Vitest tests across 12 files, typecheck and build passed; zero frontend skips |
+| Post-test identity/signature | Strict codesign/build-info verification passed; source/frontend/binary/resource identity fields and all 1,330 tracked files unchanged, Git clean |
+| Publication evidence scope | Local verification of A; review branch linked, without a remote push/public CI/public-clone claim |
 
-The private fixture ignore rule is applied and the files remain local. Before
-committing, audit the actual staged path list to confirm none are included. The
-clean clone must validate committed software without those fixtures. The initial
-publication inventory overclassified this tree and is not the final allowlist.
+The final safe software report SHA-256 is
+`294e320fe4281c364215bd043666e27ec44c9c09615cace7674369f5ad379635`;
+post-test verification is
+`5c8b220b1c40237768299fec83479ef6ece3a83efb5f38399d643dd7d4ba7c7b`.
+All six validation-stage child handles were reaped, owned groups were empty and
+no cleanup signals were needed. No model or desktop app was launched by the
+verification operator.
 
-Model evaluation is closed. After the reviewed changes are committed, verify
-that exact source identity in a separate clean local clone. Do not copy ignored
-runtime data, model weights, managed archives, dependency caches or build output.
-Use `./scripts/build.sh --ollama-only`, verify `dist/build-info.json` and the ad-hoc
-signature, then run the ordinary-app mock regression and appropriate repository
-checks. Preserve all failures and explicit skips. Record the commit, source and
-frontend fingerprints, binary hash, host and command results in sanitized public
-evidence before publication. A later public GitHub clone replay is a separate
-observation.
+Full selected identities and limits are in [verification of source A](../evidence/source-closeout-verification-2026-11-06.md) and its [JSON record](../evidence/source-closeout-verification-2026-11-06.json). Standard `test.sh` stopped at the Go failure, so its later Python/frontend commands did not run; the Python/adapter results are separate explicit stages. The full Go suite remains reported as failed, with its four known media qualification failures retained.
+
+The private fixture ignore rule is applied and all 143 files remain local. The committed-source clone excludes them. The initial publication inventory is not a final staging allowlist.
+
+This documentation update records A's build. It changes `docs/` only and leaves README unchanged at `995cdab3d3306f40283116a19a43e394507c7d621f09012175f9bd117f5c7c5b`. README participates in the build source fingerprint; `docs/` does not. A later build may embed a different VCS commit even with unchanged executable inputs, so no binary equality is claimed. The model-study v4 executable and this clean A build have different identities. Per-file source comparison found one production Go change (the temperature default) and two frontend changes; engine, execution and pinned upstream Harness sources were unchanged.
 
 An Ollama-only build must report its omitted managed resources honestly. A full
 installer additionally requires verified runtime archives. Successful local
@@ -482,9 +485,9 @@ The [selected aggregate derivative](../evidence/reliability-round3-summary-2026-
 contains source-report SHA-256 identities, separate automatic and independent
 counts, experiment identities and remaining fields. It omits private task inputs,
 expected answers, probes, prompts, transcripts and local user paths. Full original
-records remain unchanged locally. Its committed-build/publication fields must be updated from actual verification
-evidence. Reviewed source changes and focused checks are recorded above; no
-clean-clone or GitHub completion is asserted before those actions occur.
+records remain unchanged locally. The final frontend and post-test receipts are recorded above. This documentation
+attests local source A verification; it does not attest a remote push or public
+CI. Source/model identities and retained failures remain separate.
 
 ### Final single-pass evidence identities
 

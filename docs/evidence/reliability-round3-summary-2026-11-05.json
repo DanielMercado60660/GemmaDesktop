@@ -1,6 +1,6 @@
 {
-  "schema": "gemma-public-reliability-selected-aggregate-draft-v4",
-  "status": "model_evidence_closed_reviewed_source_and_focused_checks_applied_committed_source_verification_and_github_pending",
+  "schema": "gemma-public-reliability-selected-aggregate-v1",
+  "status": "model_and_sourceA_verification_complete_four_known_media_qualification_failures_retained",
   "preparedAtUTC": "2026-11-06T02:55:57.603952+00:00",
   "evidenceThroughUTC": "2026-11-06T02:42:17.167993+00:00",
   "publicationOrQualificationClaim": false,
@@ -273,12 +273,6 @@
     "comparison": "A1 and A2 each had three independently clear completed successes out of five, with different successful cases. One exposed attempt per configuration does not establish causal benefit or a general reliability rate.",
     "accountingBoundary": "Terminal provider counts for two interrupted calls remain unknown."
   },
-  "pendingAtDraftCutoff": [
-    "Review and commit the source/documentation snapshot A; verify that exact identity in a separate clean local clone without ignored private fixtures/runtime data/build products.",
-    "Record Ollama-only build/provenance/signature and appropriate full-stage software checks, retaining known ffprobe qualification failures and explicit skips.",
-    "Fill dated documentation/evidence with verification of A in docs-only commit B; keep README unchanged and preserve the distinction from the frozen experiment binary.",
-    "Push the reviewed authorized GitHub branch and verify its remote commit."
-  ],
   "sourceValidation": {
     "preV4": {
       "appGoRace": "passed",
@@ -293,7 +287,7 @@
       "frontendBuild": "passed",
       "fullInstallerBuildAndLocalSignatureProvenance": "passed"
     },
-    "finalCommittedTree": "pending",
+    "finalCommittedTree": "sourceA_clean_build_verified_full_stages_completed_except_four_known_ffprobe_media_qualification_failures",
     "fullGoSuiteGreenClaim": false,
     "temperatureDefaultCloseout": {
       "status": "exact_reviewed_thirteen_file_proposal_applied_focused_validation_passed",
@@ -315,8 +309,8 @@
         "frontendUnitTestsPassed": 5,
         "frontendUITestsPassed": 3
       },
-      "evidenceBoundary": "Observed actual tool command outputs; no separately persisted raw stdout log for these focused checks. Clean-clone full-stage logs remain pending.",
-      "fullCommittedTreeChecks": "pending_clean_clone"
+      "evidenceBoundary": "Focused checks used observed actual tool outputs without a separately persisted focused stdout log. The later complete source-A clean-clone stage logs and final safe report are now bound separately.",
+      "fullCommittedTreeChecks": "completed_for_sourceA_with_four_known_media_qualification_failures_retained"
     },
     "optInPublicCoverageCloseout": {
       "status": "exact_reviewed_eight_files_applied_and_focused_source_host_controls_passed",
@@ -352,7 +346,7 @@
         "Known nonblocking timeout plus terminal-artifact-write exception-priority limit remains unchanged.",
         "Root has separate nonoverlapping source changes and will run full regressions once in the clean-clone closeout."
       ],
-      "finalCommittedTreeVerification": "pending"
+      "finalCommittedTreeVerification": "completed_for_sourceA_with_four_known_media_qualification_failures_retained"
     },
     "privateFixtureExclusion": {
       "status": "exact_ignore_rule_added_local_fixtures_preserved",
@@ -363,6 +357,26 @@
       "unignoredEligibleFiles": 0,
       "ignoredUntrackedFiles": 143,
       "stagingPerformedByExclusion": false
+    },
+    "committedSourceChecks": {
+      "sourceCommitA": "58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff",
+      "goOtherTestedPackagesPassed": 12,
+      "goMediaQualificationFailures": 4,
+      "goNoTestPackages": 1,
+      "pythonPassed": 79,
+      "pythonSkipped": 0,
+      "adaptersPassed": 8,
+      "adapterSkipped": 0,
+      "frontendNodePassed": 76,
+      "frontendVitestPassed": 75,
+      "frontendVitestFiles": 12,
+      "frontendSkipped": 0,
+      "typecheckPassed": true,
+      "frontendBuildPassed": true,
+      "postTestSignatureProvenancePassed": true,
+      "trackedFilesUnchanged": 1330,
+      "gitCleanAfterChecks": true,
+      "fullGoSuiteGreenClaim": false
     }
   },
   "acceptanceTargets": {
@@ -380,7 +394,7 @@
     "Published benchmark scores do not predict this application task mix.",
     "No zero-reference-exposure claim: an unrelated legacy reference search exposure was independently scoped and preserved.",
     "Green local tests, host verification, model prose and terminal status alone do not establish complete contract correctness.",
-    "Final source/build/publication identities are pending and will differ from the frozen experiment binary."
+    "Final source A build identities are recorded and differ from the frozen experiment binary; this record does not attest remote publication or a build of B."
   ],
   "sourceReports": {
     "campaign": {
@@ -502,6 +516,16 @@
       "localSourceBasename": "private-fixture-exclusion.json",
       "sha256": "94c2a68cf475fc1d275f82ea528aa5de12f69fc50d0a945e2a1abe5eb29d2ade",
       "sourcePublication": "Safe source-closeout original retained locally; aggregate receipt fields only, with no private body paths or contents."
+    },
+    "sourceASoftwareValidation": {
+      "localSourceBasename": "software-validation-safe-report.json",
+      "sha256": "294e320fe4281c364215bd043666e27ec44c9c09615cace7674369f5ad379635",
+      "sourcePublication": "Selected safe summary fields only; no raw logs, local clone/home paths, private fixtures or run IDs."
+    },
+    "sourceAPostTestVerification": {
+      "localSourceBasename": "post-test-verification.json",
+      "sha256": "5c8b220b1c40237768299fec83479ef6ece3a83efb5f38399d643dd7d4ba7c7b",
+      "sourcePublication": "Selected safe summary fields only; no raw logs, local clone/home paths, private fixtures or run IDs."
     }
   },
   "boundedCloseoutPolicy": {
@@ -705,5 +729,34 @@
     "E4B32768protocol qualification",
     "E4Bquality comparison",
     "Further harness optimization"
-  ]
+  ],
+  "committedSourceVerification": {
+    "sourceCommitA": "58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff",
+    "sourceCommitURL": "https://github.com/DanielMercado60660/GemmaDesktop/commit/58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff",
+    "reviewBranchURL": "https://github.com/DanielMercado60660/GemmaDesktop/tree/codex/reliability-closeout-20261105",
+    "buildPassed": true,
+    "sourceFingerprint": "d03b337716ce8c4a3559a21837ea286466438e543136ca366f1e2df8ac342604",
+    "frontendFingerprint": "83e9ba28b1e5e3b08f089fd545a55a6d35c518fa023bdd96c2420efacdd9d445",
+    "binarySHA256": "5f7a4cce53c5320ca5b93742796b7374005f43546b1d169368af578bd3a8ae41",
+    "runtimeResourcesIncluded": false,
+    "runtimeResourcesVerified": false,
+    "standardGoStageFailedKnownMediaOnly": true,
+    "otherTestedGoPackagesPassed": 12,
+    "explicitPythonPassed": 79,
+    "explicitAdaptersPassed": 8,
+    "frontendFinalReceipt": "passed",
+    "postTestIdentityReceipt": "passed",
+    "detailsJSON": "source-closeout-verification-2026-11-06.json",
+    "detailsMarkdown": "source-closeout-verification-2026-11-06.md",
+    "readmeFrozenSHA256": "995cdab3d3306f40283116a19a43e394507c7d621f09012175f9bd117f5c7c5b",
+    "docsOnlyVerificationUpdate": true,
+    "frontendUnitPassed": 76,
+    "frontendUIPassed": 75,
+    "frontendUITestFiles": 12,
+    "sourceAndReadmeUnchangedAfterTests": true,
+    "softwareValidationSafeReportSHA256": "294e320fe4281c364215bd043666e27ec44c9c09615cace7674369f5ad379635",
+    "postTestVerificationSHA256": "5c8b220b1c40237768299fec83479ef6ece3a83efb5f38399d643dd7d4ba7c7b",
+    "verificationScope": "Local verification of A; docs-only update leaves README/code inputs unchanged. No remote CI/public clone/B rebuild claim."
+  },
+  "publicationEvidenceScope": "This aggregate records model results and local source A verification. Review-branch links do not assert a completed remote push, public CI or public-clone replay."
 }

@@ -1,0 +1,155 @@
+{
+  "schema": "gemma-committed-source-verification-v1",
+  "status": "sourceA_clean_local_verification_complete_with_four_known_media_qualification_failures",
+  "preparedAtUTC": "2026-11-06T03:27:33.976945+00:00",
+  "verifiedSourceCommitA": "58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff",
+  "sourceCommitURL": "https://github.com/DanielMercado60660/GemmaDesktop/commit/58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff",
+  "reviewBranch": "codex/reliability-closeout-20261105",
+  "reviewBranchURL": "https://github.com/DanielMercado60660/GemmaDesktop/tree/codex/reliability-closeout-20261105",
+  "verificationCommitPolicy": "Docs-only follow-up records verification of source commit A; no self-referential B hash is required. README and executable inputs remain unchanged by this document update.",
+  "cleanLocalClone": {
+    "createdFromCommittedSource": true,
+    "copiedRuntimePrivateFixturesCachesOrBuildProducts": false,
+    "privateHeldOutFixtureTreeAbsent": true,
+    "sourceDirtyBeforeBuild": false,
+    "sourceDirtyAfterBuild": false,
+    "publicGitHubCloneReplayClaim": false
+  },
+  "host": {
+    "architecture": "arm64",
+    "macOS": "27.0.1",
+    "memoryBytes": 68719476736
+  },
+  "build": {
+    "buildMode": "ollama-only",
+    "builtAt": "2026-11-06T03:16:25.607345+00:00",
+    "inputsCapturedAt": "2026-11-06T03:16:06.740985+00:00",
+    "inputsVerifiedUnchanged": true,
+    "sourceCommit": "58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff",
+    "sourceDirty": false,
+    "sourceDirtyAfterBuild": false,
+    "sourceFingerprint": "d03b337716ce8c4a3559a21837ea286466438e543136ca366f1e2df8ac342604",
+    "frontendFingerprint": "83e9ba28b1e5e3b08f089fd545a55a6d35c518fa023bdd96c2420efacdd9d445",
+    "binarySHA256": "5f7a4cce53c5320ca5b93742796b7374005f43546b1d169368af578bd3a8ae41",
+    "harnessResourceFingerprint": "d4c22632d432ab06bb7ab4d82ed1df0dd36982d68c86f6af06d664a6b02deb86",
+    "runtimeResourceFingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "runtimeResourcesIncluded": false,
+    "runtimeResourcesVerified": false,
+    "signing": "local ad-hoc; not notarized",
+    "provenanceScope": "Source and generated frontend input trees matched before compilation and after signing; not a hermetic build attestation.",
+    "buildInfoSHA256": "c85496933eff9010894fafeb17962155863c41b862783a1beb6011f827f35ebb"
+  },
+  "buildCommand": "./scripts/build.sh --ollama-only",
+  "observedBuildSeconds": 62.5,
+  "buildPassed": true,
+  "softwareChecks": {
+    "standardScript": {
+      "command": "GEMMA_TEST_SANDBOX=1 ./scripts/test.sh",
+      "exitCode": 1,
+      "observedSeconds": 61.53,
+      "stageReached": "Go race suite",
+      "knownFailures": 4,
+      "failureClass": "Media qualification requires ffprobe 8.1; host has 9.0.2.",
+      "otherTestedGoPackagesPassed": 12,
+      "desktopPackage": "no test files",
+      "pythonAndFrontendRunByThisFailFastInvocation": false
+    },
+    "explicitRepositoryPython": {
+      "status": "passed",
+      "tests": 79,
+      "skipped": 0
+    },
+    "explicitHarnessAdapters": {
+      "status": "passed",
+      "tests": 8,
+      "skipped": 0
+    },
+    "explicitFrontendTests": {
+      "status": "passed",
+      "nodeUnitTests": 76,
+      "vitestTests": 75,
+      "vitestFiles": 12,
+      "failures": 0,
+      "skipped": 0
+    },
+    "explicitFrontendTypecheck": {
+      "status": "passed",
+      "exitCode": 0
+    },
+    "explicitFrontendBuild": {
+      "status": "passed",
+      "exitCode": 0,
+      "warnings": [
+        "nonfatal large-chunk advisory"
+      ]
+    },
+    "postTestSourceProvenanceAndSignature": {
+      "status": "passed",
+      "canonicalBuildInfoVerifyAndStrictCodeSignExitCode": 0,
+      "sourceFrontendAndBinaryIdentityFieldsUnchanged": true,
+      "trackedFiles": 1330,
+      "changedTrackedFiles": 0,
+      "gitStatusClean": true,
+      "trackedManifestBeforeSHA256": "4f591077d10e9abfbd28d1f70ea66deb7c611046607ad2214df9e0ad162d3d1a",
+      "trackedManifestAfterSHA256": "4f591077d10e9abfbd28d1f70ea66deb7c611046607ad2214df9e0ad162d3d1a",
+      "readmeUnchanged": true,
+      "initialBuildInfoSHA256": "c85496933eff9010894fafeb17962155863c41b862783a1beb6011f827f35ebb",
+      "finalBuildInfoSHA256": "0588476f76feb0b21974b7794eab6d5cabcbb3498f04528154a31b1ad2c66dae",
+      "wholeBuildInfoFileEqualityClaim": false
+    },
+    "fullSuiteGreenClaim": false,
+    "goIndividualPassingOrSkippedTestCounts": "Not reported by the normal nonverbose Go invocation; optional/skipped integrations remain unqualified."
+  },
+  "frozenExperimentBoundary": {
+    "experimentSolverBinarySHA256": "44356ed3562358207a5d93babbc4a167cbff0915c463777267cf772573b4ffab",
+    "experimentSourceFingerprint": "155f8b5b2c5adaed02267e363748de72a850a70dc26e1e57a20acf21873bff76",
+    "sourceCommitAProductionGoChanges": [
+      "internal/app/agent_controls.go"
+    ],
+    "sourceCommitAFrontendChanges": [
+      "frontend/src/Management.tsx",
+      "frontend/src/lib/agentProfile.ts"
+    ],
+    "engineExecutionAndUpstreamHarnessCodeInputsUnchanged": true,
+    "scope": "Per-file build-input digest comparison; not byte-identical binaries or whole-tree fingerprints. Private fixture bodies not read or displayed.",
+    "byteIdenticalBinaryClaim": false,
+    "sameWholeTreeFingerprintClaim": false
+  },
+  "readmeFrozenSHA256": "995cdab3d3306f40283116a19a43e394507c7d621f09012175f9bd117f5c7c5b",
+  "sourceReports": {
+    "selectedBuildProvenance": {
+      "localSourceBasename": "build-provenance-selected.json",
+      "sha256": "cf58bcb22e173a519e0a8bddd6adc6990c5e288f907723cd77682588161a7545"
+    },
+    "codeInputComparison": {
+      "localSourceBasename": "code-input-comparison.json",
+      "sha256": "9bcd8d1fa058c7a937dbdd03705136bbb7294c4499b81ecfb68c70dd39c396eb"
+    },
+    "finalSoftwareValidation": {
+      "localSourceBasename": "software-validation-safe-report.json",
+      "sha256": "294e320fe4281c364215bd043666e27ec44c9c09615cace7674369f5ad379635"
+    },
+    "postTestVerification": {
+      "localSourceBasename": "post-test-verification.json",
+      "sha256": "5c8b220b1c40237768299fec83479ef6ece3a83efb5f38399d643dd7d4ba7c7b"
+    }
+  },
+  "limits": [
+    "Clean local committed-source verification is distinct from a public GitHub clone replay.",
+    "Local ad-hoc signing is not notarized distribution.",
+    "The full Go suite retains four known media-version failures.",
+    "Single-pass model findings remain unchanged and do not become qualified through passing software checks.",
+    "The final frontend/post-test checks passed; this does not qualify optional skipped integrations, Docker containment, model quality, notarized distribution or another machine.",
+    "Build-info whole-file hashes differ and are recorded separately; source/frontend/binary/resource identity fields remained unchanged.",
+    "A docs-only verification commit leaves code inputs and README unchanged, but a future rebuild may embed a different VCS identity. No build of B or byte equality with model-study v4 is claimed."
+  ],
+  "verifiedAtUTC": "2026-11-06T03:25:10.857190+00:00",
+  "cleanup": {
+    "validationStages": 6,
+    "allDirectChildrenWaited": true,
+    "allOwnedGroupsEmpty": true,
+    "signalsSent": 0,
+    "modelOrAppStartedByValidationOperator": false
+  },
+  "remotePublicationEvidenceScope": "This record verifies local source A, not a remote push, public CI or a public GitHub clone replay. The review branch URL identifies the intended review location."
+}

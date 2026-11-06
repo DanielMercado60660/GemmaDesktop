@@ -1,5 +1,50 @@
 # Calculation correctness, final delivery and Harness² campaign
 
+## Final closeout status — 6 November 2026 UTC
+
+The requested twenty full refinement rounds, paired development diagnostics,
+temperature comparison, exposed A1/A3/A2 controls and **one** fresh fifteen-task
+confirmation pass are complete. No further model phases belong to this closeout.
+The fresh pass produced eight independently clear successes, one uncredited
+answer-representation ambiguity and six genuine failures: nine automatic passes,
+twelve final deliveries and fifteen preserved protected originals. Everyday
+results were 3/7 clear, stretch 1/3 and supplied-test repairs 4/5. Both reliability
+gates remain unmet, including the requirement for all five bounded final
+deliveries. One task created an extra helper inside its admitted workspace but
+outside its allowed-file list; zero platform authority-grant violations or
+outside-workspace writes were observed in static receipts/scope review.
+
+The reviewed temperature-default and opt-in public-coverage source changes are
+applied and their focused checks passed. Explicit stored temperatures remain
+preserved; no database/profile/history migration or historical result rewrite
+occurred. The private 143-file fixture tree is ignored and locally preserved.
+Source snapshot [A, `58cf9346c62d`](https://github.com/DanielMercado60660/GemmaDesktop/commit/58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff), on the [review branch](https://github.com/DanielMercado60660/GemmaDesktop/tree/codex/reliability-closeout-20261105), built successfully from a clean local clone using `--ollama-only`; managed runtime resources were explicitly omitted. The standard Go stage retained only four known ffprobe-version qualification failures, while twelve other tested Go packages passed; separate Python 79 and adapter 8 checks passed. Frontend follow-ups passed 76 Node unit tests and 75 Vitest tests across 12 files, typecheck and production build, with zero frontend skips. Post-test source/frontend/binary/resource identity fields and all 1,330 tracked files remained unchanged, README stayed fixed and strict signature/build-info verification passed with Git clean.
+
+The dated [measured-results record](RELIABILITY_PUBLICATION_2026-11-05.md),
+[selected aggregate](../evidence/reliability-round3-summary-2026-11-05.json) and
+[committed-source verification](../evidence/source-closeout-verification-2026-11-06.md)
+carry final model/source identities and limits. This document update changes
+`docs/` only; README and executable inputs stay fixed. The model-study binary
+is not the later clean build of A.
+
+Repeated qualification, further harness optimization and matched 12B/E4B
+comparisons—including normal E4B 32K qualification first—are **follow-up only**.
+The proposed 45-attempt repeated schedule never started and remains archived.
+Historical 12B pilots and the older 4K E4B protocol smoke retain their original scope;
+no matched smaller-model comparison or 32K E4B qualification is claimed here.
+Local source A verification is complete, with the four known media failures
+retained. This docs-only follow-up records those actual receipts. The review
+branch URL identifies the intended publication location; this record does not
+assert remote push or public CI. No further research, optimization or model
+reruns are required by this plan.
+
+## Historical explore → plan → build record
+
+The sections below preserve the original decisions and recovery chronology.
+Forward schedules in this record are historical and are superseded by the final
+closeout status above. The original source-A version remains available in
+[Git history](https://github.com/DanielMercado60660/GemmaDesktop/blob/58cf9346c62d257aaff5fc86d0892aa5ca0fc9ff/docs/implementation/TASK_RELIABILITY_ROUND3_2026-11-05.md).
+
 ## Explore
 
 The previous round's failed log script selected the wrong quote boundary and
@@ -82,10 +127,11 @@ while calling it unseen. Publish reviewed code, opt-in content and honest,
 clearly scoped evidence after the applicable acceptance and clean-checkout
 checks; do not silently activate an unqualified product profile.
 
-## Status
+## Historical pre-campaign status and recovery chronology
 
-Exploration, build and integrated checks are complete. The frozen 26B campaign
-has been dispatched. Baseline and candidate are retained under
+At that pre-campaign checkpoint, exploration, build and integrated checks had
+completed and the frozen 26B campaign was dispatched. It later completed as
+recorded above. Baseline and candidate were retained under
 `.runtime/reliability-round3-20261105/`.
 
 - Candidate binary SHA-256:
@@ -161,7 +207,7 @@ than the entire semantic grader. Independent review cleared the exact frozen
 source hashes and task/reference integrity. The v4 campaign uses manifest
 version 2.1.0 and grading policy `task-contract-v3` throughout.
 
-## User-directed interpretation and next evaluation
+## Historical tiering decision and subsequent amendments
 
 Before any broad-suite exposure, the user asked to separate everyday usefulness,
 bounded repairs and stretch coding. The completed campaign comprises twenty full
@@ -224,9 +270,9 @@ The solver executable, Content, task/checker bytes, model authority and generati
 limits remain unchanged. The source tree and driver identity have changed: future
 batches must bind the new driver separately from the executable's original build
 provenance. Historical batches keep their original driver hashes and grades.
-All eighteen temperature trials will freeze the same revised driver before the
-first temperature outcome. Later matched models use that revision too; their
-observation-policy difference from the original 26B baseline must be disclosed.
+All eighteen temperature trials later used this same revised driver. Any future
+matched models must disclose their driver identity and observation-policy
+boundary; those comparisons are follow-up work, not an active closeout step.
 
 The revised driver SHA-256 is
 `5a096746dfaa1a98c32520f5c588d9b04dbc0c36c153f4f24585866b228c064f`;
@@ -249,9 +295,11 @@ The cleared confirmation-v5 manifest SHA-256 is
 `59876e8e234133c729009895f024811a9a782828365aaedd3e92be0f1b72aef5`;
 its seal SHA-256 is
 `17a267ea7748da72ee2ae552d2fcf4444e40020348af6d45b5064ab9e2ae4a9e`.
-The old v4 archive remains byte-exact. Neither version has been exposed to a model.
+The old v4 archive remains byte-exact. The v5 pool was subsequently used once in
+the completed fresh confirmation pass; its initial pre-exposure state is
+historical, and no repeated qualification is claimed.
 
-### Completed sampling diagnostic and prospective 1.0 candidate
+### Completed sampling diagnostic and now-completed 1.0 controls
 
 All eighteen predeclared temperature attempts completed and were independently
 correct, with protected scope preserved: nine of nine at 0.2 and nine of nine at
@@ -271,44 +319,33 @@ The user subsequently questioned the continued 0.2 setting. It was inherited fro
 earlier coding runs; Google's verified guidance recommends 1.0, top-p 0.95 and
 top-k 64. New practical candidates start at **1.0**, unless completed evidence
 supports a concrete alternative. The original 0.2 results remain historical
-evidence. Prospective practical comparisons for 12B and E4B will use the same
-selected 1.0 candidate and fixed tasks, rather than automatically extending the
-earlier proposed 0.2 campaign; this decision precedes any secondary-model trial.
+evidence. Any future matched 12B/E4B comparison requires a separately frozen
+prospective policy. It is follow-up work; the earlier proposed 0.2 extension is
+not an active schedule.
 
-The next prepared candidate uses empty supplemental Content, retaining the
-binary's general default instructions, Auto thinking and temperature 1.0. It
-removes the selected coding-specific supplement, which unconditionally requested
-`verify_task` even when the original bounded runs had no verification contract
-and no such tool in their actual catalog. That instruction/catalog mismatch is
-established; its role in the four pre-edit timeouts is unproven.
+The general default-only Content control subsequently ran as A1 at Auto/1.0
+and an 8K cap across the original exposed fifteen tasks. It produced eleven clear
+successes, one uncredited ambiguity and three failures. Requested-Off A3 and
+Auto/16K A2 each reached three clear bounded repairs out of five. Their exposed
+outcomes do not establish causal or general reliability gains. The specialist
+instruction/catalog mismatch around unconditional `verify_task` was real, but
+its role in earlier timeouts remains unproven.
 
-Preparation covers fifteen exposed diagnostic attempts: the original five
-bounded tasks, followed by the original ten broad tasks, with fresh profiles,
-unchanged task/checker/authority bytes and no retroactive verification contracts.
-Every attempt stays counted. The original primary ambiguity remains uncredited;
-this exposed pool supports diagnosis rather than fresh qualification. Because
-Content, temperature and historical driver identity differ, this is a new overall
-candidate rather than an isolated causal Content comparison. It has not started
-at the time this amendment is written. Later configuration selection must freeze
-before untouched confirmation, with repetition counts declared before inference.
+The policy was then frozen before the single fresh 15-task pass: general default-only
+Content, Auto thinking, temperature 1.0 and an 8K cap for both broad and bounded roles,
+with unchanged authority, 40 steps, 32K context, a 600-second ceiling and a 60-second
+finishing reserve. The user's explicit bounded-closeout instruction superseded
+the unstarted 45-attempt/repeat and smaller-model schedules. The completed fresh result
+and missed gates are recorded at the top of this document.
 
-A separately reviewed source proposal also aligns unspecified backend, UI and
-CLI defaults to 1.0, preserving explicit values and frozen historical requests.
-It remains unapplied while frozen-binary model trials continue. It does not
-rewrite stored user settings or claim 1.0 is a universal optimum.
+The reviewed 13-file default-temperature source change is now applied, with
+explicit values and frozen historical requests preserved. The opt-in public
+coverage sibling is also applied and focused-source validated, preserving old
+catalog data/reference/default routing and model grades. These software checks
+do not change model scores or establish that 1.0 has an accuracy advantage.
 
-Keep the original 0.2 campaign and diagnostics unchanged. A separate temperature
-diagnostic will copy three preselected everyday cases (currency reconciliation,
-incident evidence and precise configuration) into a sealed subset without changing
-their bytes. Test 0.2 and 1.0 three times each, in fixed batch order
-`0.2, 1.0, 1.0, 0.2, 0.2, 1.0`: eighteen attempts, with the same frozen content,
-model, runtime, task order, limits and authority. Record other sampling defaults;
-do not claim the full publisher configuration when they are unavailable or
-unsupported. This is repeated matched diagnostic evidence, not another unseen
-qualification pool or permission to choose harness text from those outcomes.
-
-Run primary 26B practical/bounded evaluation first, then its sampling diagnostic,
-with matched 0.2 comparisons for 12B and compatible E4B reported separately.
-No overlapping local inference, automatic model fallback, qualification bypass,
-or additional model download is part of this plan. Any later configuration
-selection needs fresh untouched confirmation and independent actual-output review.
+The earlier eighteen-attempt temperature protocol and all 0.2 results remain
+historical evidence. No active next step here calls for another temperature
+run, repeated qualification, extra optimization or matched 12B/E4B comparison.
+Committed-source A verification is now recorded above; the authorized branch
+publication remains distinct from model or software qualification.
