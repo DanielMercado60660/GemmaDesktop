@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -33,6 +33,7 @@ import type { Workflow, WorkflowEdge } from "./types";
 import { useConfirmation } from "./components/Confirmation";
 import type { PageProps } from "./Management";
 import { workflowEditorNodes, workflowSaveNodes } from "./lib/workflowEditor";
+import { completionReadiness, completionProfile } from "./lib/readiness";
 const kinds = [
   ["agent", "Agent"],
   ["condition", "Condition"],
@@ -57,7 +58,15 @@ function icon(type: string) {
     <Bot size={16} />
   );
 }
-export default function Workflows({ state, action, sessionId }: PageProps) {
+export default function Workflows({
+  state,
+  action,
+  sessionId,
+  workspaceId,
+  onDirtyChange,
+}: PageProps & {
+  onDirtyChange?: (dirty: boolean) => void;
+}) {
   const confirmAction = useConfirmation();
   const [draft, setDraft] = useState<Workflow | null>(null),
     [nodes, setNodes] = useState<Node[]>([]),
@@ -65,9 +74,92 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
     [selected, setSelected] = useState(""),
     [edgeSelected, setEdgeSelected] = useState(""),
     [saving, setSaving] = useState(false),
+    [running, setRunning] = useState(false),
     [saveError, setSaveError] = useState(""),
     [runModal, setRunModal] = useState(false),
     [prompt, setPrompt] = useState("");
+  const [savedSignature, setSavedSignature] = useState("");
+  const lifetime = useRef(0);
+  const savingRef = useRef(false);
+  const runningRef = useRef(false);
+  function payload() {
+    if (!draft) return null;
+    return {
+      id: draft.id,
+      name: draft.name,
+      description: draft.description,
+      nodes: workflowSaveNodes(nodes),
+      edges: edges.map((e) => ({
+        id: e.id,
+        source: e.source,
+        target: e.target,
+        label: typeof e.label === "string" ? e.label : undefined,
+        condition: e.data?.condition ? String(e.data.condition) : undefined,
+      })) as WorkflowEdge[],
+    };
+  }
+  let signature = "";
+  try {
+    signature = JSON.stringify(payload());
+  } catch {
+    signature = JSON.stringify({
+      draft,
+      nodes: nodes.map((n) => ({
+        id: n.id,
+        position: n.position,
+        data: n.data,
+      })),
+      edges,
+    });
+  }
+  const signatureRef = useRef(signature);
+  signatureRef.current = signature;
+  const dirty = !!draft && signature !== savedSignature;
+  useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [signature, dirty, onDirtyChange]);
+  useEffect(
+    () => () => {
+      lifetime.current++;
+      onDirtyChange?.(false);
+    },
+    [onDirtyChange],
+  );
+  const defaultAgent = state.agents.find((a) => a.id === "default");
+  const readiness = [
+    defaultAgent,
+    ...nodes
+      .filter((node) => node.data.type === "agent")
+      .map(
+        (node) =>
+          state.agents.find((agent) => agent.id === node.data.agentId) ||
+          defaultAgent,
+      ),
+  ]
+    .map((agent) => {
+      const profile = completionProfile(
+        state,
+        workspaceId,
+        agent?.id || "default",
+      );
+      return profile.effective?.error
+        ? {
+            ready: false,
+            reason: profile.effective.error,
+            action: "models" as const,
+          }
+        : completionReadiness(
+            state,
+            profile.model,
+            profile.runtimeId,
+            profile.contextSize,
+          );
+    })
+    .find((result) => !result.ready) || {
+    ready: true,
+    reason: "",
+    action: null,
+  };
   const selectedNode = nodes.find((n) => n.id === selected),
     selectedEdge = edges.find((e) => e.id === edgeSelected);
   const open = (workflow?: Workflow) => {
@@ -79,7 +171,24 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
       edges: [],
     };
     setDraft({ ...w });
-    setNodes(workflowEditorNodes(w.nodes));
+    const editorNodes = workflowEditorNodes(w.nodes);
+    setNodes(editorNodes);
+    setSavedSignature(
+      JSON.stringify({
+        id: w.id,
+        name: w.name,
+        description: w.description,
+        nodes: workflowSaveNodes(editorNodes),
+        edges: w.edges.map((e) => ({
+          id: e.id,
+          source: e.source,
+          target: e.target,
+          label: e.label || e.condition,
+          condition: e.condition,
+        })),
+      }),
+    );
+    lifetime.current++;
     setSaveError("");
     setEdges(
       w.edges.map((e) => ({
@@ -144,11 +253,11 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
     setEdgeSelected("");
   }
   async function save() {
-    if (!draft) return;
+    if (!draft || savingRef.current) return;
     setSaveError("");
-    let savedNodes;
+    let savedPayload;
     try {
-      savedNodes = workflowSaveNodes(nodes);
+      savedPayload = payload();
     } catch (error) {
       setSaveError(
         error instanceof Error
@@ -157,32 +266,93 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
       );
       return;
     }
-    const payload = {
-      ...draft,
-      nodes: savedNodes,
-      edges: edges.map((e) => ({
-        id: e.id,
-        source: e.source,
-        target: e.target,
-        label: typeof e.label === "string" ? e.label : undefined,
-        condition: e.data?.condition ? String(e.data.condition) : undefined,
-      })) as WorkflowEdge[],
-    };
+    if (!savedPayload) return;
+    const capturedSignature = signatureRef.current,
+      owner = lifetime.current;
+    savingRef.current = true;
     setSaving(true);
     try {
-      const r = await action<Workflow>("workflow.save", payload);
-      if (r) setDraft({ ...payload, id: r.id || draft.id });
+      const r = await action<Workflow>("workflow.save", {
+        ...savedPayload,
+        expectedRevision: draft.revision,
+      });
+      if (!r || lifetime.current !== owner) return;
+      const saved = {
+        ...savedPayload,
+        id: r.id || draft.id,
+        revision: r.revision,
+      };
+      setSavedSignature(JSON.stringify({ ...savedPayload, id: saved.id }));
+      setDraft((current) =>
+        current
+          ? { ...current, id: saved.id, revision: saved.revision }
+          : current,
+      );
+      return {
+        workflow: saved,
+        unchanged: signatureRef.current === capturedSignature,
+      };
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   }
   async function run() {
-    if (!draft?.id) return;
-    const r = await action("workflow.run", { id: draft.id, sessionId, prompt });
-    if (r !== undefined) {
-      setRunModal(false);
-      setPrompt("");
+    if (!draft || !readiness.ready || savingRef.current || runningRef.current)
+      return;
+    runningRef.current = true;
+    setRunning(true);
+    try {
+      let target = draft;
+      if (dirty || !draft.id) {
+        const saved = await save();
+        if (!saved) return;
+        if (!saved.unchanged) {
+          setSaveError(
+            "The workflow changed while saving. Review your changes and save again before running.",
+          );
+          return;
+        }
+        target = saved.workflow;
+      }
+      if (!target.revision) {
+        setSaveError(
+          "Refresh this workflow before running so its saved revision can be verified.",
+        );
+        return;
+      }
+      const r = await action("workflow.run", {
+        id: target.id,
+        expectedRevision: target.revision,
+        sessionId,
+        prompt,
+      });
+      if (r !== undefined) {
+        setRunModal(false);
+        setPrompt("");
+      }
+    } finally {
+      runningRef.current = false;
+      setRunning(false);
     }
+  }
+  async function back() {
+    const captured = signatureRef.current,
+      owner = lifetime.current;
+    if (
+      dirty &&
+      !(await confirmAction({
+        title: "Discard unsaved workflow changes?",
+        description: "Leaving this workflow will discard your unsaved changes.",
+        confirmLabel: "Discard changes",
+        cancelLabel: "Keep editing",
+        danger: true,
+      }))
+    )
+      return;
+    if (captured !== signatureRef.current || owner !== lifetime.current) return;
+    lifetime.current++;
+    setDraft(null);
   }
   useEffect(() => {
     if (!draft) return;
@@ -277,7 +447,7 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
         <Button
           size="icon"
           variant="ghost"
-          onClick={() => setDraft(null)}
+          onClick={() => void back()}
           aria-label="Back to workflows"
         >
           <ArrowLeft size={18} />
@@ -288,7 +458,9 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
           value={draft.name}
           onChange={(e) => setDraft({ ...draft, name: e.target.value })}
         />
-        <span className="tag">{draft.id ? "Saved workflow" : "Unsaved"}</span>
+        <span className="tag" role="status">
+          {dirty ? "Unsaved changes" : draft.id ? "Saved workflow" : "Unsaved"}
+        </span>
         <div className="spacer" />
         <Button
           onClick={save}
@@ -301,19 +473,32 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
         <Button
           variant="default"
           onClick={() => setRunModal(true)}
-          disabled={!draft.id || !sessionId}
+          disabled={
+            !nodes.length ||
+            !draft.name.trim() ||
+            !sessionId ||
+            !readiness.ready ||
+            saving
+          }
           title={
             !sessionId
               ? "Open a chat in a workspace first"
-              : !draft.id
-                ? "Save this workflow first"
-                : "Run saved workflow"
+              : !readiness.ready
+                ? readiness.reason
+                : dirty || !draft.id
+                  ? "Save and run this workflow"
+                  : "Run saved workflow"
           }
         >
           <Play size={15} />
-          Run
+          {dirty || !draft.id ? "Save and run" : "Run"}
         </Button>
       </div>
+      {!readiness.ready && (
+        <p className="notice" role="status">
+          {readiness.reason}
+        </p>
+      )}
       {saveError && (
         <div className="notice error" role="alert">
           {saveError}
@@ -544,7 +729,11 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
         open={runModal}
         onClose={() => setRunModal(false)}
         title={`Run ${draft.name}`}
-        description="This executes the saved workflow in the selected conversation."
+        description={
+          dirty || !draft.id
+            ? "Save these changes, then execute that exact saved revision in the selected conversation."
+            : "Execute this saved revision in the selected conversation."
+        }
       >
         <div className="form-stack">
           <Field label="Task">
@@ -555,7 +744,12 @@ export default function Workflows({ state, action, sessionId }: PageProps) {
               placeholder="What should this workflow accomplish?"
             />
           </Field>
-          <Button variant="default" onClick={run} disabled={!prompt.trim()}>
+          <Button
+            variant="default"
+            onClick={run}
+            loading={saving || running}
+            disabled={!prompt.trim() || !readiness.ready}
+          >
             <Play size={15} />
             Start workflow
           </Button>

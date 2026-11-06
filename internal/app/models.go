@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"gemmadesktop.local/app/internal/inference"
+	"gemmadesktop.local/app/internal/store"
 	"time"
 )
 
@@ -12,7 +13,7 @@ func (c *Core) RefreshModels() {
 	defer cancel()
 	client := c.Client()
 	version, e := client.Version(ctx)
-	runtime := Doc{"available": e == nil, "version": version, "memoryBytes": hardwareMemory(), "policy": "Local inference only"}
+	runtime := Doc{"available": e == nil, "version": version, "memoryBytes": hardwareMemory(), "policy": "Local inference only", "ownership": "external", "modelStore": "Managed by your existing Ollama installation"}
 	models := []Doc{}
 	if e != nil {
 		runtime["error"] = e.Error()
@@ -82,27 +83,60 @@ func (c *Core) modelAction(ctx context.Context, method string, p Doc) (any, erro
 			return nil, errors.New("This model is already downloading")
 		}
 		download, cancel := context.WithCancel(c.ctx)
+		job := Doc{"id": contentDigest(Doc{"endpoint": client.BaseURL(), "model": name}), "name": name, "status": "Starting download", "state": "running", "endpointDigest": contentDigest(client.BaseURL()), "startedAt": store.Now(), "updatedAt": store.Now()}
+		if err := c.Store.Put("ollama_download", job); err != nil {
+			cancel()
+			c.mu.Unlock()
+			return nil, err
+		}
 		c.pulls[name] = cancel
-		c.pullState[name] = Doc{"name": name, "status": "Starting download"}
+		c.pullState[name] = clone(job)
 		c.wg.Add(1)
 		c.mu.Unlock()
 		go func() {
 			defer c.wg.Done()
 			defer cancel()
+			lastPersist := time.Time{}
+			var persistErr error
 			e := client.Pull(download, name, func(progress inference.PullProgress) {
 				d := obj(progress)
 				d["name"] = name
+				for _, key := range []string{"id", "state", "endpointDigest", "startedAt"} {
+					d[key] = job[key]
+				}
+				d["updatedAt"] = store.Now()
 				c.mu.Lock()
 				c.pullState[name] = d
 				c.mu.Unlock()
+				if time.Since(lastPersist) >= 250*time.Millisecond {
+					if err := c.Store.Put("ollama_download", d); err != nil {
+						persistErr = err
+						cancel()
+					}
+					lastPersist = time.Now()
+				}
 			})
+			e = errors.Join(e, persistErr)
+			status := "success"
+			if e != nil {
+				status = "failed"
+			}
+			if errors.Is(e, context.Canceled) {
+				status = "cancelled"
+			}
+			if c.ctx.Err() != nil {
+				status = "interrupted"
+			}
+			job["state"], job["status"], job["updatedAt"] = status, status, store.Now()
+			if e != nil {
+				job["error"] = e.Error()
+			}
+			if err := c.Store.Put("ollama_download", job); err != nil {
+				job["state"], job["status"], job["error"] = "failed", "failed", err.Error()
+			}
 			c.mu.Lock()
 			delete(c.pulls, name)
-			if e != nil {
-				c.pullState[name] = Doc{"name": name, "status": "failed", "error": e.Error()}
-			} else {
-				c.pullState[name] = Doc{"name": name, "status": "success"}
-			}
+			c.pullState[name] = clone(job)
 			c.mu.Unlock()
 			c.RefreshModels()
 		}()
@@ -135,4 +169,27 @@ func (c *Core) modelAction(ctx context.Context, method string, p Doc) (any, erro
 	}
 	c.RefreshModels()
 	return Doc{"name": name}, nil
+}
+
+func (c *Core) recoverOllamaDownloads() error {
+	jobs, err := c.Store.List("ollama_download")
+	if err != nil {
+		return err
+	}
+	endpoint := contentDigest(c.Client().BaseURL())
+	for _, job := range jobs {
+		if str(job, "endpointDigest") != endpoint {
+			continue
+		}
+		if str(job, "state") == "running" {
+			job["state"], job["status"] = "interrupted", "interrupted"
+			job["error"] = "App stopped before the download completed. Retry explicitly to let external Ollama resume its content-addressed download."
+			job["updatedAt"] = store.Now()
+			if err = c.Store.Put("ollama_download", job); err != nil {
+				return err
+			}
+		}
+		c.pullState[str(job, "name")] = clone(job)
+	}
+	return nil
 }

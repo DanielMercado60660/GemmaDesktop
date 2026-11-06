@@ -80,3 +80,26 @@ func TestProcessPresentationPreservesLiteralOutputAndFailureStatus(t *testing.T)
 		})
 	}
 }
+
+// The host may change what a call does (forced readOnly, a resolved revision);
+// the note saying so must reach the model, not only the structured receipt.
+func TestPresentationShowsHostAdjustmentNotes(t *testing.T) {
+	for tool, data := range map[string]map[string]any{
+		"run_command": {"receiptId": "r1", "stdout": "", "stderr": "", "exitCode": 0, "readOnly": true, "readOnlyNote": "readOnly was set automatically because this task protects files"},
+		"write_file":  {"path": "calc.py", "hash": "new", "revisionNote": "expectedHash resolved to the revision you last read"},
+	} {
+		t.Run(tool, func(t *testing.T) {
+			response := map[string]any{"isError": false, "data": data}
+			req, err := toOllama(&model.LLMRequest{Contents: []*genai.Content{{Role: genai.RoleUser, Parts: []*genai.Part{{FunctionResponse: &genai.FunctionResponse{Name: tool, ID: "call_1", Response: response}}}}}}, Request{Model: "fixture"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			content := req.Messages[0].Content
+			for key, value := range data {
+				if note, ok := value.(string); ok && strings.HasSuffix(key, "Note") && !strings.Contains(content, note) {
+					t.Fatalf("%s presentation drops %s:\n%s", tool, key, content)
+				}
+			}
+		})
+	}
+}

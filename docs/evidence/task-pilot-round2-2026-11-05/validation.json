@@ -1,0 +1,68 @@
+{
+  "schema": "gemma-reliability-round2-validation-v1",
+  "date": "2026-11-05",
+  "python": {
+    "repositoryTests": 41,
+    "harnessAdapterTests": 7,
+    "passed": true
+  },
+  "frontend": {
+    "unitTests": 76,
+    "uiTests": 73,
+    "passed": true,
+    "productionBuildPassed": true
+  },
+  "go": {
+    "affectedRacePackages": [
+      "internal/app",
+      "internal/engine",
+      "internal/tools",
+      "internal/workspace",
+      "internal/inference"
+    ],
+    "passed": true,
+    "fullSuiteRerun": false,
+    "initialRestrictedRun": "Loopback bind denied; scoped rerun passed."
+  },
+  "nativeBuild": {
+    "binarySHA256": "de1c69829f8aec47588405a2e710e75e831ba170190d5c8258deb8e1c0742c2d",
+    "sourceFingerprint": "5538de830d4cc17a040d3e44226c79f91a4ad5c5ade1a34099bda36b7fcba8b2",
+    "frontendFingerprint": "e1ec3560fe119d437d14774b675a7ce3f79d4ed0319c9031058cd03480e783db",
+    "inputsVerifiedUnchanged": true,
+    "signing": "local ad-hoc; not notarized",
+    "postEvaluationSourceVerifiedUnchanged": true
+  },
+  "nativeSignatureVerified": true,
+  "replay": {
+    "generations": 134,
+    "expectedTriggers": 5,
+    "actualTriggers": 5,
+    "boundaryMatches": true,
+    "extraTriggers": 0,
+    "falsePositiveRateQualified": false
+  },
+  "defaultThinkingCycleGuard": false,
+  "liveEvaluation": "complete",
+  "liveModelQualification": false,
+  "knownUnaddressedMediaMismatch": {
+    "requiredFFprobe": "8.1",
+    "installedFFprobe": "9.0.2",
+    "baselineFailingTests": 4
+  },
+  "review": {
+    "allSixOutcomesIndependentlyAudited": true,
+    "rawFilesAndDirectoriesAudited": true,
+    "schemaReportingParity": true,
+    "controlCorrect": 2,
+    "experimentalCorrect": 3,
+    "perArmAttempts": 3,
+    "cycleInterruptions": 0,
+    "compactionAttempts": 0,
+    "liveCycleRecoveryDemonstrated": false,
+    "schemaFeedbackRecoveryObserved": true,
+    "guardEffectivenessEstablished": false,
+    "speedImprovementEstablished": false,
+    "allProtectedInputsPreserved": true,
+    "ownedPilotProcessesExited": true
+  }
+}

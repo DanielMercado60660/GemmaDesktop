@@ -18,12 +18,17 @@ import (
 )
 
 type Manager struct {
-	config Config
-	mu     sync.Mutex
-	jobs   map[string]context.CancelFunc
-	wg     sync.WaitGroup
-	closed bool
-	tasks  map[string]Task
+	config                       Config
+	mu                           sync.Mutex
+	jobs                         map[string]context.CancelFunc
+	wg                           sync.WaitGroup
+	closed                       bool
+	tasks                        map[string]Task
+	packs                        map[string]FixturePack
+	optimizationBatches          map[string]*OptimizationBatchV2
+	developmentGradeMu           sync.Mutex
+	developmentGradeCancel       context.CancelFunc
+	developmentGradeExperimentID string
 }
 
 func Open(c Config) (*Manager, error) {
@@ -36,15 +41,39 @@ func Open(c Config) (*Manager, error) {
 	if err := os.MkdirAll(c.Root, 0700); err != nil {
 		return nil, err
 	}
-	m := &Manager{config: c, jobs: map[string]context.CancelFunc{}, tasks: map[string]Task{}}
+	m := &Manager{config: c, jobs: map[string]context.CancelFunc{}, tasks: map[string]Task{}, packs: map[string]FixturePack{}, optimizationBatches: map[string]*OptimizationBatchV2{}}
 	for _, t := range c.Tasks {
 		if t.ID == "" || m.tasks[t.ID].ID != "" {
 			return nil, errors.New("duplicate or missing fixture id")
 		}
 		m.tasks[t.ID] = t
 	}
+	families := map[string]string{}
+	publicSplits := map[string]string{}
+	for _, t := range c.Tasks {
+		publicSplits[t.PublicHash] = "legacy"
+	}
+	for _, pack := range c.Packs {
+		if _, exists := m.packs[pack.ID]; exists {
+			return nil, errors.New("duplicate fixture pack")
+		}
+		if err := ValidateFixturePack(pack); err != nil {
+			return nil, err
+		}
+		for _, task := range pack.Tasks {
+			if split := families[task.ExposureFamily]; split != "" && split != task.Split {
+				return nil, errors.New("task family crosses pack splits")
+			}
+			if split := publicSplits[task.PublicHash]; split != "" && split != task.Split {
+				return nil, errors.New("copied public fixture cannot change evaluation split or legacy exposure")
+			}
+			families[task.ExposureFamily] = task.Split
+			publicSplits[task.PublicHash] = task.Split
+		}
+		m.packs[pack.ID] = pack
+	}
 	// Recovery never replays a partially executed trial. Waiting packets survive.
-	for _, kind := range []string{"trial", "experiment", "evaluation"} {
+	for _, kind := range []string{"trial", "experiment", "evaluation", "run_v2", "batch_v2", "optimization_batch_v2"} {
 		rows, err := c.Store.List("harness_" + kind)
 		if err != nil {
 			return nil, err
@@ -67,12 +96,19 @@ func (m *Manager) Close() error {
 	for _, c := range m.jobs {
 		c()
 	}
+	if m.developmentGradeCancel != nil {
+		m.developmentGradeCancel()
+	}
 	m.mu.Unlock()
 	m.wg.Wait()
 	return nil
 }
-func (m *Manager) Active() bool { m.mu.Lock(); defer m.mu.Unlock(); return len(m.jobs) > 0 }
-func (m *Manager) now() string  { return m.config.Now().UTC().Format(time.RFC3339Nano) }
+func (m *Manager) Active() bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return len(m.jobs) > 0 || m.developmentGradeCancel != nil
+}
+func (m *Manager) now() string { return m.config.Now().UTC().Format(time.RFC3339Nano) }
 func Hash(v any) string {
 	b, _ := json.Marshal(v)
 	h := sha256.Sum256(b)
@@ -238,9 +274,20 @@ func (m *Manager) Start(spec Spec, base Content, author Author) (Experiment, err
 	if len(spec.TaskIDs) < 1 || len(spec.TaskIDs) > 6 {
 		return Experiment{}, errors.New("choose one to six development tasks")
 	}
+	if spec.FixturePackID != "" {
+		if spec.CachePolicy == "" {
+			spec.CachePolicy = ColdEachAttemptV2
+		}
+		if spec.CachePolicy != ColdEachAttemptV2 {
+			return Experiment{}, errors.New("versioned campaigns require cold_each_attempt cache policy")
+		}
+		if err := ValidateFixturePack(m.packs[spec.FixturePackID]); err != nil {
+			return Experiment{}, err
+		}
+	}
 	seen := map[string]bool{}
 	for _, id := range spec.TaskIDs {
-		t, ok := m.tasks[id]
+		t, ok := m.taskForSpec(spec, id)
 		if !ok || t.Split != "development" || seen[id] {
 			return Experiment{}, errors.New("optimization accepts distinct development fixtures only")
 		}
@@ -256,16 +303,41 @@ func (m *Manager) Start(spec Spec, base Content, author Author) (Experiment, err
 		return Experiment{}, errors.New("trial budget must be 60–1200 seconds")
 	}
 	spec.ID = store.ID()
+	spec.UpstreamRevision = UpstreamRevision
 	spec.CreatedAt = m.now()
+	spec.DevelopmentSourceExperimentID = ""
 	spec.GraderVersion = MethodVersion + "-json-contract:" + spec.AppVersion
-	spec.FixtureDigest = m.fixtureDigest()
-	r, e := m.CreateRevision(spec, "", base, Author{Kind: "baseline", Identity: spec.AgentID})
+	spec.FixtureDigest = m.fixtureDigestForSpec(spec)
+	if spec.FixturePackID != "" {
+		spec.GraderVersion = m.packs[spec.FixturePackID].GraderPolicy + ":" + spec.AppVersion
+	}
+	// Normalize embedded JSON before hashing new admissions, so persistence
+	// cannot change their identity by reordering RawMessage object keys.
+	var e error
+	spec, e = decode[Spec](asDoc(spec))
+	if e != nil {
+		return Experiment{}, e
+	}
+	var r Revision
+	if spec.DevelopmentBaseRevisionID != "" {
+		r, spec.DevelopmentSourceExperimentID, e = m.developmentBaseRevision(spec, base)
+	} else {
+		r, e = m.CreateRevision(spec, "", base, Author{Kind: "baseline", Identity: spec.AgentID})
+	}
 	if e != nil {
 		return Experiment{}, e
 	}
 	spec.BaseRevisionID = r.ID
 	spec.Hash = ""
 	spec.Hash = Hash(spec)
+	if spec.FixturePackID != "" {
+		for _, id := range spec.TaskIDs {
+			t, _ := m.taskForSpec(spec, id)
+			if err := m.reserveDevelopmentExposureV2(t); err != nil {
+				return Experiment{}, err
+			}
+		}
+	}
 	x := Experiment{ID: spec.ID, Spec: spec, Status: "ready", CreatedAt: m.now(), TrialIDs: []string{}, PacketIDs: []string{}}
 	return x, m.put("experiment", x)
 }
@@ -288,6 +360,9 @@ func (m *Manager) Cancel(id string) error {
 	if c := m.jobs[id]; c != nil {
 		c()
 	}
+	if m.developmentGradeExperimentID == id && m.developmentGradeCancel != nil {
+		m.developmentGradeCancel()
+	}
 	var x Experiment
 	if e := m.get("experiment", id, &x); e == nil {
 		x.Status = "cancelled"
@@ -306,6 +381,9 @@ func (m *Manager) launch(id string, fn func(context.Context)) error {
 	defer m.mu.Unlock()
 	if m.closed {
 		return errors.New("harness service is closed")
+	}
+	if m.developmentGradeCancel != nil {
+		return errors.New("development grading is active")
 	}
 	if len(m.jobs) > 0 {
 		return errors.New("another harness operation is active")
@@ -330,6 +408,16 @@ func (m *Manager) Advance(id string) (Experiment, error) {
 		return x, errors.New("experiment has finished")
 	}
 	e := m.launch(id, func(ctx context.Context) {
+		if x.Spec.FixturePackID != "" {
+			bounded, cancel := context.WithTimeout(ctx, 2*time.Hour)
+			defer cancel()
+			ctx = bounded
+			if err := m.beginOptimizationBatchV2(x); err != nil {
+				m.failExperiment(id, err)
+				return
+			}
+			defer m.finishOptimizationBatchV2(id)
+		}
 		if x.Spec.Mode == "upstream" {
 			active := x // Advance returns its admission snapshot concurrently.
 			active.Status = "running"
@@ -342,6 +430,9 @@ func (m *Manager) Advance(id string) (Experiment, error) {
 				return
 			}
 			if err := m.config.Upstream(ctx, m, active); err != nil {
+				if x.Spec.FixturePackID != "" && ctx.Err() != nil {
+					err = ctx.Err()
+				}
 				m.failExperiment(id, err)
 			}
 		} else {
@@ -364,6 +455,10 @@ func (m *Manager) failExperiment(id string, e error) {
 	if x.Status != "cancelled" {
 		x.Status = "failed"
 		x.Error = e.Error()
+		if x.Spec.FixturePackID != "" && (errors.Is(e, ErrBatchCheckpointV2) || errors.Is(e, context.DeadlineExceeded)) {
+			x.Status = "checkpointed"
+			x.Error = "Batch stopped at a durable checkpoint. Resume explicitly to continue untouched work."
+		}
 		if errors.Is(e, context.Canceled) {
 			x.Status = "cancelled"
 			if m.closed {
@@ -442,7 +537,12 @@ func treeHash(root string) (string, error) {
 	return Hash(values), e
 }
 func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, revisionID string) (Trial, error) {
-	task, ok := m.tasks[taskID]
+	if x.Spec.FixturePackID != "" {
+		if err := ValidateFixturePack(m.packs[x.Spec.FixturePackID]); err != nil {
+			return Trial{}, err
+		}
+	}
+	task, ok := m.taskForSpec(x.Spec, taskID)
 	if !ok {
 		return Trial{}, errors.New("unknown fixture")
 	}
@@ -453,6 +553,21 @@ func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, r
 	if r.AgentID != x.Spec.AgentID || r.WorkspaceID != x.Spec.WorkspaceID {
 		return Trial{}, errors.New("revision target mismatch")
 	}
+	if x.Spec.FixturePackID != "" {
+		if err := m.reserveOptimizationAttemptV2(x, task, label, r); err != nil {
+			return Trial{}, err
+		}
+		bounded, cancel := context.WithTimeout(ctx, attemptEnvelopeV2)
+		defer cancel()
+		ctx = bounded
+	}
+	return m.solveAdmittedTrial(ctx, x, task, label, r, "")
+}
+
+// The same solver lifecycle serves v1 experiments and v2 diagnostics/paired
+// evaluations. New callers supply an already-admitted immutable task and arm.
+func (m *Manager) solveAdmittedTrial(ctx context.Context, x Experiment, task Task, label string, r Revision, ownerKind string) (Trial, error) {
+	taskID, revisionID := task.ID, r.ID
 	identity := Hash([]string{x.ID, taskID, label, r.Hash, x.Spec.Hash, task.PublicHash})
 	id := identity[:32]
 	old, e := m.trial(id)
@@ -464,6 +579,9 @@ func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, r
 			h, he := treeHash(old.Root)
 			if he != nil || h != old.OutputHash {
 				return old, errors.New("saved trial output changed")
+			}
+			if old.InfrastructureError != "" {
+				return old, errors.New(old.InfrastructureError)
 			}
 			return old, nil
 		}
@@ -489,6 +607,9 @@ func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, r
 		return Trial{}, e
 	}
 	t := Trial{ID: id, ExperimentID: x.ID, TaskID: taskID, Label: label, RevisionID: revisionID, InputHash: identity, Status: "running", CreatedAt: m.now(), Root: filepath.Join(m.config.Root, "trials", id, "workspace")}
+	if ownerKind != "" {
+		t.OwnerKind, t.OwnerID = ownerKind, x.ID
+	}
 	if m.config.ValidateEnvironment != nil {
 		if e = m.config.ValidateEnvironment(ctx, x.Spec); e != nil {
 			return t, e
@@ -500,15 +621,32 @@ func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, r
 	if e = m.put("trial", t); e != nil {
 		return t, e
 	}
+	if x.Spec.CachePolicy != "" {
+		if x.Spec.CachePolicy != ColdEachAttemptV2 {
+			return t, errors.New("unsupported runtime cache policy")
+		}
+		if m.config.PrepareAttempt != nil {
+			prepared := time.Now()
+			prepareCtx, prepareCancel := context.WithTimeout(ctx, time.Minute)
+			e = m.config.PrepareAttempt(prepareCtx, x.Spec)
+			prepareCancel()
+			t.PreparationMS = time.Since(prepared).Milliseconds()
+			if e != nil {
+				t.InfrastructureError = "runtime preparation: " + e.Error()
+			}
+		}
+	}
 	trialCtx, cancel := context.WithTimeout(ctx, time.Duration(x.Spec.BudgetSeconds)*time.Second)
 	defer cancel()
 	start := time.Now()
 	var progressMu sync.Mutex
 	toolCount := 0
-	if m.config.Solve == nil {
+	if e != nil {
+		// A failed cold start is an infrastructure observation, never model evidence.
+	} else if m.config.Solve == nil {
 		e = errors.New("solver is unavailable")
 	} else {
-		t.Result, e = m.config.Solve(trialCtx, SolveRequest{TrialID: id, Root: t.Root, Prompt: task.Prompt, Revision: r, Spec: x.Spec, Task: Task{ID: task.ID, Name: task.Name, Stack: task.Stack, Command: task.Command, PublicHash: task.PublicHash}}, func(event Event) {
+		t.Result, e = m.config.Solve(trialCtx, SolveRequest{TrialID: id, Root: t.Root, Prompt: task.Prompt, Revision: r, Spec: x.Spec, Task: Task{ID: task.ID, Name: task.Name, Stack: task.Stack, Command: task.Command, PublicHash: task.PublicHash, ProtectedFiles: task.ProtectedFiles, Contract: task.Contract}}, func(event Event) {
 			if event.Type == "thinking" || event.Type == "adk_event" || event.Type == "text" {
 				return
 			}
@@ -527,6 +665,26 @@ func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, r
 		})
 	}
 	t.Result.DurationMS = time.Since(start).Milliseconds()
+	if x.Spec.CachePolicy == ColdEachAttemptV2 && m.config.ReleaseRuntime != nil {
+		released := time.Now()
+		cleanupCtx := context.WithoutCancel(ctx)
+		cleanupCancel := func() {}
+		if deadline, ok := ctx.Deadline(); ok {
+			cleanupCtx, cleanupCancel = context.WithDeadline(cleanupCtx, deadline)
+		}
+		releaseCtx, releaseCancel := context.WithTimeout(cleanupCtx, 30*time.Second)
+		releaseErr := m.config.ReleaseRuntime(releaseCtx, x.Spec)
+		releaseCancel()
+		cleanupCancel()
+		t.ReleaseMS = time.Since(released).Milliseconds()
+		if releaseErr != nil {
+			if t.InfrastructureError != "" {
+				t.InfrastructureError += "; "
+			}
+			t.InfrastructureError += "runtime release: " + releaseErr.Error()
+			e = errors.Join(e, releaseErr)
+		}
+	}
 	t.Status = "completed"
 	if e != nil || t.Result.Incomplete {
 		t.Status = "failed"
@@ -551,6 +709,9 @@ func (m *Manager) SolveTrial(ctx context.Context, x Experiment, taskID, label, r
 	}
 	if e = m.put("trial", t); e != nil {
 		return t, e
+	}
+	if t.InfrastructureError != "" {
+		return t, errors.New(t.InfrastructureError)
 	}
 	return t, nil
 }

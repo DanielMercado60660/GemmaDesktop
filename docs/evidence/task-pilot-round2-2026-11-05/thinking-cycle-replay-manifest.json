@@ -1,0 +1,10 @@
+{
+  "sourceDetectorSHA256": "4ac50455f839733d233fd52df0ed300904c332e234d51aa7d303ed8f9d5c828b",
+  "inputSHA256": "0d6af647b26b15badd32d6dda10b552dc2bcbd200222bed294d4565affca8fd3",
+  "generations": 134,
+  "expectedTriggers": 5,
+  "notes": [
+    "Exact frozen thresholds; no task/checker changes or inference.",
+    "Original two failed traces plus seven successful baseline/v2 traces; ordinary thinking only."
+  ]
+}

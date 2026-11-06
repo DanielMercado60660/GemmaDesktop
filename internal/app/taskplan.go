@@ -16,7 +16,7 @@ type PlanItem struct {
 }
 
 func planTool() engine.ToolDefinition {
-	return engine.ToolDefinition{Name: "plan_update", Description: "Record the full task plan with optimistic revision. Start revision 0; use the returned revision on updates. To link evidence, copy the exact host receiptId returned by a recorded tool into receiptIds (at most 128 unique receipts across the plan). Do not invent IDs. Failed tool outcomes may be linked as observations. Plan status is a progress claim, not proof of correctness or authorization.", Parameters: map[string]any{"type": "object", "properties": map[string]any{"revision": map[string]any{"type": "integer", "minimum": 0}, "items": map[string]any{"type": "array", "maxItems": 32, "items": map[string]any{"type": "object", "properties": map[string]any{"id": map[string]any{"type": "string"}, "title": map[string]any{"type": "string"}, "receiptIds": map[string]any{"type": "array", "maxItems": 32, "items": map[string]any{"type": "string", "maxLength": 512}}, "status": map[string]any{"type": "string", "enum": []string{"pending", "in_progress", "completed", "blocked", "cancelled"}}}, "required": []string{"id", "title", "status"}, "additionalProperties": false}}}, "required": []string{"revision", "items"}, "additionalProperties": false}}
+	return engine.ToolDefinition{Name: "plan_update", Description: "Record the full task plan with optimistic revision. Start revision 0; use the returned revision on updates. To link evidence, copy the exact host receiptId returned by a recorded tool into receiptIds (at most 128 unique receipts across the plan). Do not invent IDs. Failed tool outcomes may be linked as observations. Plan status is a progress claim, not proof of correctness or authorization.", Parameters: map[string]any{"type": "object", "properties": map[string]any{"revision": map[string]any{"type": "integer", "minimum": 0, "description": "The revision returned by your previous plan_update; 0 for the first plan."}, "items": map[string]any{"type": "array", "maxItems": 32, "items": map[string]any{"type": "object", "properties": map[string]any{"id": map[string]any{"type": "string"}, "title": map[string]any{"type": "string"}, "receiptIds": map[string]any{"type": "array", "maxItems": 32, "items": map[string]any{"type": "string", "maxLength": 512}}, "status": map[string]any{"type": "string", "enum": []string{"pending", "in_progress", "completed", "blocked", "cancelled"}}}, "required": []string{"id", "title", "status"}, "additionalProperties": false}}}, "required": []string{"revision", "items"}, "additionalProperties": false}}
 }
 func (c *Core) updateTaskPlan(runID string, p Doc) (Doc, error) {
 	if _, e := c.Store.Get("run", runID); e != nil {
@@ -73,7 +73,18 @@ func (c *Core) updateTaskPlan(runID string, p Doc) (Doc, error) {
 		return nil, errors.New("integer revision required")
 	}
 	d := Doc{"version": 1, "runId": runID, "items": items, "updatedAt": store.Now(), "qualification": "Agent/user progress claims; linked execution receipts are observations, not independent correctness grades."}
-	return c.Store.Revise("taskplan", runID, int(rev), d)
+	// Small models often send the next revision number instead of the one they
+	// are replacing. Exactly current+1 is read as the current revision; every
+	// other mismatch still conflicts inside Revise.
+	expected := int(rev)
+	if current, err := c.Store.Get("taskplan", runID); err == nil {
+		if v, ok := current["revision"].(float64); ok && expected == int(v)+1 {
+			expected = int(v)
+		}
+	} else if errors.Is(err, store.ErrNotFound) && expected == 1 {
+		expected = 0
+	}
+	return c.Store.Revise("taskplan", runID, expected, d)
 }
 
 func (c *Core) taskPlanView(runID string) (Doc, error) {

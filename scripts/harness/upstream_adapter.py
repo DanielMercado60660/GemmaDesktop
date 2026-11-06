@@ -7,7 +7,7 @@ from __future__ import annotations
 import contextlib, hashlib, json, os, pathlib, sys, threading
 from dataclasses import dataclass
 
-PIN = '1cfe254e8d25b15f37048c3730134686abe60335'
+PIN = '6868817518876de8fd170c6a8354daca273b6191'
 HERE = pathlib.Path(__file__).resolve()
 UPSTREAM = HERE.parents[2] / 'third_party/harness2'
 sys.path.insert(0, str(UPSTREAM))
@@ -15,6 +15,9 @@ sys.path.insert(0, str(UPSTREAM))
 WIRE_OUT = sys.stdout
 RPC_LOCK = threading.Lock()
 COUNTER = 0
+
+class BatchCheckpoint(BaseException):
+    """The Go owner persisted a safe boundary; explicit advance is required."""
 
 def verify_upstream():
     manifest=json.loads((UPSTREAM/'UPSTREAM.json').read_text())
@@ -40,7 +43,9 @@ def rpc(method,params):
         if len(line)>8*1024*1024:raise RuntimeError('oversized supervisor response')
         response=json.loads(line)
         if response.get('id')!=ident:raise RuntimeError('out-of-order supervisor response')
-        if response.get('error'):raise RuntimeError(response['error']['message'])
+        if response.get('error'):
+            if response['error'].get('code') == -32002:raise BatchCheckpoint(response['error']['message'])
+            raise RuntimeError(response['error']['message'])
         return response['result']
 
 @dataclass(frozen=True)
@@ -94,7 +99,12 @@ class Adapter:
         ch=PacketChannel('external_packet','codex-guided')
         self.spec=BenchSpec(name='gemma-local-fixtures',runs_root=self.root/'runs',install_mode='workspace_config',prompts=BenchPrompts(work='repair a small local service according to its public README and preserve its CLI contract',inv_levers='instructions and tool-use guidance',dom_levers='domain-specific guidance and approved skill selection'),channels={'proposer':ch,'selector':ch},leak_globs=('grader/**','reference.json','evaluation.json'),allow_subagents=False)
         self.by_id={t['id']:t for t in init['tasks']}
-        self.revisions={fingerprint(encode_content(r['content'])):r['id'] for r in init.get('revisions',[init['baseline']])}
+        self.revisions={r['id']:encode_content(r['content']) for r in init.get('revisions',[init['baseline']])}
+        self.revisions.setdefault(init['baseline']['id'],encode_content(init['baseline']['content']))
+        self.bindings={}
+        for binding in init.get('revisionBindings',[]):self.bind_stage(binding)
+        for tid in self.by_id:
+            self.bind_stage({'taskId':tid,'label':'base','revisionId':init['baseline']['id']})
         tree.write_tree(SURFACE,encode_content(init['baseline']['content']),self.base_harness(),stubs=False)
         for tid,t in self.by_id.items():
             source=self.task_files(tid);source.mkdir(parents=True,exist_ok=True)
@@ -113,12 +123,20 @@ class Adapter:
     def task_prompt(self,task_id):return self.by_id[task_id]['prompt']
     def task_files(self,task_id):return self.root/'sources'/task_id
     def base_harness(self):return self.root/'base'
+    def bind_stage(self,binding):
+        task,label,revision=binding['taskId'],binding['label'],binding['revisionId']
+        if task not in self.by_id or label not in ('base','inv','dom','final') or revision not in self.revisions:
+            raise ValueError('unknown task/stage/revision binding')
+        if label=='base' and revision!=self.init['baseline']['id']:raise ValueError('baseline revision cannot be rebound')
+        key=(task,label)
+        if key in self.bindings and self.bindings[key]!=revision:raise ValueError('immutable task/stage binding changed')
+        self.bindings[key]=revision
     def validate_tree(self,files):decode_content(files)
     def execute(self,task_id,harness_dir,run_id,*,timeout=None):
         self.current_task=task_id
-        files=tree.read_tree(SURFACE,harness_dir or self.base_harness());rev=self.revisions.get(fingerprint(files))
-        if not rev:raise ValueError('unregistered packet revision')
         tail=run_id.rsplit('/',1)[-1];label='base' if tail.startswith('base') else 'inv' if tail.startswith('inv') else 'dom' if tail.startswith('dom') else 'final'
+        files=tree.read_tree(SURFACE,harness_dir or self.base_harness());rev=self.bindings.get((task_id,label))
+        if not rev or fingerprint(files)!=fingerprint(self.revisions[rev]):raise ValueError('task/stage harness content differs from frozen revision')
         result=rpc('solve',{'taskId':task_id,'label':label,'revisionId':rev});self.trials[result['id']]=result
         dest=self.root/'executions'/result['id'];dest.mkdir(parents=True,exist_ok=True)
         (dest/'result.json').write_text(json.dumps(result));(dest/'answer.txt').write_text(result['result'].get('content',''))
@@ -126,11 +144,21 @@ class Adapter:
         for call in (result['result'].get('toolCalls') or []):
             lines.append('[ACTION] '+call['tool']+' '+json.dumps(call.get('arguments',{})))
             lines.append(('[ERROR] ' if call.get('error') else '[OBSERVATION] ')+(call.get('error') or call.get('content','')))
-        (dest/'trajectory.md').write_text('\n'.join(lines));runmark.mark_complete(dest,run_id=run_id,harness_dir=harness_dir)
+        (dest/'trajectory.md').write_text('\n'.join(lines));runmark.mark_complete(dest,run_id=run_id,harness_dir=harness_dir,inputs=runmark.inputs_fingerprint(self.task_prompt(task_id),self.task_files(task_id)))
         self.last_revision=rev if label=='final' else self.last_revision;self.completed=len(self.trials)
         return dest
     def delivered(self,run_dir):
         d=json.loads((pathlib.Path(run_dir)/'result.json').read_text());return d['status']=='completed' and bool(d['result'].get('content'))
+    def artifacts_intact(self,run_dir):
+        root=pathlib.Path(run_dir)
+        try:
+            result=json.loads((root/'result.json').read_text())
+            if result != self.trials.get(result.get('id')):return False
+            task=result['taskId']
+            expected=runmark.inputs_fingerprint(self.task_prompt(task),self.task_files(task))
+            mark=runmark.read_mark(root)
+            return bool(mark and mark.get('inputs')==expected and (root/'answer.txt').read_text()==result['result'].get('content',''))
+        except (OSError,ValueError,KeyError):return False
     def trajectory(self,run_dir,*,obs_trunc):return (pathlib.Path(run_dir)/'trajectory.md').read_text()
     def deliverable_files(self,run_dir):return {'answer.txt':self.deliverable_text(run_dir)}
     def deliverable_text(self,run_dir):return (pathlib.Path(run_dir)/'answer.txt').read_text()
@@ -154,7 +182,10 @@ class ExternalPacketProposer:
             text='NO_ENTRY' if not lessons else '<experience>\ncue: '+lessons[0]['cue']+'\nlesson: '+lessons[0]['guidance']+'\nevidence: '+', '.join(lessons[0]['evidence'])+'\n</experience>'
         else:
             workspace=context/'harness';files=encode_content(response['content']);tree.write_tree(SURFACE,files,workspace,stubs=False)
-            self.adapter.revisions[fingerprint(files)]=packet['revisionId'];text='<notes>'+text+'</notes>'
+            self.adapter.revisions[packet['revisionId']]=files
+            rollout={'proposal_inv':'inv','proposal_dom':'dom','compose':'final'}[stage]
+            self.adapter.bind_stage({'taskId':task,'label':rollout,'revisionId':packet['revisionId']})
+            text='<notes>'+text+'</notes>'
         reply=Reply(label=label,text=text,ok=True,attempts=1,workspace=workspace,channel='external_packet');self._calls.append(reply);return reply
 
 @contextlib.contextmanager
@@ -176,20 +207,49 @@ def serial_core_phases():
     finally:
         recursion.run_mode = original
 
+@contextlib.contextmanager
+def strict_core_cache():
+    """Do not inherit the donor's permissive missing-input legacy cache policy.
+
+    No published source is edited. This owned sidecar adds stricter admission,
+    just as serial_core_phases narrows its concurrency. Go remains final owner
+    of trial input/output identities and never replays uncertain solver effects.
+    """
+    original_match=runmark._inputs_match
+    original_resume=schedule._resume
+    def match(marker,inputs):
+        return inputs is None or marker.get('inputs')==inputs
+    def resume(summary_path,*args,**kwargs):
+        try:
+            if not json.loads(pathlib.Path(summary_path).read_text()).get('inputs'):return False
+        except (OSError,ValueError):return False
+        return original_resume(summary_path,*args,**kwargs)
+    runmark._inputs_match=match;schedule._resume=resume
+    try:yield
+    finally:runmark._inputs_match=original_match;schedule._resume=original_resume
+
 def main():
     verify_upstream()
     init=json.loads(sys.stdin.readline())
     if init.get('upstreamRevision')!=PIN:raise RuntimeError('supervisor pin mismatch')
     adapter=Adapter(init);proposer=ExternalPacketProposer(adapter)
     # Both injection points are explicit: no provider-backed fallback is reachable.
-    with contextlib.redirect_stdout(sys.stderr), serial_core_phases():
-        for tid in adapter.tasks():
-            adapter.current_task=tid
-            library=__import__('harness2.core.library',fromlist=['Library']).Library(root=adapter.root/'library',domain=adapter.domain_of(tid),surface=SURFACE)
-            result=schedule.run_task(tid,1,adapter=adapter,prop=proposer,selector_prop=proposer,runs_root=adapter.spec.runs_root,modes=('agg',),library=library)
-            if result.status!='completed':
-                # Core uses 'ok' for merged success; preserve actual diagnostics.
-                if not result.modes.get('agg',{}).get('ok') or result.errors:raise RuntimeError(json.dumps(result.to_dict()))
-    rpc('finish',{'candidateId':adapter.last_revision,'rollouts':adapter.completed,'stages':3*len(adapter.tasks())})
+    try:
+        with contextlib.redirect_stdout(sys.stderr), serial_core_phases(), strict_core_cache():
+            for tid in adapter.tasks():
+                adapter.current_task=tid
+                library=__import__('harness2.core.library',fromlist=['Library']).Library(root=adapter.root/'library',domain=adapter.domain_of(tid),surface=SURFACE)
+                result=schedule.run_task(tid,1,adapter=adapter,prop=proposer,selector_prop=proposer,runs_root=adapter.spec.runs_root,modes=('agg',),library=library)
+                if result.status!='completed':
+                    # Core uses 'ok' for merged success; preserve actual diagnostics.
+                    if not result.modes.get('agg',{}).get('ok') or result.errors:raise RuntimeError(json.dumps(result.to_dict()))
+    except BatchCheckpoint:
+        return
+    if init.get('fixturePackId') and len(adapter.tasks()) > 1:
+        packet=rpc('compose_all',{})
+        if not packet.get('revisionId'):raise RuntimeError('cross-task composition lacks a frozen revision')
+        adapter.last_revision=packet['revisionId']
+    stages=3*len(adapter.tasks())+int(bool(init.get('fixturePackId')) and len(adapter.tasks())>1)
+    rpc('finish',{'candidateId':adapter.last_revision,'rollouts':adapter.completed,'stages':stages})
 
 if __name__=='__main__':main()

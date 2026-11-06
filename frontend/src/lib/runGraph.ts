@@ -98,6 +98,7 @@ const ignored = new Set([
   "generation_metrics",
   "token_accounting",
   "context_prepared",
+  "context_compaction_metrics",
 ]);
 const nodeKinds = new Set(["node_started", "node_completed", "node_failed"]);
 const toolKinds = new Set([

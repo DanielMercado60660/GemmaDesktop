@@ -11,7 +11,7 @@ This is an independent project, unaffiliated with Google. The original brief and
 3. Open `dist/Gemma Desktop.app` after building.
 4. Choose a project directory, create a conversation, and send a task. Consequential tool calls appear as approvals with their exact arguments. Denying a request returns an error to the agent.
 
-The app defaults to `http://127.0.0.1:11434`, a 32K context, 24 model steps, and approval-required execution. A 64K working configuration has also been exercised on the 64 GiB target Mac with a measured 55,457-token input; select context size in Settings and distinguish capacity from coding qualification. Model weights are managed by Ollama outside the app bundle. Download size is not a promise of working memory usage: context, the runner, and other active applications affect memory requirements.
+The app defaults to `http://127.0.0.1:11434`, a 32K context, 40 model steps for new agents (agents saved by earlier versions keep their value), and approval-required execution. A 64K working configuration has also been exercised on the 64 GiB target Mac with a measured 55,457-token input; select context size in Settings and distinguish capacity from coding qualification. Model weights are managed by Ollama outside the app bundle. Download size is not a promise of working memory usage: context, the runner, and other active applications affect memory requirements.
 
 Closing the window hides it and lets active work continue in the app process. Clicking the Dock icon reopens it. Quitting cancels active work. There is no independent background daemon.
 
@@ -50,8 +50,9 @@ The explicit harness variant `--tool-protocol structured_json` selects an experi
 ## Workbench
 
 - **Chats:** streamed answers, conversation-owned drafts and attachments, run cancellation, approvals, paged tool activity, bounded local context summaries, and saved results. Observed-action receipts distinguish actual command/file outcomes from model prose; follow-ups restore completed tool history and summaries from saved failed-run snapshots without replaying effects, with bounded recovery evidence when a usable snapshot is absent.
+- **Check command:** the composer's optional **Check** takes one command that confirms the task, such as `python3 -m unittest -v`, and is remembered per workspace. It runs without a shell, so pipes, redirects, `;`, `&&` and variable assignments are rejected inline. When Gemma finishes a turn that changed files without a fresh passing check, Gemma Desktop runs the check itself, read-only and through the usual approval; a genuine failure returns its output to Gemma for up to two repair rounds within the remaining budget. A check that is denied, cannot start or hits a host limit gets no repair round. The run shows **Task verification passed** or **Task remains unverified**; see the [task pilot record](evidence/task-pilot-2026-11-04.md) for how this was exercised.
 - **Files and changes:** scoped file browsing and Monaco editing with revision checks; separate staged, unstaged and untracked Git status alongside source diffs and recorded artifacts.
-- **Agents:** named instructions, local model choice, step budgets, explicit Auto/On/Off thinking, response-token limits (default 8,192, including thinking), sampling temperature (0–2, legacy default 0.2), and read-only or approval modes. Auto preserves the runtime's thinking default. An empty ordinary generation receives at most one retry when the original budgets allow it, with completed tool history preserved. Reaching a generation limit or receiving a second empty terminal answer marks the response incomplete; truncated tool calls never execute. Partial answers remain in visible history but are excluded from completed model context. The global read-only mode remains authoritative; capability-profile controls select the permitted tools and skill versions.
+- **Agents:** named instructions, local model choice, step budgets, explicit Auto/On/Off thinking, response-token limits (default 8,192, including thinking), sampling temperature (0–2, legacy default 0.2), and read-only or approval modes. Auto preserves the runtime's thinking default. An empty or length-truncated ordinary generation receives at most two retries when the original budgets allow it, with completed tool history preserved and corrective feedback appended after the conversation. Exhausting those retries marks the response incomplete; truncated tool calls never execute. Partial answers remain in visible history but are excluded from completed model context. The global read-only mode remains authoritative; capability-profile controls select the permitted tools and skill versions.
 - **Workflows:** React Flow editing backed by validated ADK graphs. Agent, condition, approval, parallel, join, output, and dynamic fan-out nodes are compiled in Go. The frontend does not schedule work.
 - **Models:** real Ollama inventory, model downloads and residency controls, host memory, and runtime diagnostics.
 - **Capabilities:** versioned profiles choose tools, immutable skill versions, MCP tools, execution settings and read-only specialists. Each run freezes its effective profile, deadline and budgets. The Context inspector records admission and runtime sources; the Plan inspector distinguishes progress claims from linked execution evidence.
@@ -71,7 +72,59 @@ Docker commands publish permitted source changes automatically before returning,
 
 Commands can select a guarded relative working directory and request `readOnly:true`, which permits test databases in private temporary storage while protecting project files. Diagnostic output retains both its beginning and end. A successful process exit is evidence of that process outcome, not an independent correctness judgment.
 
+A clear whole-workspace instruction such as “Don't change or create any files”
+freezes that run as read-only. An otherwise command-enabled agent can still
+request approved inline calculations such as `python3 -c`; the host forces the
+workspace read-only even if the model requests writes. Configured read-only
+agents retain their stricter tool limits. Plain retries and focused continuations
+retain the constraint, while a newly admitted explicit write request can replace
+it. Recognition is deliberately narrow: quoted examples, questions, exceptions,
+and restrictions on individual files do not become whole-workspace bans.
+
+Successful edits include a short diff preview and an explicit success message.
+Repeating the last identical successful edit in the same conversation at its
+unchanged resulting revision reports “already applied” without another mutation
+or approval. To perform a further transformation, use a different snippet of
+the current text. Missing-text errors include the current revision and, when a
+unique first-line anchor exists, the first differing line. Existing real
+directories return success without requesting creation approval.
+
+Malformed tool arguments remain rejected before execution. Recognized command
+array and file-range mistakes now include a bounded correction alongside the
+original error. A string containing JSON or shell text is never converted into
+executable arguments; the model must submit a valid new proposal.
+
+The experimental **Interrupt repeated thinking and retry** control is off by
+default. It detects sustained exact cycles in thinking outside fenced code,
+discards that unfinished generation and retries within the existing allowance.
+It does not inspect visible answers or tool arguments, expand permissions, or
+add model calls beyond the existing budget. Cancellation or uncertain backend
+cleanup stops recovery. Long nonrepeating reasoning is outside its scope.
+
+Programmatic `run.start` callers may supply an integer `budgetSeconds` from
+30 to 1200 to narrow the admitted time limit. The returned run and checkpoint
+record the hard deadline. A saved agent may opt into `finishReserveSeconds`
+from 0 to 120 (default zero), smaller than that run budget. At an ordinary
+model-call boundary within the reserve, the outer run can spend its single
+status allowance on a tools-free report capped at 1024 tokens. It records an
+incomplete budget failure and observed status rather than a successful task.
+Long in-flight operations or compaction may still reach the deadline before
+that boundary, so this is best-effort closure. Ordinary response caps retain
+their configured values.
+
+Calculation guidance now calls for sample parsing, field validation, coverage
+and invariants before trusting aggregate results. Surprising empty results
+need investigation without assuming that a nonzero answer must exist. Once
+observations support the requested conclusions, the agent is asked to deliver
+them concisely instead of manually recounting the data.
+
 The configured context size is requested from Ollama, and the UI separately shows runtime-reported capacity. These values are not a verified hard token limit on every runner: the earlier Ollama 0.32.3 MLX path processed an oversized-history qualification despite `num_ctx:1024` and explicit no-truncation flags. Ollama 0.40.11 still treats MLX context as soft; the later 64K request processed 55,457 measured input tokens with no observed increase in swap use. See [the original observation](evidence/context-overflow-observation.json) and [the context/runtime investigation](research/context-adk-investigation-2026-10-27.md). Task time/output budgets and ADK compaction remain host controls; model/backend changes require their own qualification.
+
+Compaction records distinguish the cost and selected input components of a
+summary attempt from a committed summary. Context audit estimates describe wire
+messages, including historical thinking; provider templates may render them
+differently. These estimates are not measured prompt tokens, net context savings
+or evidence of cache reuse. See the [second reliability round](implementation/TASK_RELIABILITY_ROUND2_2026-11-05.md).
 
 Ordinary conversations retain original user text hidden by compaction as chronological quoted user history, reconstructed from the raw session rather than the generated summary. Later requests take precedence. The current request stays a native user message; tool results, assistant text, and generated summaries never enter that archive. A 64 KiB archive bound fails explicitly rather than dropping instructions. This preserves text, not prior image pixels, and does not grant permissions or guarantee model compliance.
 

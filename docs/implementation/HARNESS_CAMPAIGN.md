@@ -1,5 +1,18 @@
 # Operating a native and upstream Harness² campaign
 
+The active November 5 campaign and newer development-only APIs are recorded in
+[round 3](TASK_RELIABILITY_ROUND3_2026-11-05.md). Its source pin is
+`6868817518876de8fd170c6a8354daca273b6191`; the dated conditions below describe
+the earlier campaign. The current operator is `scripts/pilot/harness_campaign.py`.
+
+New versioned development experiments may seed exact reviewed declarative
+content through `baseRevisionId` without product activation. Target, environment,
+authority, immutable revision and independent review provenance are checked.
+`harness.trials.gradeDevelopment` accepts `experimentId` and `trialId`, grades
+that stopped immutable output, and returns pass/counts with opaque infrastructure
+status. It does not run another solver or expose hidden assertion details.
+`gradingFinished` concerns grading; solver delivery remains separately recorded.
+
 27 October 2026. This is an operator guide to the implemented API, not a claim that the live model campaign or promotion has passed. The current three-stack pilot is separate evidence. Stop for an infrastructure defect; retain a model’s failed or incomplete baseline as a legitimate experimental outcome.
 
 The application owns the solver, permissions, fixture copies, records and independent grading. Codex authors the proposal/composition packets in this chat. A distinct Codex reviewer inspects the evidence and submits reflection/promotion review. Gemma is only the solver. No provider account, Vertex service or model judge is needed by this adapter. The upstream lane executes the actual pinned core at `1cfe254e8d25b15f37048c3730134686abe60335`, using an application-owned declarative surface and Go solver; this does not reproduce Google’s benchmark results.

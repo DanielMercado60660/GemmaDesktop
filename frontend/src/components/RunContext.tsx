@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BookOpen, ListChecks } from "lucide-react";
 import { api } from "../bridge";
 import type { Run } from "../types";
+import { Button } from "./ui";
 
 interface ContextManifest {
   version: number;
@@ -51,9 +52,11 @@ interface Plan {
 export default function RunContext({
   run,
   view,
+  onFocus,
 }: {
   run?: Run;
   view: "context" | "plan";
+  onFocus?: () => void;
 }) {
   const [manifest, setManifest] = useState<ContextManifest>(),
     [plan, setPlan] = useState<Plan>(),
@@ -98,6 +101,18 @@ export default function RunContext({
           {view === "context" ? "FROZEN INPUT SOURCES" : "DURABLE TASK PLAN"}
         </span>
       </div>
+      {view === "context" && onFocus && (
+        <div className="form-stack">
+          <p className="inspector-note">
+            Start a fresh request with exact prior user instructions, the
+            verification contract, and recorded results. Previous actions are
+            not replayed.
+          </p>
+          <Button size="small" onClick={onFocus}>
+            Use focused continuation
+          </Button>
+        </div>
+      )}
       {!run && (
         <div className="inspector-empty">
           {view === "context" ? (

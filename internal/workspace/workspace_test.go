@@ -146,7 +146,7 @@ func TestReplaceMismatchExplainsRecoveryWithoutUnescaping(t *testing.T) {
 	if _, err = w.Replace("source.py", `first\nsecond`, "changed", f.AfterHash); err == nil || !strings.Contains(err.Error(), "was not found") || !strings.Contains(err.Error(), "JSON escape") {
 		t.Fatalf("missing match diagnostic: %v", err)
 	}
-	if _, err = w.Replace("source.py", "repeat", "changed", f.AfterHash); err == nil || !strings.Contains(err.Error(), "matched 2 times") || !strings.Contains(err.Error(), "surrounding text") {
+	if _, err = w.Replace("source.py", "repeat", "changed", f.AfterHash); err == nil || !strings.Contains(err.Error(), "matches 2 places in source.py") || !strings.Contains(err.Error(), "surrounding lines") {
 		t.Fatalf("ambiguous match diagnostic: %v", err)
 	}
 	got, err := w.Read("source.py")

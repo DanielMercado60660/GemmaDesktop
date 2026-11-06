@@ -1,0 +1,87 @@
+{
+  "schema": "gemma-reliability-validation-v1",
+  "date": "2026-11-05",
+  "python": {
+    "repositoryTests": 39,
+    "harnessAdapterTests": 7,
+    "passed": true
+  },
+  "frontend": {
+    "unitTests": 76,
+    "uiTests": 73,
+    "testsPassed": true,
+    "productionBuildPassed": true
+  },
+  "go": {
+    "fullRaceSuiteExitCode": 1,
+    "failurePackage": "internal/media",
+    "failedTests": 4,
+    "allOtherPackagesPassed": true,
+    "affectedFinalRaceTestsPassed": true,
+    "finalAppEngineToolsWorkspaceRacePassed": true
+  },
+  "realReadOnlySandboxTest": {
+    "name": "TestReadOnlyCommandOptInRealSandbox",
+    "passed": true,
+    "sourceOverwriteDenied": true,
+    "helperCreationDenied": true,
+    "privateTemporaryStorageAllowed": true,
+    "calculationOutput": "42"
+  },
+  "nativeBuild": {
+    "sourceFingerprint": "01e7040d062ac1828c1c5b597b4c1c11da83987584f0f8c22b4488d5c22883f8",
+    "frontendFingerprint": "0665885b668405f152c51fafa24ccbe8bbc07dc23cda08cd09bca519e38f7218",
+    "binarySHA256": "f39d16b235b5345cb938bf33fb4a450dcb7c3cf67e45da2f2a73288acf2d812c",
+    "inputsVerifiedUnchanged": true,
+    "postEvaluationSourceVerifiedUnchanged": true
+  },
+  "nativeSignatureVerified": true,
+  "liveModelQualification": false,
+  "noOpVerificationRegressionPassed": true,
+  "review": {
+    "finalSourceReviewed": true,
+    "blockingSourceFindings": 0,
+    "budgetDocumentationCorrected": true,
+    "baselineAndExploratoryV2ExportsIndependentlyAudited": true,
+    "allFifteenDevelopmentOutcomesIndependentlyAudited": true,
+    "rawFileAndDirectoryDeltasAudited": true
+  },
+  "developmentPilot": {
+    "attemptsPerTaskPerRevision": 1,
+    "tasksPerRevision": 5,
+    "deadlineSeconds": 600,
+    "qualifiesGeneralReliability": false,
+    "speedBenchmark": false,
+    "allProtectedInputsPreserved": true,
+    "ownedPilotProcessesExited": true,
+    "revisions": [
+      {
+        "label": "baseline-20261105-r1",
+        "role": "baseline",
+        "binarySHA256": "a5f89134c422a9083849c0ad4d1bfc8e7d26e91ad24c85bd1deaa5cbe769a21b",
+        "independentlyCorrect": 2,
+        "modelCompleted": 2,
+        "hostVerified": 1,
+        "taskCount": 5
+      },
+      {
+        "label": "candidate-20261105-r1",
+        "role": "exploratory-v2",
+        "binarySHA256": "b9c8c415c6a59a7202b40b6dd64fc67dd5dabb5776ebe5a2d7adfb6a2586fc69",
+        "independentlyCorrect": 5,
+        "modelCompleted": 5,
+        "hostVerified": 3,
+        "taskCount": 5
+      },
+      {
+        "label": "candidate-final-20261105-r1",
+        "role": "final-v3",
+        "binarySHA256": "f39d16b235b5345cb938bf33fb4a450dcb7c3cf67e45da2f2a73288acf2d812c",
+        "independentlyCorrect": 4,
+        "modelCompleted": 4,
+        "hostVerified": 3,
+        "taskCount": 5
+      }
+    ]
+  }
+}

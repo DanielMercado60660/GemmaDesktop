@@ -301,7 +301,7 @@ func (f FrozenAgent) Configure(req *engine.Request) {
 	req.Skills = nil
 	req.SkillPackages = f.Skills
 	if f.HarnessInstructions != "" {
-		original := defaultInstructions + "\n\n" + str(f.Agent, "instructions")
+		original := agentInstructions(f.Agent)
 		if strings.HasPrefix(req.Instructions, original) {
 			req.Instructions = f.HarnessInstructions + strings.TrimPrefix(req.Instructions, original)
 		}

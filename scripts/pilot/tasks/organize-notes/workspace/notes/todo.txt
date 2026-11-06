@@ -1,0 +1,5 @@
+[ ] renew conference badge before the early-bird deadline
+[ ] send Priya the onboarding doc draft
+[x] book room for the Q2 planning offsite
+[ ] clean up stale feature flags (search-v2, dark-mode-beta)
+[ ] follow up with the vendor about the invoice discrepancy

@@ -1,13 +1,16 @@
 import type { Agent } from "../types";
 
-// Old profiles omit these fields. Keep their model-default behavior visible
-// while sending the same explicit values displayed in the editor on save.
+// Gemma 4 publisher starting point, not a proven optimum for every model/task.
+export const DEFAULT_AGENT_TEMPERATURE = 1;
+
+// Resolve omitted fields to application defaults. Saving sends the displayed
+// values; explicit choices, including zero, remain unchanged.
 export function agentProfileDraft(agent: Partial<Agent>): Partial<Agent> {
   return {
     ...agent,
     thinking: agent.thinking ?? "auto",
     maxOutputTokens: agent.maxOutputTokens ?? 8192,
-    temperature: agent.temperature ?? 0.2,
+    temperature: agent.temperature ?? DEFAULT_AGENT_TEMPERATURE,
   };
 }
 

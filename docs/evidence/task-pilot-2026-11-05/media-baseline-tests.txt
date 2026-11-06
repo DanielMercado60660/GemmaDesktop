@@ -1,0 +1,11 @@
+--- FAIL: TestRealMediaImportIndexAnswerAndScopedAssets (0.21s)
+    media_test.go:128: import: {ID:d9efb4f7f9871fb0d235399977c2abc7 WorkspaceID:workspace ClipID:51bd83b91dd1a6fcc367480871480797 AnswerID: Kind:import Status:failed Stage:probing Completed:0 Total:1 Error:unqualified ffprobe version: require 8.1 CreatedAt:2026-11-05T06:23:10.301691Z FinishedAt:2026-11-05T06:23:10.406095Z}
+--- FAIL: TestIndexCancellationNeverPublishesPartialFrames (0.17s)
+    media_test.go:266: {a535aebcc1b02b25ebb6335a4528d3ba workspace 64d0127a873e73702df7cd3a4779c0fd  import failed probing 0 1 unqualified ffprobe version: require 8.1 2026-11-05T06:23:10.497865Z 2026-11-05T06:23:10.582343Z}
+--- FAIL: TestAnswerModelDriftFailsWithoutValidatedCitations (0.16s)
+    media_test.go:308: {a601d350597c99e52333afdc3ba3b3a5 workspace 7a9d5e41afe8e8ec29eeb83e351f51ba  import failed probing 0 1 unqualified ffprobe version: require 8.1 2026-11-05T06:23:10.663938Z 2026-11-05T06:23:10.746784Z}
+--- FAIL: TestVideoWithAudioTrackImportsAsVisualOnly (0.21s)
+    media_test.go:347: visual import of audio-bearing clip: {ID:d508dadb3b4cf6e0362ebb5d525a1661 WorkspaceID:workspace ClipID:881d9c63545e6769da6a8d2a8cff842c AnswerID: Kind:import Status:failed Stage:probing Completed:0 Total:1 Error:unqualified ffprobe version: require 8.1 CreatedAt:2026-11-05T06:23:10.877897Z FinishedAt:2026-11-05T06:23:10.959569Z}
+FAIL
+FAIL	gemmadesktop.local/app/internal/media	1.019s
+FAIL

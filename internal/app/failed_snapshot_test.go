@@ -18,7 +18,7 @@ func TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs(t *testing.
 	const summary = "DURABLE-SUMMARY-ORCHID: earlier constraints remain active."
 	const partial = "INCOMPLETE-TERMINAL-ANSWER-MUST-NOT-REPLAY"
 	var ordinaryCalls, summaryCalls atomic.Int32
-	seen := make(chan inference.ChatRequest, 4)
+	seen := make(chan inference.ChatRequest, 6)
 	h := newIntegrationHarness(t, func(w http.ResponseWriter, r *http.Request, req inference.ChatRequest) {
 		for _, message := range req.Messages {
 			if strings.Contains(message.Content, "Create a factual continuity summary for Gemma Desktop") {
@@ -33,7 +33,8 @@ func TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs(t *testing.
 			writeFixture(w, r, req)
 		case 2:
 			http.Error(w, "interrupted after committed write", http.StatusServiceUnavailable)
-		case 3:
+		case 3, 4, 5:
+			// The second run's length stop is retried twice; all attempts are cut off.
 			_ = json.NewEncoder(w).Encode(inference.ChatChunk{Message: inference.Message{Content: partial}, Done: true, DoneReason: "length", Metrics: inference.Metrics{PromptEvalCount: 1000, EvalCount: 256}})
 		default:
 			fmt.Fprintln(w, `{"message":{"content":"Earlier observed work retained without repeating it."},"done":true}`)
@@ -55,13 +56,17 @@ func TestIntegrationTwoFailedTurnsRetainSummaryAndCompletedToolPairs(t *testing.
 	finishedIntegration(t, h.core, str(second, "id"), "failed")
 	third := callIntegration(t, h.core, "run.start", Doc{"sessionId": h.sessionID, "prompt": "Try the review again with a complete answer"})
 	finishedIntegration(t, h.core, str(third, "id"), "completed")
-	if ordinaryCalls.Load() != 4 || summaryCalls.Load() != 1 {
+	if ordinaryCalls.Load() != 6 || summaryCalls.Load() != 1 {
 		t.Fatalf("unexpected model/summary calls: %d/%d", ordinaryCalls.Load(), summaryCalls.Load())
 	}
 	<-seen
 	<-seen
 	for i, prompt := range []string{"Review the committed evidence without repeating it", "Try the review again with a complete answer"} {
 		req := <-seen
+		if i == 1 {
+			<-seen // skip the second run's two length-retry requests
+			req = <-seen
+		}
 		call, response, hasSummary, currentUser, recovery := false, false, false, false, false
 		for _, message := range req.Messages {
 			for _, proposal := range message.ToolCalls {

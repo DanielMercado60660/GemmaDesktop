@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "Ledgerly",
+    "version": "2.7.1",
+    "supportEmail": "support@ledgerly.example",
+    "footerText": "© 2026 Ledgerly Inc."
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "workers": 4,
+    "requestTimeoutSeconds": 30,
+    "cors": {
+      "enabled": true,
+      "origins": ["https://app.ledgerly.example", "https://admin.ledgerly.example"]
+    }
+  },
+  "ui": {
+    "theme": "light",
+    "accentColor": "#2f6feb",
+    "density": "comfortable",
+    "showOnboardingTour": true,
+    "dateFormat": "YYYY-MM-DD"
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "file": "logs/ledgerly.log",
+    "rotateDaily": true,
+    "loggers": {
+      "urllib3": "warning",
+      "db.pool": "warning"
+    }
+  },
+  "database": {
+    "url": "postgresql://ledgerly@localhost:5432/ledgerly",
+    "poolSize": 10,
+    "statementTimeoutMs": 15000
+  },
+  "deploy": {
+    "allowedEnvironments": ["dev", "prod"],
+    "defaultEnvironment": "dev",
+    "requireApprovalFor": ["prod"],
+    "healthCheckPath": "/healthz"
+  },
+  "uploads": {
+    "maxUploadMB": 10,
+    "maxFilesPerRequest": 10,
+    "allowedTypes": ["pdf", "png", "jpg", "csv"],
+    "storageDir": "data/uploads",
+    "virusScan": true
+  },
+  "scheduledJobs": [
+    {"name": "nightly-report", "cron": "0 2 * * *", "enabled": true, "timeoutMinutes": 30},
+    {"name": "purge-temp-files", "cron": "15 * * * *", "enabled": true, "timeoutMinutes": 5},
+    {"name": "sync-exchange-rates", "cron": "0 */6 * * *", "enabled": false, "timeoutMinutes": 10}
+  ],
+  "features": {
+    "betaReports": false,
+    "csvImportV2": true,
+    "auditSampleRate": 0.25,
+    "legacyExportPath": null
+  }
+}

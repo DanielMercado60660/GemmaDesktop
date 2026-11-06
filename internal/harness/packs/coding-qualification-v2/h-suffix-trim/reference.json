@@ -1,0 +1,4 @@
+{
+  "logic.go": "package main\nimport(\"strings\";\"strconv\")\nvar _=strings.Compare\nvar _=strconv.Itoa\nfunc solve(x map[string]any)any{return strings.TrimSuffix(x[\"text\"].(string),x[\"suffix\"].(string))}\n",
+  "regression_test.go": "package main\nimport(\"encoding/json\";\"testing\";\"reflect\")\nfunc TestContractBoundaries(t *testing.T){var rows [][]json.RawMessage;if e:=json.Unmarshal([]byte(`[[{\"text\": \"foott\", \"suffix\": \"tt\"}, \"foo\"], [{\"text\": \"file.tx\", \"suffix\": \".txt\"}, \"file.tx\"], [{\"text\": \"abc\", \"suffix\": \"\"}, \"abc\"]]`),&rows);e!=nil{t.Fatal(e)};for _,row:=range rows{var input map[string]any;var expected,actual any;json.Unmarshal(row[0],&input);json.Unmarshal(row[1],&expected);b,e:=json.Marshal(solve(input));if e!=nil{t.Fatal(e)};json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected){t.Fatalf(\"got %v expected %v\",actual,expected)}}}\n"
+}

@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n text,needle=x['text'],x['needle']\n return [i for i in range(len(text)) if needle and text.startswith(needle,i)]\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass ContractRegression(unittest.TestCase):\n def test_contract_boundaries(self):\n  for value,expected in [({'text': 'aaaa', 'needle': 'aa'}, [0, 1, 2]), ({'text': 'ééé', 'needle': 'éé'}, [0, 1]), ({'text': 'a.b.', 'needle': '.'}, [1, 3]), ({'text': 'abc', 'needle': ''}, [])]:\n   with self.subTest(value=value):self.assertEqual(solve(value),expected)\n"
+}

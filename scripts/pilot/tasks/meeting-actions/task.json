@@ -1,0 +1,6 @@
+{
+  "category": "document summarization / writing",
+  "prompt": "Read the meeting notes in notes/ and create ACTIONS.md with a checklist of every action item, one per line, in the form '- [ ] Owner: task (due date if one was given)'. Only include actual action items.",
+  "protectedPaths": ["notes/2026-11-03-planning.md"],
+  "notes": "Fresh pilot task. The notes contain exactly 5 real action items phrased differently (Priya 'will', Lena 'said she'd take care of', 'ACTION: Marco to', Jonah's buried in a discussion paragraph, Aiko 'volunteered'); 3 carry due dates (Fri Nov 6, Thu Nov 12, Mon Nov 9). Distractors: two decisions, open questions, a completed item (Sam's timezone fix) and a non-committal 'might' item (Marco's dark mode). Checker parses checklist lines in ACTIONS.md, matches each real item by owner + task keyword (preferring the line that carries the due date if an item is split over two lines), checks due dates, fails if the completed or speculative item appears as a checklist line, and allows at most one extra checklist line."
+}

@@ -1,0 +1,1 @@
+I wrote contacts_clean.csv and removed 13 duplicate rows: contacts.csv had 42 rows and the cleaned file has 29 unique contacts.

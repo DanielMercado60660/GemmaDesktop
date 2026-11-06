@@ -1,0 +1,105 @@
+{
+  "id": "h-signed-rounded",
+  "name": "Repair signed rounding",
+  "stack": "node",
+  "split": "heldout",
+  "exposureFamily": "gemma-v2-original-h-signed-rounded",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "node",
+    "--test"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.mjs"
+  ],
+  "public": {
+    "logic.mjs": "export function solve(x){return x.values.map(Math.round);}\n",
+    "main.mjs": "import {solve} from './logic.mjs';\nconsole.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "public.test.mjs": "import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"values\": [1.2, 1.8]}, [1, 2]], [{\"values\": []}, []]];test('public contract',()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});\n",
+    "README.md": "# Repair signed rounding\n\nRound each finite number to the nearest integer; exact halves round away from zero. Return a JSON array. Normalize negative zero to zero.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `node --test`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.mjs",
+    "public.test.mjs",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "*.test.mjs"
+  ],
+  "discoveryCommand": [
+    "node",
+    "--test"
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "values": [
+          1.2,
+          1.8
+        ]
+      },
+      "expected": [
+        1,
+        2
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "values": []
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "values": [
+          -1.5,
+          -2.5,
+          1.5
+        ]
+      },
+      "expected": [
+        -2,
+        -3,
+        2
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "values": [
+          -0.1,
+          -0.5,
+          0.5
+        ]
+      },
+      "expected": [
+        0,
+        -1,
+        1
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "values": [
+          2,
+          -2
+        ]
+      },
+      "expected": [
+        2,
+        -2
+      ],
+      "critical": false
+    }
+  ]
+}

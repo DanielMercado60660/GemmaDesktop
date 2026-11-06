@@ -1,0 +1,68 @@
+{
+  "status": "complete: exactly six planned attempts; no additional runs",
+  "model": "gemma4:12b-mlx",
+  "tasks": [
+    "log-question",
+    "crash-from-log",
+    "wordfreq-repair"
+  ],
+  "settings": {
+    "contextSize": 32768
+  },
+  "commonAgent": {
+    "maxSteps": 40,
+    "thinking": "auto",
+    "maxOutputTokens": 8192,
+    "temperature": 0.2,
+    "toolProtocol": "native"
+  },
+  "arms": [
+    {
+      "label": "round2-control-20261105-r1",
+      "harnessMechanisms": {
+        "thinkingCycleGuard": false,
+        "streamRepetitionGuard": false
+      },
+      "batchPath": ".runtime/pilot-round2-control-20261105-r1-20261105-030806",
+      "status": "complete"
+    },
+    {
+      "label": "round2-cycle-20261105-r1",
+      "harnessMechanisms": {
+        "thinkingCycleGuard": true,
+        "streamRepetitionGuard": false
+      },
+      "batchPath": ".runtime/pilot-round2-cycle-20261105-r1-20261105-032455",
+      "status": "complete"
+    }
+  ],
+  "deadlineSeconds": 600,
+  "maxAttemptsTotal": 6,
+  "sequence": "complete all control tasks, wait for app exit, then all experimental tasks; no extra repeats",
+  "preflight": [
+    "verify both arms use identical binary SHA256",
+    "inspect no competing pilot processes; no model pull/load/settings changes",
+    "capture model/runtime identity in normal batch metadata",
+    "verify requested guard flag in agent and frozen per-run checkpoint",
+    "verify control guard false and preserve all other mechanism defaults"
+  ],
+  "audit": [
+    "independent grade and model completion separately",
+    "host verification and protected-input preservation",
+    "raw file content/path/type and directory additions/removals (including cache directories); explicitly omit metadata comparison",
+    "all schema validation events, original error, emitted guidance, and whether proposals executed",
+    "guard trigger/reason/channel and clean cancellation/receipt accounting",
+    "retry reason, attempt, global/local call budget, completed terminal usage vs missing cancellation receipts",
+    "compaction window sizes, summary sizes, elapsed cost and request component observations",
+    "record all deadlines/errors/interruptions; retain intermediate outcomes and source identities",
+    "do not attribute historical v3 as fresh paired baseline; no speed/generalization claims from n=1",
+    "Compare new reported toolCalls.validationErrors/validationFailures to raw SQLite tool_validation_failed counts; historical absent fields remain unknown, not zero."
+  ],
+  "binary": ".runtime/reliability-round2-20261105/candidate-gemma-desktop",
+  "binarySHA256": "de1c69829f8aec47588405a2e710e75e831ba170190d5c8258deb8e1c0742c2d",
+  "sourceFingerprint": "5538de830d4cc17a040d3e44226c79f91a4ad5c5ade1a34099bda36b7fcba8b2",
+  "driverSHA256": "10be129f324b3eba9c9d7d9e7a79862a89b964a8774d338b142670baf2b1fc87",
+  "finishedAt": "2026-11-05T09:31:31.856635+00:00",
+  "finalBinarySHA256": "de1c69829f8aec47588405a2e710e75e831ba170190d5c8258deb8e1c0742c2d",
+  "comparisonAudit": ".runtime/reliability-round2-20261105/comparison-audit.json"
+}

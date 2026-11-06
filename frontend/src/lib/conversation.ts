@@ -32,12 +32,53 @@ export function mergeEvents(previous: Event[], incoming: Event[]): Event[] {
 }
 
 export interface SessionHistory {
+  messageCursor?: string;
+  messageBefore?: string;
+  messagesHaveMore?: boolean;
+  newerMessages?: boolean;
   messages: Message[];
   events: Event[];
   cursor: number;
   hasMore: boolean;
 }
+
+// Keep recently viewed conversations, while protecting the selected and
+// currently arriving conversation from eviction during navigation races.
+export function cacheSession(
+  cache: Map<string, SessionHistory>,
+  id: string,
+  history: SessionHistory,
+  selectedId: string,
+  limit = 8,
+) {
+  cache.delete(id);
+  cache.set(id, history);
+  for (const key of cache.keys()) {
+    if (cache.size <= Math.max(2, limit)) break;
+    if (key !== id && key !== selectedId) cache.delete(key);
+  }
+}
+
+export function refreshDelay({
+  hidden,
+  failures,
+  catchingUp,
+  busy,
+}: {
+  hidden: boolean;
+  failures: number;
+  catchingUp: boolean;
+  busy: boolean;
+}) {
+  if (hidden) return 30000;
+  if (failures) return Math.min(30000, 3000 * 2 ** Math.min(failures - 1, 4));
+  return catchingUp ? 80 : busy ? 700 : 2200;
+}
 export interface SessionPage {
+  messageCursor?: string;
+  messagesUnchanged?: boolean;
+  messageBefore?: string;
+  messagesHaveMore?: boolean;
   messages: Message[];
   events: Event[];
   eventCursor?: number;
@@ -55,10 +96,55 @@ export function mergeSessionPage(
       "Execution history did not advance. Refresh this conversation to retry.",
     );
   return {
-    messages: page.messages || [],
+    messages: page.messagesUnchanged
+      ? previous.messages
+      : (page.messages || []).slice(-1000),
+    messageCursor: page.messageCursor ?? previous.messageCursor,
+    messageBefore: page.messagesUnchanged
+      ? previous.messageBefore
+      : page.messageBefore,
+    messagesHaveMore: page.messagesUnchanged
+      ? previous.messagesHaveMore
+      : !!page.messagesHaveMore,
+    newerMessages: page.messagesUnchanged ? previous.newerMessages : false,
     events: mergeEvents(previous.events, events),
     cursor,
     hasMore: !!page.hasMore,
+  };
+}
+
+export interface OlderMessagesPage {
+  messages: Message[];
+  messageBefore: string;
+  messagesHaveMore: boolean;
+  messageCursor: string;
+}
+export function prependMessages(
+  previous: SessionHistory,
+  page: OlderMessagesPage,
+): SessionHistory {
+  if (!previous.messageCursor || page.messageCursor !== previous.messageCursor)
+    throw new Error(
+      "Conversation changed while loading history. Refresh the latest messages before loading earlier ones.",
+    );
+  if (page.messagesHaveMore && page.messageBefore === previous.messageBefore)
+    throw new Error(
+      "Earlier history did not advance. Refresh the latest messages to retry.",
+    );
+  const seen = new Set<string>();
+  const messages = [...page.messages, ...previous.messages].filter(
+    (message) => {
+      if (seen.has(message.id)) return false;
+      seen.add(message.id);
+      return true;
+    },
+  );
+  return {
+    ...previous,
+    messages: messages.slice(0, 1000),
+    messageBefore: page.messageBefore,
+    messagesHaveMore: page.messagesHaveMore,
+    newerMessages: previous.newerMessages || messages.length > 1000,
   };
 }
 

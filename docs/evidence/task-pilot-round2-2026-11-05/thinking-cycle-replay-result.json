@@ -1,0 +1,573 @@
+{
+  "generations": 134,
+  "results": [
+    {
+      "id": "baseline-failures/log-question/1/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/2/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/3/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/4/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/5/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/6/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/7/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/8/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/9/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/10/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/11/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/12/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/13/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/log-question/15/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/1/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/2/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/3/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/4/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/5/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/6/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/7/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/8/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/9/1",
+      "match": {
+        "version": "thinking_cycle_v1",
+        "patternLines": 4,
+        "repetitions": 8,
+        "repeatedBytes": 2384,
+        "bytesSeen": 2645
+      }
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/10/2",
+      "match": {
+        "version": "thinking_cycle_v1",
+        "patternLines": 9,
+        "repetitions": 8,
+        "repeatedBytes": 5616,
+        "bytesSeen": 6706
+      }
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/11/3",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/12/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/13/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/14/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/15/1",
+      "match": null
+    },
+    {
+      "id": "baseline-failures/wordfreq-repair/16/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/5/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/6/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/7/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/8/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/9/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/explain-failure/10/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/5/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/6/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/7/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/8/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/9/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/10/2",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/11/3",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/12/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/13/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/14/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/15/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/16/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/18/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/19/1",
+      "match": null
+    },
+    {
+      "id": "successful/baseline/todo-feature/20/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/5/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/6/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/7/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/8/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/9/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/10/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/crash-from-log/11/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/5/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/6/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/7/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/explain-failure/8/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/log-question/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/log-question/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/log-question/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/log-question/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/log-question/5/1",
+      "match": {
+        "version": "thinking_cycle_v1",
+        "patternLines": 3,
+        "repetitions": 8,
+        "repeatedBytes": 2376,
+        "bytesSeen": 8145
+      }
+    },
+    {
+      "id": "successful/candidate-v2/log-question/6/2",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/5/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/6/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/7/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/8/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/9/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/10/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/11/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/12/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/13/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/14/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/15/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/16/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/17/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/18/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/19/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/21/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/22/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/23/1",
+      "match": {
+        "version": "thinking_cycle_v1",
+        "patternLines": 5,
+        "repetitions": 8,
+        "repeatedBytes": 2520,
+        "bytesSeen": 3179
+      }
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/24/2",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/25/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/26/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/27/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/28/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/29/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/30/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/todo-feature/31/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/1/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/2/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/3/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/4/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/5/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/6/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/7/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/8/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/9/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/10/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/11/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/12/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/13/1",
+      "match": {
+        "version": "thinking_cycle_v1",
+        "patternLines": 6,
+        "repetitions": 8,
+        "repeatedBytes": 2560,
+        "bytesSeen": 7607
+      }
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/14/2",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/15/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/16/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/17/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/18/1",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/19/2",
+      "match": null
+    },
+    {
+      "id": "successful/candidate-v2/wordfreq-repair/20/1",
+      "match": null
+    }
+  ],
+  "triggeredGenerations": 5,
+  "version": "thinking_cycle_v1"
+}

@@ -1,0 +1,70 @@
+{
+  "baseline": "d8dbce0741994373a5cc4677e62791d1ff59a806",
+  "environment": "Node v22.22.3, Vitest/jsdom, darwin/arm64",
+  "messages": 10000,
+  "currentInitialPage": 100,
+  "pollsPerSample": 12,
+  "caveat": "No native IPC, backend-query, layout, paint, GPU or frame-rate measurement. Baseline App/conversation/composer are pinned; shared UI dependencies are current. Response sizes are UTF-8 JSON, not an actual Wails wire trace.",
+  "results": [
+    {
+      "variant": "baseline",
+      "sample": 1,
+      "initialMs": 108.92620899999997,
+      "updateMedianMs": 12.424167000000011,
+      "updateP95Ms": 21.768500000000017,
+      "responseBytes": 38925540,
+      "sessionPolls": 12,
+      "visibleMessages": 40
+    },
+    {
+      "variant": "current",
+      "sample": 1,
+      "initialMs": 39.67212500000005,
+      "updateMedianMs": 0.07625000000007276,
+      "updateP95Ms": 2.1614580000000387,
+      "responseBytes": 3588,
+      "sessionPolls": 12,
+      "visibleMessages": 40
+    },
+    {
+      "variant": "current",
+      "sample": 2,
+      "initialMs": 32.80179200000009,
+      "updateMedianMs": 0.07954199999994671,
+      "updateP95Ms": 24.181833000000097,
+      "responseBytes": 3588,
+      "sessionPolls": 12,
+      "visibleMessages": 40
+    },
+    {
+      "variant": "baseline",
+      "sample": 2,
+      "initialMs": 65.52279199999998,
+      "updateMedianMs": 13.223999999999933,
+      "updateP95Ms": 36.57308400000011,
+      "responseBytes": 38925540,
+      "sessionPolls": 12,
+      "visibleMessages": 40
+    },
+    {
+      "variant": "baseline",
+      "sample": 3,
+      "initialMs": 32.44775000000004,
+      "updateMedianMs": 12.282333000000108,
+      "updateP95Ms": 22.734042000000045,
+      "responseBytes": 38925540,
+      "sessionPolls": 12,
+      "visibleMessages": 40
+    },
+    {
+      "variant": "current",
+      "sample": 3,
+      "initialMs": 30.52583299999992,
+      "updateMedianMs": 0.15812500000015461,
+      "updateP95Ms": 1.7981250000000273,
+      "responseBytes": 3588,
+      "sessionPolls": 12,
+      "visibleMessages": 40
+    }
+  ]
+}

@@ -46,16 +46,21 @@ import {
   Trash2,
   Play,
   Film,
+  ListChecks,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { api, openExternal } from "./bridge";
 import {
   createRefreshCoordinator,
+  cacheSession,
+  refreshDelay,
   currentRun,
   eventStatus,
   mergeEvents,
   mergeSessionPage,
+  prependMessages,
+  type OlderMessagesPage,
   type SessionHistory,
   type SessionPage,
   restoreSelection,
@@ -64,8 +69,27 @@ import {
 } from "./lib/conversation";
 import { modelMemoryGuidance, runMetrics } from "./lib/runtimeMetrics";
 import { isCompletionModel } from "./lib/modelCapabilities";
-import { createComposerStore, submitDraft } from "./lib/composer";
+import {
+  completionReadiness,
+  completionModels,
+  completionProfile,
+} from "./lib/readiness";
+import { managedJobFinished } from "./lib/managedRuntime";
+import { pullJobFinished } from "./lib/modelDownloads";
+import {
+  normalizeState,
+  applyStateRefresh,
+  type StateRefreshPage,
+} from "./lib/stateRefresh";
+import TabList from "./components/TabList";
+import {
+  createComposerStore,
+  submitDraft,
+  type StoredDraft,
+} from "./lib/composer";
+import { checkContract, parseCheckCommand } from "./lib/checkCommand";
 import RunReceipt from "./components/RunReceipt";
+import RunVerification from "./components/RunVerification";
 import RunGraph from "./components/RunGraph";
 import RunContext from "./components/RunContext";
 import { useConfirmation } from "./components/Confirmation";
@@ -122,6 +146,27 @@ const navigation: [View, string, typeof Bot][] = [
   ["skills", "Skills", BookOpen],
   ["artifacts", "Artifacts", FileBox],
 ];
+// The check command is a per-workspace convenience; storage may be
+// unavailable, so the composer state stays authoritative for this window.
+const checkStorageKey = (workspaceId: string) =>
+  `gemma.checkCommand.${workspaceId}`;
+function storedCheckCommand(workspaceId: string) {
+  if (!workspaceId) return "";
+  try {
+    return localStorage.getItem(checkStorageKey(workspaceId)) || "";
+  } catch {
+    return "";
+  }
+}
+function storeCheckCommand(workspaceId: string, text: string) {
+  if (!workspaceId) return;
+  try {
+    if (text.trim()) localStorage.setItem(checkStorageKey(workspaceId), text);
+    else localStorage.removeItem(checkStorageKey(workspaceId));
+  } catch {
+    /* The command still applies to this window. */
+  }
+}
 function Orb({ large = false }: { large?: boolean }) {
   return (
     <div className={cn("orb", large && "orb-large")} aria-hidden="true">
@@ -448,6 +493,14 @@ function ResizeHandle({
 export default function App() {
   const confirmAction = useConfirmation();
   const [dirtyFile, setDirtyFile] = useState(false);
+  const [dirtyWorkflow, setDirtyWorkflow] = useState(false);
+  const dirtyWorkflowRef = useRef(false),
+    workflowDraftRevision = useRef(0);
+  const handleWorkflowDirtyChange = useCallback((dirty: boolean) => {
+    dirtyWorkflowRef.current = dirty;
+    workflowDraftRevision.current++;
+    setDirtyWorkflow(dirty);
+  }, []);
   const dirtyFileRef = useRef(false),
     fileDraftRevision = useRef(0);
   const handleDirtyChange = useCallback((dirty: boolean) => {
@@ -456,21 +509,24 @@ export default function App() {
     setDirtyFile(dirty);
   }, []);
   async function mayLeaveFile() {
-    if (!dirtyFileRef.current) return true;
+    if (!dirtyFileRef.current && !dirtyWorkflowRef.current) return true;
     const snapshot = {
       owner: composer.selection(),
       revision: fileDraftRevision.current,
+      workflowRevision: workflowDraftRevision.current,
     };
     return confirmUnchanged(
       snapshot,
       (captured) =>
         composer.isCurrent(captured.owner) &&
-        fileDraftRevision.current === captured.revision,
+        fileDraftRevision.current === captured.revision &&
+        workflowDraftRevision.current === captured.workflowRevision,
       () =>
         confirmAction({
-          title: "Discard unsaved file changes?",
-          description:
-            "Leaving this editor will discard the unsaved changes in the open file.",
+          title: dirtyWorkflowRef.current
+            ? "Discard unsaved workflow changes?"
+            : "Discard unsaved file changes?",
+          description: "Leaving this editor will discard its unsaved changes.",
           confirmLabel: "Discard changes",
           cancelLabel: "Keep editing",
           danger: true,
@@ -496,11 +552,20 @@ export default function App() {
         sessionId: localStorage.getItem("gemma.session") || "",
       },
       () => refreshComposer((revision) => revision + 1),
+      {
+        get: (owner) => api<StoredDraft>("draft.get", owner),
+        save: (input) => api<StoredDraft>("draft.save", input),
+      },
     ),
   );
   const { workspaceId, sessionId } = composer.selection();
-  const { text: prompt, attachments } = composer.read();
+  const { text: prompt, attachments, focusedRunId } = composer.read();
   const sending = composer.isSending();
+  const draftStatus = composer.persistenceStatus();
+  useEffect(() => {
+    if (workspaceId)
+      void composer.load({ workspaceId, sessionId }).catch(() => {});
+  }, [composer, workspaceId, sessionId]);
   function selectConversation(nextWorkspace: string, nextSession = "") {
     composer.select({ workspaceId: nextWorkspace, sessionId: nextSession });
   }
@@ -510,6 +575,26 @@ export default function App() {
   function setAttachments(update: (previous: string[]) => string[]) {
     composer.update({ attachments: update(composer.read().attachments) });
   }
+  const [checkCommands, setCheckCommands] = useState<Record<string, string>>(
+      {},
+    ),
+    [checkOpen, setCheckOpen] = useState(false);
+  const checkText = useMemo(
+    () => checkCommands[workspaceId] ?? storedCheckCommand(workspaceId),
+    [checkCommands, workspaceId],
+  );
+  const check = useMemo(() => parseCheckCommand(checkText), [checkText]);
+  // A focused continuation is bound to its source contract, and an invalid
+  // command stays visible so the reason sending is blocked is never hidden.
+  const checkVisible = !focusedRunId && (checkOpen || !check.ok),
+    checkActive = !focusedRunId && check.ok && check.argv.length > 0;
+  const checkInputRef = useRef<HTMLInputElement>(null);
+  function setCheckText(text: string) {
+    // Editing pins the panel open so it never vanishes once an error clears.
+    setCheckOpen(true);
+    setCheckCommands((current) => ({ ...current, [workspaceId]: text }));
+    storeCheckCommand(workspaceId, text);
+  }
   const [view, setView] = useState<View>("chat"),
     [tab, setTab] = useState<WorkTab>("chat"),
     [messages, setMessages] = useState<Message[]>([]),
@@ -517,8 +602,15 @@ export default function App() {
     [sessionError, setSessionError] = useState(""),
     [sessionLoading, setSessionLoading] = useState(false),
     [visibleMessages, setVisibleMessages] = useState(40);
+  const [olderLoading, setOlderLoading] = useState(false),
+    [historyError, setHistoryError] = useState("");
+  const olderRequests = useRef(new Set<string>());
+  const historyGenerations = useRef(new Map<string, number>());
   const sessionCache = useRef(new Map<string, SessionHistory>());
   const sessionRequests = useRef(new Map<string, Promise<void>>());
+  const entityCursor = useRef<number | undefined>(undefined),
+    activityCursor = useRef(0),
+    stateCatchingUp = useRef(false);
   const [inspector, setInspector] = useState(() => window.innerWidth > 800),
     [inspectorTab, setInspectorTab] = useState<
       "activity" | "graph" | "context" | "plan" | "runtime"
@@ -570,6 +662,16 @@ export default function App() {
   const pendingApprovals = state.approvals.filter((a) =>
     ["pending", "waiting", ""].includes(a.status || ""),
   );
+  const focusedRun = runs.find((item) => item.id === focusedRunId);
+  const canFocusRun =
+    !!run &&
+    !run.workflowId &&
+    ["completed", "failed", "cancelled", "interrupted"].includes(run.status);
+  const focusValid =
+    !focusedRunId || (canFocusRun && focusedRun?.id === run?.id);
+  const effectiveAgentId = focusedRunId
+    ? focusedRun?.agentId || "default"
+    : agentId || "default";
   const globalApprovalKey = pendingApprovals
     .filter((a) => !a.runId)
     .map((a) => a.id)
@@ -592,9 +694,12 @@ export default function App() {
           id: sid,
           after: cache.cursor,
           limit: 1000,
+          messageCursor: cache.messageCursor,
         });
-        cache = mergeSessionPage(cache, page);
-        sessionCache.current.set(sid, cache);
+        // History paging may finish while this poll is in flight. Preserve
+        // that newer cache window when the server omitted unchanged bodies.
+        cache = mergeSessionPage(sessionCache.current.get(sid) || cache, page);
+        cacheSession(sessionCache.current, sid, cache, sessionRef.current);
         if (sessionRef.current === sid) {
           setMessages(cache.messages);
           setSessionEvents(cache.events);
@@ -613,32 +718,132 @@ export default function App() {
     sessionRequests.current.set(sid, request);
     return request;
   }, []);
+  async function loadEarlierMessages() {
+    const sid = sessionRef.current,
+      previous = sessionCache.current.get(sid);
+    if (
+      !previous?.messagesHaveMore ||
+      !previous.messageCursor ||
+      olderRequests.current.has(sid)
+    )
+      return;
+    olderRequests.current.add(sid);
+    const generation = historyGenerations.current.get(sid) || 0;
+    setOlderLoading(true);
+    setHistoryError("");
+    const container = scrollRef.current;
+    const anchor = container?.querySelector<HTMLElement>("[data-message-id]");
+    const anchorID = anchor?.dataset.messageId,
+      anchorTop = anchor?.getBoundingClientRect().top;
+    try {
+      const page = await api<OlderMessagesPage>("session.messages", {
+        id: sid,
+        before: previous.messageBefore,
+        revision: previous.messageCursor,
+        limit: 100,
+      });
+      const current = sessionCache.current.get(sid);
+      if ((historyGenerations.current.get(sid) || 0) !== generation) return;
+      if (
+        !current ||
+        current.messageCursor !== previous.messageCursor ||
+        current.messageBefore !== previous.messageBefore
+      )
+        throw new Error(
+          "Conversation changed while loading history. Refresh the latest messages to retry.",
+        );
+      const merged = prependMessages(current, page);
+      cacheSession(sessionCache.current, sid, merged, sessionRef.current);
+      if (sessionRef.current === sid) {
+        sticky.current = false;
+        setMessages(merged.messages);
+        setVisibleMessages(merged.messages.length);
+        window.requestAnimationFrame(() => {
+          if (sessionRef.current !== sid || anchorTop === undefined) return;
+          const next = Array.from(
+            scrollRef.current?.querySelectorAll<HTMLElement>(
+              "[data-message-id]",
+            ) || [],
+          ).find((element) => element.dataset.messageId === anchorID);
+          if (next && scrollRef.current)
+            scrollRef.current.scrollTop +=
+              next.getBoundingClientRect().top - anchorTop;
+        });
+      }
+    } catch (error) {
+      if (sessionRef.current === sid) setHistoryError((error as Error).message);
+    } finally {
+      olderRequests.current.delete(sid);
+      if (sessionRef.current === sid) setOlderLoading(false);
+    }
+  }
+  async function latestMessages() {
+    const sid = sessionRef.current;
+    historyGenerations.current.set(
+      sid,
+      (historyGenerations.current.get(sid) || 0) + 1,
+    );
+    setHistoryError("");
+    try {
+      await sessionRequests.current.get(sid);
+      const cache = sessionCache.current.get(sid);
+      if (cache)
+        sessionCache.current.set(sid, { ...cache, messageCursor: undefined });
+      await loadSession(sid);
+      if (sessionRef.current === sid) {
+        setVisibleMessages(40);
+        sticky.current = true;
+      }
+    } catch (error) {
+      if (sessionRef.current === sid) setHistoryError((error as Error).message);
+    }
+  }
   const refreshTask = useCallback(async () => {
     try {
-      const snapshot = await api<Partial<State>>("state");
-      const normalized = {
-        ...emptyState,
-        ...snapshot,
-        settings: { ...emptyState.settings, ...snapshot.settings },
-        runtime: { ...emptyState.runtime, ...snapshot.runtime },
-      };
-      for (const key of [
-        "workspaces",
-        "sessions",
-        "runs",
-        "agents",
-        "workflows",
-        "models",
-        "artifacts",
-        "approvals",
-        "tools",
-        "skills",
-        "events",
-        "experiments",
-      ] as const) {
-        if (!Array.isArray(normalized[key])) (normalized[key] as unknown) = [];
+      let normalized = stateRef.current;
+      async function fullSnapshot() {
+        const snapshot = normalizeState(await api<Partial<State>>("state"));
+        entityCursor.current = snapshot.entityCursor;
+        activityCursor.current = Math.max(
+          0,
+          ...snapshot.events.map((event) => event.seq),
+        );
+        stateCatchingUp.current = false;
+        return snapshot;
+      }
+      if (entityCursor.current === undefined) normalized = await fullSnapshot();
+      else {
+        for (let pageNumber = 0; pageNumber < 3; pageNumber++) {
+          const page = await api<StateRefreshPage>("state.refresh", {
+            after: entityCursor.current,
+            eventAfter: activityCursor.current,
+            liveCursor: normalized.liveCursor,
+            limit: 200,
+          });
+          const merged = applyStateRefresh(
+            normalized,
+            page,
+            entityCursor.current!,
+            activityCursor.current,
+          );
+          if (!merged) {
+            normalized = await fullSnapshot();
+            break;
+          }
+          normalized = merged.state;
+          entityCursor.current = merged.cursor;
+          activityCursor.current = merged.eventCursor;
+          stateCatchingUp.current = merged.hasMore;
+          if (!merged.hasMore) break;
+        }
       }
       setState(normalized);
+      const presentSessions = new Set(
+        normalized.sessions.map((session) => session.id),
+      );
+      for (const id of sessionCache.current.keys()) {
+        if (!presentSessions.has(id)) sessionCache.current.delete(id);
+      }
       stateRef.current = normalized;
       setBackendError("");
       refreshFailed.current = false;
@@ -654,6 +859,10 @@ export default function App() {
         });
       }
     } catch (e) {
+      // A later page may fail after earlier local merges. Resume from a full
+      // snapshot so no partially applied page advances the visible cursor.
+      entityCursor.current = undefined;
+      stateCatchingUp.current = false;
       refreshFailed.current = true;
       setBackendError((e as Error).message);
       setReady(true);
@@ -665,30 +874,65 @@ export default function App() {
   );
   useEffect(() => {
     let disposed = false,
+      running = false,
+      rerun = false,
+      failures = 0,
       timer: ReturnType<typeof setTimeout>;
     async function tick() {
+      if (disposed) return;
+      if (running) {
+        rerun = true;
+        return;
+      }
+      running = true;
       await refresh();
+      running = false;
+      failures = refreshFailed.current ? failures + 1 : 0;
       if (!disposed) {
+        if (rerun && !document.hidden) {
+          rerun = false;
+          void tick();
+          return;
+        }
+        rerun = false;
         const s = stateRef.current;
         const busy =
           s.runs.some((r) => activeStatuses.has(r.status)) ||
-          s.runtime.pulls?.some(
-            (p) => !["success", "failed", "cancelled"].includes(p.status || ""),
-          ) ||
+          s.runtime.pulls?.some((p) => !pullJobFinished(p)) ||
           s.experiments.some((e) => activeStatuses.has(e.status));
-        const catchingUp = sessionCache.current.get(
-          sessionRef.current,
-        )?.hasMore;
+        const managedBusy =
+          s.managedRuntime?.jobs.some(
+            (job) => !managedJobFinished(job.status),
+          ) ||
+          ["starting", "checking", "stopping"].includes(
+            s.managedRuntime?.process.status || "",
+          );
+        const catchingUp =
+          stateCatchingUp.current ||
+          sessionCache.current.get(sessionRef.current)?.hasMore;
+        clearTimeout(timer);
         timer = setTimeout(
           tick,
-          refreshFailed.current ? 3000 : catchingUp ? 80 : busy ? 700 : 2200,
+          refreshDelay({
+            hidden: document.hidden,
+            failures,
+            catchingUp: !!catchingUp,
+            busy: !!busy || !!managedBusy,
+          }),
         );
       }
     }
+    function visibilityChanged() {
+      clearTimeout(timer);
+      if (document.hidden) timer = setTimeout(tick, 30000);
+      else void tick();
+    }
+    document.addEventListener("visibilitychange", visibilityChanged);
     void tick();
     return () => {
       disposed = true;
       clearTimeout(timer);
+      document.removeEventListener("visibilitychange", visibilityChanged);
     };
   }, [refresh]);
   useEffect(() => {
@@ -703,14 +947,14 @@ export default function App() {
     }
   }, [toast]);
   useEffect(() => {
-    if (!dirtyFile) return;
     const preventUnload = (event: BeforeUnloadEvent) => {
+      if (!dirtyFile && !dirtyWorkflow && !composer.hasUnsaved()) return;
       event.preventDefault();
       event.returnValue = "";
     };
     window.addEventListener("beforeunload", preventUnload);
     return () => window.removeEventListener("beforeunload", preventUnload);
-  }, [dirtyFile]);
+  }, [dirtyFile, dirtyWorkflow, composer]);
   useEffect(() => {
     if (!hydrated || sending || backendError) return;
     const restored = restoreSelection(
@@ -734,6 +978,10 @@ export default function App() {
   }, [workspaceId]);
   useEffect(() => {
     localStorage.setItem("gemma.session", sessionId);
+    historyGenerations.current.set(
+      sessionId,
+      (historyGenerations.current.get(sessionId) || 0) + 1,
+    );
     setAttachmentModal(false);
     setAttachmentPath("");
     const cached = sessionCache.current.get(sessionId);
@@ -742,6 +990,8 @@ export default function App() {
     setSessionError("");
     setSessionLoading(!!sessionId && !cached);
     setVisibleMessages(40);
+    setHistoryError("");
+    setOlderLoading(olderRequests.current.has(sessionId));
     if (sessionId)
       void loadSession(sessionId).catch((e) => {
         if (sessionRef.current === sessionId) {
@@ -833,14 +1083,23 @@ export default function App() {
     )
       return;
     const submission = composer.begin({
-      agentId: agentId || undefined,
-      model: model || undefined,
+      agentId: effectiveAgentId,
+      model: selectedProfile.effective ? selectedModel : model || undefined,
+      ...(check.ok && check.argv.length && !focusedRunId
+        ? { verificationContract: checkContract(check.argv) }
+        : {}),
     });
     if (!submission) return;
     try {
       await submitDraft(composer, submission, {
         createSession: (params) => api<Session>("session.create", params),
-        startRun: (params) => api("run.start", params),
+        startRun: (params) =>
+          submission.focusedRunId
+            ? api("context.focus", {
+                ...params,
+                runId: submission.focusedRunId,
+              })
+            : api("run.start", params),
       });
       if (
         composer.selection().workspaceId === submission.workspaceId &&
@@ -857,6 +1116,32 @@ export default function App() {
       }
     }
   }
+  async function chooseFocusedContinuation(source: Run) {
+    const owner = composer.selection();
+    if (!(await mayLeaveFile()) || !composer.isCurrent(owner)) return;
+    const latest = currentRun(
+      stateRef.current.runs.filter(
+        (item) => item.sessionId === owner.sessionId,
+      ),
+    );
+    if (
+      latest?.id !== source.id ||
+      source.workspaceId !== owner.workspaceId ||
+      source.workflowId ||
+      !["completed", "failed", "cancelled", "interrupted"].includes(
+        latest.status,
+      )
+    ) {
+      reportError(
+        "Choose the latest stopped ordinary run for a focused continuation.",
+      );
+      return;
+    }
+    composer.update({ focusedRunId: source.id });
+    setView("chat");
+    setTab("chat");
+    requestAnimationFrame(() => composerRef.current?.focus());
+  }
 
   const streamed = useMemo(
     () => streamedOutput(run, messages, events),
@@ -864,20 +1149,42 @@ export default function App() {
   );
   const hasStreamMessage =
     run && messages.some((m) => m.role === "assistant" && m.runId === run.id);
-  const selectedAgent = state.agents.find(
-    (a) => a.id === (agentId || "default"),
+  const selectedAgent = state.agents.find((a) => a.id === effectiveAgentId);
+  const selectedProfile = completionProfile(
+    state,
+    workspaceId,
+    effectiveAgentId,
   );
-  const selectedModel =
-    model || selectedAgent?.model || state.settings.defaultModel;
-  const selectedModelRecord = state.models.find(
+  const selectedModel = selectedProfile.effective
+    ? selectedProfile.model
+    : model || selectedProfile.model;
+  const selectedRuntime = selectedProfile.runtimeId;
+  const selectedModels = completionModels(state, selectedRuntime);
+  const selectedModelRecord = selectedModels.find(
     (m) => m.name === selectedModel,
   );
   const completionSelected = isCompletionModel(
     selectedModelRecord || { name: selectedModel },
   );
+  const readiness = selectedProfile.effective?.error
+    ? {
+        ready: false,
+        reason: `Workspace profile needs attention: ${selectedProfile.effective.error}`,
+        action: "profile" as const,
+      }
+    : completionReadiness(
+        state,
+        selectedModel,
+        selectedRuntime,
+        selectedProfile.contextSize,
+      );
   const canSend =
     !!workspace &&
-    state.runtime.available &&
+    readiness.ready &&
+    draftStatus.loaded &&
+    !draftStatus.conflict &&
+    focusValid &&
+    (!!focusedRunId || check.ok) &&
     !!prompt.trim() &&
     !working &&
     !sessionLoading &&
@@ -892,14 +1199,35 @@ export default function App() {
   }
   const pageProps = { state, action, workspaceId, sessionId };
   const inspectedModelName = run?.model || selectedModel;
-  const inspectedModel = state.models.find(
+  const inspectedRuntime = run
+    ? run.runtimeBinding?.runtimeId || "ollama-default"
+    : selectedRuntime;
+  const inspectedNative = inspectedRuntime !== "ollama-default";
+  const inspectedModel = completionModels(state, inspectedRuntime).find(
     (m) => m.name === inspectedModelName,
   );
-  const loadedModel = state.runtime.models?.find(
-    (m) => m.name === inspectedModelName || m.model === inspectedModelName,
-  );
-  const loadedContext =
-    loadedModel?.context_length ?? inspectedModel?.loadedContextLength;
+  const nativeProcess = state.managedRuntime?.process;
+  const nativeLoaded =
+    nativeProcess?.status === "running" &&
+    nativeProcess.buildId === inspectedRuntime &&
+    state.managedRuntime?.modelCatalog.some(
+      (item) =>
+        item.id === nativeProcess.modelId &&
+        item.serveName === inspectedModelName,
+    );
+  const loadedModel = inspectedNative
+    ? undefined
+    : state.runtime.models?.find(
+        (m) => m.name === inspectedModelName || m.model === inspectedModelName,
+      );
+  const loadedContext = inspectedNative
+    ? nativeLoaded
+      ? nativeProcess?.contextTokens
+      : undefined
+    : (loadedModel?.context_length ?? inspectedModel?.loadedContextLength);
+  const inspectedRuntimeError = inspectedNative
+    ? nativeProcess?.error
+    : state.runtime.error;
   const measuredPerformance = runMetrics(run);
   const memoryGuidance = modelMemoryGuidance(
     inspectedModel?.size,
@@ -1179,7 +1507,7 @@ export default function App() {
           </div>
         )}
         {pendingApprovals.length > 0 && (
-          <div className="approval-banner">
+          <div className="approval-banner" role="status" aria-live="polite">
             <ShieldCheck size={15} />
             <span>
               {pendingApprovals.length === 1
@@ -1221,18 +1549,24 @@ export default function App() {
             ) : view === "lab" ? (
               <LabPage {...pageProps} />
             ) : (
-              <Workflows {...pageProps} />
+              <Workflows
+                {...pageProps}
+                onDirtyChange={handleWorkflowDirtyChange}
+              />
             )}
           </Suspense>
         ) : (
           <div className="workbench">
             <main className="work-main">
-              <div
+              <TabList
                 className="work-tabs"
-                role="tablist"
-                aria-label="Workspace views"
-              >
-                {(
+                label="Workspace views"
+                value={tab}
+                panelId="workspace-panel"
+                onChange={async (id) => {
+                  if (id === tab || (await mayLeaveFile())) setTab(id);
+                }}
+                items={(
                   [
                     ["chat", "Chat", MessageSquare],
                     ["files", "Files", FileCode2],
@@ -1240,21 +1574,17 @@ export default function App() {
                     ["terminal", "Terminal", TerminalSquare],
                     ["video", "Video", Film],
                   ] as const
-                ).map(([id, label, Icon]) => (
-                  <button
-                    key={id}
-                    role="tab"
-                    aria-selected={tab === id}
-                    className={tab === id ? "selected" : ""}
-                    disabled={id !== "chat" && !workspace}
-                    onClick={async () => {
-                      if (id === tab || (await mayLeaveFile())) setTab(id);
-                    }}
-                  >
-                    <Icon size={14} />
-                    {label}
-                  </button>
-                ))}
+                ).map(([id, label, Icon]) => ({
+                  id,
+                  label: (
+                    <>
+                      <Icon size={14} />
+                      {label}
+                    </>
+                  ),
+                  disabled: id !== "chat" && !workspace,
+                }))}
+              >
                 <div className="spacer" />
                 {sessionId && tab !== "video" && (
                   <Button
@@ -1282,495 +1612,757 @@ export default function App() {
                     <Trash2 size={14} />
                   </Button>
                 )}
-              </div>
-              {tab !== "chat" && workspace ? (
-                <Suspense
-                  fallback={
-                    <div className="loading-pane">
-                      <LoaderCircle className="spin" />
-                      Opening {tab}
-                    </div>
-                  }
-                >
-                  {tab === "video" ? (
-                    <VideoPane
-                      key={workspaceId}
-                      workspaceId={workspaceId}
-                      models={state.models}
-                      runtime={state.runtime}
-                      defaultModel={state.settings.defaultModel}
-                    />
-                  ) : tab === "terminal" ? (
-                    <TerminalPane key={workspaceId} workspaceId={workspaceId} />
-                  ) : (
-                    <FilePane
-                      key={`${workspaceId}-${tab}`}
-                      workspaceId={workspaceId}
-                      theme={state.settings.theme}
-                      diff={tab === "changes"}
-                      onDirtyChange={handleDirtyChange}
-                      revision={fileRevision}
-                      saveDisabledReason={saveDisabledReason}
-                    />
-                  )}
-                </Suspense>
-              ) : (
-                <>
-                  {sessionError && (
-                    <div className="backend-error" role="alert">
-                      <AlertTriangle size={15} />
-                      <span>
-                        Could not refresh this conversation: {sessionError}.
-                        Previously loaded messages are preserved.
-                      </span>
-                      <Button size="small" onClick={() => void refresh(true)}>
-                        Retry
-                      </Button>
-                    </div>
-                  )}
-                  <div
-                    className="chat-scroll"
-                    ref={scrollRef}
-                    onScroll={() => {
-                      const el = scrollRef.current;
-                      if (el)
-                        sticky.current =
-                          el.scrollHeight - el.scrollTop - el.clientHeight <
-                          100;
-                    }}
-                  >
-                    {sessionLoading && !messages.length ? (
+              </TabList>
+              <section
+                id="workspace-panel"
+                role="tabpanel"
+                aria-label={tab}
+                className="workspace-panel"
+              >
+                {tab !== "chat" && workspace ? (
+                  <Suspense
+                    fallback={
                       <div className="loading-pane">
                         <LoaderCircle className="spin" />
-                        Opening conversation…
+                        Opening {tab}
                       </div>
-                    ) : !messages.length && !streamed && !working ? (
-                      <div className="welcome">
-                        <div className="welcome-art">
-                          <div className="orbit-ring ring-one" />
-                          <div className="orbit-ring ring-two" />
-                          <div className="orbit-ring ring-three" />
-                          <Orb large />
-                        </div>
-                        <span className="eyebrow">
-                          A WORKSPACE FOR YOUR IDEAS
-                        </span>
-                        <h1>
-                          Make something
-                          <br />
-                          <span>worth making.</span>
-                        </h1>
-                        <p>
-                          Think it through. Build it out. Let Gemma
-                          <br className="wide-only" /> work alongside you, right
-                          here on your Mac.
-                        </p>
-                        {!workspace ? (
-                          <Button
-                            variant="default"
-                            onClick={() => setWorkspaceModal(true)}
-                          >
-                            <FolderOpen size={16} />
-                            Choose a workspace
-                            <ArrowUpRight size={15} />
-                          </Button>
-                        ) : !state.runtime.available ? (
-                          <Button
-                            variant="default"
-                            onClick={() => navigate("models")}
-                          >
-                            <Cpu size={16} />
-                            Set up your model
-                            <ArrowUpRight size={15} />
-                          </Button>
-                        ) : (
-                          <div className="suggestions">
-                            {[
-                              {
-                                icon: FileCode2,
-                                title: "Understand this project",
-                                text: "Explore this workspace and explain its structure, key components, and how to run it.",
-                              },
-                              {
-                                icon: GitCompareArrows,
-                                title: "Review recent changes",
-                                text: "Review the working tree changes in this project and identify concrete problems or missing verification.",
-                              },
-                              {
-                                icon: BookOpen,
-                                title: "Create a useful guide",
-                                text: "Read this workspace and write a concise getting-started guide based on the actual files.",
-                              },
-                            ].map(({ icon: Icon, title, text }) => (
-                              <button
-                                key={title}
-                                onClick={() => {
-                                  setPrompt(text);
-                                  composerRef.current?.focus();
-                                }}
-                              >
-                                <Icon size={18} />
-                                <span>{title}</span>
-                                <ArrowUpRight size={13} />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        <div className="welcome-caption">
-                          <ShieldCheck size={12} />
-                          Local models. Visible work. You stay in control.
-                        </div>
-                      </div>
+                    }
+                  >
+                    {tab === "video" ? (
+                      <VideoPane
+                        key={workspaceId}
+                        workspaceId={workspaceId}
+                        models={state.models}
+                        runtime={state.runtime}
+                        defaultModel={state.settings.defaultModel}
+                      />
+                    ) : tab === "terminal" ? (
+                      <TerminalPane
+                        key={workspaceId}
+                        workspaceId={workspaceId}
+                      />
                     ) : (
-                      <div className="conversation">
-                        <div className="conversation-intro">
-                          <span>{session?.title || "Conversation"}</span>
-                          <small>{workspace?.name}</small>
-                        </div>
-                        {sessionCache.current.get(sessionId)?.hasMore && (
-                          <p className="muted small">
-                            Loading remaining execution history…
-                          </p>
-                        )}
-                        {messages.length > visibleMessages && (
-                          <Button
-                            size="small"
-                            variant="ghost"
-                            onClick={() => {
-                              const previousHeight =
-                                scrollRef.current?.scrollHeight || 0;
-                              sticky.current = false;
-                              setVisibleMessages((count) => count + 40);
-                              requestAnimationFrame(() => {
-                                if (scrollRef.current)
-                                  scrollRef.current.scrollTop +=
-                                    scrollRef.current.scrollHeight -
-                                    previousHeight;
-                              });
-                            }}
-                          >
-                            Show earlier messages (
-                            {messages.length - visibleMessages})
-                          </Button>
-                        )}
-                        {messages.slice(-visibleMessages).map((m) => (
-                          <article
-                            key={m.id}
-                            className={`message message-${m.role}`}
-                          >
-                            <div className="message-avatar">
-                              {m.role === "user" ? <span>You</span> : <Orb />}
-                            </div>
-                            <div className="message-body">
-                              <div className="message-meta">
-                                <strong>
-                                  {m.role === "user"
-                                    ? "You"
-                                    : m.role === "assistant"
-                                      ? "Gemma"
-                                      : m.role}
-                                </strong>
-                                <time>
-                                  {new Date(m.createdAt).toLocaleTimeString(
-                                    [],
-                                    { hour: "numeric", minute: "2-digit" },
-                                  )}
-                                </time>
-                                {m.role === "assistant" && (
-                                  <RunModelLabel
-                                    run={runs.find((r) => r.id === m.runId)}
-                                  />
-                                )}
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  aria-label="Copy message"
-                                  onClick={() =>
-                                    void navigator.clipboard
-                                      .writeText(m.content)
-                                      .catch((e) =>
-                                        setToast({
-                                          message: e.message,
-                                          error: true,
-                                        }),
-                                      )
-                                  }
-                                >
-                                  <Copy size={12} />
-                                </Button>
-                              </div>
-                              <SavedMessageOutcome
-                                message={m}
-                                run={runs.find((r) => r.id === m.runId)}
-                              />
-                              <div className="markdown">
-                                <SafeMarkdown
-                                  text={m.content}
-                                  onLinkError={reportError}
-                                />
-                              </div>
-                              {m.role === "assistant" && (
-                                <RunReceipt
-                                  run={runs.find((r) => r.id === m.runId)}
-                                />
-                              )}
-                            </div>
-                          </article>
-                        ))}
-                        {streamed && !hasStreamMessage && (
-                          <article className="message message-assistant">
-                            <div className="message-avatar">
-                              <Orb />
-                            </div>
-                            <div className="message-body">
-                              <div className="message-meta">
-                                <strong>Gemma</strong>
-                                <span className="stream-label">
-                                  {working ? "Live output" : "Partial output"}
-                                </span>
-                                <RunModelLabel run={run} />
-                              </div>
-                              <div className="markdown">
-                                <SafeMarkdown
-                                  text={streamed}
-                                  onLinkError={reportError}
-                                />
-                              </div>
-                            </div>
-                          </article>
-                        )}
-                        {working && !streamed && !hasStreamMessage && (
-                          <div className="working-message">
-                            <Orb />
-                            <div>
-                              <strong>
-                                {run?.status === "waiting_approval"
-                                  ? "Waiting for your decision"
-                                  : "Working on your request"}
-                              </strong>
-                              <RunModelLabel run={run} />
-                              <span>
-                                {events
-                                  .filter(
-                                    (e) =>
-                                      e.type !== "text" &&
-                                      e.type !== "thinking" &&
-                                      e.type !== "adk_event" &&
-                                      e.type !== "generation_metrics" &&
-                                      e.type !== "token_accounting" &&
-                                      e.type !== "context_prepared",
-                                  )
-                                  .at(-1)?.title || "Preparing the next step…"}
-                              </span>
-                            </div>
-                            <LoaderCircle size={15} className="spin" />
-                          </div>
-                        )}
-                        {approvals.map((a) => (
-                          <ApprovalCard
-                            key={a.id}
-                            approval={a}
-                            action={action}
-                          />
-                        ))}
-                        {run?.error && (
-                          <div className="notice error">
-                            <AlertTriangle size={17} />
-                            <div>
-                              <strong>{friendlyStatus(run.status)}</strong>
-                              <p>{run.error}</p>
-                            </div>
-                          </div>
-                        )}
-                        {run?.status === "interrupted" && run.resumable && (
-                          <div className="notice">
-                            <ShieldCheck size={18} />
-                            <div>
-                              <strong>
-                                A saved workflow is ready to resume
-                              </strong>
-                              <p>
-                                Continue from its supported approval checkpoint.
-                              </p>
-                            </div>
-                            <Button
-                              onClick={() =>
-                                action("run.resume", { id: run.id })
-                              }
-                            >
-                              <Play size={14} />
-                              Resume
-                            </Button>
-                          </div>
-                        )}
-                        {run && !working && (
-                          <div className={`run-outcome outcome-${run.status}`}>
-                            {statusIcon(run.status)}
-                            <span>{friendlyStatus(run.status)}</span>
-                            <RunModelLabel run={run} />
-                            {run.finishedAt && (
-                              <small>
-                                {new Date(run.finishedAt).toLocaleTimeString(
-                                  [],
-                                  { hour: "numeric", minute: "2-digit" },
-                                )}
-                              </small>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="small"
-                              onClick={() => {
-                                setInspector(true);
-                                setInspectorTab("activity");
-                              }}
-                            >
-                              View activity
-                              <ChevronRight size={12} />
-                            </Button>
-                          </div>
-                        )}
-                        {!hasStreamMessage && <RunReceipt run={run} />}
-                      </div>
+                      <FilePane
+                        key={`${workspaceId}-${tab}`}
+                        workspaceId={workspaceId}
+                        theme={state.settings.theme}
+                        diff={tab === "changes"}
+                        onDirtyChange={handleDirtyChange}
+                        revision={fileRevision}
+                        saveDisabledReason={saveDisabledReason}
+                      />
                     )}
-                  </div>
-                  <div className="composer-area">
-                    {attachments.length > 0 && (
-                      <div className="attachment-list">
-                        {attachments.map((p) => (
-                          <span key={p}>
-                            <FileCode2 size={12} />
-                            {p}
-                            <button
-                              aria-label={`Remove attachment ${p}`}
-                              onClick={() =>
-                                setAttachments((a) => a.filter((x) => x !== p))
-                              }
-                            >
-                              <X size={12} />
-                            </button>
-                          </span>
-                        ))}
+                  </Suspense>
+                ) : (
+                  <>
+                    {sessionError && (
+                      <div className="backend-error" role="alert">
+                        <AlertTriangle size={15} />
+                        <span>
+                          Could not refresh this conversation: {sessionError}.
+                          Previously loaded messages are preserved.
+                        </span>
+                        <Button size="small" onClick={() => void refresh(true)}>
+                          Retry
+                        </Button>
                       </div>
                     )}
                     <div
-                      className={`composer ${working ? "composer-working" : ""}`}
+                      className="chat-scroll"
+                      ref={scrollRef}
+                      onScroll={() => {
+                        const el = scrollRef.current;
+                        if (el)
+                          sticky.current =
+                            el.scrollHeight - el.scrollTop - el.clientHeight <
+                            100;
+                      }}
                     >
-                      <textarea
-                        ref={composerRef}
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (
-                            e.key === "Enter" &&
-                            !e.shiftKey &&
-                            !e.nativeEvent.isComposing
-                          ) {
-                            e.preventDefault();
-                            void send();
-                          }
-                        }}
-                        placeholder={
-                          !workspace
-                            ? "Choose a workspace to get started…"
-                            : "Ask Gemma to work on something…"
-                        }
-                        aria-label="Message Gemma"
-                        disabled={!workspace}
-                        rows={2}
-                      />
-                      <div className="composer-controls">
-                        <div className="composer-tools">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            aria-label="Attach workspace file"
-                            onClick={() => setAttachmentModal(true)}
-                            disabled={!workspace}
-                          >
-                            <Paperclip size={17} />
-                          </Button>
-                          <select
-                            aria-label="Agent"
-                            value={agentId}
-                            onChange={(e) => {
-                              setAgentId(e.target.value);
-                              setModel("");
-                            }}
-                          >
-                            <option value="">Default agent</option>
-                            {state.agents.map((a) => (
-                              <option key={a.id} value={a.id}>
-                                {a.name}
-                              </option>
-                            ))}
-                          </select>
+                      {sessionLoading && !messages.length ? (
+                        <div className="loading-pane">
+                          <LoaderCircle className="spin" />
+                          Opening conversation…
                         </div>
-                        <div className="composer-send">
-                          <select
-                            aria-label="Model for this conversation"
-                            value={selectedModel}
-                            onChange={(e) => setModel(e.target.value)}
-                          >
-                            {!state.models.some(
-                              (m) =>
-                                m.name === selectedModel &&
-                                isCompletionModel(m),
-                            ) && (
-                              <option disabled={!completionSelected}>
-                                {selectedModel}
-                                {completionSelected
-                                  ? ""
-                                  : " (not a chat model)"}
-                              </option>
-                            )}
-                            {state.models.filter(isCompletionModel).map((m) => (
-                              <option key={m.name}>{m.name}</option>
-                            ))}
-                          </select>
-                          {working ? (
+                      ) : !messages.length && !streamed && !working ? (
+                        <div className="welcome">
+                          <div className="welcome-art">
+                            <div className="orbit-ring ring-one" />
+                            <div className="orbit-ring ring-two" />
+                            <div className="orbit-ring ring-three" />
+                            <Orb large />
+                          </div>
+                          <span className="eyebrow">
+                            A WORKSPACE FOR YOUR IDEAS
+                          </span>
+                          <h1>
+                            Make something
+                            <br />
+                            <span>worth making.</span>
+                          </h1>
+                          <p>
+                            Think it through. Build it out. Let Gemma
+                            <br className="wide-only" /> work alongside you,
+                            right here on your Mac.
+                          </p>
+                          {!workspace ? (
                             <Button
-                              size="icon"
                               variant="default"
-                              aria-label="Stop generation"
-                              onClick={() =>
-                                run && action("run.cancel", { id: run.id })
-                              }
-                              disabled={run?.status === "cancelling"}
+                              onClick={() => setWorkspaceModal(true)}
                             >
-                              <Square size={15} fill="currentColor" />
+                              <FolderOpen size={16} />
+                              Choose a workspace
+                              <ArrowUpRight size={15} />
+                            </Button>
+                          ) : !readiness.ready ? (
+                            <Button
+                              variant="default"
+                              onClick={() => navigate("models")}
+                            >
+                              <Cpu size={16} />
+                              Set up your model
+                              <ArrowUpRight size={15} />
                             </Button>
                           ) : (
+                            <div className="suggestions">
+                              {[
+                                {
+                                  icon: FileCode2,
+                                  title: "Understand this project",
+                                  text: "Explore this workspace and explain its structure, key components, and how to run it.",
+                                },
+                                {
+                                  icon: GitCompareArrows,
+                                  title: "Review recent changes",
+                                  text: "Review the working tree changes in this project and identify concrete problems or missing verification.",
+                                },
+                                {
+                                  icon: BookOpen,
+                                  title: "Create a useful guide",
+                                  text: "Read this workspace and write a concise getting-started guide based on the actual files.",
+                                },
+                              ].map(({ icon: Icon, title, text }) => (
+                                <button
+                                  key={title}
+                                  onClick={() => {
+                                    setPrompt(text);
+                                    composerRef.current?.focus();
+                                  }}
+                                >
+                                  <Icon size={18} />
+                                  <span>{title}</span>
+                                  <ArrowUpRight size={13} />
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          <div className="welcome-caption">
+                            <ShieldCheck size={12} />
+                            Local models. Visible work. You stay in control.
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="conversation">
+                          <div className="conversation-intro">
+                            <span>{session?.title || "Conversation"}</span>
+                            <small>{workspace?.name}</small>
+                          </div>
+                          {sessionCache.current.get(sessionId)?.hasMore && (
+                            <p className="muted small">
+                              Loading remaining execution history…
+                            </p>
+                          )}
+                          {historyError && (
+                            <div className="notice error" role="alert">
+                              <span>{historyError}</span>
+                              <Button
+                                size="small"
+                                onClick={() => void latestMessages()}
+                              >
+                                Refresh latest messages
+                              </Button>
+                            </div>
+                          )}
+                          {sessionCache.current.get(sessionId)
+                            ?.newerMessages && (
                             <Button
-                              size="icon"
-                              variant="default"
-                              aria-label="Send message"
-                              onClick={send}
-                              disabled={!canSend}
-                              loading={sending}
+                              size="small"
+                              onClick={() => void latestMessages()}
                             >
-                              <ArrowUp size={20} />
+                              Back to latest messages
                             </Button>
                           )}
+                          {messages.length <= visibleMessages &&
+                            sessionCache.current.get(sessionId)
+                              ?.messagesHaveMore && (
+                              <Button
+                                className="load-earlier"
+                                size="small"
+                                loading={olderLoading}
+                                onClick={() => void loadEarlierMessages()}
+                              >
+                                Load earlier messages
+                              </Button>
+                            )}
+                          {messages.length > visibleMessages && (
+                            <Button
+                              size="small"
+                              variant="ghost"
+                              onClick={() => {
+                                const previousHeight =
+                                  scrollRef.current?.scrollHeight || 0;
+                                sticky.current = false;
+                                setVisibleMessages((count) => count + 40);
+                                requestAnimationFrame(() => {
+                                  if (scrollRef.current)
+                                    scrollRef.current.scrollTop +=
+                                      scrollRef.current.scrollHeight -
+                                      previousHeight;
+                                });
+                              }}
+                            >
+                              Show earlier messages (
+                              {messages.length - visibleMessages})
+                            </Button>
+                          )}
+                          {messages.slice(-visibleMessages).map((m) => (
+                            <article
+                              key={m.id}
+                              data-message-id={m.id}
+                              className={`message message-${m.role}`}
+                            >
+                              <div className="message-avatar">
+                                {m.role === "user" ? <span>You</span> : <Orb />}
+                              </div>
+                              <div className="message-body">
+                                <div className="message-meta">
+                                  <strong>
+                                    {m.role === "user"
+                                      ? "You"
+                                      : m.role === "assistant"
+                                        ? "Gemma"
+                                        : m.role}
+                                  </strong>
+                                  <time>
+                                    {new Date(m.createdAt).toLocaleTimeString(
+                                      [],
+                                      { hour: "numeric", minute: "2-digit" },
+                                    )}
+                                  </time>
+                                  {m.role === "assistant" && (
+                                    <RunModelLabel
+                                      run={runs.find((r) => r.id === m.runId)}
+                                    />
+                                  )}
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    aria-label="Copy message"
+                                    onClick={() =>
+                                      void navigator.clipboard
+                                        .writeText(m.content)
+                                        .catch((e) =>
+                                          setToast({
+                                            message: e.message,
+                                            error: true,
+                                          }),
+                                        )
+                                    }
+                                  >
+                                    <Copy size={12} />
+                                  </Button>
+                                </div>
+                                <SavedMessageOutcome
+                                  message={m}
+                                  run={runs.find((r) => r.id === m.runId)}
+                                />
+                                <div className="markdown">
+                                  <SafeMarkdown
+                                    text={m.content}
+                                    onLinkError={reportError}
+                                  />
+                                </div>
+                                {m.role === "assistant" && (
+                                  <RunVerification
+                                    run={runs.find((r) => r.id === m.runId)}
+                                  />
+                                )}
+                                {m.role === "assistant" && (
+                                  <RunReceipt
+                                    run={runs.find((r) => r.id === m.runId)}
+                                  />
+                                )}
+                              </div>
+                            </article>
+                          ))}
+                          {streamed && !hasStreamMessage && (
+                            <article className="message message-assistant">
+                              <div className="message-avatar">
+                                <Orb />
+                              </div>
+                              <div className="message-body">
+                                <div className="message-meta">
+                                  <strong>Gemma</strong>
+                                  <span className="stream-label">
+                                    {working ? "Live output" : "Partial output"}
+                                  </span>
+                                  <RunModelLabel run={run} />
+                                </div>
+                                <div className="markdown">
+                                  <SafeMarkdown
+                                    text={streamed}
+                                    onLinkError={reportError}
+                                  />
+                                </div>
+                              </div>
+                            </article>
+                          )}
+                          {working && !streamed && !hasStreamMessage && (
+                            <div className="working-message">
+                              <Orb />
+                              <div>
+                                <strong>
+                                  {run?.status === "waiting_approval"
+                                    ? "Waiting for your decision"
+                                    : "Working on your request"}
+                                </strong>
+                                <RunModelLabel run={run} />
+                                <span>
+                                  {events
+                                    .filter(
+                                      (e) =>
+                                        e.type !== "text" &&
+                                        e.type !== "thinking" &&
+                                        e.type !== "adk_event" &&
+                                        e.type !== "generation_metrics" &&
+                                        e.type !== "token_accounting" &&
+                                        e.type !== "context_prepared",
+                                    )
+                                    .at(-1)?.title ||
+                                    "Preparing the next step…"}
+                                </span>
+                              </div>
+                              <LoaderCircle size={15} className="spin" />
+                            </div>
+                          )}
+                          {approvals.map((a) => (
+                            <ApprovalCard
+                              key={a.id}
+                              approval={a}
+                              action={action}
+                            />
+                          ))}
+                          {run?.error && (
+                            <div className="notice error">
+                              <AlertTriangle size={17} />
+                              <div>
+                                <strong>{friendlyStatus(run.status)}</strong>
+                                <p>{run.error}</p>
+                              </div>
+                            </div>
+                          )}
+                          {run?.status === "interrupted" && run.resumable && (
+                            <div className="notice">
+                              <ShieldCheck size={18} />
+                              <div>
+                                <strong>
+                                  A saved workflow is ready to resume
+                                </strong>
+                                <p>
+                                  Continue from its supported approval
+                                  checkpoint.
+                                </p>
+                              </div>
+                              <Button
+                                onClick={() =>
+                                  action("run.resume", { id: run.id })
+                                }
+                              >
+                                <Play size={14} />
+                                Resume
+                              </Button>
+                            </div>
+                          )}
+                          {run && !working && (
+                            <div
+                              className={`run-outcome outcome-${run.status}`}
+                              role="status"
+                              aria-live="polite"
+                            >
+                              {statusIcon(run.status)}
+                              <span>{friendlyStatus(run.status)}</span>
+                              <RunVerification run={run} />
+                              <RunModelLabel run={run} />
+                              {run.finishedAt && (
+                                <small>
+                                  {new Date(run.finishedAt).toLocaleTimeString(
+                                    [],
+                                    { hour: "numeric", minute: "2-digit" },
+                                  )}
+                                </small>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="small"
+                                onClick={() => {
+                                  setInspector(true);
+                                  setInspectorTab("activity");
+                                }}
+                              >
+                                View activity
+                                <ChevronRight size={12} />
+                              </Button>
+                            </div>
+                          )}
+                          {!hasStreamMessage && <RunReceipt run={run} />}
+                        </div>
+                      )}
+                    </div>
+                    <div className="composer-area">
+                      {focusedRunId && (
+                        <div className="notice" role="status">
+                          <div>
+                            <strong>Focused continuation</strong>
+                            <p>
+                              {focusValid
+                                ? "Your next request carries exact prior user instructions, the verification contract, and recorded results. Previous actions are not replayed."
+                                : "This source is unavailable or is no longer the latest stopped run. Choose an ordinary continuation or select the latest run in Context."}
+                            </p>
+                            <small>Source run: {focusedRunId}</small>
+                          </div>
+                          <Button
+                            size="small"
+                            disabled={sending}
+                            onClick={() =>
+                              composer.update({ focusedRunId: undefined })
+                            }
+                          >
+                            Use ordinary continuation
+                          </Button>
+                        </div>
+                      )}
+                      {selectedProfile.effective && (
+                        <div className="small muted" role="status">
+                          Workspace profile:{" "}
+                          {selectedProfile.effective.name ||
+                            selectedProfile.effective.armId?.slice(0, 12) ||
+                            "Qualified profile"}{" "}
+                          · {selectedProfile.contextSize.toLocaleString()}{" "}
+                          context tokens.{" "}
+                          <button onClick={() => void navigate("lab")}>
+                            Manage in Harness Lab
+                          </button>
+                        </div>
+                      )}
+                      {workspace && !readiness.ready && (
+                        <div className="notice" role="status">
+                          <span>{readiness.reason}</span>
+                          <Button
+                            size="small"
+                            onClick={() =>
+                              readiness.action === "profile"
+                                ? void navigate("lab")
+                                : readiness.action === "refresh"
+                                  ? void action("model.refresh")
+                                  : void navigate("models")
+                            }
+                          >
+                            {readiness.action === "profile"
+                              ? "Review profile"
+                              : readiness.action === "refresh"
+                                ? "Refresh models"
+                                : "Choose model"}
+                          </Button>
+                        </div>
+                      )}
+                      {attachments.length > 0 && (
+                        <div className="attachment-list">
+                          {attachments.map((p) => (
+                            <span key={p}>
+                              <FileCode2 size={12} />
+                              {p}
+                              <button
+                                aria-label={`Remove attachment ${p}`}
+                                onClick={() =>
+                                  setAttachments((a) =>
+                                    a.filter((x) => x !== p),
+                                  )
+                                }
+                              >
+                                <X size={12} />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div
+                        className={`composer ${working ? "composer-working" : ""}`}
+                      >
+                        <textarea
+                          ref={composerRef}
+                          value={prompt}
+                          onChange={(e) => setPrompt(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (
+                              e.key === "Enter" &&
+                              !e.shiftKey &&
+                              !e.nativeEvent.isComposing
+                            ) {
+                              e.preventDefault();
+                              void send();
+                            }
+                          }}
+                          placeholder={
+                            !workspace
+                              ? "Choose a workspace to get started…"
+                              : "Ask Gemma to work on something…"
+                          }
+                          aria-label="Message Gemma"
+                          disabled={!workspace}
+                          rows={2}
+                        />
+                        {checkVisible && (
+                          <div className="composer-check" id="composer-check">
+                            <label htmlFor="composer-check-input">
+                              Check command
+                            </label>
+                            <input
+                              id="composer-check-input"
+                              ref={checkInputRef}
+                              type="text"
+                              value={checkText}
+                              onChange={(e) => setCheckText(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (
+                                  e.key === "Enter" &&
+                                  !e.nativeEvent.isComposing
+                                ) {
+                                  e.preventDefault();
+                                  void send();
+                                }
+                              }}
+                              placeholder="python3 -m unittest -v"
+                              spellCheck={false}
+                              autoCapitalize="off"
+                              autoCorrect="off"
+                              autoComplete="off"
+                              aria-invalid={!check.ok}
+                              aria-describedby="composer-check-hint"
+                            />
+                            <p
+                              id="composer-check-hint"
+                              className={check.ok ? undefined : "error-text"}
+                              aria-live="polite"
+                            >
+                              {check.ok
+                                ? "Gemma runs this read-only to confirm the task; the result shows on the run."
+                                : check.error}
+                            </p>
+                          </div>
+                        )}
+                        <div className="composer-controls">
+                          <div className="composer-tools">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              aria-label="Attach workspace file"
+                              onClick={() => setAttachmentModal(true)}
+                              disabled={!workspace}
+                            >
+                              <Paperclip size={17} />
+                            </Button>
+                            <button
+                              type="button"
+                              className={cn(
+                                "composer-check-toggle",
+                                checkActive && "active",
+                                !focusedRunId && !check.ok && "invalid",
+                              )}
+                              aria-expanded={checkVisible}
+                              aria-controls={
+                                checkVisible ? "composer-check" : undefined
+                              }
+                              disabled={!workspace || !!focusedRunId}
+                              title={
+                                focusedRunId
+                                  ? "A focused continuation keeps its source run's check."
+                                  : checkActive
+                                    ? `Check command: ${check.argv.join(" ")}`
+                                    : "Add a command that confirms the task"
+                              }
+                              aria-label={checkActive ? "Check (on)" : "Check"}
+                              onClick={() => {
+                                if (checkVisible && check.ok)
+                                  return setCheckOpen(false);
+                                setCheckOpen(true);
+                                requestAnimationFrame(() =>
+                                  checkInputRef.current?.focus(),
+                                );
+                              }}
+                            >
+                              <ListChecks size={13} aria-hidden="true" />
+                              Check
+                              {checkActive && (
+                                <span
+                                  className="composer-check-dot"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </button>
+                            <select
+                              aria-label="Agent"
+                              disabled={!!focusedRunId}
+                              value={focusedRunId ? effectiveAgentId : agentId}
+                              onChange={(e) => {
+                                setAgentId(e.target.value);
+                                setModel("");
+                              }}
+                            >
+                              <option value="">Default agent</option>
+                              {state.agents.map((a) => (
+                                <option key={a.id} value={a.id}>
+                                  {a.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="composer-send">
+                            <select
+                              aria-label="Model for this conversation"
+                              disabled={!!selectedProfile.effective}
+                              title={
+                                selectedProfile.effective
+                                  ? "This workspace profile freezes its model. Restore the previous profile in Harness Lab to change it."
+                                  : undefined
+                              }
+                              value={selectedModel}
+                              onChange={(e) => setModel(e.target.value)}
+                            >
+                              {!selectedModels.some(
+                                (m) =>
+                                  m.name === selectedModel &&
+                                  isCompletionModel(m),
+                              ) && (
+                                <option disabled={!completionSelected}>
+                                  {selectedModel}
+                                  {completionSelected
+                                    ? ""
+                                    : " (not a chat model)"}
+                                </option>
+                              )}
+                              {selectedModels
+                                .filter(isCompletionModel)
+                                .map((m) => (
+                                  <option key={m.name}>{m.name}</option>
+                                ))}
+                            </select>
+                            {working ? (
+                              <Button
+                                size="icon"
+                                variant="default"
+                                aria-label="Stop generation"
+                                onClick={() =>
+                                  run && action("run.cancel", { id: run.id })
+                                }
+                                disabled={run?.status === "cancelling"}
+                              >
+                                <Square size={15} fill="currentColor" />
+                              </Button>
+                            ) : (
+                              <Button
+                                size="icon"
+                                variant="default"
+                                aria-label="Send message"
+                                onClick={send}
+                                disabled={!canSend}
+                                loading={sending}
+                              >
+                                <ArrowUp size={20} />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
+                      <div className="composer-footer">
+                        <span>
+                          <ShieldCheck size={11} />
+                          {!completionSelected
+                            ? "Choose a completion model to chat"
+                            : readOnly
+                              ? "Read only"
+                              : "Changes require approval"}
+                        </span>
+                        <span>
+                          Enter to send <span className="dot-divider">·</span>{" "}
+                          Shift + Enter for a new line
+                        </span>
+                      </div>
+                      {workspace && (
+                        <div className="draft-status small muted" role="status">
+                          {draftStatus.error ? (
+                            <>
+                              <span>
+                                Draft is kept in this window:{" "}
+                                {draftStatus.error}
+                              </span>
+                              {draftStatus.conflict ? (
+                                <Button
+                                  size="small"
+                                  variant="ghost"
+                                  onClick={async () => {
+                                    const owner = { ...composer.selection() },
+                                      revision = composer.read().revision;
+                                    if (
+                                      !(await confirmAction({
+                                        title: "Restore saved draft?",
+                                        description:
+                                          "This replaces this window’s draft with the saved version. Copy any text you want to keep first.",
+                                        confirmLabel: "Restore saved draft",
+                                        cancelLabel: "Keep current text",
+                                      }))
+                                    )
+                                      return;
+                                    if (
+                                      !composer.isCurrent(owner) ||
+                                      composer.read().revision !== revision
+                                    )
+                                      return;
+                                    try {
+                                      await composer.restore(owner);
+                                    } catch (error) {
+                                      setToast({
+                                        message: (error as Error).message,
+                                        error: true,
+                                      });
+                                    }
+                                  }}
+                                >
+                                  Restore saved draft
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="small"
+                                  variant="ghost"
+                                  onClick={() =>
+                                    void composer.flush().catch(() => {})
+                                  }
+                                >
+                                  Retry saving
+                                </Button>
+                              )}
+                            </>
+                          ) : !draftStatus.loaded ? (
+                            "Restoring draft…"
+                          ) : draftStatus.saving ? (
+                            "Saving draft…"
+                          ) : prompt || attachments.length ? (
+                            "Draft saved on this Mac"
+                          ) : null}
+                        </div>
+                      )}
                     </div>
-                    <div className="composer-footer">
-                      <span>
-                        <ShieldCheck size={11} />
-                        {!completionSelected
-                          ? "Choose a completion model to chat"
-                          : readOnly
-                            ? "Read only"
-                            : "Changes require approval"}
-                      </span>
-                      <span>
-                        Enter to send <span className="dot-divider">·</span>{" "}
-                        Shift + Enter for a new line
-                      </span>
-                    </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </section>
             </main>
             {inspector && tab !== "video" && (
               <>
@@ -1816,7 +2408,18 @@ export default function App() {
                     </button>
                   </div>
                   {inspectorTab === "context" || inspectorTab === "plan" ? (
-                    <RunContext run={run} view={inspectorTab} />
+                    <RunContext
+                      run={run}
+                      view={inspectorTab}
+                      onFocus={
+                        canFocusRun &&
+                        draftStatus.loaded &&
+                        !draftStatus.conflict &&
+                        !sending
+                          ? () => void chooseFocusedContinuation(run!)
+                          : undefined
+                      }
+                    />
                   ) : inspectorTab === "graph" ? (
                     <RunGraph
                       run={run}
@@ -1835,9 +2438,11 @@ export default function App() {
                         <div>
                           <strong>{inspectedModelName}</strong>
                           <small>
-                            {state.runtime.version
-                              ? `Ollama ${state.runtime.version}`
-                              : "Ollama runtime"}
+                            {inspectedNative
+                              ? `App-managed · ${inspectedRuntime}`
+                              : state.runtime.version
+                                ? `External Ollama ${state.runtime.version}`
+                                : "External Ollama"}
                           </small>
                         </div>
                       </div>
@@ -1845,7 +2450,11 @@ export default function App() {
                         <div>
                           <span>Availability</span>
                           <span>
-                            {state.runtime.available
+                            {(
+                              inspectedNative
+                                ? nativeLoaded
+                                : state.runtime.available
+                            )
                               ? "Available"
                               : "Unavailable"}
                           </span>
@@ -1857,7 +2466,11 @@ export default function App() {
                         <div>
                           <span>Requested context</span>
                           <span>
-                            {state.settings.contextSize.toLocaleString()} tokens
+                            {(
+                              run?.runtimeBinding?.contextTokens ||
+                              selectedProfile.contextSize
+                            ).toLocaleString()}{" "}
+                            tokens
                           </span>
                         </div>
                         {typeof loadedContext === "number" &&
@@ -1908,8 +2521,8 @@ export default function App() {
                           </p>
                         </section>
                       )}
-                      {state.runtime.error && (
-                        <p className="error-text">{state.runtime.error}</p>
+                      {inspectedRuntimeError && (
+                        <p className="error-text">{inspectedRuntimeError}</p>
                       )}
                       <Button
                         className="full-width"

@@ -32,6 +32,9 @@ func harnessAdapterPath() (string, error) {
 	return "", errors.New("packaged upstream adapter is missing")
 }
 func (c *Core) runHarnessUpstream(ctx context.Context, m *harness.Manager, x harness.Experiment) error {
+	if x.Spec.UpstreamRevision != harness.UpstreamRevision {
+		return errors.New("upstream core changed after experiment admission")
+	}
 	if x.Spec.UpstreamAdapterHash != "" {
 		digest, e := harnessAdapterIdentity()
 		if e != nil {
@@ -52,7 +55,7 @@ func (c *Core) runHarnessUpstream(ctx context.Context, m *harness.Manager, x har
 	if x.Spec.PythonIdentity != "" && pythonID != x.Spec.PythonIdentity {
 		return errors.New("upstream Python interpreter changed after admission")
 	}
-	tasks, e := harness.LoadFixtures()
+	tasks, e := m.TasksForSpec(x.Spec)
 	if e != nil {
 		return e
 	}
@@ -122,7 +125,11 @@ func (c *Core) runHarnessUpstream(ctx context.Context, m *harness.Manager, x har
 		}
 		trialRecords = append(trialRecords, t)
 	}
-	if e = writer.Encode(Doc{"revisions": revisions, "trials": trialRecords, "upstreamRevision": harness.UpstreamRevision, "experimentId": x.ID, "baseline": baseline, "tasks": selected}); e != nil {
+	bindings, e := m.UpstreamRevisionBindings(x)
+	if e != nil {
+		return e
+	}
+	if e = writer.Encode(Doc{"fixturePackId": x.Spec.FixturePackID, "revisions": revisions, "revisionBindings": bindings, "trials": trialRecords, "upstreamRevision": harness.UpstreamRevision, "experimentId": x.ID, "baseline": baseline, "tasks": selected}); e != nil {
 		return e
 	}
 	scanner := bufio.NewScanner(stdout)
@@ -157,13 +164,19 @@ func (c *Core) runHarnessUpstream(ctx context.Context, m *harness.Manager, x har
 		case "finish":
 			callErr = m.FinishUpstream(x.ID, str(p, "candidateId"), number(p, "rollouts", 0), number(p, "stages", 0))
 			result = Doc{"finished": callErr == nil}
+		case "compose_all":
+			result, callErr = m.UpstreamCompositionV2(ctx, x.ID)
 		default:
 			callErr = errors.New("operation outside narrow upstream protocol")
 		}
 		response := Doc{"jsonrpc": "2.0", "id": request.ID, "result": result}
 		if callErr != nil {
 			delete(response, "result")
-			response["error"] = Doc{"code": -32000, "message": callErr.Error()}
+			code := -32000
+			if errors.Is(callErr, harness.ErrBatchCheckpointV2) {
+				code = -32002
+			}
+			response["error"] = Doc{"code": code, "message": callErr.Error()}
 		}
 		if e = writer.Encode(response); e != nil {
 			return e

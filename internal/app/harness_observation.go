@@ -3,7 +3,9 @@ package app
 import (
 	"encoding/json"
 	"math"
+	"sync"
 
+	"gemmadesktop.local/app/internal/engine"
 	"gemmadesktop.local/app/internal/harness"
 )
 
@@ -21,12 +23,50 @@ func boundHarnessObservation(entry harness.ToolObservation) harness.ToolObservat
 		return entry
 	}
 	entry.Content = entry.Content[:harnessObservationTextLimit] + "\n[Observation truncated]"
-	if entry.Tool == "run_command" {
+	// verify_task runs the declared command, so it keeps the same projection,
+	// including who started it. Its verification fields are not in the allowlist,
+	// so a clipped check still never counts as verification in grading.
+	if entry.Tool == "run_command" || entry.Tool == "verify_task" {
 		entry.Data = harnessCommandObservationMetadata(entry.Data)
 	} else {
 		entry.Data = nil
 	}
 	return entry
+}
+
+// harnessHostChecks attributes verify_task calls to the engine's host
+// verifier. The engine emits that check's tool_started event synchronously
+// before it calls the executor, so the executor learns its provenance from the
+// event (see verificationStart) rather than from the call ID's prefix.
+type harnessHostChecks struct {
+	mu    sync.Mutex
+	calls map[string]bool
+}
+
+func (h *harnessHostChecks) observe(event engine.Event) {
+	key, host, ok := verificationStart(event.Type, event.Tool, event.Data)
+	if !ok || !host {
+		return
+	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	if h.calls == nil {
+		h.calls = map[string]bool{}
+	}
+	h.calls[key] = true
+}
+
+// take consumes the marker, so a later call that reuses the ID cannot inherit it.
+func (h *harnessHostChecks) take(call engine.ToolCall) bool {
+	if call.Name != "verify_task" {
+		return false
+	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	key := call.NodeID + ":" + call.ID
+	host := h.calls[key]
+	delete(h.calls, key)
+	return host
 }
 
 // Input is the JSON-normalized tools.Manager result. Retain only a fixed
@@ -46,7 +86,7 @@ func harnessCommandObservationMetadata(data harness.Doc) harness.Doc {
 		}
 		return true
 	}
-	for _, key := range []string{"readOnly", "cancelled", "truncated", "workspaceChanged", "changesLimited"} {
+	for _, key := range []string{"readOnly", "cancelled", "truncated", "workspaceChanged", "changesLimited", "hostInitiated"} {
 		if value, exists := data[key]; exists {
 			seen++
 			if flag, ok := value.(bool); !ok || !put(key, flag) {

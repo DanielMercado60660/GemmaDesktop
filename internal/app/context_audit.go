@@ -65,6 +65,11 @@ func (c *Core) contextAuditView(runID string, d Doc) (any, error) {
 	out := obj(manifest)
 	out["admissionDigest"] = manifest.Digest
 	out["runtimeAudit"] = audit
+	guidance, err := c.guidanceReceipts(runID)
+	if err != nil {
+		return nil, err
+	}
+	out["guidanceReceipts"] = guidance
 	sources := append([]engine.ContextSource{}, manifest.Sources...)
 	if declarations, ok := d["contextToolDeclarations"]; ok {
 		b, _ := json.Marshal(declarations)

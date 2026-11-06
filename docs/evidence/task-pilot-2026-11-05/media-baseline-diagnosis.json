@@ -1,0 +1,62 @@
+{
+  "schema": "gemma-media-baseline-diagnosis-v1",
+  "observedAt": "2026-11-05T06:23:10Z",
+  "conclusion": "Pre-existing local media tool version incompatibility; same four failures reproduce on frozen baseline.",
+  "tools": [
+    {
+      "program": "ffprobe",
+      "reportedVersion": "9.0.2",
+      "path": "/opt/homebrew/bin/ffprobe",
+      "resolvedPath": "/opt/homebrew/Cellar/ffmpeg/9.0.2_1/bin/ffprobe"
+    },
+    {
+      "program": "ffmpeg",
+      "reportedVersion": "9.0.2",
+      "path": "/opt/homebrew/bin/ffmpeg",
+      "resolvedPath": "/opt/homebrew/Cellar/ffmpeg/9.0.2_1/bin/ffmpeg"
+    }
+  ],
+  "requiredVersion": {
+    "version": "8.1",
+    "source": "internal/media/probe.go",
+    "line": 247,
+    "check": "strings.HasPrefix(line, program+\" version 8.1 \")"
+  },
+  "baselineTest": {
+    "workingDirectory": ".runtime/reliability-20261105/baseline-source",
+    "command": "GOPATH=.cache/go GOCACHE=.cache/gobuild GOTOOLCHAIN=go1.26.10 CGO_ENABLED=1 MACOSX_DEPLOYMENT_TARGET=14.0 CGO_CFLAGS=-mmacosx-version-min=14.0 CGO_LDFLAGS=-mmacosx-version-min=14.0 go test -race ./internal/media -run 'Test(RealMediaImportIndexAnswerAndScopedAssets|IndexCancellationNeverPublishesPartialFrames|AnswerModelDriftFailsWithoutValidatedCitations|VideoWithAudioTrackImportsAsVisualOnly)$' -count=1",
+    "exitCode": 1,
+    "packageElapsedSeconds": 1.019,
+    "failingTests": [
+      "TestRealMediaImportIndexAnswerAndScopedAssets",
+      "TestIndexCancellationNeverPublishesPartialFrames",
+      "TestAnswerModelDriftFailsWithoutValidatedCitations",
+      "TestVideoWithAudioTrackImportsAsVisualOnly"
+    ],
+    "sharedError": "unqualified ffprobe version: require 8.1",
+    "raceReportObserved": false,
+    "outputFile": "media-baseline-tests.log",
+    "outputProvenance": "Exact output saved from the completed baseline test tool result; tests were not rerun to save this log."
+  },
+  "owningFiles": [
+    {
+      "path": "internal/media/probe.go",
+      "currentSHA256": "1c264b6637a8503fb091305b22d2842e4e6ff430dadd971e7488e61b309c35a3",
+      "baselineSHA256": "1c264b6637a8503fb091305b22d2842e4e6ff430dadd971e7488e61b309c35a3",
+      "identical": true
+    },
+    {
+      "path": "internal/media/media_test.go",
+      "currentSHA256": "ecbd2323e53837f0d8f812f0ea5726d77be1cda9b79d057648c74de5cdc1ad78",
+      "baselineSHA256": "ecbd2323e53837f0d8f812f0ea5726d77be1cda9b79d057648c74de5cdc1ad78",
+      "identical": true
+    },
+    {
+      "path": "internal/execution/media.go",
+      "currentSHA256": "f16284c38982e6ece875b5e342ce02438759555363234ef9eacf936e963df046",
+      "baselineSHA256": "f16284c38982e6ece875b5e342ce02438759555363234ef9eacf936e963df046",
+      "identical": true
+    }
+  ],
+  "changesMade": "Diagnosis artifacts only; no source edits, global tool changes, or inference."
+}

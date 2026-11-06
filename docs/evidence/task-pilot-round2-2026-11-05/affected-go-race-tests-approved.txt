@@ -1,0 +1,5 @@
+ok  	gemmadesktop.local/app/internal/app	37.192s
+ok  	gemmadesktop.local/app/internal/engine	4.016s
+ok  	gemmadesktop.local/app/internal/tools	(cached)
+ok  	gemmadesktop.local/app/internal/workspace	(cached)
+ok  	gemmadesktop.local/app/internal/inference	(cached)

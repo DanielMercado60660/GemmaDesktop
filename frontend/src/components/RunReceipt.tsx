@@ -1,6 +1,6 @@
 import type { Run } from "../types";
 import { activeStatuses } from "../types";
-import { commandOutcome } from "../lib/receipt";
+import { commandOutcome, verificationRunner } from "../lib/receipt";
 
 export default function RunReceipt({ run }: { run?: Run }) {
   const receipt = run?.receipt;
@@ -43,8 +43,39 @@ export default function RunReceipt({ run }: { run?: Run }) {
                 >
                   {commandOutcome(command)}
                 </span>
+                {command.tool === "verify_task" && (
+                  <small>{verificationRunner(command)}</small>
+                )}
                 {command.workingDirectory && (
                   <small>Directory: {command.workingDirectory}</small>
+                )}
+                {command.tool === "verify_task" && (
+                  <details>
+                    <summary>Declared task verification</summary>
+                    <small>
+                      {command.verificationPassed
+                        ? "Verification passed"
+                        : "Verification did not pass"}
+                    </small>
+                    {command.sourceDigest && (
+                      <small title={command.sourceDigest}>
+                        Source before check:{" "}
+                        <code>{command.sourceDigest.slice(0, 12)}</code>
+                      </small>
+                    )}
+                    {command.sourceDigestAfter && (
+                      <small title={command.sourceDigestAfter}>
+                        Source after check:{" "}
+                        <code>{command.sourceDigestAfter.slice(0, 12)}</code>
+                      </small>
+                    )}
+                    {command.contractDigest && (
+                      <small title={command.contractDigest}>
+                        Verification contract:{" "}
+                        <code>{command.contractDigest.slice(0, 12)}</code>
+                      </small>
+                    )}
+                  </details>
                 )}
                 {command.packageCount !== undefined && (
                   <small>

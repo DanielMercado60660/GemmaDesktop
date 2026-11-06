@@ -1,0 +1,3281 @@
+{
+  "schema": "gemma-reliability-round2-audit-v1",
+  "notes": [
+    "Development fixtures; exactly one attempt per task per arm, not held-out qualification.",
+    "Both arms use the same frozen binary; only thinkingCycleGuard differs.",
+    "Raw file content/path/type and directory deltas include caches; metadata/timestamps/permissions are not compared.",
+    "Provider usage is known only where terminal observations supply it; interrupted work may lack receipts.",
+    "Timing is observational; no speed or general reliability claim from n=1 per task.",
+    "Length-stop output tokens cannot be assigned to thinking, tool arguments or visible output from token totals alone. The control log second length stop exposes only 902 thinking characters and no accepted tool/visible response; its remaining output cause is unobserved, not an inferred argument or thinking loop."
+  ],
+  "batches": [
+    {
+      "label": "round2-cycle-20261105-r1",
+      "binarySHA256": "de1c69829f8aec47588405a2e710e75e831ba170190d5c8258deb8e1c0742c2d",
+      "model": {
+        "capabilities": [
+          "completion",
+          "vision",
+          "audio",
+          "tools",
+          "thinking"
+        ],
+        "contextLength": 262144,
+        "digest": "ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+        "family": "",
+        "loaded": true,
+        "loadedContextLength": 16384,
+        "memoryBytes": 16578658244,
+        "name": "gemma4:12b-mlx",
+        "parameterSize": "",
+        "quantization": "",
+        "remote": false,
+        "size": 7714091504
+      },
+      "config": {
+        "agentId": "default",
+        "agent": {
+          "id": "default",
+          "name": "Gemma",
+          "instructions": "",
+          "model": "gemma4:12b-mlx",
+          "maxSteps": 40,
+          "mode": "approval",
+          "thinking": "auto",
+          "maxOutputTokens": 8192,
+          "temperature": 0.2,
+          "toolProtocol": "native",
+          "capabilityProfileId": "legacy",
+          "harnessMechanisms": {
+            "thinkingCycleGuard": true,
+            "streamRepetitionGuard": false
+          }
+        },
+        "settings": {
+          "contextSize": 32768,
+          "defaultModel": "gemma4:12b-mlx"
+        },
+        "model": "gemma4:12b-mlx",
+        "deadlineSeconds": 600,
+        "useContract": true
+      },
+      "startedAt": "2026-11-05T09:24:56.475782+00:00",
+      "finishedAt": "2026-11-05T09:31:31.856635+00:00",
+      "tasks": [
+        {
+          "task": "log-question",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 57.5,
+          "sourceChangesReportedByDriver": [],
+          "rawAddedFiles": [],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 6,
+            "context_prepared": 6,
+            "thinking": 172,
+            "generation_metrics": 6,
+            "adk_event": 11,
+            "tool_started": 4,
+            "tool_completed": 4,
+            "token_accounting": 6,
+            "tool_validation_failed": 1,
+            "approval": 2,
+            "text": 10,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [
+            "validating root: validating /properties/startLine: minimum: 0/1 is less than 1.000000"
+          ],
+          "approvals": 2,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 1690,
+              "outputTokens": 175,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 1999,
+              "outputTokens": 49,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 2169,
+              "outputTokens": 51,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3963,
+              "outputTokens": 663,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4980,
+              "outputTokens": 552,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5887,
+              "outputTokens": 80,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ],
+          "runId": "4d5731955717fb7de65c1b1d1abe7a08",
+          "reportedToolCalls": {
+            "calls": 4,
+            "errors": 0,
+            "byTool": {
+              "list_files": 1,
+              "read_file": 1,
+              "run_command": 2
+            },
+            "failures": [],
+            "validationErrors": 1,
+            "validationFailures": [
+              {
+                "tool": "read_file",
+                "detail": "validating root: validating /properties/startLine: minimum: 0/1 is less than 1.000000",
+                "executed": false
+              }
+            ],
+            "eventKinds": {
+              "status": 6,
+              "tool_started": 4,
+              "tool_completed": 4,
+              "tool_validation_failed": 1,
+              "approval": 2,
+              "text": 10,
+              "run_completed": 1
+            }
+          },
+          "schemaFeedbackPairs": [
+            {
+              "createdAt": "2026-11-05T09:25:09.705382Z",
+              "kind": "functionCall",
+              "value": {
+                "args": {
+                  "path": "logs/access.log",
+                  "startLine": 0
+                },
+                "id": "call_9scatjjp",
+                "name": "read_file"
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:09.706387Z",
+              "kind": "functionResponse",
+              "value": {
+                "id": "call_9scatjjp",
+                "name": "read_file",
+                "response": {
+                  "error": "validating root: validating /properties/startLine: minimum: 0/1 is less than 1.000000",
+                  "executed": false,
+                  "guidance": "Nothing executed. startLine must be an integer from 1 to 2e+06 (inclusive). Request a range within those bounds; use additional reads if needed. Preserve the task's constraints and existing permissions; this feedback grants no execution approval.",
+                  "isError": true,
+                  "stage": "schema_validation"
+                }
+              }
+            }
+          ],
+          "rejectedCallsDispatched": [],
+          "validationReportingAudit": {
+            "reportedCount": 1,
+            "rawCount": 1,
+            "countMatches": true,
+            "reportedFailureDetailsCount": 1,
+            "expectedBoundedDetailsCount": 1,
+            "detailsCountMatches": true
+          },
+          "mechanismEvents": [
+            {
+              "createdAt": "2026-11-05T09:25:07.396291Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 1,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:09.705868Z",
+              "type": "tool_validation_failed",
+              "title": "Invalid arguments: read_file",
+              "detail": "validating root: validating /properties/startLine: minimum: 0/1 is less than 1.000000",
+              "data": {
+                "callId": "call_9scatjjp",
+                "error": "validating root: validating /properties/startLine: minimum: 0/1 is less than 1.000000",
+                "executed": false,
+                "stage": "schema_validation",
+                "truncated": false
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:09.7067Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 2,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:11.99168Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 3,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:35.882393Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 4,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:50.005375Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 5,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:25:53.619156Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 6,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            }
+          ],
+          "contextObservations": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 2,
+              "messageTextBytes": 2137,
+              "wireContentCharacters": 2135,
+              "wireThinkingCharacters": 0,
+              "estimatedTextTokens": 534,
+              "requestBytes": 8513,
+              "toolDeclarationBytes": 6150,
+              "historicalToolCalls": 0,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 4,
+              "messageTextBytes": 2934,
+              "wireContentCharacters": 2360,
+              "wireThinkingCharacters": 572,
+              "estimatedTextTokens": 733,
+              "requestBytes": 9597,
+              "toolDeclarationBytes": 6150,
+              "historicalToolCalls": 1,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 6,
+              "messageTextBytes": 3437,
+              "wireContentCharacters": 2777,
+              "wireThinkingCharacters": 658,
+              "estimatedTextTokens": 859,
+              "requestBytes": 10389,
+              "toolDeclarationBytes": 6150,
+              "historicalToolCalls": 2,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 8,
+              "messageTextBytes": 6176,
+              "wireContentCharacters": 5456,
+              "wireThinkingCharacters": 718,
+              "estimatedTextTokens": 1544,
+              "requestBytes": 13574,
+              "toolDeclarationBytes": 6150,
+              "historicalToolCalls": 3,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 10,
+              "messageTextBytes": 7750,
+              "wireContentCharacters": 6227,
+              "wireThinkingCharacters": 1519,
+              "estimatedTextTokens": 1937,
+              "requestBytes": 16368,
+              "toolDeclarationBytes": 6150,
+              "historicalToolCalls": 4,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 12,
+              "messageTextBytes": 9034,
+              "wireContentCharacters": 6998,
+              "wireThinkingCharacters": 2030,
+              "estimatedTextTokens": 2257,
+              "requestBytes": 18946,
+              "toolDeclarationBytes": 6150,
+              "historicalToolCalls": 5,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            }
+          ],
+          "lastTokenAccounting": {
+            "attempt": 1,
+            "step": 6,
+            "summary": false,
+            "tokenAccounting": {
+              "attempts": 1,
+              "measuredResponses": 1,
+              "source": "provider_terminal_counts",
+              "status": "complete",
+              "terminalResponses": 1,
+              "unknownContributions": 0,
+              "version": 1
+            }
+          },
+          "generationMetrics": [
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 175,
+              "promptTokens": 1690,
+              "rawResponseCharacters": 0,
+              "step": 1,
+              "summary": false,
+              "thinkingCharacters": 572,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 49,
+              "promptTokens": 1999,
+              "rawResponseCharacters": 0,
+              "step": 2,
+              "summary": false,
+              "thinkingCharacters": 86,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 51,
+              "promptTokens": 2169,
+              "rawResponseCharacters": 0,
+              "step": 3,
+              "summary": false,
+              "thinkingCharacters": 60,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 663,
+              "promptTokens": 3963,
+              "rawResponseCharacters": 0,
+              "step": 4,
+              "summary": false,
+              "thinkingCharacters": 801,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 552,
+              "promptTokens": 4980,
+              "rawResponseCharacters": 0,
+              "step": 5,
+              "summary": false,
+              "thinkingCharacters": 511,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 80,
+              "promptTokens": 5887,
+              "rawResponseCharacters": 140,
+              "step": 6,
+              "summary": false,
+              "thinkingCharacters": 101,
+              "toolCalls": 0,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 140
+            }
+          ],
+          "finishedAt": "2026-11-05T09:25:53.995271+00:00"
+        },
+        {
+          "task": "crash-from-log",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "passed",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 128.4,
+          "sourceChangesReportedByDriver": [
+            "billing/invoice.py",
+            "tests/test_invoice_crash.py"
+          ],
+          "rawAddedFiles": [
+            "tests/test_invoice_crash.py"
+          ],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [
+            "billing/invoice.py"
+          ],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 14,
+            "context_prepared": 14,
+            "thinking": 429,
+            "generation_metrics": 14,
+            "adk_event": 25,
+            "tool_started": 12,
+            "tool_completed": 11,
+            "token_accounting": 14,
+            "approval": 5,
+            "generation_retry": 1,
+            "tool_failed": 1,
+            "text": 53,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [],
+          "approvals": 5,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3070,
+              "outputTokens": 173,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3486,
+              "outputTokens": 57,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4669,
+              "outputTokens": 206,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5138,
+              "outputTokens": 45,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5876,
+              "outputTokens": 514,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6593,
+              "outputTokens": 42,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7338,
+              "outputTokens": 222,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7811,
+              "outputTokens": 166,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 8195,
+              "outputTokens": 53,
+              "doneReason": "stop",
+              "toolCalls": 0
+            },
+            {
+              "step": 10,
+              "attempt": 2,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7068,
+              "outputTokens": 324,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 9284,
+              "outputTokens": 331,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 10029,
+              "outputTokens": 52,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 10452,
+              "outputTokens": 251,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11339,
+              "outputTokens": 203,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ],
+          "runId": "8db4bad90d78c381e8a610c295371d5a",
+          "reportedToolCalls": {
+            "calls": 12,
+            "errors": 1,
+            "byTool": {
+              "list_files": 3,
+              "read_file": 4,
+              "write_file": 1,
+              "run_command": 2,
+              "edit_file": 1,
+              "verify_task": 1
+            },
+            "failures": [
+              {
+                "tool": "run_command",
+                "detail": "process exited with code 1"
+              }
+            ],
+            "validationErrors": 0,
+            "validationFailures": [],
+            "eventKinds": {
+              "status": 14,
+              "tool_started": 12,
+              "tool_completed": 11,
+              "approval": 5,
+              "generation_retry": 1,
+              "tool_failed": 1,
+              "text": 53,
+              "run_completed": 1
+            }
+          },
+          "schemaFeedbackPairs": [],
+          "rejectedCallsDispatched": [],
+          "validationReportingAudit": {
+            "reportedCount": 0,
+            "rawCount": 0,
+            "countMatches": true,
+            "reportedFailureDetailsCount": 0,
+            "expectedBoundedDetailsCount": 0,
+            "detailsCountMatches": true
+          },
+          "mechanismEvents": [
+            {
+              "createdAt": "2026-11-05T09:26:11.181164Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 1,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:14.349223Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 2,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:24.922191Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 3,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:27.201534Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 4,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:42.018984Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 5,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:43.961471Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 6,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:52.589052Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 7,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:26:57.728871Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 8,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:27:00.50639Z",
+              "type": "generation_retry",
+              "title": "Retrying empty generation",
+              "detail": "No answer or usable tool call was returned. Retry 1 of 2 will use the same history and existing permissions.",
+              "data": {
+                "attempt": 2,
+                "maxRetries": 2,
+                "model": "gemma4:12b-mlx",
+                "reason": "empty_response"
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:27:00.50664Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 9,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:27:29.171762Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 2,
+                "step": 10,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:27:41.221455Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 11,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:27:45.356735Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 12,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:27:53.454696Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 13,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:02.104907Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 14,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            }
+          ],
+          "contextObservations": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 2,
+              "messageTextBytes": 2311,
+              "wireContentCharacters": 2309,
+              "wireThinkingCharacters": 0,
+              "estimatedTextTokens": 578,
+              "requestBytes": 15315,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 0,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 4,
+              "messageTextBytes": 3273,
+              "wireContentCharacters": 2731,
+              "wireThinkingCharacters": 540,
+              "estimatedTextTokens": 818,
+              "requestBytes": 16593,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 1,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 6,
+              "messageTextBytes": 6070,
+              "wireContentCharacters": 5406,
+              "wireThinkingCharacters": 662,
+              "estimatedTextTokens": 1517,
+              "requestBytes": 19721,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 2,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 8,
+              "messageTextBytes": 7145,
+              "wireContentCharacters": 5884,
+              "wireThinkingCharacters": 1259,
+              "estimatedTextTokens": 1786,
+              "requestBytes": 21129,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 3,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 10,
+              "messageTextBytes": 9418,
+              "wireContentCharacters": 8072,
+              "wireThinkingCharacters": 1344,
+              "estimatedTextTokens": 2354,
+              "requestBytes": 23799,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 4,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 12,
+              "messageTextBytes": 11371,
+              "wireContentCharacters": 8431,
+              "wireThinkingCharacters": 2938,
+              "estimatedTextTokens": 2843,
+              "requestBytes": 26092,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 5,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 14,
+              "messageTextBytes": 13329,
+              "wireContentCharacters": 10323,
+              "wireThinkingCharacters": 3004,
+              "estimatedTextTokens": 3332,
+              "requestBytes": 28424,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 6,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 16,
+              "messageTextBytes": 14658,
+              "wireContentCharacters": 10940,
+              "wireThinkingCharacters": 3716,
+              "estimatedTextTokens": 3664,
+              "requestBytes": 30081,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 7,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 18,
+              "messageTextBytes": 15113,
+              "wireContentCharacters": 11293,
+              "wireThinkingCharacters": 3818,
+              "estimatedTextTokens": 3778,
+              "requestBytes": 31248,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 8,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 10,
+              "attempt": 2,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 19,
+              "messageTextBytes": 15493,
+              "wireContentCharacters": 11673,
+              "wireThinkingCharacters": 3818,
+              "estimatedTextTokens": 3873,
+              "requestBytes": 31659,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 8,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 20,
+              "messageTextBytes": 18322,
+              "wireContentCharacters": 13459,
+              "wireThinkingCharacters": 4859,
+              "estimatedTextTokens": 4580,
+              "requestBytes": 34883,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 9,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 22,
+              "messageTextBytes": 19460,
+              "wireContentCharacters": 14413,
+              "wireThinkingCharacters": 5043,
+              "estimatedTextTokens": 4864,
+              "requestBytes": 37300,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 10,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 24,
+              "messageTextBytes": 20405,
+              "wireContentCharacters": 15308,
+              "wireThinkingCharacters": 5091,
+              "estimatedTextTokens": 5100,
+              "requestBytes": 38599,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 11,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 26,
+              "messageTextBytes": 22630,
+              "wireContentCharacters": 16809,
+              "wireThinkingCharacters": 5813,
+              "estimatedTextTokens": 5656,
+              "requestBytes": 41165,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 12,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            }
+          ],
+          "lastTokenAccounting": {
+            "attempt": 1,
+            "step": 14,
+            "summary": false,
+            "tokenAccounting": {
+              "attempts": 1,
+              "measuredResponses": 1,
+              "source": "provider_terminal_counts",
+              "status": "complete",
+              "terminalResponses": 1,
+              "unknownContributions": 0,
+              "version": 1
+            }
+          },
+          "generationMetrics": [
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 173,
+              "promptTokens": 3070,
+              "rawResponseCharacters": 0,
+              "step": 1,
+              "summary": false,
+              "thinkingCharacters": 540,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 57,
+              "promptTokens": 3486,
+              "rawResponseCharacters": 0,
+              "step": 2,
+              "summary": false,
+              "thinkingCharacters": 122,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 206,
+              "promptTokens": 4669,
+              "rawResponseCharacters": 0,
+              "step": 3,
+              "summary": false,
+              "thinkingCharacters": 597,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 45,
+              "promptTokens": 5138,
+              "rawResponseCharacters": 0,
+              "step": 4,
+              "summary": false,
+              "thinkingCharacters": 85,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 514,
+              "promptTokens": 5876,
+              "rawResponseCharacters": 0,
+              "step": 5,
+              "summary": false,
+              "thinkingCharacters": 1594,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 42,
+              "promptTokens": 6593,
+              "rawResponseCharacters": 0,
+              "step": 6,
+              "summary": false,
+              "thinkingCharacters": 66,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 222,
+              "promptTokens": 7338,
+              "rawResponseCharacters": 0,
+              "step": 7,
+              "summary": false,
+              "thinkingCharacters": 712,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 166,
+              "promptTokens": 7811,
+              "rawResponseCharacters": 0,
+              "step": 8,
+              "summary": false,
+              "thinkingCharacters": 102,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 53,
+              "promptTokens": 8195,
+              "rawResponseCharacters": 0,
+              "step": 9,
+              "summary": false,
+              "thinkingCharacters": 42,
+              "toolCalls": 0,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 2,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 324,
+              "promptTokens": 7068,
+              "rawResponseCharacters": 0,
+              "step": 10,
+              "summary": false,
+              "thinkingCharacters": 1041,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 331,
+              "promptTokens": 9284,
+              "rawResponseCharacters": 0,
+              "step": 11,
+              "summary": false,
+              "thinkingCharacters": 184,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 52,
+              "promptTokens": 10029,
+              "rawResponseCharacters": 0,
+              "step": 12,
+              "summary": false,
+              "thinkingCharacters": 48,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 251,
+              "promptTokens": 10452,
+              "rawResponseCharacters": 0,
+              "step": 13,
+              "summary": false,
+              "thinkingCharacters": 722,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 203,
+              "promptTokens": 11339,
+              "rawResponseCharacters": 768,
+              "step": 14,
+              "summary": false,
+              "thinkingCharacters": 38,
+              "toolCalls": 0,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 768
+            }
+          ],
+          "finishedAt": "2026-11-05T09:28:02.463098+00:00"
+        },
+        {
+          "task": "wordfreq-repair",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "passed",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 208.5,
+          "sourceChangesReportedByDriver": [
+            "tests/test_regressions.py",
+            "textkit/stats.py",
+            "textkit/tokens.py"
+          ],
+          "rawAddedFiles": [
+            "tests/test_regressions.py"
+          ],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [
+            "textkit/stats.py",
+            "textkit/tokens.py"
+          ],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 18,
+            "context_prepared": 18,
+            "thinking": 1238,
+            "generation_metrics": 18,
+            "adk_event": 35,
+            "tool_started": 18,
+            "tool_completed": 15,
+            "token_accounting": 18,
+            "approval": 8,
+            "tool_failed": 3,
+            "text": 114,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [],
+          "approvals": 8,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3050,
+              "outputTokens": 133,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3559,
+              "outputTokens": 103,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4045,
+              "outputTokens": 46,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4232,
+              "outputTokens": 53,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4426,
+              "outputTokens": 64,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4967,
+              "outputTokens": 88,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6038,
+              "outputTokens": 100,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6774,
+              "outputTokens": 29,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7068,
+              "outputTokens": 53,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 10,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7377,
+              "outputTokens": 90,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7877,
+              "outputTokens": 1133,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 9422,
+              "outputTokens": 1862,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11425,
+              "outputTokens": 320,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 12155,
+              "outputTokens": 943,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 15,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 13307,
+              "outputTokens": 561,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 16,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 14078,
+              "outputTokens": 551,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 17,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 14843,
+              "outputTokens": 78,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 18,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 15615,
+              "outputTokens": 546,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ],
+          "runId": "e5eec8ce8e8737f960e67e4229df6f4a",
+          "reportedToolCalls": {
+            "calls": 18,
+            "errors": 3,
+            "byTool": {
+              "list_files": 5,
+              "run_command": 4,
+              "read_file": 5,
+              "write_file": 3,
+              "verify_task": 1
+            },
+            "failures": [
+              {
+                "tool": "run_command",
+                "detail": "process exited with code 5"
+              },
+              {
+                "tool": "run_command",
+                "detail": "process exited with code 1"
+              },
+              {
+                "tool": "run_command",
+                "detail": "process exited with code 1"
+              }
+            ],
+            "validationErrors": 0,
+            "validationFailures": [],
+            "eventKinds": {
+              "status": 18,
+              "tool_started": 18,
+              "tool_completed": 15,
+              "approval": 8,
+              "tool_failed": 3,
+              "text": 114,
+              "run_completed": 1
+            }
+          },
+          "schemaFeedbackPairs": [],
+          "rejectedCallsDispatched": [],
+          "validationReportingAudit": {
+            "reportedCount": 0,
+            "rawCount": 0,
+            "countMatches": true,
+            "reportedFailureDetailsCount": 0,
+            "expectedBoundedDetailsCount": 0,
+            "detailsCountMatches": true
+          },
+          "mechanismEvents": [
+            {
+              "createdAt": "2026-11-05T09:28:19.475739Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 1,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:26.26361Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 2,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:30.099121Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 3,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:32.780418Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 4,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:36.481205Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 5,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:42.530321Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 6,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:49.288052Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 7,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:52.890633Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 8,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:55.298998Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 9,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:28:58.468274Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 10,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:29:28.429633Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 11,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:30:13.326857Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 12,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:30:20.971741Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 13,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:30:43.508166Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 14,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:30:56.714792Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 15,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:31:10.955424Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 16,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:31:14.081825Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 17,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            },
+            {
+              "createdAt": "2026-11-05T09:31:29.378371Z",
+              "type": "token_accounting",
+              "title": "Token measurement",
+              "detail": null,
+              "data": {
+                "attempt": 1,
+                "step": 18,
+                "summary": false,
+                "tokenAccounting": {
+                  "attempts": 1,
+                  "measuredResponses": 1,
+                  "source": "provider_terminal_counts",
+                  "status": "complete",
+                  "terminalResponses": 1,
+                  "unknownContributions": 0,
+                  "version": 1
+                }
+              }
+            }
+          ],
+          "contextObservations": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 2,
+              "messageTextBytes": 2214,
+              "wireContentCharacters": 2214,
+              "wireThinkingCharacters": 0,
+              "estimatedTextTokens": 554,
+              "requestBytes": 15218,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 0,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 4,
+              "messageTextBytes": 3310,
+              "wireContentCharacters": 2885,
+              "wireThinkingCharacters": 425,
+              "estimatedTextTokens": 828,
+              "requestBytes": 16660,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 1,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 6,
+              "messageTextBytes": 4464,
+              "wireContentCharacters": 3826,
+              "wireThinkingCharacters": 636,
+              "estimatedTextTokens": 1116,
+              "requestBytes": 18175,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 2,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 8,
+              "messageTextBytes": 4818,
+              "wireContentCharacters": 4061,
+              "wireThinkingCharacters": 755,
+              "estimatedTextTokens": 1204,
+              "requestBytes": 18806,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 3,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 10,
+              "messageTextBytes": 5170,
+              "wireContentCharacters": 4296,
+              "wireThinkingCharacters": 872,
+              "estimatedTextTokens": 1292,
+              "requestBytes": 19436,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 4,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 12,
+              "messageTextBytes": 6438,
+              "wireContentCharacters": 5433,
+              "wireThinkingCharacters": 1001,
+              "estimatedTextTokens": 1609,
+              "requestBytes": 21051,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 5,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 14,
+              "messageTextBytes": 9406,
+              "wireContentCharacters": 8243,
+              "wireThinkingCharacters": 1157,
+              "estimatedTextTokens": 2350,
+              "requestBytes": 24462,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 6,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 16,
+              "messageTextBytes": 11411,
+              "wireContentCharacters": 10016,
+              "wireThinkingCharacters": 1389,
+              "estimatedTextTokens": 2852,
+              "requestBytes": 26857,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 7,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 18,
+              "messageTextBytes": 11935,
+              "wireContentCharacters": 10490,
+              "wireThinkingCharacters": 1439,
+              "estimatedTextTokens": 2983,
+              "requestBytes": 27692,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 8,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 10,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 20,
+              "messageTextBytes": 12676,
+              "wireContentCharacters": 11135,
+              "wireThinkingCharacters": 1535,
+              "estimatedTextTokens": 3168,
+              "requestBytes": 28733,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 9,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 22,
+              "messageTextBytes": 14059,
+              "wireContentCharacters": 12326,
+              "wireThinkingCharacters": 1727,
+              "estimatedTextTokens": 3514,
+              "requestBytes": 30454,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 10,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 24,
+              "messageTextBytes": 18882,
+              "wireContentCharacters": 13574,
+              "wireThinkingCharacters": 5302,
+              "estimatedTextTokens": 4719,
+              "requestBytes": 35842,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 11,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 26,
+              "messageTextBytes": 25129,
+              "wireContentCharacters": 13809,
+              "wireThinkingCharacters": 11314,
+              "estimatedTextTokens": 6281,
+              "requestBytes": 42658,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 12,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 28,
+              "messageTextBytes": 27385,
+              "wireContentCharacters": 15000,
+              "wireThinkingCharacters": 12379,
+              "estimatedTextTokens": 6845,
+              "requestBytes": 45304,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 13,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 15,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 30,
+              "messageTextBytes": 30267,
+              "wireContentCharacters": 15344,
+              "wireThinkingCharacters": 14917,
+              "estimatedTextTokens": 7566,
+              "requestBytes": 49337,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 14,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 16,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 32,
+              "messageTextBytes": 31761,
+              "wireContentCharacters": 15687,
+              "wireThinkingCharacters": 16068,
+              "estimatedTextTokens": 7939,
+              "requestBytes": 51997,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 15,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 17,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 34,
+              "messageTextBytes": 33312,
+              "wireContentCharacters": 16038,
+              "wireThinkingCharacters": 17268,
+              "estimatedTextTokens": 8327,
+              "requestBytes": 54345,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 16,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            },
+            {
+              "step": 18,
+              "attempt": 1,
+              "summary": false,
+              "phase": "runtime_generation",
+              "contextSize": 32768,
+              "maxOutputTokens": 8192,
+              "messages": 36,
+              "messageTextBytes": 35248,
+              "wireContentCharacters": 17894,
+              "wireThinkingCharacters": 17346,
+              "estimatedTextTokens": 8810,
+              "requestBytes": 56668,
+              "toolDeclarationBytes": 12778,
+              "historicalToolCalls": 17,
+              "estimateMethod": "Wire message Unicode characters / 4; excludes images, tool-call JSON and schemas. Provider templates may omit thinking; not measured prompt tokens or cache reuse."
+            }
+          ],
+          "lastTokenAccounting": {
+            "attempt": 1,
+            "step": 18,
+            "summary": false,
+            "tokenAccounting": {
+              "attempts": 1,
+              "measuredResponses": 1,
+              "source": "provider_terminal_counts",
+              "status": "complete",
+              "terminalResponses": 1,
+              "unknownContributions": 0,
+              "version": 1
+            }
+          },
+          "generationMetrics": [
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 133,
+              "promptTokens": 3050,
+              "rawResponseCharacters": 0,
+              "step": 1,
+              "summary": false,
+              "thinkingCharacters": 425,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 103,
+              "promptTokens": 3559,
+              "rawResponseCharacters": 0,
+              "step": 2,
+              "summary": false,
+              "thinkingCharacters": 211,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 46,
+              "promptTokens": 4045,
+              "rawResponseCharacters": 0,
+              "step": 3,
+              "summary": false,
+              "thinkingCharacters": 119,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 53,
+              "promptTokens": 4232,
+              "rawResponseCharacters": 0,
+              "step": 4,
+              "summary": false,
+              "thinkingCharacters": 117,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 64,
+              "promptTokens": 4426,
+              "rawResponseCharacters": 0,
+              "step": 5,
+              "summary": false,
+              "thinkingCharacters": 129,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 88,
+              "promptTokens": 4967,
+              "rawResponseCharacters": 0,
+              "step": 6,
+              "summary": false,
+              "thinkingCharacters": 156,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 100,
+              "promptTokens": 6038,
+              "rawResponseCharacters": 0,
+              "step": 7,
+              "summary": false,
+              "thinkingCharacters": 232,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 29,
+              "promptTokens": 6774,
+              "rawResponseCharacters": 0,
+              "step": 8,
+              "summary": false,
+              "thinkingCharacters": 50,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 53,
+              "promptTokens": 7068,
+              "rawResponseCharacters": 0,
+              "step": 9,
+              "summary": false,
+              "thinkingCharacters": 96,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 90,
+              "promptTokens": 7377,
+              "rawResponseCharacters": 0,
+              "step": 10,
+              "summary": false,
+              "thinkingCharacters": 192,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 1133,
+              "promptTokens": 7877,
+              "rawResponseCharacters": 0,
+              "step": 11,
+              "summary": false,
+              "thinkingCharacters": 3575,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 1862,
+              "promptTokens": 9422,
+              "rawResponseCharacters": 0,
+              "step": 12,
+              "summary": false,
+              "thinkingCharacters": 6012,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 320,
+              "promptTokens": 11425,
+              "rawResponseCharacters": 0,
+              "step": 13,
+              "summary": false,
+              "thinkingCharacters": 1065,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 943,
+              "promptTokens": 12155,
+              "rawResponseCharacters": 0,
+              "step": 14,
+              "summary": false,
+              "thinkingCharacters": 2538,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 561,
+              "promptTokens": 13307,
+              "rawResponseCharacters": 0,
+              "step": 15,
+              "summary": false,
+              "thinkingCharacters": 1151,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 551,
+              "promptTokens": 14078,
+              "rawResponseCharacters": 0,
+              "step": 16,
+              "summary": false,
+              "thinkingCharacters": 1200,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 78,
+              "promptTokens": 14843,
+              "rawResponseCharacters": 0,
+              "step": 17,
+              "summary": false,
+              "thinkingCharacters": 78,
+              "toolCalls": 1,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 0
+            },
+            {
+              "attempt": 1,
+              "backend": {
+                "provider": "ollama"
+              },
+              "budgetReport": false,
+              "contextSize": 32768,
+              "doneReason": "stop",
+              "droppedToolCalls": 0,
+              "maxOutputTokens": 8192,
+              "model": "gemma4:12b-mlx",
+              "outputTokens": 546,
+              "promptTokens": 15615,
+              "rawResponseCharacters": 1898,
+              "step": 18,
+              "summary": false,
+              "thinkingCharacters": 27,
+              "toolCalls": 0,
+              "toolProtocol": "native",
+              "usageDetails": {},
+              "visibleCharacters": 1898
+            }
+          ],
+          "finishedAt": "2026-11-05T09:31:31.321043+00:00"
+        }
+      ],
+      "batchPath": ".runtime/pilot-round2-cycle-20261105-r1-20261105-032455",
+      "persistedCheckpoints": [
+        {
+          "id": "4d5731955717fb7de65c1b1d1abe7a08",
+          "request": {
+            "model": "gemma4:12b-mlx",
+            "maxSteps": 40,
+            "maxOutputTokens": 8192,
+            "contextSize": 32768,
+            "temperature": 0.2,
+            "thinking": null,
+            "toolProtocol": "native",
+            "deadline": "2026-11-05T03:44:56.52013-06:00",
+            "harnessMechanisms": {
+              "thinkingCycleGuard": true
+            },
+            "readOnly": true
+          },
+          "workspaceReadOnly": {
+            "allowCommands": true,
+            "constraint": "Please don't change or create any files"
+          },
+          "runtimeBinding": {
+            "artifactDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+            "backend": "ollama",
+            "contextTokens": 32768,
+            "drafter": {
+              "status": "unreported by runtime metadata"
+            },
+            "endpointDigest": "2fb24565ac96fa6667ae7aac126b1d1c01bd9ec999315b419e6010a19e5d9461",
+            "model": "gemma4:12b-mlx",
+            "modelIdentity": {
+              "name": "gemma4:12b-mlx",
+              "artifactDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+              "capabilities": {
+                "completion": true,
+                "tools": true,
+                "thinking": true,
+                "vision": true,
+                "structuredOutput": false
+              },
+              "capabilityClaims": {
+                "audio": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "completion": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "thinking": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "tools": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "vision": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                }
+              }
+            },
+            "parametersDigest": "2bee91c01bb3c87fbcf7ef151f4cf8315ce75e6a2e827ca4811c34589f2b6f6f",
+            "quantization": "nvfp4",
+            "revision": "0.40.11",
+            "runtimeId": "ollama-default",
+            "templateDigest": "39302355407942b6b0b50e1a78741740fc8a31926a4febea429526497e0e6008"
+          }
+        },
+        {
+          "id": "8db4bad90d78c381e8a610c295371d5a",
+          "request": {
+            "model": "gemma4:12b-mlx",
+            "maxSteps": 40,
+            "maxOutputTokens": 8192,
+            "contextSize": 32768,
+            "temperature": 0.2,
+            "thinking": null,
+            "toolProtocol": "native",
+            "deadline": "2026-11-05T03:45:54.030888-06:00",
+            "harnessMechanisms": {
+              "thinkingCycleGuard": true
+            },
+            "readOnly": null
+          },
+          "workspaceReadOnly": null,
+          "runtimeBinding": {
+            "artifactDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+            "backend": "ollama",
+            "contextTokens": 32768,
+            "drafter": {
+              "status": "unreported by runtime metadata"
+            },
+            "endpointDigest": "2fb24565ac96fa6667ae7aac126b1d1c01bd9ec999315b419e6010a19e5d9461",
+            "model": "gemma4:12b-mlx",
+            "modelIdentity": {
+              "name": "gemma4:12b-mlx",
+              "artifactDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+              "capabilities": {
+                "completion": true,
+                "tools": true,
+                "thinking": true,
+                "vision": true,
+                "structuredOutput": false
+              },
+              "capabilityClaims": {
+                "audio": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "completion": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "thinking": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "tools": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "vision": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                }
+              }
+            },
+            "parametersDigest": "2bee91c01bb3c87fbcf7ef151f4cf8315ce75e6a2e827ca4811c34589f2b6f6f",
+            "quantization": "nvfp4",
+            "revision": "0.40.11",
+            "runtimeId": "ollama-default",
+            "templateDigest": "39302355407942b6b0b50e1a78741740fc8a31926a4febea429526497e0e6008"
+          }
+        },
+        {
+          "id": "e5eec8ce8e8737f960e67e4229df6f4a",
+          "request": {
+            "model": "gemma4:12b-mlx",
+            "maxSteps": 40,
+            "maxOutputTokens": 8192,
+            "contextSize": 32768,
+            "temperature": 0.2,
+            "thinking": null,
+            "toolProtocol": "native",
+            "deadline": "2026-11-05T03:48:02.805606-06:00",
+            "harnessMechanisms": {
+              "thinkingCycleGuard": true
+            },
+            "readOnly": null
+          },
+          "workspaceReadOnly": null,
+          "runtimeBinding": {
+            "artifactDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+            "backend": "ollama",
+            "contextTokens": 32768,
+            "drafter": {
+              "status": "unreported by runtime metadata"
+            },
+            "endpointDigest": "2fb24565ac96fa6667ae7aac126b1d1c01bd9ec999315b419e6010a19e5d9461",
+            "model": "gemma4:12b-mlx",
+            "modelIdentity": {
+              "name": "gemma4:12b-mlx",
+              "artifactDigest": "sha256:ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+              "capabilities": {
+                "completion": true,
+                "tools": true,
+                "thinking": true,
+                "vision": true,
+                "structuredOutput": false
+              },
+              "capabilityClaims": {
+                "audio": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "completion": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "thinking": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "tools": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                },
+                "vision": {
+                  "state": "supported",
+                  "advertised": true,
+                  "source": "ollama_model_metadata"
+                }
+              }
+            },
+            "parametersDigest": "2bee91c01bb3c87fbcf7ef151f4cf8315ce75e6a2e827ca4811c34589f2b6f6f",
+            "quantization": "nvfp4",
+            "revision": "0.40.11",
+            "runtimeId": "ollama-default",
+            "templateDigest": "39302355407942b6b0b50e1a78741740fc8a31926a4febea429526497e0e6008"
+          }
+        }
+      ]
+    }
+  ]
+}

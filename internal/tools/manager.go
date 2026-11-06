@@ -10,7 +10,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
+	"unicode"
 	"unicode/utf8"
 
 	"gemmadesktop.local/app/internal/browser"
@@ -29,13 +31,18 @@ type Event struct {
 	Data   any    `json:"data,omitempty"`
 }
 type Options struct {
-	Mode        string
-	Approve     execution.Authorizer
-	Emit        func(Event)
-	MCP         *mcp.Manager
-	Browser     *browser.Manager
-	ArtifactDir string
-	Executor    execution.Executor
+	Mode string
+	// Permit approved sandboxed commands under a host-enforced read-only
+	// workspace. Off by default to preserve stricter read-only agent modes.
+	AllowReadOnlyCommands bool
+	Approve               execution.Authorizer
+	Emit                  func(Event)
+	MCP                   *mcp.Manager
+	Browser               *browser.Manager
+	ArtifactDir           string
+	Executor              execution.Executor
+	Verification          *execution.VerificationContract
+	BeforeAccess          func(context.Context, string, map[string]any) (Result, error)
 }
 type Definition struct {
 	Name        string         `json:"name"`
@@ -55,20 +62,58 @@ type Result struct {
 	Artifacts []Artifact `json:"artifacts,omitempty"`
 }
 type Manager struct {
-	workspace   *workspace.Workspace
-	options     Options
-	browser     *browser.Manager
-	ownBrowser  bool
-	schemas     map[string]*jsonschema.Resolved
-	definitions []Definition
+	workspace      *workspace.Workspace
+	options        Options
+	browser        *browser.Manager
+	ownBrowser     bool
+	schemas        map[string]*jsonschema.Resolved
+	definitions    []Definition
+	revisionMu     sync.Mutex
+	revisions      map[revisionKey]string        // (scope, clean path) -> revision hash last served to that conversation
+	served         map[revisionKey]bool          // (scope, path, hash) for every revision ever served to that conversation
+	issued         map[revisionKey]bool          // (path, hash), scope unused, for every revision served to any conversation
+	completedEdits map[revisionKey]completedEdit // latest successful edit per conversation and path
+}
+
+// revisionKey keeps revision memory per model conversation. One Manager serves
+// every workflow node, fan-out child and delegate of a run, and a revision one
+// of them read is not one another has seen, so it must never fill in, repair or
+// be reported as the other's own revision. Staleness stays run-wide (issued):
+// a hash copied from another node's output still names a real earlier revision.
+// A struct key cannot be forged by a scope or path that contains a separator.
+type revisionKey struct{ scope, path, hash string }
+
+type revisionScopeKey struct{}
+
+// WithRevisionScope names the model conversation issuing tool calls on ctx.
+// Callers that share a Manager across conversations must give each one a
+// distinct, stable scope for its whole lifetime; calls without one share "".
+func WithRevisionScope(ctx context.Context, scope string) context.Context {
+	return context.WithValue(ctx, revisionScopeKey{}, scope)
+}
+
+func revisionScope(ctx context.Context) string {
+	scope, _ := ctx.Value(revisionScopeKey{}).(string)
+	return scope
 }
 
 func New(root string, options Options) (*Manager, error) {
+	if options.Verification != nil {
+		if err := options.Verification.Validate(); err != nil {
+			return nil, err
+		}
+		b, _ := json.Marshal(options.Verification)
+		var frozen execution.VerificationContract
+		if err := json.Unmarshal(b, &frozen); err != nil {
+			return nil, err
+		}
+		options.Verification = &frozen
+	}
 	w, err := workspace.Open(root)
 	if err != nil {
 		return nil, err
 	}
-	m := &Manager{workspace: w, options: options, browser: options.Browser, schemas: map[string]*jsonschema.Resolved{}}
+	m := &Manager{workspace: w, options: options, browser: options.Browser, schemas: map[string]*jsonschema.Resolved{}, revisions: map[revisionKey]string{}, served: map[revisionKey]bool{}, issued: map[revisionKey]bool{}}
 	if options.ArtifactDir != "" {
 		if !filepath.IsAbs(options.ArtifactDir) {
 			w.Close()
@@ -95,6 +140,9 @@ func New(root string, options Options) (*Manager, error) {
 		m.ownBrowser = true
 	}
 	for _, d := range catalogue() {
+		if d.Name == "verify_task" && options.Verification == nil {
+			continue
+		}
 		if d.Name == "setup_dependencies" {
 			if _, ok := options.Executor.(interface {
 				ProvisionDependencies(context.Context, execution.DependencyRequest, execution.Authorizer) (execution.DependencyResult, error)
@@ -102,11 +150,20 @@ func New(root string, options Options) (*Manager, error) {
 				continue
 			}
 		}
-		if d.Name == "run_command" && options.Executor != nil {
-			d.Description = "Run an approved program using " + options.Executor.Description() + ". Ordinary permitted source changes update the original workspace before the tool returns. readOnly:true mounts source read-only; private dependencies and caches remain writable. Linux commands use the image PATH, not Homebrew executables. Nonzero exitCode means failure; inspect publication independently."
+		if d.Name == "run_command" {
+			switch executor := options.Executor.(type) {
+			case *execution.DockerExecutor:
+				d.Description = "Run an approved program using " + executor.Description() + ". Ordinary permitted source changes update the original workspace before the tool returns. readOnly:true mounts source read-only; private dependencies and caches remain writable. Linux commands use the image PATH, not Homebrew executables. Nonzero exitCode means failure; inspect publication independently."
+			case nil, *execution.Runner:
+			default:
+				d.Description += " Execution: " + executor.Description() + "."
+			}
 		}
-		if m.readOnly() && !readTool(d.Name) {
+		if m.readOnly() && !readTool(d.Name) && !(d.Name == "run_command" && options.AllowReadOnlyCommands) {
 			continue
+		}
+		if m.readOnly() && d.Name == "run_command" {
+			d.Description = "Run an approved program with the workspace forced read-only. The readOnly argument cannot grant write access. Use python3 -c with inline code for calculations instead of creating a helper script. " + d.Description
 		}
 		b, _ := json.Marshal(d.Parameters)
 		var s jsonschema.Schema
@@ -129,7 +186,7 @@ func (m *Manager) readOnly() bool {
 }
 func readTool(name string) bool {
 	switch name {
-	case "list_files", "read_file", "search_files", "git_status", "git_diff", "git_history", "git_branches", "git_file", "git_blame", "mcp_list":
+	case "list_files", "read_file", "search_files", "git_status", "git_diff", "git_history", "git_branches", "git_file", "git_blame", "mcp_list", "verify_task":
 		return true
 	}
 	return false
@@ -154,6 +211,7 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 	if err = ctx.Err(); err != nil {
 		return result, err
 	}
+	scope := revisionScope(ctx)
 	ctx, release, leaseErr := workspace.AcquireOperation(ctx, m.workspace.Path)
 	if leaseErr != nil {
 		return result, leaseErr
@@ -161,6 +219,9 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 	defer release()
 	schema, ok := m.schemas[name]
 	if !ok {
+		if m.readOnly() && m.options.AllowReadOnlyCommands {
+			return result, errors.New("workspace changes are forbidden for this run; use read_file/search_files or run_command with readOnly:true and inline python3 -c code instead of creating a helper file")
+		}
 		return result, errors.New("tool is unavailable in the current mode")
 	}
 	// Detach argument values from the caller so an approval authorizes exactly
@@ -174,21 +235,84 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		return result, e
 	}
 	args = snapshot
-	if name == "write_file" || name == "edit_file" {
-		value, present := args["expectedHash"]
-		hash, isString := value.(string)
-		if !present || value == nil || (isString && hash == "") {
-			return result, errors.New("expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file")
+	switch name {
+	case "write_file", "edit_file", "move_file", "delete_file":
+		// A null optional revision means omitted; resolveRevision supplies it.
+		if v, present := args["expectedHash"]; present && v == nil {
+			delete(args, "expectedHash")
 		}
 	}
 	if e = schema.Validate(args); e != nil {
 		return result, fmt.Errorf("invalid %s arguments: %w", name, e)
 	}
+	protectedDirectoryNoOp := false
+	if m.options.Verification != nil {
+		switch name {
+		case "write_file", "edit_file", "delete_file", "move_file", "make_directory":
+			for _, key := range []string{"path", "destination"} {
+				p, _ := args[key].(string)
+				if p != "" && workspace.TaskProtected(p, m.options.Verification.ProtectedPaths) {
+					// Ensuring a real directory already exists does not mutate a
+					// protected file or ancestor. All path/symlink guards still apply.
+					if name == "make_directory" {
+						if _, ok := m.existingDirectoryResult(p); ok {
+							protectedDirectoryNoOp = true
+							continue // retain BeforeAccess guidance checks below
+						}
+					}
+					return result, fmt.Errorf("%q is protected by the task contract", p)
+				}
+			}
+		}
+	}
+	autoReadOnly := false
+	if name == "run_command" {
+		if autoReadOnly, e = m.prepareCommand(args); e != nil {
+			return result, e
+		}
+	}
+	if m.options.BeforeAccess != nil {
+		contextResult, contextErr := m.options.BeforeAccess(ctx, name, args)
+		if contextErr != nil {
+			return contextResult, contextErr
+		}
+		if contextResult.Content != "" || contextResult.Data != nil {
+			defer func() {
+				result.Content = contextResult.Content + "\n" + result.Content
+				body, _ := json.Marshal(result.Data)
+				data := map[string]any{}
+				_ = json.Unmarshal(body, &data)
+				if data == nil {
+					data = map[string]any{}
+				}
+				body, _ = json.Marshal(contextResult.Data)
+				guidance := map[string]any{}
+				_ = json.Unmarshal(body, &guidance)
+				for key, value := range guidance {
+					data[key] = value
+				}
+				result.Data = data
+			}()
+		}
+	}
+	// Resolution reads the target only after the protected-path and guidance
+	// guards, and before approval so it authorizes the resolved revision.
+	revisionNote, e := m.resolveRevision(scope, name, args)
+	if e != nil {
+		return result, e
+	}
 	m.emit(Event{Type: "tool_started", Tool: name, Title: name})
 	defer func() {
-		if (name == "write_file" || name == "edit_file") && errors.Is(err, workspace.ErrConflict) {
+		if (name == "write_file" || name == "edit_file" || name == "delete_file" || name == "move_file") && errors.Is(err, workspace.ErrConflict) {
 			path, _ := args["path"].(string)
-			err = fmt.Errorf("revision conflict for %q: %w; call read_file with path %q before retrying with that file's returned hash", path, err, path)
+			hint := fmt.Sprintf("call read_file with path %q, then retry (omit expectedHash to use the revision you just read)", path)
+			// read_file cannot help when the conflict is a hash for a file that does not exist.
+			if name == "write_file" {
+				if _, e := m.workspace.Read(path); errors.Is(e, os.ErrNotExist) {
+					hint = "the file does not exist, so omit expectedHash (or use missing) to create it"
+				}
+			}
+			err = fmt.Errorf("revision conflict for %q: %w; %s", path, err, hint)
 		}
 		kind := "tool_completed"
 		detail := ""
@@ -207,6 +331,8 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		return int(v)
 	}
 	switch name {
+	case "verify_task":
+		return m.verifyTask(ctx)
 	case "list_files":
 		v, e := m.workspace.List(get("path"))
 		return encode(map[string]any{"entries": v}), e
@@ -225,6 +351,7 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		text := strings.Join(lines[start-1:end], "\n")
 		bounded := len(text) > 64<<10
 		text = clip(text, 64<<10)
+		m.serve(scope, v.Path, v.Hash)
 		return encode(map[string]any{"path": v.Path, "hash": v.Hash, "content": text, "startLine": start, "endLine": end, "totalLines": len(lines), "truncated": bounded || end < len(lines), "size": v.Size}), nil
 	case "search_files":
 		regex, _ := args["regex"].(bool)
@@ -234,9 +361,17 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		if _, e = workspace.Clean(get("path"), true); e != nil {
 			return result, e
 		}
+		reason := "Apply this exact text change at the supplied file revision. The original and new text will be retained as an artifact."
 		if name == "edit_file" {
-			if _, e = m.workspace.ValidateReplacement(get("path"), get("oldText"), get("expectedHash")); e != nil {
+			if replay, ok := m.completedEditResult(scope, get("path"), get("oldText"), get("newText"), get("expectedHash")); ok {
+				return replay, nil
+			}
+			plan, e := m.workspace.LocateReplacement(get("path"), get("oldText"), get("expectedHash"))
+			if e != nil {
 				return result, e
+			}
+			if plan.Normalized {
+				reason += " oldText matched one region only after ignoring line-ending and trailing-whitespace differences; that original region is replaced."
 			}
 		} else {
 			// Reject an already stale proposal before asking for approval. Read
@@ -257,7 +392,7 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 				return result, readErr
 			}
 		}
-		if err = m.approve(ctx, name, args, "Apply this exact text change at the supplied file revision. The original and new text will be retained as an artifact."); err != nil {
+		if err = m.approve(ctx, name, args, reason); err != nil {
 			return result, err
 		}
 		if err = ctx.Err(); err != nil {
@@ -290,20 +425,33 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		if err != nil {
 			return result, err
 		}
-		result = encode(map[string]any{"path": change.Path, "beforeHash": change.BeforeHash, "afterHash": change.AfterHash, "created": change.Created})
+		m.serve(scope, change.Path, change.AfterHash)
+		if name == "edit_file" {
+			m.rememberEdit(scope, change.Path, get("oldText"), get("newText"), change.AfterHash)
+		}
+		data := appliedChangeData(name, change, revisionNote)
+		result = encode(data)
 		result.Artifacts = []Artifact{{Path: change.Path, Before: change.Before, After: change.After, MediaType: "text/plain", Size: int64(len(change.After))}}
 		if backup.Path != "" {
 			result.Artifacts = append(result.Artifacts, backup)
 		}
 		return result, nil
 	case "delete_file", "move_file":
-		if _, e = workspace.Clean(get("path"), true); e != nil {
+		source, e := workspace.Clean(get("path"), true)
+		if e != nil {
 			return result, e
 		}
 		if name == "move_file" {
 			if _, e = workspace.Clean(get("destination"), true); e != nil {
 				return result, e
 			}
+		}
+		// Reject a missing or stale source before asking for approval. The
+		// revision checks after approval still catch intervening edits.
+		if f, e := m.workspace.Read(get("path")); e != nil {
+			return result, e
+		} else if f.Hash != get("expectedHash") {
+			return result, workspace.ErrConflict
 		}
 		if err = m.approve(ctx, name, args, "Apply this exact file operation at the supplied revision. A durable before-image snapshot is required first."); err != nil {
 			return result, err
@@ -332,7 +480,21 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		if err != nil {
 			return result, err
 		}
-		result = encode(map[string]any{"source": get("path"), "path": change.Path, "afterHash": change.AfterHash, "snapshot": backup.Path})
+		m.serve(scope, source, "")
+		if name == "move_file" {
+			m.serve(scope, change.Path, change.AfterHash)
+		}
+		data := map[string]any{"source": get("path"), "path": change.Path, "afterHash": change.AfterHash, "snapshot": backup.Path}
+		data["applied"] = true
+		message := "File deleted successfully."
+		if name == "move_file" {
+			message = "File moved successfully."
+		}
+		data["message"] = message
+		if revisionNote != "" {
+			data["revisionNote"] = message + " " + revisionNote
+		}
+		result = encode(data)
 		if name == "move_file" {
 			result.Artifacts = []Artifact{backup, {Path: f.Path, Before: change.Before, MediaType: "text/plain"}, {Path: change.Path, After: change.After, MediaType: "text/plain", Size: int64(len(change.After))}}
 		} else {
@@ -357,6 +519,12 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 	case "make_directory":
 		if _, e = workspace.Clean(get("path"), true); e != nil {
 			return result, e
+		}
+		if existing, ok := m.existingDirectoryResult(get("path")); ok {
+			return existing, nil
+		}
+		if protectedDirectoryNoOp {
+			return result, errors.New("protected directory changed before the no-op check; no directory was created")
 		}
 		if err = m.approve(ctx, name, args, "Create this directory inside the selected workspace."); err != nil {
 			return result, err
@@ -434,11 +602,22 @@ func (m *Manager) Execute(ctx context.Context, name string, args map[string]any)
 		if err = m.approve(ctx, name, args, "Run this exact program. "+authority+" Execution: "+executor.Description()); err != nil {
 			return result, err
 		}
-		v, e := executor.Run(ctx, execution.Request{Workspace: m.workspace.Path, WorkingDirectory: get("workingDirectory"), Executable: get("executable"), Args: argv, ReadOnly: readOnly, Timeout: time.Duration(number("timeoutSeconds", 120)) * time.Second})
+		var protected []string
+		if m.options.Verification != nil {
+			protected = append([]string{}, m.options.Verification.ProtectedPaths...)
+		}
+		v, e := executor.Run(ctx, execution.Request{Workspace: m.workspace.Path, WorkingDirectory: get("workingDirectory"), Executable: get("executable"), Args: argv, ReadOnly: readOnly, ProtectedPaths: protected, Timeout: time.Duration(number("timeoutSeconds", 120)) * time.Second})
 		if e == nil && v.ExitCode != 0 {
 			e = fmt.Errorf("process exited with code %d", v.ExitCode)
 		}
-		return encodeProcess(v), e
+		r := encodeProcess(v)
+		if autoReadOnly {
+			data := r.Data.(map[string]any)
+			data["readOnlyNote"] = "readOnly was set automatically because this task protects files"
+			b, _ := json.Marshal(data)
+			r.Content = string(b)
+		}
+		return r, e
 	case "setup_dependencies":
 		provisioner, ok := m.options.Executor.(interface {
 			ProvisionDependencies(context.Context, execution.DependencyRequest, execution.Authorizer) (execution.DependencyResult, error)
@@ -575,16 +754,17 @@ func catalogue() []Definition {
 		return Definition{Name: name, Description: description, Parameters: map[string]any{"type": "object", "properties": properties, "required": required, "additionalProperties": false}}
 	}
 	path := str("Relative workspace path. Parent traversal, credentials, and symlinks are unavailable.")
-	hash := str("SHA-256 from read_file; use missing only when creating a file.")
+	hash := str("Optional SHA-256 revision from read_file. Omit it to use the revision you last read in this run; use missing only when creating a new file.")
 	return []Definition{
+		def("verify_task", "Run the host-declared task verification command read-only. A successful receipt records the exact source revision verified. Takes no arguments.", map[string]any{}),
 		def("list_files", "List a selected workspace directory; protected paths are omitted.", map[string]any{"path": path}),
 		def("read_file", "Read bounded text and its complete revision hash. Use line ranges for large files.", map[string]any{"path": path, "startLine": integer(1, 2000000), "lineCount": integer(1, 500)}, "path"),
 		def("search_files", "Search workspace text. Skips symlinks, secrets, generated dependencies, and large binary files.", map[string]any{"path": path, "query": str("Literal text or a Go regular expression."), "regex": map[string]any{"type": "boolean"}, "limit": integer(1, 100)}, "query"),
-		def("write_file", "Create or replace a text file only after approval and an exact revision check. The before/after content becomes an artifact.", map[string]any{"path": path, "content": str("Complete UTF-8 text."), "expectedHash": hash}, "path", "content", "expectedHash"),
-		def("edit_file", "Apply one exact replacement after approval and a revision check. Prefer the shortest unique existing span. Supply only replacement file text, excluding tool response headers and markers. Use actual newlines encoded once in the JSON arguments, not copied JSON escape sequences. If no match is found, re-read before retrying or write the complete file with its fresh hash.", map[string]any{"path": path, "oldText": str("Shortest existing text occurring exactly once, including actual newlines where needed."), "newText": str("Only the replacement file text, without tool response headers or markers; use actual newlines and encode JSON once."), "expectedHash": hash}, "path", "oldText", "newText", "expectedHash"),
-		def("make_directory", "Create one directory after approval; the parent must already exist.", map[string]any{"path": path}, "path"),
-		def("move_file", "Move one regular text file to a nonexistent destination after approval and hash validation. Saves a durable before-image checkpoint.", map[string]any{"path": path, "destination": path, "expectedHash": hash}, "path", "destination", "expectedHash"),
-		def("delete_file", "Delete one regular text file after approval and hash validation. Requires a durable before-image checkpoint; directories are unsupported.", map[string]any{"path": path, "expectedHash": hash}, "path", "expectedHash"),
+		def("write_file", "Create or replace a text file only after approval and an exact revision check. The before/after content becomes an artifact.", map[string]any{"path": path, "content": str("Complete UTF-8 text."), "expectedHash": hash}, "path", "content"),
+		def("edit_file", "Apply one exact replacement after approval and a revision check. Prefer the shortest unique existing span. Supply only replacement file text, excluding tool response headers and markers. Use actual newlines encoded once in the JSON arguments, not copied JSON escape sequences. Repeating your last successful identical edit at its unchanged resulting revision returns alreadyApplied without another change; use a different current snippet for an additional transformation. If no match is found, re-read before retrying or write the complete file with its fresh hash.", map[string]any{"path": path, "oldText": str("Shortest existing text occurring exactly once, including actual newlines where needed."), "newText": str("Only the replacement file text, without tool response headers or markers; use actual newlines and encode JSON once."), "expectedHash": hash}, "path", "oldText", "newText"),
+		def("make_directory", "Create one directory after approval; the parent must already exist. If the directory already exists, report success without changing it or requesting approval.", map[string]any{"path": path}, "path"),
+		def("move_file", "Move one regular text file to a nonexistent destination after approval and hash validation. Saves a durable before-image checkpoint.", map[string]any{"path": path, "destination": path, "expectedHash": hash}, "path", "destination"),
+		def("delete_file", "Delete one regular text file after approval and hash validation. Requires a durable before-image checkpoint; directories are unsupported.", map[string]any{"path": path, "expectedHash": hash}, "path"),
 		def("checkpoint_snapshot", "Save up to 20 selected text files as an app-owned JSON snapshot with revision hashes. It is a file snapshot, not a Git commit or atomic whole-project snapshot.", map[string]any{"paths": map[string]any{"type": "array", "items": path, "minItems": 1, "maxItems": 20, "uniqueItems": true}, "label": str("Short checkpoint label.")}, "paths"),
 		def("git_status", "Read bounded Git status in a read-only, network-denied process. External hooks and fsmonitor are disabled.", map[string]any{}),
 		def("git_diff", "Read Git diff with external diff/textconv helpers disabled.", map[string]any{"staged": map[string]any{"type": "boolean"}}),
@@ -592,7 +772,7 @@ func catalogue() []Definition {
 		def("git_branches", "List up to 200 local branches without changing the working tree.", map[string]any{}),
 		def("git_file", "Read a bounded historical file at a commit or branch. Protected paths remain unavailable; no hooks, textconv, external diff, or network.", map[string]any{"path": path, "revision": str("Commit hash, branch name, or HEAD ancestry such as HEAD~1.")}, "path", "revision"),
 		def("git_blame", "Read bounded line attribution for the first 500 lines of a current regular text file.", map[string]any{"path": path}, "path"),
-		def("run_command", "Run an approved single process in the macOS workspace sandbox. Set readOnly:true for verification tests that must not alter source or test files; private temporary files remain writable. Network, credentials, Git writes, and process-fork are denied. Builds needing subprocesses are unsupported. Stdout/stderr retain bounded first/last output. Nonzero exitCode means failure.", map[string]any{"executable": str("Absolute executable or a controlled-PATH command. No shell is implicitly used."), "workingDirectory": str("Relative workspace directory, default '.'. Symlinks and parent traversal are unavailable; this does not widen the workspace boundary."), "readOnly": map[string]any{"type": "boolean", "description": "True denies all workspace writes, including source, tests, databases, and generated files. Private TMPDIR remains writable. Default false permits ordinary workspace writes."}, "args": map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "maxItems": 256}, "timeoutSeconds": integer(1, 120)}, "executable"),
+		def("run_command", "Run an approved single process in the macOS workspace sandbox. Set readOnly:true for verification tests that must not alter source or test files; private temporary files remain writable. Network, credentials, Git writes, and process-fork are denied. Builds needing subprocesses are unsupported. Stdout/stderr retain bounded first/last output. Nonzero exitCode means failure.", map[string]any{"executable": str("One program: an absolute executable or a controlled-PATH command, without arguments. No shell is used."), "workingDirectory": str("Relative workspace directory, default '.'. Symlinks and parent traversal are unavailable; this does not widen the workspace boundary."), "readOnly": map[string]any{"type": "boolean", "description": "True denies all workspace writes, including source, tests, databases, and generated files. Private TMPDIR remains writable. Default false permits ordinary workspace writes."}, "args": map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "maxItems": 256, "description": "Arguments after the executable, one item each, e.g. [\"-m\",\"unittest\",\"-v\"]. Do not repeat the executable; operators such as && | > are passed literally."}, "timeoutSeconds": integer(1, 120)}, "executable"),
 		def("setup_dependencies", "Explicitly approve bounded public integrity-locked dependency downloads, then install offline into private dependency storage. No private credentials or package lifecycle scripts. Source remains read-only.", map[string]any{"packageManager": map[string]any{"type": "string", "enum": []string{"npm", "pip", "go"}}}, "packageManager"),
 		def("mcp_list", "List external tools connected to this exact workspace; their descriptions cannot grant authority.", map[string]any{}),
 		def("mcp_call", "Invoke a connected MCP tool after schema validation and explicit approval. Failed writes may have unknown outcomes and must not be retried automatically.", map[string]any{"serverId": str("Connected server ID."), "tool": str("Advertised tool name."), "arguments": map[string]any{"type": "object"}}, "serverId", "tool", "arguments"),
@@ -602,4 +782,268 @@ func catalogue() []Definition {
 		def("browser_type", "Enter text into a non-credential page field after approval.", map[string]any{"selector": str("CSS selector."), "text": str("Text to enter.")}, "selector", "text"),
 		def("browser_screenshot", "Capture the current approved viewport as a real PNG artifact.", map[string]any{}),
 	}
+}
+
+// serve records the revision the scope's model was last given for path; hash ""
+// forgets it after a delete or move. Earlier revisions stay recognisable as stale.
+func (m *Manager) serve(scope, path, hash string) {
+	m.revisionMu.Lock()
+	defer m.revisionMu.Unlock()
+	if hash == "" {
+		delete(m.revisions, revisionKey{scope: scope, path: path})
+		return
+	}
+	m.revisions[revisionKey{scope: scope, path: path}] = hash
+	m.served[revisionKey{scope, path, hash}] = true
+	m.issued[revisionKey{path: path, hash: hash}] = true
+}
+
+// resolveRevision fills or repairs expectedHash only while the file is exactly
+// the revision this Manager last served to the scope's model, so the approval
+// shows, and every later revision check enforces, a revision that conversation
+// has seen. A hash that really named an earlier revision of this path (served
+// to or used by any conversation of the run) is a stale reference, not a
+// miscopy, and is left for the conflict checks; only an edit naming the scope's
+// own earlier revision is applied to that conversation's current result.
+func (m *Manager) resolveRevision(scope, name string, args map[string]any) (string, error) {
+	switch name {
+	case "write_file", "edit_file", "move_file", "delete_file":
+	default:
+		return "", nil
+	}
+	raw, _ := args["path"].(string)
+	path, err := workspace.Clean(raw, true)
+	if err != nil {
+		return "", nil // the tool's own path checks report it
+	}
+	provided, _ := args["expectedHash"].(string)
+	current := "missing"
+	f, err := m.workspace.Read(path)
+	switch {
+	case err == nil:
+		current = f.Hash
+	case errors.Is(err, os.ErrNotExist) && name == "write_file":
+	default:
+		return "", nil // the tool reports a missing or unreadable file before approval
+	}
+	m.revisionMu.Lock()
+	if provided == current {
+		if provided != "missing" {
+			m.served[revisionKey{scope, path, provided}] = true
+			m.issued[revisionKey{path: path, hash: provided}] = true
+		}
+		m.revisionMu.Unlock()
+		return "", nil
+	}
+	known := m.revisions[revisionKey{scope: scope, path: path}]
+	own, stale := provided != "" && m.served[revisionKey{scope, path, provided}], provided != "" && m.issued[revisionKey{path: path, hash: provided}]
+	m.revisionMu.Unlock()
+	switch {
+	case provided == "" && current == "missing":
+		args["expectedHash"] = "missing"
+	case known != "" && known == current && !stale:
+		args["expectedHash"] = current
+		if provided != "" {
+			return fmt.Sprintf("expectedHash did not match; the host used the revision you last read (%s…)", current[:12]), nil
+		}
+	case name == "edit_file" && own && known != "" && known == current:
+		// The file is still exactly the model's own latest result, and the
+		// replacement must match once in that current text, so an edit that names
+		// an earlier revision applies on top of the model's change instead of
+		// clobbering it. Whole-file writes keep the stale-revision conflict.
+		args["expectedHash"] = current
+		return fmt.Sprintf("expectedHash named an earlier revision; the host applied this exact replacement to the current revision you produced (%s…)", current[:12]), nil
+	case name == "move_file" && !stale:
+		// A move relocates exactly the bytes it finds to a new path and keeps a
+		// before-image, so it needs no prior read; the approval shows that revision.
+		args["expectedHash"] = current
+		if provided != "" {
+			return fmt.Sprintf("expectedHash did not match; the host moved the current revision (%s…)", current[:12]), nil
+		}
+	case provided == "":
+		return "", fmt.Errorf("%s has not been read in this run or changed since you last read it; call read_file on it first, then retry (expectedHash is optional once you have read the current version).", path)
+	}
+	return "", nil
+}
+
+// prepareCommand rejects argv that cannot do what was meant and narrows a
+// protected task's command to readOnly before guidance checks and approval see
+// the arguments. Only Docker publication can guard task-protected paths during
+// writes; elsewhere read-only is strictly narrower than what was requested.
+func (m *Manager) prepareCommand(args map[string]any) (bool, error) {
+	argv := []string{}
+	if raw, ok := args["args"].([]any); ok {
+		for _, v := range raw {
+			argv = append(argv, v.(string))
+		}
+	}
+	executable, _ := args["executable"].(string)
+	_, docker := m.options.Executor.(*execution.DockerExecutor)
+	if err := commandMisuse(executable, argv, docker); err != nil {
+		return false, err
+	}
+	if m.readOnly() {
+		args["readOnly"] = true
+		return false, nil
+	}
+	if requested, _ := args["readOnly"].(bool); requested || docker || m.options.Verification == nil || len(m.options.Verification.ProtectedPaths) == 0 {
+		return false, nil
+	}
+	args["readOnly"] = true
+	return true, nil
+}
+
+var shellOperators = map[string]bool{"|": true, "||": true, "&&": true, ";": true, ">": true, ">>": true, "<": true, "2>&1": true, "&": true}
+var shellPrograms = map[string]bool{"sh": true, "bash": true, "zsh": true, "dash": true, "fish": true}
+
+// Pattern and expression tools legitimately take operator characters as
+// arguments (grep "&&", find -exec ... ";", expr 1 "<" 2, cut -d "|").
+var patternPrograms = map[string]bool{"grep": true, "egrep": true, "fgrep": true, "rg": true, "ag": true, "ack": true, "git": true, "find": true, "expr": true, "test": true, "[": true, "echo": true, "printf": true, "sed": true, "awk": true, "gawk": true, "tr": true, "cut": true, "sort": true, "paste": true, "column": true, "join": true, "jq": true}
+var wrapperPrograms = map[string]bool{"env": true, "timeout": true, "nice": true, "nohup": true, "xargs": true, "stdbuf": true, "time": true, "caffeinate": true}
+var packedFlagPrograms = regexp.MustCompile(`^(python(3(\.[0-9]+)?)?|node|go|npm|pytest)$`)
+var optionName = regexp.MustCompile(`^--?[A-Za-z][A-Za-z0-9_.-]*$`)
+
+// commandMisuse rejects, before approval, argv shapes that cannot do what the
+// model meant, and says how to fix them. Every rule must stay silent on
+// legitimate argv, so ambiguous shapes are allowed through.
+func commandMisuse(executable string, args []string, docker bool) error {
+	fields := strings.Fields(executable)
+	if len(fields) == 0 {
+		return nil
+	}
+	if filepath.Base(fields[0]) == "cd" {
+		tokens := append(append([]string{}, fields[1:]...), args...)
+		dir := "src"
+		if len(tokens) > 0 && !shellOperators[tokens[0]] {
+			dir = tokens[0]
+		}
+		for i, t := range tokens {
+			if (t == "&&" || t == ";") && i+1 < len(tokens) {
+				return fmt.Errorf("cd is not a program here; set workingDirectory and run the program directly, for example %s", argvExample(tokens[i+1], untilOperator(tokens[i+1], tokens[i+2:]), dir))
+			}
+		}
+		return fmt.Errorf("cd is not a program here; set \"workingDirectory\":%q on the run_command call that runs the program", dir)
+	}
+	if fields[0] != executable && packedExecutable(fields) {
+		rest := append(fields[1:], args...)
+		kept := untilOperator(fields[0], rest)
+		note := ""
+		if len(kept) < len(rest) {
+			note = "; no shell is used, so run one program per call"
+		}
+		return fmt.Errorf("executable must be one program without arguments; put each argument in its own args item%s, for example %s", note, argvExample(fields[0], kept, ""))
+	}
+	base := filepath.Base(executable)
+	if !docker && shellPrograms[base] {
+		example := `{"executable":"python3","args":["-m","unittest","-v"]}`
+		if len(args) > 1 && (args[0] == "-c" || args[0] == "-lc") && !strings.ContainsAny(args[1], "|&;<>()$`'\"\\*?{}~") {
+			if script := strings.Fields(args[1]); len(script) > 0 {
+				example = argvExample(script[0], script[1:], "")
+			}
+		}
+		return fmt.Errorf("no shell is available: this sandbox denies child processes, so %s cannot start other programs; run the program directly, for example %s", base, example)
+	}
+	if len(args) > 0 && (args[0] == executable || args[0] == base) {
+		return fmt.Errorf("args must not repeat the executable; they are passed after it, for example %s", argvExample(executable, args[1:], ""))
+	}
+	for i, a := range args {
+		if shellOperator(base, args, i) {
+			return fmt.Errorf("run_command does not use a shell; %q would be passed literally to %s, not interpreted. Run one program per call (separate run_command calls instead of && or |, and read output from the result instead of redirecting), for example %s", a, base, argvExample(executable, args[:i], ""))
+		}
+	}
+	if packedFlagPrograms.MatchString(base) {
+		fixed, packed := []string{}, ""
+		for i, a := range args {
+			if packedFlag(args, i) {
+				if packed == "" {
+					packed = a
+				}
+				fixed = append(fixed, strings.Fields(a)...)
+			} else {
+				fixed = append(fixed, a)
+			}
+		}
+		if packed != "" {
+			return fmt.Errorf("%q packs several arguments into one args item; give each its own item, for example %s", clip(packed, 200), argvExample(executable, fixed, ""))
+		}
+	}
+	return nil
+}
+
+// A real path may contain spaces ("/Applications/My App/tool"); a packed
+// command line starts with a bare program name, names a known program, or
+// carries options.
+func packedExecutable(fields []string) bool {
+	if len(fields) == 1 || !strings.Contains(fields[0], "/") {
+		return true
+	}
+	if base := filepath.Base(fields[0]); packedFlagPrograms.MatchString(base) || shellPrograms[base] {
+		return true
+	}
+	for _, f := range fields[1:] {
+		if strings.HasPrefix(f, "-") {
+			return true
+		}
+	}
+	return false
+}
+
+// shellOperator reports a standalone shell operator, except where it can be a
+// literal argument: anything a pattern tool receives (also via timeout, env,
+// ...), after "--", and a one-character operator that may be the value of the
+// preceding option (--sep "|", -d ";").
+func shellOperator(base string, args []string, i int) bool {
+	a := args[i]
+	if !shellOperators[a] || patternPrograms[base] {
+		return false
+	}
+	for _, earlier := range args[:i] {
+		if earlier == "--" || wrapperPrograms[base] && patternPrograms[filepath.Base(earlier)] {
+			return false
+		}
+	}
+	return len(a) > 1 || i == 0 || !strings.HasPrefix(args[i-1], "-")
+}
+
+// untilOperator keeps the argv before the first standalone shell operator, so
+// the corrected example for a pasted shell line never reintroduces one.
+func untilOperator(executable string, args []string) []string {
+	if patternPrograms[filepath.Base(executable)] {
+		return args
+	}
+	for i, a := range args {
+		if shellOperators[a] {
+			return args[:i]
+		}
+	}
+	return args
+}
+
+// packedFlag reports one args item holding several arguments ("-m unittest").
+// Option values may start with "-" and contain spaces (-ldflags "-s -w",
+// -c "-1 + 2"), as may --name=value items and positional values after "--".
+func packedFlag(args []string, i int) bool {
+	a := args[i]
+	space := strings.IndexFunc(a, unicode.IsSpace)
+	if space < 0 || !optionName.MatchString(a[:space]) {
+		return false
+	}
+	for _, earlier := range args[:i] {
+		if earlier == "--" {
+			return false
+		}
+	}
+	return i == 0 || !strings.HasPrefix(args[i-1], "-") || strings.Contains(args[i-1], "=")
+}
+
+func argvExample(executable string, args []string, workingDirectory string) string {
+	var b strings.Builder
+	encoder := json.NewEncoder(&b)
+	encoder.SetEscapeHTML(false)
+	_ = encoder.Encode(struct {
+		Executable       string   `json:"executable"`
+		Args             []string `json:"args"`
+		WorkingDirectory string   `json:"workingDirectory,omitempty"`
+	}{executable, append([]string{}, args...), workingDirectory})
+	return clip(strings.TrimSpace(b.String()), 2000)
 }

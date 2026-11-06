@@ -1,0 +1,4 @@
+{
+  "logic.mjs": "export function solve(x){return x.values.map(v=>{const n=Math.sign(v)*Math.floor(Math.abs(v)+0.5);return n===0?0:n;});}\n",
+  "regression.test.mjs": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\ntest('contract boundaries',()=>{for(const [value,expected] of [[{\"values\": [-1.5, -2.5, 1.5]}, [-2, -3, 2]], [{\"values\": [-0.1, -0.5, 0.5]}, [0, -1, 1]], [{\"values\": [2, -2]}, [2, -2]]])assert.deepEqual(solve(value),expected);});\n"
+}

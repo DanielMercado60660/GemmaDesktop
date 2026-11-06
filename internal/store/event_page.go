@@ -59,6 +59,42 @@ func (s *Store) SessionEvents(sessionID string, after int64, limit int) (EventPa
 
 const maxActivityBytes = 2 << 20
 
+func (s *Store) ActivitySince(after int64, limit int) (EventPage, error) {
+	p := EventPage{Events: []Doc{}, Cursor: after}
+	if after < 0 {
+		return p, errors.New("activity cursor must be nonnegative")
+	}
+	if limit <= 0 || limit > 500 {
+		limit = 100
+	}
+	rows, err := s.db.Query(`SELECT seq,body FROM events WHERE seq>? AND json_extract(body,'$.type') NOT IN ('adk_event','thinking','text','generation_metrics','token_accounting','context_prepared') ORDER BY seq LIMIT ?`, after, limit+1)
+	if err != nil {
+		return p, err
+	}
+	defer rows.Close()
+	bytes := 0
+	for rows.Next() {
+		var seq int64
+		var body string
+		if err = rows.Scan(&seq, &body); err != nil {
+			return p, err
+		}
+		if len(p.Events) == limit || len(p.Events) > 0 && bytes+len(body) > maxActivityBytes {
+			p.HasMore = true
+			break
+		}
+		var event Doc
+		if err = json.Unmarshal([]byte(body), &event); err != nil {
+			return p, err
+		}
+		event["seq"] = seq
+		p.Events = append(p.Events, event)
+		p.Cursor = seq
+		bytes += len(body)
+	}
+	return p, rows.Err()
+}
+
 // Activity returns the newest dashboard tail, in chronological display order.
 // It includes at most 500 events and approximately 2 MiB of stored JSON. The
 // byte cap is soft only for one oversized newest event, which is kept whole;

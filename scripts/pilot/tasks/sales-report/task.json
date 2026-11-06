@@ -1,0 +1,6 @@
+{
+  "category": "data analysis",
+  "prompt": "Using data/sales.csv, create report.md with a markdown table of total revenue (units × unit_price) per region for Q3 2026 (July–September), sorted from highest to lowest, and a one-sentence summary naming the top region. Don't modify the CSV.",
+  "protectedPaths": ["data/sales.csv"],
+  "notes": "Fresh task. 64 clean rows spanning Q3 2025, June 2026, Q3 2026 and October 2026, with boundary rows on 2026-06-30, 2026-07-01, 2026-09-30 and 2026-10-01. The one pitfall is the date filter: using every row, matching July-September of any year, excluding 09-30, including the June/October boundary days, or comparing ISO strings against '2026-09' (which drops September) each produces a different top region. Truth (from trusted/data/sales.csv): South 8031.18, North 7476.58, Central 6039.76, East 2645.80, West 1887.25. The checker grades report.md only: CSV unchanged; some pipe table lists each region once with a column matching the truth (to the displayed precision, at least 0.01) in descending order; the top region is named in text outside the table. Helper scripts are allowed; no verification contract."
+}

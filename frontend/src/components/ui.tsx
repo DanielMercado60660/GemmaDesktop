@@ -3,7 +3,15 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  useId,
+  forwardRef,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+} from "react";
 import { X, LoaderCircle, ArrowUpRight } from "lucide-react";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -106,11 +114,32 @@ export function Field({
   hint?: string;
   children: ReactNode;
 }) {
+  const labelId = useId(),
+    hintId = useId();
   return (
     <label className="field">
-      <span>{label}</span>
-      {children}
-      {hint && <small>{hint}</small>}
+      <span id={labelId}>{label}</span>
+      {Children.map(children, (child) => {
+        if (
+          !isValidElement<Record<string, unknown>>(child) ||
+          typeof child.type !== "string" ||
+          !["input", "select", "textarea"].includes(child.type)
+        )
+          return child;
+        return cloneElement(child, {
+          ...(!child.props["aria-label"]
+            ? { "aria-labelledby": child.props["aria-labelledby"] || labelId }
+            : {}),
+          ...(hint
+            ? {
+                "aria-describedby": [child.props["aria-describedby"], hintId]
+                  .filter(Boolean)
+                  .join(" "),
+              }
+            : {}),
+        });
+      })}
+      {hint && <small id={hintId}>{hint}</small>}
     </label>
   );
 }

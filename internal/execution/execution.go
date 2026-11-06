@@ -57,6 +57,7 @@ type Request struct {
 	MaxOutput        int
 	ReadOnly         bool
 	AllowGitMetadata bool
+	ProtectedPaths   []string // host-frozen task constraints, never model arguments
 }
 
 // Executor is selected by a host-frozen execution profile, never model arguments.
@@ -223,6 +224,12 @@ func sandboxProfile(readOnly, allowGit bool) string {
 // Prepare creates an unstarted sandboxed command and its cleanup function.
 // It never falls back to unrestricted host execution.
 func (r *Runner) Prepare(ctx context.Context, req Request) (*exec.Cmd, func(), error) {
+	if len(req.ProtectedPaths) > 0 && !req.ReadOnly {
+		return nil, nil, errors.New("task-protected commands require readOnly:true or the Docker publication executor; use file tools for permitted edits")
+	}
+	if err := workspace.ValidateProtectedPaths(req.ProtectedPaths); err != nil {
+		return nil, nil, err
+	}
 	if runtime.GOOS != "darwin" {
 		return nil, nil, ErrUnavailable
 	}
@@ -290,7 +297,14 @@ func (r *Runner) Prepare(ctx context.Context, req Request) (*exec.Cmd, func(), e
 	cleanup := func() { _ = os.RemoveAll(tmp) }
 	// This fixed launcher uses only shell builtins and then execs the reviewed
 	// argv. The limits survive exec and do not require a fork-capable wrapper.
-	args := []string{"-D", "WORKSPACE=" + root, "-D", "PRIVATE_TMP=" + tmp, "-D", "EXECUTABLE=" + resolvedExecutable, "-p", sandboxProfile(req.ReadOnly, req.AllowGitMetadata), "/bin/sh", "-c", `set -e; ulimit -c 0; ulimit -t 120; ulimit -f 65536; ulimit -n 128; exec "$@"`, "gemma-exec", executable}
+	profile := sandboxProfile(req.ReadOnly, req.AllowGitMetadata)
+	args := []string{"-D", "WORKSPACE=" + root, "-D", "PRIVATE_TMP=" + tmp, "-D", "EXECUTABLE=" + resolvedExecutable}
+	for i, p := range req.ProtectedPaths {
+		key := fmt.Sprintf("TASK_PROTECTED_%d", i)
+		args = append(args, "-D", key+"="+filepath.Join(root, p))
+		profile += fmt.Sprintf("\n(deny file-write* (subpath (param %q)) (literal (param %q)))\n", key, key)
+	}
+	args = append(args, "-p", profile, "/bin/sh", "-c", `set -e; ulimit -c 0; ulimit -t 120; ulimit -f 65536; ulimit -n 128; exec "$@"`, "gemma-exec", executable)
 	args = append(args, req.Args...)
 	cmd := exec.CommandContext(ctx, "/usr/bin/sandbox-exec", args...)
 	cmd.Dir = workingDirectory

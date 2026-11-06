@@ -23,10 +23,12 @@ func testIncompleteReplyReplay(t *testing.T, legacy bool) {
 	t.Helper()
 	const partial = "PARTIAL-ANSWER-MUST-NOT-BECOME-COMPLETE-HISTORY"
 	var calls atomic.Int32
-	received := make(chan inference.ChatRequest, 2)
+	received := make(chan inference.ChatRequest, 4)
 	h := newIntegrationHarness(t, func(w http.ResponseWriter, _ *http.Request, req inference.ChatRequest) {
 		received <- req
-		if calls.Add(1) == 1 {
+		// A length stop is retried twice with host feedback; the run fails
+		// only when both retries are also cut off.
+		if calls.Add(1) <= 3 {
 			_ = json.NewEncoder(w).Encode(inference.ChatChunk{Message: inference.Message{Content: partial}})
 			fmt.Fprintln(w, `{"done":true,"done_reason":"length","eval_count":256}`)
 			return
@@ -71,6 +73,8 @@ func testIncompleteReplyReplay(t *testing.T, legacy bool) {
 	if completed["incomplete"] != false {
 		t.Fatalf("complete follow-up inherited incomplete flag: %+v", completed)
 	}
+	<-received
+	<-received
 	<-received
 	followup := <-received
 	priorUser, currentUser, recovery := false, false, false

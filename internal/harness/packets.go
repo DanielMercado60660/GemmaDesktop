@@ -45,6 +45,9 @@ func (m *Manager) Submit(response PacketResponse) (Packet, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	var p Packet
+	if m.developmentGradeCancel != nil {
+		return p, errors.New("wait for development grading before submitting a packet")
+	}
 	if e := m.get("packet", response.ID, &p); e != nil {
 		return p, e
 	}
@@ -85,7 +88,7 @@ func (m *Manager) Submit(response PacketResponse) (Packet, error) {
 		}
 	}
 	switch p.Stage {
-	case "proposal_inv", "proposal_dom", "compose":
+	case "proposal_inv", "proposal_dom", "compose", "compose_all":
 		if response.Content == nil {
 			return p, errors.New("proposal/composition requires declarative content")
 		}
@@ -122,7 +125,7 @@ func (m *Manager) Submit(response PacketResponse) (Packet, error) {
 		}
 		for _, d := range rows {
 			other, e := decode[Packet](d)
-			if e == nil && other.ExperimentID == p.ExperimentID && other.Response != nil && (other.Stage == "proposal_inv" || other.Stage == "proposal_dom" || other.Stage == "compose") && other.Response.AuthoredBy.Identity == response.AuthoredBy.Identity {
+			if e == nil && other.ExperimentID == p.ExperimentID && other.Response != nil && (other.Stage == "proposal_inv" || other.Stage == "proposal_dom" || other.Stage == "compose" || other.Stage == "compose_all") && other.Response.AuthoredBy.Identity == response.AuthoredBy.Identity {
 				return p, errors.New("reviewer must be distinct from proposal/composition authors")
 			}
 		}
@@ -190,7 +193,7 @@ func (m *Manager) native(ctx context.Context, id string) error {
 	if e := m.get("experiment", id, &x); e != nil {
 		return e
 	}
-	if x.Spec.FixtureDigest != m.fixtureDigest() {
+	if x.Spec.FixtureDigest != m.fixtureDigestForSpec(x.Spec) {
 		return errors.New("fixture collection changed since admission")
 	}
 	x.Status = "running"
@@ -201,7 +204,7 @@ func (m *Manager) native(ctx context.Context, id string) error {
 		if e := ctx.Err(); e != nil {
 			return e
 		}
-		task := m.tasks[x.Spec.TaskIDs[x.TaskIndex]]
+		task, _ := m.taskForSpec(x.Spec, x.Spec.TaskIDs[x.TaskIndex])
 		base, e := m.SolveTrial(ctx, x, task.ID, "base", x.Spec.BaseRevisionID)
 		if e != nil {
 			return e
@@ -286,6 +289,19 @@ func (m *Manager) native(ctx context.Context, id string) error {
 			return e
 		}
 	}
+	if x.Spec.FixturePackID != "" && len(x.Spec.TaskIDs) > 1 {
+		p, e := m.MakeCompositionAllV2(x.ID)
+		if e != nil {
+			return e
+		}
+		if p.Response == nil {
+			return nil
+		}
+		if e = m.get("experiment", x.ID, &x); e != nil {
+			return e
+		}
+		x.CandidateID = p.RevisionID
+	}
 	x.Status = "completed"
 	x.FinishedAt = m.now()
 	return m.putActiveExperiment(x)
@@ -324,6 +340,19 @@ func (m *Manager) UpstreamSolve(ctx context.Context, id, task, label, revision s
 	}
 	if label != "base" && label != "inv" && label != "dom" && label != "final" {
 		return Trial{}, errors.New("invalid upstream rollout label")
+	}
+	bindings, err := m.UpstreamRevisionBindings(x)
+	if err != nil {
+		return Trial{}, err
+	}
+	expected := ""
+	for _, binding := range bindings {
+		if binding.TaskID == task && binding.Label == label {
+			expected = binding.RevisionID
+		}
+	}
+	if expected == "" || revision != expected {
+		return Trial{}, errors.New("upstream task/stage revision mismatch")
 	}
 	if err := ctx.Err(); err != nil {
 		return Trial{}, err
@@ -395,21 +424,58 @@ func (m *Manager) FinishUpstream(id, candidate string, rollouts, stages int) err
 	if e := m.get("experiment", id, &x); e != nil {
 		return e
 	}
-	if rollouts != 4*len(x.Spec.TaskIDs) || stages != 3*len(x.Spec.TaskIDs) || len(x.TrialIDs) != rollouts {
+	expectedStages := 3 * len(x.Spec.TaskIDs)
+	if x.Spec.FixturePackID != "" && len(x.Spec.TaskIDs) > 1 {
+		expectedStages++
+	}
+	if rollouts != 4*len(x.Spec.TaskIDs) || stages != expectedStages || len(x.TrialIDs) != rollouts {
 		return fmt.Errorf("upstream accounting mismatch: %d rollouts/%d stages", rollouts, stages)
 	}
+	bindings, e := m.UpstreamRevisionBindings(x)
+	if e != nil {
+		return e
+	}
+	expected := map[string]string{}
+	for _, b := range bindings {
+		expected[b.TaskID+"/"+b.Label] = b.RevisionID
+	}
+	seen := map[string]bool{}
 	for _, id := range x.TrialIDs {
 		t, e := m.trial(id)
 		if e != nil {
 			return e
 		}
+		key := t.TaskID + "/" + t.Label
+		task, ok := m.taskForSpec(x.Spec, t.TaskID)
+		r, revisionErr := m.revision(t.RevisionID)
+		if !ok || seen[key] || expected[key] == "" || expected[key] != t.RevisionID || t.ExperimentID != x.ID || revisionErr != nil || !revisionIdentityValid(r) || t.InputHash != Hash([]string{x.ID, t.TaskID, t.Label, r.Hash, x.Spec.Hash, task.PublicHash}) || t.ID != t.InputHash[:32] {
+			return errors.New("cached upstream task/stage input identity changed")
+		}
+		seen[key] = true
 		h, e := treeHash(t.Root)
 		if e != nil || h != t.OutputHash {
 			return errors.New("cached upstream output changed")
 		}
 	}
+	if len(seen) != len(x.Spec.TaskIDs)*4 {
+		return errors.New("cached upstream stage coverage changed")
+	}
 	if _, e := m.revision(candidate); e != nil {
 		return e
+	}
+	if x.Spec.FixturePackID != "" && len(x.Spec.TaskIDs) > 1 {
+		p, e := m.MakeCompositionAllV2(id)
+		if e != nil {
+			return e
+		}
+		if p.Response == nil || p.RevisionID != candidate {
+			return errors.New("multi-task candidate requires the submitted cross-task composition")
+		}
+		if e = m.get("experiment", id, &x); e != nil {
+			return e
+		}
+	} else if candidate != expected[x.Spec.TaskIDs[0]+"/final"] {
+		return errors.New("candidate differs from the final upstream stage revision")
 	}
 	x.CandidateID = candidate
 	x.Rollouts = rollouts
@@ -439,7 +505,7 @@ func (m *Manager) retainPacketLessons(x Experiment, p Packet) error {
 				l.Scope = "stack"
 			}
 			l.Contradictions = in.Contradictions
-			l.Compatibility = Doc{"modelDigest": x.Spec.ModelDigest, "runtimeVersion": x.Spec.RuntimeVersion, "methodVersion": MethodVersion, "stack": m.tasks[p.TaskID].Stack, "capabilityHash": Hash(x.Spec.FrozenCapability)}
+			l.Compatibility = Doc{"modelDigest": x.Spec.ModelDigest, "runtimeVersion": x.Spec.RuntimeVersion, "methodVersion": MethodVersion, "stack": taskStackForSpec(m, x.Spec, p.TaskID), "capabilityHash": Hash(x.Spec.FrozenCapability)}
 			if _, e := m.saveLessonVersion(l); e != nil {
 				return e
 			}
@@ -462,7 +528,7 @@ func (m *Manager) recountImprovementStages(experimentID string) error {
 			continue
 		}
 		switch d["stage"] {
-		case "proposal_inv", "proposal_dom", "compose":
+		case "proposal_inv", "proposal_dom", "compose", "compose_all":
 			count++
 		}
 	}
@@ -475,4 +541,9 @@ func (m *Manager) recountImprovementStages(experimentID string) error {
 	}
 	x.ImprovementStages = count
 	return m.put("experiment", x)
+}
+
+func taskStackForSpec(m *Manager, s Spec, id string) string {
+	t, _ := m.taskForSpec(s, id)
+	return t.Stack
 }

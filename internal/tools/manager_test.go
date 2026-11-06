@@ -335,7 +335,7 @@ func TestInvalidEditDoesNotRequestApproval(t *testing.T) {
 	}
 }
 
-func TestWriteAndEditRequireHashBeforeApproval(t *testing.T) {
+func TestOmittedHashNeedsAReadBeforeApproval(t *testing.T) {
 	for _, tool := range []string{"write_file", "edit_file"} {
 		for _, existing := range []bool{false, true} {
 			for _, hashPresent := range []bool{false, true} {
@@ -354,8 +354,8 @@ func TestWriteAndEditRequireHashBeforeApproval(t *testing.T) {
 							t.Fatal(err)
 						}
 					}
-					approvals := 0
-					m, err := New(root, Options{ArtifactDir: artifacts, Approve: func(context.Context, Approval) error { approvals++; return nil }})
+					var approved []Approval
+					m, err := New(root, Options{ArtifactDir: artifacts, Approve: func(_ context.Context, a Approval) error { approved = append(approved, a); return nil }})
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -370,9 +370,22 @@ func TestWriteAndEditRequireHashBeforeApproval(t *testing.T) {
 						args["expectedHash"] = ""
 					}
 					result, err := m.Execute(t.Context(), tool, args)
-					const recovery = "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file"
-					if err == nil || err.Error() != recovery || approvals != 0 || len(result.Artifacts) != 0 {
-						t.Fatalf("hash preflight failed: err=%v approvals=%d result=%+v", err, approvals, result)
+					if tool == "write_file" && !existing {
+						// Creating a new file needs no read; the host supplies "missing".
+						if err != nil || len(approved) != 1 || approved[0].Arguments["expectedHash"] != "missing" {
+							t.Fatalf("create without hash: err=%v approvals=%+v", err, approved)
+						}
+						if data, _ := os.ReadFile(path); string(data) != "changed\n" {
+							t.Fatalf("file not created: %q", data)
+						}
+						return
+					}
+					want := "file.py has not been read in this run or changed since you last read it; call read_file on it first, then retry (expectedHash is optional once you have read the current version)."
+					if !existing {
+						want = "no such file or directory"
+					}
+					if err == nil || !strings.Contains(err.Error(), want) || len(approved) != 0 || len(result.Artifacts) != 0 {
+						t.Fatalf("hash preflight failed: err=%v approvals=%d result=%+v", err, len(approved), result)
 					}
 					data, readErr := os.ReadFile(path)
 					if existing && (readErr != nil || string(data) != "original\n") {

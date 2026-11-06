@@ -1,0 +1,92 @@
+{
+  "id": "v-percent-decoding",
+  "name": "Repair percent decoding",
+  "stack": "python",
+  "split": "validation",
+  "exposureFamily": "gemma-v2-original-v-percent-decoding",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "python3",
+    "public_test.py"
+  ],
+  "gradeCommand": [
+    "python3",
+    "main.py"
+  ],
+  "public": {
+    "logic.py": "from urllib.parse import unquote_plus\ndef solve(x):return unquote_plus(x['text'])\n",
+    "main.py": "import json,sys\nfrom logic import solve\nprint(json.dumps([solve(x) for x in json.loads(sys.argv[1])]))\n",
+    "public_test.py": "import json,subprocess,sys,unittest\ncases=[{'text': 'abc'}, {'text': 'a%20b'}]\nexpected=['abc', 'a b']\np=subprocess.run([sys.executable,'main.py',json.dumps(cases)],capture_output=True,text=True,check=True)\nassert json.loads(p.stdout)==expected,(p.stdout,expected)\nsuite=unittest.defaultTestLoader.discover('.',pattern='test_*.py')\nif not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():raise SystemExit(1)\n",
+    "README.md": "# Repair percent decoding\n\nDecode ASCII %HH byte escapes, then decode resulting bytes as UTF-8. Preserve literal plus signs. Return null for malformed escapes or invalid UTF-8. Input consists of ASCII characters.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `python3 public_test.py`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.py",
+    "public_test.py",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "test_*.py"
+  ],
+  "discoveryCommand": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    ".",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "text": "abc"
+      },
+      "expected": "abc",
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "text": "a%20b"
+      },
+      "expected": "a b",
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "text": "a+b"
+      },
+      "expected": "a+b",
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "text": "%C3%A9"
+      },
+      "expected": "é",
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "text": "%GG"
+      },
+      "expected": null,
+      "critical": false
+    },
+    {
+      "name": "contract-case-6",
+      "input": {
+        "text": "%FF"
+      },
+      "expected": null,
+      "critical": false
+    }
+  ]
+}

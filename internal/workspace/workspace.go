@@ -399,36 +399,120 @@ func (w *Workspace) Mkdir(name string) error {
 	return r.Mkdir(base, 0755)
 }
 
+// Replacement is the single original span an edit replaces at File's revision.
+type Replacement struct {
+	File       File
+	Start, End int
+	Normalized bool // located only after line-ending/trailing-whitespace normalization
+}
+
 // ValidateReplacement checks the exact edit before asking for approval. Replace
 // performs this check again, followed by Write's final revision check.
 func (w *Workspace) ValidateReplacement(name, old, expectedHash string) (File, error) {
+	r, err := w.LocateReplacement(name, old, expectedHash)
+	return r.File, err
+}
+
+// LocateReplacement is the one matcher shared by pre-approval validation and
+// Replace, so an approved edit applies to the same span at the same revision.
+func (w *Workspace) LocateReplacement(name, old, expectedHash string) (Replacement, error) {
 	if old == "" {
-		return File{}, errors.New("oldText cannot be empty")
+		return Replacement{}, errors.New("oldText cannot be empty")
 	}
 	f, err := w.Read(name)
 	if err != nil {
-		return File{}, err
+		return Replacement{}, err
 	}
 	if f.Hash != expectedHash {
-		return File{}, ErrConflict
+		return Replacement{}, ErrConflict
 	}
-	matches := strings.Count(f.Content, old)
+	start, end, matches, normalized := locateEdit(f.Content, old)
 	if matches == 0 {
-		return File{}, errors.New("oldText was not found. Re-read the file and use a shorter unique span with actual newlines; do not copy JSON escape sequences. You may instead use write_file with the complete content and a fresh hash")
+		msg := "oldText was not found in " + f.Path + ". Re-read the exact lines with read_file (startLine/lineCount) and copy them exactly, or use a shorter unique snippet."
+		if strings.Contains(old, `\n`) && !strings.Contains(old, "\n") {
+			msg += ` Use actual newlines, not copied JSON escape sequences such as \n.`
+		}
+		msg += replacementMismatchHint(f, old)
+		return Replacement{}, errors.New(msg)
 	}
 	if matches > 1 {
-		return File{}, fmt.Errorf("oldText matched %d times; include more surrounding text to identify exactly one occurrence", matches)
+		return Replacement{}, fmt.Errorf("oldText matches %d places in %s; include more surrounding lines so it matches exactly once.", matches, f.Path)
 	}
-	return f, nil
+	return Replacement{File: f, Start: start, End: end, Normalized: normalized}, nil
 }
 
 // Replace applies one unambiguous text edit to a file at its expected revision.
 func (w *Workspace) Replace(name, old, new, expectedHash string) (Change, error) {
-	f, err := w.ValidateReplacement(name, old, expectedHash)
+	r, err := w.LocateReplacement(name, old, expectedHash)
 	if err != nil {
 		return Change{}, err
 	}
-	return w.Write(name, strings.Replace(f.Content, old, new, 1), expectedHash)
+	return w.Write(name, r.File.Content[:r.Start]+new+r.File.Content[r.End:], expectedHash)
+}
+
+// locateEdit prefers exact matching. Only when old occurs nowhere does it accept
+// a single region equal after CRLF->LF and dropping spaces/tabs at line ends;
+// indentation and interior whitespace must still match, and the original span
+// (including the whitespace it differs by) is what gets replaced.
+func locateEdit(content, old string) (start, end, matches int, normalized bool) {
+	if matches = strings.Count(content, old); matches > 0 {
+		start = strings.Index(content, old)
+		return start, start + len(old), matches, false
+	}
+	want, _ := normalizeLineEnds(old)
+	if strings.TrimSpace(want) == "" {
+		return 0, 0, 0, false
+	}
+	// Whitespace dropped from old's final, unterminated line only stands for a
+	// line end; "x = 1 " must not match the "x = 1" inside "x = 10".
+	last := old[strings.LastIndexByte(old, '\n')+1:]
+	openTail := strings.TrimRight(last, " \t\r") != last
+	have, offsets := normalizeLineEnds(content)
+	for i := 0; i <= len(have); {
+		j := strings.Index(have[i:], want)
+		if j < 0 {
+			break
+		}
+		at, stop := i+j, i+j+len(want)
+		if !openTail || stop == len(have) || have[stop] == '\n' {
+			if matches == 0 {
+				start, end = offsets[at], offsets[stop-1]+1
+			}
+			matches++
+		}
+		i = at + 1
+	}
+	return start, end, matches, matches > 0
+}
+
+// normalizeLineEnds drops CR and spaces/tabs before every line end and returns,
+// for each kept byte, its offset in s.
+func normalizeLineEnds(s string) (string, []int) {
+	var b strings.Builder
+	b.Grow(len(s))
+	offsets := make([]int, 0, len(s))
+	for start := 0; ; {
+		end := strings.IndexByte(s[start:], '\n')
+		if end < 0 {
+			end = len(s)
+		} else {
+			end += start
+		}
+		keep := end
+		for keep > start && (s[keep-1] == ' ' || s[keep-1] == '\t' || s[keep-1] == '\r') {
+			keep--
+		}
+		b.WriteString(s[start:keep])
+		for i := start; i < keep; i++ {
+			offsets = append(offsets, i)
+		}
+		if end == len(s) {
+			return b.String(), offsets
+		}
+		b.WriteByte('\n')
+		offsets = append(offsets, end)
+		start = end + 1
+	}
 }
 
 func (w *Workspace) Search(ctx context.Context, dir, query string, useRegex bool, limit int) (SearchResult, error) {

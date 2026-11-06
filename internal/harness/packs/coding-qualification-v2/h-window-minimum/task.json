@@ -1,0 +1,110 @@
+{
+  "id": "h-window-minimum",
+  "name": "Repair fixed window minima",
+  "stack": "go",
+  "split": "heldout",
+  "exposureFamily": "gemma-v2-original-h-window-minimum",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport(\"strings\";\"strconv\")\nvar _=strings.Compare\nvar _=strconv.Itoa\nfunc solve(x map[string]any)any{v:=x[\"values\"].([]any);k:=int(x[\"k\"].(float64));out:=[]any{};for i:=0;i+k<len(v);i++{n:=v[i].(float64);for j:=i+1;j<i+k;j++{if v[j].(float64)<n{n=v[j].(float64)}};out=append(out,n)};return out}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/h-window-minimum\n\ngo 1.23\n",
+    "public_test.go": "package main\nimport(\"encoding/json\";\"testing\";\"reflect\")\nfunc TestPublicContract(t *testing.T){var cases []struct{Input map[string]any;Expected any};_ = cases;var rows [][]json.RawMessage;if e:=json.Unmarshal([]byte(`[[{\"values\": [1, 2], \"k\": 1}, [1, 2]], [{\"values\": [], \"k\": 2}, []]]`),&rows);e!=nil{t.Fatal(e)};for _,row:=range rows{var input map[string]any;var expected,actual any;json.Unmarshal(row[0],&input);json.Unmarshal(row[1],&expected);b,e:=json.Marshal(solve(input));if e!=nil{t.Fatal(e)};json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected){t.Fatalf(\"got %v expected %v\",actual,expected)}}}\n",
+    "README.md": "# Repair fixed window minima\n\nFor numeric input values and width k>0, return the minimum in each consecutive full window. Return [] when k exceeds length; include the final full window.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `go test ./...`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.go",
+    "public_test.go",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "*_test.go"
+  ],
+  "discoveryCommand": [
+    "go",
+    "test",
+    "-json",
+    "./..."
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "values": [
+          1,
+          2
+        ],
+        "k": 1
+      },
+      "expected": [
+        1,
+        2
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "values": [],
+        "k": 2
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "values": [
+          4,
+          2,
+          3,
+          1
+        ],
+        "k": 2
+      },
+      "expected": [
+        2,
+        2,
+        1
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "values": [
+          -1,
+          -3,
+          2
+        ],
+        "k": 3
+      },
+      "expected": [
+        -3
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "values": [
+          1
+        ],
+        "k": 4
+      },
+      "expected": [],
+      "critical": false
+    }
+  ]
+}

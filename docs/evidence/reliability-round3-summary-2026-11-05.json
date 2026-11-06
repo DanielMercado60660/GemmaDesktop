@@ -1,0 +1,709 @@
+{
+  "schema": "gemma-public-reliability-selected-aggregate-draft-v4",
+  "status": "model_evidence_closed_reviewed_source_and_focused_checks_applied_committed_source_verification_and_github_pending",
+  "preparedAtUTC": "2026-11-06T02:55:57.603952+00:00",
+  "evidenceThroughUTC": "2026-11-06T02:42:17.167993+00:00",
+  "publicationOrQualificationClaim": false,
+  "provenancePolicy": "Selected aggregate fields only. No case inputs, expected answers, probes, assertions, prompts, raw transcripts, run identifiers, local user paths, or private task names are included. Original automatic grades are immutable; independent actual-output adjudication is separate.",
+  "experimentIdentity": {
+    "model": "gemma4:26b-mlx",
+    "runtime": "Ollama 0.40.11",
+    "modelDigest": "sha256:f0fc7e0ae4947d382989b1f57db3d098a86b87c5b6e9523b9561ba81a2a64879",
+    "solverBinarySHA256": "44356ed3562358207a5d93babbc4a167cbff0915c463777267cf772573b4ffab",
+    "solverSourceFingerprint": "155f8b5b2c5adaed02267e363748de72a850a70dc26e1e57a20acf21873bff76",
+    "laterPublicationBuildSameIdentityClaim": false
+  },
+  "developmentCampaign": {
+    "fourProbeRounds": 20,
+    "normalReflections": 19,
+    "terminalRejectedRounds": 1,
+    "freshUniqueProbes": 80,
+    "deliveredCompletedNonIncomplete": 76,
+    "modelBudgetDeadlineFailures": 4,
+    "frozenCheckAndDeliveryPasses": 34,
+    "independentlyConfirmedPublicContradictionsAmongThosePasses": 4,
+    "noClaimRemainingPassesProveFullCorrectness": true
+  },
+  "earlierInfrastructureInvalidTrials": 8,
+  "pairedDevelopment": {
+    "tasksPerArm": 5,
+    "initial": {
+      "delivered": 5,
+      "frozenAutomaticCombinedPasses": 0
+    },
+    "selected": {
+      "delivered": 4,
+      "frozenAutomaticCombinedPasses": 2
+    },
+    "scope": "One pair per reused development task; partial accounting in one selected deadline failure prevents a complete cost comparison."
+  },
+  "originalPrimary": {
+    "tasks": 10,
+    "modelCompleted": 9,
+    "automaticCombinedSuccesses": 6,
+    "independentClearCombinedSuccesses": 7,
+    "ambiguousPublicContractNotCredited": 1,
+    "genuineFailures": 2,
+    "measurementFalseNegatives": 1,
+    "protectedInputsPreserved": 10
+  },
+  "originalBounded": {
+    "distinctAdmittedTasks": 5,
+    "duplicateAdmissions": 0,
+    "independentCombinedCompletedAndCorrect": 1,
+    "independentGenuineDeliveryFailures": 4,
+    "independentStaticProtectedScopePreserved": 5,
+    "observedAuthorityOrProtectedInputViolations": 0,
+    "originalAutomaticProtectedFields": {
+      "true": 4,
+      "unknown": 1
+    },
+    "originalAutomaticResultsPreserved": {
+      "failed": 3,
+      "passed": 1,
+      "unknownDueToDriverRecordingFailure": 1
+    },
+    "plannedOriginalTasks": 5,
+    "recordedGraderInfrastructureErrors": 0,
+    "requiredFinalDeliveries": 1,
+    "separateDriverRecordingFailures": 1,
+    "sourceUnchangedFailureCases": 4,
+    "successfulScopedRepairs": 1
+  },
+  "driverObservationBoundary": {
+    "policyVersion": "terminal-cancel-observation-v2",
+    "appliedAfterOriginalPrimaryAndBounded": true,
+    "usedBySampling18A1A3AndCurrentA2": true,
+    "resubmissionOrSuccessFabrication": false,
+    "actualOriginalExceptionCauseKnown": false,
+    "passedOfflineChecks": {
+      "focused": 13,
+      "repositoryPython": 74,
+      "harnessAdapter": 8
+    }
+  },
+  "temperatureDiagnostic": {
+    "exposure": "Three already-exposed everyday tasks, three repeats per temperature; eighteen attempts in total.",
+    "fixedBatchTemperatures": [
+      0.2,
+      1.0,
+      1.0,
+      0.2,
+      0.2,
+      1.0
+    ],
+    "aggregate": {
+      "authorityOrProtectedInputViolationsObserved": 0,
+      "automaticCorrectnessPreserved": 18,
+      "driverOrGraderInfrastructureErrors": 0,
+      "generationRetryEvents": 5,
+      "independentClearCompletedSuccesses": 18,
+      "measurementDisagreements": 0,
+      "modelCompleted": 18,
+      "nonfatalToolFailures": 6,
+      "plannedAttempts": 18,
+      "protectedScopePreserved": 18,
+      "reviewedTerminalRows": 18,
+      "successfulCasesWithRetryEvents": 3,
+      "taskRetriesOrReplacements": 0,
+      "uniqueRunIds": 18
+    },
+    "conditions": {
+      "0.2": {
+        "attempts": 9,
+        "modelCompleted": 9,
+        "automaticCorrectness": 9,
+        "independentClearCompletedSuccesses": 9,
+        "protectedInputsPreserved": 9,
+        "elapsedMedianSeconds": 156.2,
+        "nonfatalToolFailures": 4,
+        "generationRetryEvents": 5
+      },
+      "1.0": {
+        "attempts": 9,
+        "modelCompleted": 9,
+        "automaticCorrectness": 9,
+        "independentClearCompletedSuccesses": 9,
+        "protectedInputsPreserved": 9,
+        "elapsedMedianSeconds": 99.5,
+        "nonfatalToolFailures": 2,
+        "generationRetryEvents": 0
+      }
+    },
+    "pairedMedianElapsedOneMinusPointTwoSeconds": -33.1,
+    "timingGeneralizationClaim": false,
+    "newPracticalTrialStartingTemperature": 1.0,
+    "productDefaultSourceChangeApplied": true,
+    "rationale": "Temperature0.2 was inherited from earlier coding runs and retained as an explicit control. Both arms passed all nine attempts; future practical candidates start at the publisher-recommended1.0. This does not establish a reliability advantage."
+  },
+  "exposedCandidateA1": {
+    "content": "default-only supplement, with existing base instructions",
+    "thinking": "auto",
+    "temperature": 1.0,
+    "maxOutputTokens": 8192,
+    "aggregate": {
+      "ambiguousNotCredited": 1,
+      "attempts": 15,
+      "authorityViolationsObserved": 0,
+      "automaticCombinedCompletedAndCorrect": 11,
+      "automaticCorrectness": 11,
+      "automaticFalsePreserved": 4,
+      "automaticGradesUnknown": 0,
+      "automaticUnknown": 0,
+      "driverOrGraderInfrastructureErrors": 0,
+      "genuineFailures": 3,
+      "independentClearCompletedSuccesses": 11,
+      "measurementDisagreements": 0,
+      "modelCompleted": 13,
+      "protectedScopePreserved": 15,
+      "uniqueRunIds": 15
+    },
+    "groups": {
+      "bounded5": {
+        "ambiguousUncredited": 0,
+        "attempts": 5,
+        "automaticPassed": 3,
+        "genuineFailures": 2,
+        "independentClearCompletedSuccesses": 3,
+        "modelCompleted": 3,
+        "protectedScopePreserved": 5
+      },
+      "primary10": {
+        "ambiguousUncredited": 1,
+        "attempts": 10,
+        "automaticPassed": 8,
+        "genuineFailures": 1,
+        "independentClearCompletedSuccesses": 8,
+        "modelCompleted": 10,
+        "protectedScopePreserved": 10
+      },
+      "primaryCriticalCodingAndNumeric6": {
+        "ambiguousUncredited": 1,
+        "attempts": 6,
+        "automaticPassed": 4,
+        "genuineFailures": 1,
+        "independentClearCompletedSuccesses": 4,
+        "modelCompleted": 6,
+        "protectedScopePreserved": 6
+      },
+      "primaryEveryday7": {
+        "ambiguousUncredited": 1,
+        "attempts": 7,
+        "automaticPassed": 6,
+        "genuineFailures": 0,
+        "independentClearCompletedSuccesses": 6,
+        "modelCompleted": 7,
+        "protectedScopePreserved": 7
+      },
+      "primaryNumeric3": {
+        "ambiguousUncredited": 1,
+        "attempts": 3,
+        "automaticPassed": 2,
+        "genuineFailures": 0,
+        "independentClearCompletedSuccesses": 2,
+        "modelCompleted": 3,
+        "protectedScopePreserved": 3,
+        "substantiveArithmeticAndCoverageCorrect": 3
+      },
+      "primaryStretch3": {
+        "ambiguousUncredited": 0,
+        "attempts": 3,
+        "automaticPassed": 2,
+        "genuineFailures": 1,
+        "independentClearCompletedSuccesses": 2,
+        "modelCompleted": 3,
+        "protectedScopePreserved": 3
+      }
+    },
+    "qualification": false,
+    "scope": "Fifteen already-exposed tasks. Content and temperature differ from the original specialist profile, and the historical driver differs; no isolated causal attribution."
+  },
+  "exposedCandidateA3": {
+    "content": "same default-only supplement as A1",
+    "thinkingRequested": "off",
+    "temperature": 1.0,
+    "maxOutputTokens": 8192,
+    "aggregate": {
+      "ambiguousNotCredited": 0,
+      "attempts": 5,
+      "authorityViolationsObserved": 0,
+      "automaticCombinedCompletedAndCorrect": 4,
+      "automaticCorrectness": 4,
+      "automaticFalsePreserved": 1,
+      "automaticGradesUnknown": 0,
+      "automaticPassesPreserved": 4,
+      "driverOrGraderInfrastructureErrors": 0,
+      "genuineFailures": 2,
+      "independentClearCompletedSuccesses": 3,
+      "measurementDisagreements": 1,
+      "modelCompleted": 5,
+      "protectedScopePreserved": 5,
+      "uniqueRunIds": 5
+    },
+    "onlyRequestedControlChangeVsA1Bounded": "auto to off",
+    "observedEmittedThinkingCharacters": 0,
+    "actualReceivedWireThinkFlag": "unknown",
+    "internalReasoningAbsence": "unknown",
+    "qualification": false,
+    "scope": "Five already-exposed tasks. One automatic pass was separately vetoed by public-contract review; automatic grades are preserved."
+  },
+  "candidateA2": {
+    "status": "completed_independently_audited_after_owned_stop",
+    "exposure": "Same five already-exposed bounded tasks.",
+    "content": "same default-only supplement as A1",
+    "thinking": "auto",
+    "temperature": 1.0,
+    "maxOutputTokens": 16384,
+    "onlyRequestedControlChangeVsA1Bounded": "maxOutputTokens8192 to16384",
+    "aggregate": {
+      "ambiguousNotCredited": 0,
+      "attempts": 5,
+      "authorityViolationsObserved": 0,
+      "automaticCombinedCompletedAndCorrect": 3,
+      "automaticCorrectness": 3,
+      "automaticGradesUnknown": 0,
+      "driverOrGraderInfrastructureErrors": 0,
+      "genuineFailures": 2,
+      "independentClearCompletedSuccesses": 3,
+      "measurementDisagreements": 0,
+      "modelCompleted": 3,
+      "protectedScopePreserved": 5
+    },
+    "qualification": false,
+    "comparison": "A1 and A2 each had three independently clear completed successes out of five, with different successful cases. One exposed attempt per configuration does not establish causal benefit or a general reliability rate.",
+    "accountingBoundary": "Terminal provider counts for two interrupted calls remain unknown."
+  },
+  "pendingAtDraftCutoff": [
+    "Review and commit the source/documentation snapshot A; verify that exact identity in a separate clean local clone without ignored private fixtures/runtime data/build products.",
+    "Record Ollama-only build/provenance/signature and appropriate full-stage software checks, retaining known ffprobe qualification failures and explicit skips.",
+    "Fill dated documentation/evidence with verification of A in docs-only commit B; keep README unchanged and preserve the distinction from the frozen experiment binary.",
+    "Push the reviewed authorized GitHub branch and verify its remote commit."
+  ],
+  "sourceValidation": {
+    "preV4": {
+      "appGoRace": "passed",
+      "otherGoRace": "passed except four known media-version qualification failures",
+      "hostFFprobeVersion": "9.0.2",
+      "requiredMediaVersion": "8.1",
+      "repositoryPythonPassed": 68,
+      "harnessAdapterPassed": 8,
+      "frontendUnitPassed": 76,
+      "frontendUIPassed": 73,
+      "typecheck": "passed",
+      "frontendBuild": "passed",
+      "fullInstallerBuildAndLocalSignatureProvenance": "passed"
+    },
+    "finalCommittedTree": "pending",
+    "fullGoSuiteGreenClaim": false,
+    "temperatureDefaultCloseout": {
+      "status": "exact_reviewed_thirteen_file_proposal_applied_focused_validation_passed",
+      "applicationSHA256": "6e3b1cd62ff9ab60d26f5c535fb0956bf0b99ce90967b48201665d1cf212ea69",
+      "focusedValidationSHA256": "a4ad55f4a4a73c700c321f4ac802859dab54b0a888d100899dcefb6cdbbf90fd",
+      "filesApplied": 13,
+      "allProposedResultHashesMatch": true,
+      "defaultTemperature": 1.0,
+      "explicitSavedValuesPreserved": true,
+      "databaseProfileHistoryMigration": false,
+      "historicalProfilesLedgersRecordsRewritten": false,
+      "modelPhasesClosedBeforeApplication": true,
+      "inferenceCallsDuringFocusedValidation": 0,
+      "focusedChecks": {
+        "appGoRaceFunctions": 4,
+        "appGoRaceResult": "passed",
+        "reportedAppGoRaceSeconds": 2.927,
+        "pythonTestsPassed": 21,
+        "frontendUnitTestsPassed": 5,
+        "frontendUITestsPassed": 3
+      },
+      "evidenceBoundary": "Observed actual tool command outputs; no separately persisted raw stdout log for these focused checks. Clean-clone full-stage logs remain pending.",
+      "fullCommittedTreeChecks": "pending_clean_clone"
+    },
+    "optInPublicCoverageCloseout": {
+      "status": "exact_reviewed_eight_files_applied_and_focused_source_host_controls_passed",
+      "applicationReceiptSHA256": "dcc0e2ac3160b39f5195041010286c47403c3aaf4ca55f15dd559cd8acf8ebd7",
+      "validationSHA256": "29bdaab191e1da04a14463876521f8c3c19e7481cdaf2325d5e20f60c777ce7e",
+      "filesApplied": 8,
+      "newFiles": 7,
+      "updatedFiles": 1,
+      "originalCatalogSourceFilesPreserved": 38,
+      "originalPackReferenceDataAndGradesPreserved": true,
+      "publicDefaultRoutingChanged": false,
+      "historicalModelOutputsRegraded": false,
+      "goPreservationTestsPassed": 2,
+      "observerSyntheticTestsPassed": 3,
+      "trustedHostControls": {
+        "status": "passed",
+        "correctReferencePasses": 1,
+        "inheritedCases": 7,
+        "addedPublicCases": 8,
+        "totalCases": 15,
+        "mutantNegatives": 5,
+        "commandRequests": 9,
+        "childrenWaitedAndReaped": 9,
+        "fixtureBytesUnchanged": true
+      },
+      "gofmtDrift": false,
+      "remainingOwnedProcesses": 0,
+      "modelCalls": 0,
+      "appLaunches": 0,
+      "profileChanges": 0,
+      "limits": [
+        "Focused source/host-oracle validation only; no Docker containment, dedicated app-grader integration, model-quality or exhaustive-correctness claim.",
+        "Known nonblocking timeout plus terminal-artifact-write exception-priority limit remains unchanged.",
+        "Root has separate nonoverlapping source changes and will run full regressions once in the clean-clone closeout."
+      ],
+      "finalCommittedTreeVerification": "pending"
+    },
+    "privateFixtureExclusion": {
+      "status": "exact_ignore_rule_added_local_fixtures_preserved",
+      "proofSHA256": "94c2a68cf475fc1d275f82ea528aa5de12f69fc50d0a945e2a1abe5eb29d2ade",
+      "path": "scripts/pilot/tasks-heldout/",
+      "privateLocalFilesPreserved": 143,
+      "trackedFiles": 0,
+      "unignoredEligibleFiles": 0,
+      "ignoredUntrackedFiles": 143,
+      "stagingPerformedByExclusion": false
+    }
+  },
+  "acceptanceTargets": {
+    "fullBroad": "At least9of10 independently correct and delivered; all6critical numeric/coding tasks correct and delivered; every category represented; zero authority/protected-input failures.",
+    "scopedUtility": "All7everyday tasks independently correct and delivered; at least4of5bounded repairs independently correct and delivered; zero authority/protected-input failures.",
+    "metByReportedProfile": false,
+    "freshSinglePassMetFullBroad": false,
+    "freshSinglePassMetScopedUtility": false,
+    "boundedFinalDeliveryRequirement": "All five bounded repairs must deliver; fresh observed four of five, despite four clear correct repairs."
+  },
+  "limits": [
+    "Twenty adaptive refinement rounds on reused development tasks are not a broad capability estimate.",
+    "The18temperature attempts are repetitions of three cases, not18unseen tasks.",
+    "A1/A3/A2 are diagnostic reuse, not fresh qualification.",
+    "Published benchmark scores do not predict this application task mix.",
+    "No zero-reference-exposure claim: an unrelated legacy reference search exposure was independently scoped and preserved.",
+    "Green local tests, host verification, model prose and terminal status alone do not establish complete contract correctness.",
+    "Final source/build/publication identities are pending and will differ from the frozen experiment binary."
+  ],
+  "sourceReports": {
+    "campaign": {
+      "localSourceBasename": "safe-campaign-result.json",
+      "sha256": "6ad0c23a78adfda1e699e9854bb41cbd9fadbb64c47a44aac856a0f42ad8339a",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "pairedDevelopment": {
+      "localSourceBasename": "paired-diagnostic-public-audit.md",
+      "sha256": "fc3e007acd2dced199bb72b78eadfe33af7c2ed460bf1515a7a2fa4b788717fc",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "primaryOriginal": {
+      "localSourceBasename": "primary26b-independent-actual-output-audit.json",
+      "sha256": "81ba820d80ad88535b17006e059472f1277fac354d73b441c490ae0e321c3a55",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "boundedOriginal": {
+      "localSourceBasename": "bounded26b-independent-actual-output-audit.json",
+      "sha256": "0637ecd04a9f70871e6c7a453d8d5ebe37a428f88158c086c4f8f0064a7ef3e5",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "driverAppliedReview": {
+      "localSourceBasename": "independent-applied-source-review.json",
+      "sha256": "9220d3b5d6a62739741e7e33085ae726cb57053dcb85c5a3717a2522ea3eb359",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "sampling18": {
+      "localSourceBasename": "sampling26b-independent-actual-output-comparison.json",
+      "sha256": "4a8d3da586e93af50111c78e106bab4b91cef594681611bacc8114ac91034c23",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "A1": {
+      "localSourceBasename": "candidate-A1-independent-actual-output-audit.json",
+      "sha256": "3c40e1974df6119fab6ba917cd40dd53a3e4c0bd0ea964d8844abedc94b4583a",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "A3": {
+      "localSourceBasename": "candidate-A3-independent-actual-output-audit.json",
+      "sha256": "3f1d14675ee16131a7199151d049b20e82a2311e93ee48119243aaa72cb3fee3",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "samplingCheckpoint": {
+      "localSourceBasename": "sampling26b-driver-v2-safe-checkpoint.json",
+      "sha256": "013fd2b33f480801ac5b77d363d1133bf2a237610959e7e3270da8b440383445",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "A1Checkpoint": {
+      "localSourceBasename": "candidate-A1-safe-checkpoint.json",
+      "sha256": "d72c7aac7b21f259110507ef892691b90567884f1f83819e7a0453be4780ad51",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "A3Checkpoint": {
+      "localSourceBasename": "candidate-A3-safe-checkpoint.json",
+      "sha256": "b657458ad61f7258084a6f6e038aeff6163e9da90c760ffe1ed453509f1b8473",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "A2": {
+      "localSourceBasename": "candidate-A2-independent-actual-output-audit.json",
+      "sha256": "5db70c06f29ac132cee6fa864e490a8719af581f3ee89a086073d06ba06c1212",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "boundedCloseoutPolicy": {
+      "localSourceBasename": "closeout-policy-v3.json",
+      "sha256": "7f452a38b1827f82d9c1547069a398d374a8d816357430d019d4f79cb89df31b",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "onePass15Plan": {
+      "localSourceBasename": "fresh26b-onepass15-plan-v3.json",
+      "sha256": "37a0f72f118358488aefbeb5cb19f03dee4d514184b0809b43c866d6bce1d9b8",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "onePass15Operator": {
+      "localSourceBasename": "operate_fresh26b_onepass15_v3.py",
+      "sha256": "963283f51fdb1d37e37a7150768af6e32fa3090cb46a4f02c4b22c4f80681a6b",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "onePass15Readiness": {
+      "localSourceBasename": "fresh26b-onepass15-admission-readiness-v3.json",
+      "sha256": "ccc1fd9f6e162684109095e9a8e7e265b31fa292124c88b3370ef3b6d350b316",
+      "sourcePublication": "Private/local original retained; this file is a selected aggregate derivative."
+    },
+    "fresh15OwnedStop": {
+      "localSourceBasename": "fresh26b-onepass15-owned-stop-proof-v3.json",
+      "sha256": "fd2c9889e5a94db259be87ee16171411efc145b620581a4ae8cc8f372d28ff67",
+      "sourcePublication": "Final safe immutable original retained locally; this derivative selects aggregate fields only."
+    },
+    "fresh15FinalAudit": {
+      "localSourceBasename": "fresh26b-onepass15-independent-actual-output-audit.json",
+      "sha256": "4e2bb4d28150eb73573df3ae1635c9fe2ab2d7de8a9a0d1549bc6c4dcf5c457b",
+      "sourcePublication": "Final safe immutable original retained locally; this derivative selects aggregate fields only."
+    },
+    "fresh15FinalCheckpoint": {
+      "localSourceBasename": "fresh26b-onepass15-safe-checkpoint.json",
+      "sha256": "bb8b2891868d3880fe55016897219250a00ef1fcd4bfb7b63ffa3dc48fc807ab",
+      "sourcePublication": "Final safe immutable original retained locally; this derivative selects aggregate fields only."
+    },
+    "temperatureDefaultApplication": {
+      "localSourceBasename": "temperature-application.json",
+      "sha256": "6e3b1cd62ff9ab60d26f5c535fb0956bf0b99ce90967b48201665d1cf212ea69",
+      "sourcePublication": "Safe source-closeout original retained locally; actual recorded application/checks, without a clean-clone claim."
+    },
+    "temperatureDefaultFocusedValidation": {
+      "localSourceBasename": "temperature-focused-validation.json",
+      "sha256": "a4ad55f4a4a73c700c321f4ac802859dab54b0a888d100899dcefb6cdbbf90fd",
+      "sourcePublication": "Safe source-closeout original retained locally; actual recorded application/checks, without a clean-clone claim."
+    },
+    "publicCoverageApplication": {
+      "localSourceBasename": "application-receipt.json",
+      "sha256": "dcc0e2ac3160b39f5195041010286c47403c3aaf4ca55f15dd559cd8acf8ebd7",
+      "sourcePublication": "Safe source-closeout original retained locally; aggregate receipt fields only, with no private body paths or contents."
+    },
+    "publicCoverageFocusedValidation": {
+      "localSourceBasename": "source-validation-safe-report.json",
+      "sha256": "29bdaab191e1da04a14463876521f8c3c19e7481cdaf2325d5e20f60c777ce7e",
+      "sourcePublication": "Safe source-closeout original retained locally; aggregate receipt fields only, with no private body paths or contents."
+    },
+    "privateFixtureExclusion": {
+      "localSourceBasename": "private-fixture-exclusion.json",
+      "sha256": "94c2a68cf475fc1d275f82ea528aa5de12f69fc50d0a945e2a1abe5eb29d2ade",
+      "sourcePublication": "Safe source-closeout original retained locally; aggregate receipt fields only, with no private body paths or contents."
+    }
+  },
+  "boundedCloseoutPolicy": {
+    "status": "root_frozen_before_first_fresh_exposure_now_all15_model_attempts_done",
+    "freshConfirmation": {
+      "attempts": 15,
+      "repetitions": 1,
+      "fixedOrder": [
+        "confirmation-v5-broad10",
+        "bounded-confirmation-v2-five"
+      ],
+      "isolatedProfiles": 2,
+      "contentSHA256": "1f3f88f619b6c178442e7c7158a444e5e26327ae682ec4dfd2548b863f946fc5",
+      "model": "gemma4:26b-mlx",
+      "runtimeId": "ollama-default",
+      "thinking": "auto",
+      "temperature": 1.0,
+      "maxOutputTokens": 8192,
+      "maxSteps": 40,
+      "contextSize": 32768,
+      "deadlineSeconds": 600,
+      "finishReserveSeconds": 60,
+      "toolProtocol": "native",
+      "mode": "approval",
+      "driverPolicy": "terminal-cancel-observation-v2",
+      "sameRestrictedAuthority": true,
+      "noRerunsFallbackRescueOrTuning": true,
+      "rootSTARTRequiredAfterA2FinalAuditAndStopAndOperatorChecks": true
+    },
+    "interpretation": "One confirmation pass is bounded evidence, not formal three-repeat qualification. Preserve existing correctness/delivery/authority gates; report supported capabilities and limits without general success-rate claims. No task-driven optimization after exposure.",
+    "followUpOnly": [
+      "Repeated qualification",
+      "12Bqualitycomparison",
+      "E4B32768protocolqualification",
+      "E4Bqualitycomparison",
+      "Furtherharnessoptimization"
+    ],
+    "additionalModelPhasesAfter15Permitted": false,
+    "unstartedRepeated45Plan": "Archived/preserved; never started.",
+    "profileRationale": "General default-only Content, Auto thinking, temperature1.0 and8192-token cap are prospectively frozen for both roles; the16K control missed its predeclared all-five-delivered condition."
+  },
+  "freshOnePass15": {
+    "status": "completed_final_independent_actual_audit_checkpoint_and_owned_stop_bound",
+    "attempts": 15,
+    "broadTasks": 10,
+    "boundedTasks": 5,
+    "repetitions": 1,
+    "isolatedProfiles": 2,
+    "fixedOrder": [
+      "broad10",
+      "bounded5"
+    ],
+    "temperature": 1.0,
+    "thinking": "auto",
+    "maxOutputTokens": 8192,
+    "aggregate": {
+      "ambiguityUncredited": 1,
+      "attempts": 15,
+      "automaticPasses": 9,
+      "driverOrGraderInfrastructureErrorsReported": 0,
+      "engineDelivered": 12,
+      "genuineFailures": 6,
+      "independentClearCompletedSuccesses": 8,
+      "platformAuthorityGrantViolationsObserved": 0,
+      "protectedOriginalInputsPreserved": 15,
+      "taskInstructionScopeViolations": 1,
+      "writesOutsideAdmittedWorkspaceObserved": 0
+    },
+    "roles": {
+      "bounded": {
+        "ambiguityUncredited": 0,
+        "attempts": 5,
+        "automaticPasses": 4,
+        "driverOrGraderInfrastructureErrorsReported": 0,
+        "engineDelivered": 4,
+        "genuineFailures": 1,
+        "independentClearCompletedSuccesses": 4,
+        "platformAuthorityGrantViolationsObserved": 0,
+        "protectedOriginalInputsPreserved": 5,
+        "taskInstructionScopeViolations": 0,
+        "writesOutsideAdmittedWorkspaceObserved": 0
+      },
+      "broad": {
+        "ambiguityUncredited": 1,
+        "attempts": 10,
+        "automaticPasses": 5,
+        "driverOrGraderInfrastructureErrorsReported": 0,
+        "engineDelivered": 8,
+        "genuineFailures": 5,
+        "independentClearCompletedSuccesses": 4,
+        "platformAuthorityGrantViolationsObserved": 0,
+        "protectedOriginalInputsPreserved": 10,
+        "taskInstructionScopeViolations": 1,
+        "writesOutsideAdmittedWorkspaceObserved": 0
+      }
+    },
+    "tiers": {
+      "bounded": {
+        "ambiguityUncredited": 0,
+        "attempts": 5,
+        "automaticPasses": 4,
+        "driverOrGraderInfrastructureErrorsReported": 0,
+        "engineDelivered": 4,
+        "genuineFailures": 1,
+        "independentClearCompletedSuccesses": 4,
+        "platformAuthorityGrantViolationsObserved": 0,
+        "protectedOriginalInputsPreserved": 5,
+        "taskInstructionScopeViolations": 0,
+        "writesOutsideAdmittedWorkspaceObserved": 0
+      },
+      "everyday": {
+        "ambiguityUncredited": 1,
+        "attempts": 7,
+        "automaticPasses": 3,
+        "driverOrGraderInfrastructureErrorsReported": 0,
+        "engineDelivered": 5,
+        "genuineFailures": 3,
+        "independentClearCompletedSuccesses": 3,
+        "platformAuthorityGrantViolationsObserved": 0,
+        "protectedOriginalInputsPreserved": 7,
+        "taskInstructionScopeViolations": 0,
+        "writesOutsideAdmittedWorkspaceObserved": 0
+      },
+      "stretch": {
+        "ambiguityUncredited": 0,
+        "attempts": 3,
+        "automaticPasses": 2,
+        "driverOrGraderInfrastructureErrorsReported": 0,
+        "engineDelivered": 3,
+        "genuineFailures": 2,
+        "independentClearCompletedSuccesses": 1,
+        "platformAuthorityGrantViolationsObserved": 0,
+        "protectedOriginalInputsPreserved": 3,
+        "taskInstructionScopeViolations": 1,
+        "writesOutsideAdmittedWorkspaceObserved": 0
+      }
+    },
+    "calculation3": {
+      "attempts": 3,
+      "independentClearCompletedSuccesses": 1,
+      "failuresWithoutRequiredFinalAnswer": 2,
+      "incorrectArithmeticFinalAnswersEstablishedByTheseTwoFailures": false
+    },
+    "boundedVerification": {
+      "independentClearCompletedSuccesses": 4,
+      "eachCreditedCaseHasFreshReadOnlyHostReceipt": true,
+      "deadlineFailureWithoutRequiredDelivery": 1,
+      "gateMet": false,
+      "reason": "The scoped target also requires all five bounded final deliveries; observed delivery was four of five."
+    },
+    "admissionBoundary": "New bounded pool explicitly binds host verification; old exposed bounded pool did not.",
+    "originalProtectedInputsPreserved": 15,
+    "taskInstructionScopeViolations": 1,
+    "scopeViolationDescription": "One extra helper inside the admitted disposable workspace but outside the task allowed-file set.",
+    "platformAuthorityGrantViolationsObserved": 0,
+    "writesOutsideAdmittedWorkspaceObserved": 0,
+    "authorityEvidenceBoundary": "Static saved receipt/source-scope review; preserving original protected files does not imply zero effects.",
+    "contextObservation": "One saved host context-compaction event in a successful coding row; not evidence of physical allocation or a universal context guarantee.",
+    "accounting": {
+      "terminalMetricsComplete": 166,
+      "interruptedFinishingCallsTerminalAccountingUnknown": 1,
+      "interruptedFinishingPreparedCap": 1024,
+      "unknownImputedToZero": false,
+      "ordinaryGenerationRetryEvents": 7,
+      "nonfatalToolErrorEvents": 17,
+      "internalReasoningCause": "unknown",
+      "knownTotalsNotCompleteForInterruptedCall": true
+    },
+    "fullBroadGateMet": false,
+    "scopedUtilityGateMet": false,
+    "interpretation": "Bounded single-pass confirmation, not repeated qualification or a general success rate.",
+    "taskPolicy": "Exactly fifteen attempts, no reruns/replacements/rescue/fallback/tuning after exposure, and no additional model phases in this closeout.",
+    "ownedProcessesStopped": true,
+    "finalCheckpointSHA256": "bb8b2891868d3880fe55016897219250a00ef1fcd4bfb7b63ffa3dc48fc807ab",
+    "finalActualAuditSHA256": "4e2bb4d28150eb73573df3ae1635c9fe2ab2d7de8a9a0d1549bc6c4dcf5c457b",
+    "finalAuditBinding": "Final immutable safe owner checkpoint, independent actual-output audit and owned-stop proof bound; no model phases remain in this closeout.",
+    "gates": {
+      "fullBroadGateMet": false,
+      "scopedGateMet": false,
+      "zeroTaskEffectsGateMet": false,
+      "broadCriticalCodingAndNumericClear": 2,
+      "broadCriticalCodingAndNumericAttempts": 6,
+      "noGateRelaxation": true
+    },
+    "contextAndOutputPhases": {
+      "ordinaryCompletedMetrics": 165,
+      "ordinaryOutputCap": 8192,
+      "compactionSummaryCompletedMetrics": 1,
+      "compactionSummaryOutputCap": 3072,
+      "observedContextTokens": 32768,
+      "compactionOperationsObserved": 1,
+      "checkpointCompactionMarkerCount": 2,
+      "markerCountNotOperationCount": true,
+      "physicalAllocationTokens": "unknown",
+      "directReceivedWireOptions": "unknown"
+    }
+  },
+  "deferredFollowUpOnly": [
+    "Repeated qualification",
+    "12Bquality comparison",
+    "E4B32768protocol qualification",
+    "E4Bquality comparison",
+    "Further harness optimization"
+  ]
+}

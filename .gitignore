@@ -12,6 +12,9 @@ __pycache__/
 .runtime/
 outputs/
 
+# Sealed local pilot fixtures stay outside the published source tree.
+scripts/pilot/tasks-heldout/
+
 # Local credentials and machine-specific settings
 .env
 .env.*

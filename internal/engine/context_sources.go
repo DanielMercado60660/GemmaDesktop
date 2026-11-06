@@ -34,7 +34,7 @@ func ValidateContextSources(sources []ContextSource) error {
 		if len(s.Content) > 128<<10 || total > 256<<10 {
 			return errors.New("context sources exceed 128 KiB each or 256 KiB aggregate")
 		}
-		if s.Kind != "attachment" && s.Kind != "project_guidance" {
+		if s.Kind != "attachment" && s.Kind != "project_guidance" && s.Kind != "focused_continuation" {
 			return errors.New("unknown context source kind")
 		}
 	}

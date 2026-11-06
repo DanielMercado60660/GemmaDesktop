@@ -1,0 +1,19 @@
+I ran `python3 -m unittest discover -s tests -v`: 14 tests, 13 pass and one fails.
+
+**Failing test:** `test_pick_sheet_single_zone` (`tests/test_picklist.py`, `PickSheetTests`)
+
+```
+AssertionError: Lists differ: ['R', 'A', 'B', 'C', 'D'] != ['B']
+```
+
+The order in that test only has zone B lines, but the pick sheet comes back with zones R, A, C and D as well. Those extra zones are the lines from the two `pick_sheet` tests that run before it (`test_pick_sheet_follows_walk_path` and `test_pick_sheet_includes_every_line`). If you run the test on its own it passes, so it depends on test order.
+
+**Why:** `group_by_zone` in `warehouse/picklist.py` has a mutable default argument:
+
+```python
+def group_by_zone(lines, groups={}):   # warehouse/picklist.py, line 35
+```
+
+Python evaluates the `{}` default once, when the function is defined, so every call that doesn't pass `groups` gets the same dict back and keeps appending to it. `pick_sheet()` calls `group_by_zone(order.lines)` without a dict, so each pick sheet still contains every line from earlier pick sheets. `build_wave()` passes its own fresh dict, which is why the wave tests are fine.
+
+**Responsible line:** `warehouse/picklist.py` line 35, the `groups={}` default in `group_by_zone`. The usual fix would be `groups=None` plus `if groups is None: groups = {}`, but I haven't changed anything.

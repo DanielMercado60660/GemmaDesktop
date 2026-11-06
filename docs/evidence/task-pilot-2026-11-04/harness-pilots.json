@@ -1,0 +1,957 @@
+{
+ "schema": "gemma-pilot-harness-summary-v1",
+ "pilots": [
+  {
+   "label": "harness-baseline-eventjoin-20261104-175850",
+   "binarySHA256": "46cb9517893d777357d613ed482b2dbe098516c9da6306c01112c14f00301e8b",
+   "model": "gemma4:26b-mlx",
+   "arm": {
+    "name": "gemma4:26b-mlx pilot",
+    "provenance": "pilot:harness-baseline-eventjoin:20261104-175850",
+    "mode": "native",
+    "runtimeId": "ollama-default",
+    "model": "gemma4:26b-mlx",
+    "contextSize": 65536,
+    "thinking": "on",
+    "temperature": 1,
+    "maxOutputTokens": 16384,
+    "maxSteps": 80,
+    "toolProtocol": "native",
+    "budgetSeconds": 1200,
+    "fixturePackId": "coding-diagnostics-v2",
+    "taskIds": [
+     "event-join"
+    ]
+   },
+   "status": "completed",
+   "trialStatus": "completed",
+   "passed": false,
+   "durationSeconds": 270.612,
+   "checks": [
+    {
+     "name": "candidate CLI completed",
+     "passed": true
+    },
+    {
+     "name": "JSON result count",
+     "passed": true
+    },
+    {
+     "name": "contract-case-1",
+     "passed": true
+    },
+    {
+     "name": "contract-case-2",
+     "passed": true
+    },
+    {
+     "name": "contract-case-3",
+     "passed": true
+    },
+    {
+     "name": "contract-case-4",
+     "passed": true
+    },
+    {
+     "name": "contract-case-5",
+     "passed": true
+    },
+    {
+     "name": "contract-case-6",
+     "passed": true
+    },
+    {
+     "name": "integrity: original public tests and requirements retained",
+     "passed": true
+    },
+    {
+     "name": "new regression tests discovered",
+     "passed": true
+    },
+    {
+     "name": "new regression tests pass on repair",
+     "passed": true
+    },
+    {
+     "name": "new regression tests expose original defect",
+     "passed": true
+    },
+    {
+     "name": "prescribed verification after final edit",
+     "passed": false
+    },
+    {
+     "name": "independent public command",
+     "passed": true
+    }
+   ],
+   "toolCalls": [
+    {
+     "sequence": 2,
+     "tool": "list_files",
+     "callId": "call_ax4g4dc7",
+     "arguments": {
+      "path": "."
+     },
+     "error": null
+    },
+    {
+     "sequence": 4,
+     "tool": "read_file",
+     "callId": "call_2ehagjmn",
+     "arguments": {
+      "path": "README.md"
+     },
+     "error": null
+    },
+    {
+     "sequence": 6,
+     "tool": "read_file",
+     "callId": "call_zat4ejra",
+     "arguments": {
+      "path": "main.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 8,
+     "tool": "read_file",
+     "callId": "call_go6txhs0",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 10,
+     "tool": "read_file",
+     "callId": "call_8rlovsb3",
+     "arguments": {
+      "path": "time.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 12,
+     "tool": "read_file",
+     "callId": "call_h30cuyjt",
+     "arguments": {
+      "path": "public.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 14,
+     "tool": "run_command",
+     "callId": "call_vmpo2rph",
+     "arguments": {
+      "args": [
+       "public.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 16,
+     "tool": "write_file",
+     "callId": "call_gzwkmg5e",
+     "arguments": {
+      "content": "import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"events\": [{\"kind\": \"start\", \"id\": \"a\", \"time\": 2}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 5}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 7}]}, [{\"id\": \"a\", \"elapsed\": 3}]]];test('regression te\u2026",
+      "expectedHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "regression.test.mjs"
+     },
+     "error": "revision conflict for \"regression.test.mjs\": file changed since it was read; read it again before editing; call read_file with path \"regression.test.mjs\" before retrying with that file's returned hash"
+    },
+    {
+     "sequence": 18,
+     "tool": "write_file",
+     "callId": "call_2dr9tlyl",
+     "arguments": {
+      "content": "import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"events\": [{\"kind\": \"start\", \"id\": \"a\", \"time\": 2}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 5}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 7}]}, [{\"id\": \"a\", \"elapsed\": 3}]]];test('regression te\u2026",
+      "expectedHash": "",
+      "path": "regression.test.mjs"
+     },
+     "error": "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file"
+    },
+    {
+     "sequence": 20,
+     "tool": "run_command",
+     "callId": "call_kn3hbh2j",
+     "arguments": {
+      "args": [
+       "-c",
+       "echo 'import test from \\\"node:test\\\";import assert from \\\"node:assert/strict\\\";import {solve} from \\\"./logic.mjs\\\";const cases=[[{\\\"events\\\": [{\\\"kind\\\": \\\"start\\\", \\\"id\\\": \\\"a\\\", \\\"time\\\": 2}, {\\\"kind\\\": \\\"end\\\", \\\"id\\\": \\\"a\\\", \\\"time\\\": 5}, {\\\"kind\\\": \\\"end\\\", \\\"id\\\": \\\"a\\\", \\\"time\\\": 7}]}, [{\\\"id\\\": \\\"a\\\", \\\"elapsed\\\": 3}]]];test(\\\"regression test\\\",()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});' > regression.test.mjs"
+      ],
+      "executable": "sh"
+     },
+     "error": null
+    },
+    {
+     "sequence": 22,
+     "tool": "run_command",
+     "callId": "call_p72ol1wv",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": "process exited with code 1"
+    },
+    {
+     "sequence": 24,
+     "tool": "run_command",
+     "callId": "call_5y16gg7n",
+     "arguments": {
+      "args": [
+       "-c",
+       "echo \"import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';const cases=[[{\\\"events\\\": [{\\\"kind\\\": 'start', 'id': 'a', 'time': 2}, {\\'kind': 'end', 'id': 'a', 'time': 5}, {\\'kind': 'end', 'id': 'a', 'time': 7}]}, [{\\\"id': 'a', 'elapsed': 3}]]];test('regression test',()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});\" > regression.test.mjs"
+      ],
+      "executable": "sh"
+     },
+     "error": null
+    },
+    {
+     "sequence": 26,
+     "tool": "read_file",
+     "callId": "call_ks87vgo8",
+     "arguments": {
+      "path": "regression.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 28,
+     "tool": "run_command",
+     "callId": "call_zj04pdgw",
+     "arguments": {
+      "args": [
+       "-c",
+       "cat << 'EOF' > regression.test.mjs\nimport test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"events\": [{\"kind\": \"start\", \"id\": \"a\", \"time\": 2}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 5}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 7}]}, [{\"id\": \"a\", \"elapsed\": 3}]]];\ntest('regression test',()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});\nEOF\n"
+      ],
+      "executable": "sh"
+     },
+     "error": null
+    },
+    {
+     "sequence": 30,
+     "tool": "read_file",
+     "callId": "call_7rlrn1xp",
+     "arguments": {
+      "path": "regression.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 32,
+     "tool": "run_command",
+     "callId": "call_ppklxwvn",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": "process exited with code 1"
+    },
+    {
+     "sequence": 34,
+     "tool": "read_file",
+     "callId": "call_ygipm4ju",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 36,
+     "tool": "edit_file",
+     "callId": "call_kfe88rgr",
+     "arguments": {
+      "expectedHash": "aaac134e64cc437dfeee479dcfb82cbfcca4d9c60b1631e55b6adb6dce393d58",
+      "newText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});pending.delete(e.id);}}return out\u2026",
+      "oldText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});}return out;}\n",
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 38,
+     "tool": "run_command",
+     "callId": "call_6xse7yen",
+     "arguments": {
+      "args": [
+       "public.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 40,
+     "tool": "run_command",
+     "callId": "call_0o1wz3bs",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 42,
+     "tool": "run_command",
+     "callId": "call_19r7ygrd",
+     "arguments": {
+      "args": [
+       "--test"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 44,
+     "tool": "run_command",
+     "callId": "call_86al649w",
+     "arguments": {
+      "args": [
+       "-c",
+       "cat << 'EOF' > regression.test.mjs\nimport test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"events\": [{\"kind\": \"start\", \"id\": \"a\", \"time\": 2}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 1}]}, []]];\ntest('regression test',()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});\nEOF\n"
+      ],
+      "executable": "sh"
+     },
+     "error": null
+    },
+    {
+     "sequence": 46,
+     "tool": "run_command",
+     "callId": "call_30u0nd5s",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": "process exited with code 1"
+    },
+    {
+     "sequence": 48,
+     "tool": "edit_file",
+     "callId": "call_rwdt5ep8",
+     "arguments": {
+      "expectedHash": "c8cc6478d4cbfd3e0276dadbecadd2fe916f3566aebc9a0c6546e8a5f1c04d2a",
+      "newText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){if(e.time>=pending.get(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});pend\u2026",
+      "oldText": "import {elapsed} from './0.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});}}return out;}\n",
+      "path": "logic.mjs"
+     },
+     "error": "oldText was not found. Re-read the file and use a shorter unique span with actual newlines; do not copy JSON escape sequences. You may instead use write_file with the complete content and a fresh hash"
+    },
+    {
+     "sequence": 50,
+     "tool": "write_file",
+     "callId": "call_fkq6k8dk",
+     "arguments": {
+      "content": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){if(e.time>=pending.get(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});pend\u2026",
+      "expectedHash": "",
+      "path": "logic.mjs"
+     },
+     "error": "expectedHash is required; use missing for a new file, otherwise current SHA256 from read_file"
+    },
+    {
+     "sequence": 52,
+     "tool": "read_file",
+     "callId": "call_ao3ojoa8",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 54,
+     "tool": "read_file",
+     "callId": "call_8sjkc40e",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 56,
+     "tool": "write_file",
+     "callId": "call_geikommq",
+     "arguments": {
+      "content": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){if(e.time>=pending.get(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});pend\u2026",
+      "expectedHash": "c8cc6478d4cbfd3e0276dadbecadd2fe916f3566aebc9a0c6546e8a5f1c04d2a",
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 58,
+     "tool": "run_command",
+     "callId": "call_zp8jsykj",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 60,
+     "tool": "run_command",
+     "callId": "call_nw6z8x5o",
+     "arguments": {
+      "args": [
+       "public.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 62,
+     "tool": "run_command",
+     "callId": "call_wrbmyz0m",
+     "arguments": {
+      "args": [
+       "--test"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    }
+   ]
+  },
+  {
+   "label": "harness-final-eventjoin-20261104-194652",
+   "binarySHA256": "f994ab53abeebddb428b0f1e252ca7e5194f08a9ea0bb4f3340b886577fc219b",
+   "model": "gemma4:26b-mlx",
+   "arm": {
+    "name": "gemma4:26b-mlx pilot",
+    "provenance": "pilot:harness-final-eventjoin:20261104-194652",
+    "mode": "native",
+    "runtimeId": "ollama-default",
+    "model": "gemma4:26b-mlx",
+    "contextSize": 65536,
+    "thinking": "on",
+    "temperature": 1,
+    "maxOutputTokens": 16384,
+    "maxSteps": 80,
+    "toolProtocol": "native",
+    "budgetSeconds": 1200,
+    "fixturePackId": "coding-diagnostics-v2",
+    "taskIds": [
+     "event-join"
+    ]
+   },
+   "status": "completed",
+   "trialStatus": "completed",
+   "passed": true,
+   "durationSeconds": 182.601,
+   "checks": [
+    {
+     "name": "candidate CLI completed",
+     "passed": true
+    },
+    {
+     "name": "JSON result count",
+     "passed": true
+    },
+    {
+     "name": "contract-case-1",
+     "passed": true
+    },
+    {
+     "name": "contract-case-2",
+     "passed": true
+    },
+    {
+     "name": "contract-case-3",
+     "passed": true
+    },
+    {
+     "name": "contract-case-4",
+     "passed": true
+    },
+    {
+     "name": "contract-case-5",
+     "passed": true
+    },
+    {
+     "name": "contract-case-6",
+     "passed": true
+    },
+    {
+     "name": "integrity: original public tests and requirements retained",
+     "passed": true
+    },
+    {
+     "name": "new regression tests discovered",
+     "passed": true
+    },
+    {
+     "name": "new regression tests pass on repair",
+     "passed": true
+    },
+    {
+     "name": "new regression tests expose original defect",
+     "passed": true
+    },
+    {
+     "name": "prescribed verification after final edit",
+     "passed": true
+    },
+    {
+     "name": "independent public command",
+     "passed": true
+    }
+   ],
+   "toolCalls": [
+    {
+     "sequence": 2,
+     "tool": "list_files",
+     "callId": "call_97oaelln",
+     "arguments": {
+      "path": "."
+     },
+     "error": null
+    },
+    {
+     "sequence": 4,
+     "tool": "read_file",
+     "callId": "call_9iiki7cs",
+     "arguments": {
+      "path": "README.md"
+     },
+     "error": null
+    },
+    {
+     "sequence": 6,
+     "tool": "read_file",
+     "callId": "call_u6g7s2il",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 8,
+     "tool": "read_file",
+     "callId": "call_0di3nrlz",
+     "arguments": {
+      "path": "main.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 10,
+     "tool": "read_file",
+     "callId": "call_pfuykqe3",
+     "arguments": {
+      "path": "public.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 12,
+     "tool": "read_file",
+     "callId": "call_y3bwop81",
+     "arguments": {
+      "path": "time.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 14,
+     "tool": "run_command",
+     "callId": "call_ljsod2ja",
+     "arguments": {
+      "args": [
+       "--test",
+       "public.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 16,
+     "tool": "write_file",
+     "callId": "call_g573ijm8",
+     "arguments": {
+      "content": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\n\ntest('regression: end event consumes pending state', () => {\n  const input = {\n    events: [\n      {kind: 'start', id: 'a', time: 2},\n      {kind: 'end', id: 'a', time: 5},\n      {kind: 'end', \u2026",
+      "path": "regression.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 18,
+     "tool": "run_command",
+     "callId": "call_i7ieto2o",
+     "arguments": {
+      "args": [
+       "--test",
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": "process exited with code 1"
+    },
+    {
+     "sequence": 20,
+     "tool": "read_file",
+     "callId": "call_7ibkbg1l",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 22,
+     "tool": "edit_file",
+     "callId": "call_hmd9v54t",
+     "arguments": {
+      "expectedHash": "aaac134e64cc437dfeee479dcfb82cbfcca4d9c60b1631e55b6adb6dce393d58",
+      "newText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});pending.delete(e.id);}}return out\u2026",
+      "oldText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});}return out;}\n",
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 24,
+     "tool": "run_command",
+     "callId": "call_shjaho1d",
+     "arguments": {
+      "args": [
+       "--test",
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 26,
+     "tool": "run_command",
+     "callId": "call_l2eayrhw",
+     "arguments": {
+      "args": [
+       "--test",
+       "public.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 28,
+     "tool": "run_command",
+     "callId": "call_8tph3j23",
+     "arguments": {
+      "args": [
+       "--test"
+      ],
+      "executable": "node",
+      "readOnly": true
+     },
+     "error": null
+    },
+    {
+     "sequence": 30,
+     "tool": "edit_file",
+     "callId": "call_5w5v0wxm",
+     "arguments": {
+      "expectedHash": "c8cc6478d4cbfd3e0276dadbecadd2fe916f3566aebc9a0c6546e8a5f1c04d2a",
+      "newText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){const start=pending.get(e.id);if(e.time>=start)out.push({id:e.id,elapsed:elapsed(start,e.time)}\u2026",
+      "oldText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});pending.delete(e.id);}}return out\u2026",
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 32,
+     "tool": "edit_file",
+     "callId": "call_a5cqbbt6",
+     "arguments": {
+      "expectedHash": "8dcb8c46788c976490f20132ab9870d8ecb638049ef694a6fa6755381ed5da49",
+      "newText": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\n\ntest('regression: end event consumes pending state', () => {\n  const input = {\n    events: [\n      {kind: 'start', id: 'a', time: 2},\n      {kind: 'end', id: 'a', time: 5},\n      {kind: 'end', \u2026",
+      "oldText": "import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"events\": []}, []], [{\"events\": [{\"kind\": \"start\", \"id\": \"a\", \"time\": 2}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 5}]}, [{\"id\": \"a\", \"elapsed\": 3}]]];test('public contract',()=>{for(cons\u2026",
+      "path": "regression.test.mjs"
+     },
+     "error": "oldText was not found in regression.test.mjs. Re-read the exact lines with read_file (startLine/lineCount) and copy them exactly, or use a shorter unique snippet."
+    },
+    {
+     "sequence": 34,
+     "tool": "write_file",
+     "callId": "call_3gk32ogt",
+     "arguments": {
+      "content": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\n\ntest('regression: end event consumes pending state', () => {\n  const input = {\n    events: [\n      {kind: 'start', id: 'a', time: 2},\n      {kind: 'end', id: 'a', time: 5},\n      {kind: 'end', \u2026",
+      "path": "regression.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 36,
+     "tool": "run_command",
+     "callId": "call_2reitat4",
+     "arguments": {
+      "args": [
+       "--test",
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 38,
+     "tool": "run_command",
+     "callId": "call_693tzuo0",
+     "arguments": {
+      "args": [
+       "--test"
+      ],
+      "executable": "node",
+      "readOnly": true
+     },
+     "error": null
+    }
+   ]
+  },
+  {
+   "label": "harness-final2-eventjoin-hostverify-20261104-204158",
+   "binarySHA256": "060283e2d98dc44fe95c692fe136c81ff151882d6dbdaf4bf7c34b30bab43dc8",
+   "model": "gemma4:26b-mlx",
+   "arm": {
+    "name": "gemma4:26b-mlx pilot",
+    "provenance": "pilot:harness-final2-eventjoin-hostverify:20261104-204158",
+    "mode": "native",
+    "runtimeId": "ollama-default",
+    "model": "gemma4:26b-mlx",
+    "contextSize": 65536,
+    "thinking": "on",
+    "temperature": 1,
+    "maxOutputTokens": 16384,
+    "maxSteps": 80,
+    "toolProtocol": "native",
+    "budgetSeconds": 1200,
+    "fixturePackId": "coding-diagnostics-v2",
+    "taskIds": [
+     "event-join"
+    ],
+    "verificationFeedback": true
+   },
+   "status": "completed",
+   "trialStatus": "completed",
+   "passed": true,
+   "durationSeconds": 208.918,
+   "checks": [
+    {
+     "name": "candidate CLI completed",
+     "passed": true
+    },
+    {
+     "name": "JSON result count",
+     "passed": true
+    },
+    {
+     "name": "contract-case-1",
+     "passed": true
+    },
+    {
+     "name": "contract-case-2",
+     "passed": true
+    },
+    {
+     "name": "contract-case-3",
+     "passed": true
+    },
+    {
+     "name": "contract-case-4",
+     "passed": true
+    },
+    {
+     "name": "contract-case-5",
+     "passed": true
+    },
+    {
+     "name": "contract-case-6",
+     "passed": true
+    },
+    {
+     "name": "integrity: original public tests and requirements retained",
+     "passed": true
+    },
+    {
+     "name": "new regression tests discovered",
+     "passed": true
+    },
+    {
+     "name": "new regression tests pass on repair",
+     "passed": true
+    },
+    {
+     "name": "new regression tests expose original defect",
+     "passed": true
+    },
+    {
+     "name": "prescribed verification after final edit",
+     "passed": true
+    },
+    {
+     "name": "independent public command",
+     "passed": true
+    }
+   ],
+   "toolCalls": [
+    {
+     "sequence": 2,
+     "tool": "list_files",
+     "callId": "call_d568m5p6",
+     "arguments": {
+      "path": "."
+     },
+     "error": null
+    },
+    {
+     "sequence": 4,
+     "tool": "read_file",
+     "callId": "call_et9ztoic",
+     "arguments": {
+      "path": "README.md"
+     },
+     "error": null
+    },
+    {
+     "sequence": 6,
+     "tool": "read_file",
+     "callId": "call_1kohbrk0",
+     "arguments": {
+      "path": "main.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 8,
+     "tool": "read_file",
+     "callId": "call_2a1lbsny",
+     "arguments": {
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 10,
+     "tool": "read_file",
+     "callId": "call_ag67o6t7",
+     "arguments": {
+      "path": "public.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 12,
+     "tool": "read_file",
+     "callId": "call_b9tztunh",
+     "arguments": {
+      "path": "time.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 14,
+     "tool": "write_file",
+     "callId": "call_6fo6cell",
+     "arguments": {
+      "content": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\n\ntest('defect detection', () => {\n  const input = {\n    events: [\n      {kind: 'start', id: 'a', time: 10},\n      {kind: 'end', id: 'a', time: 20},\n      {kind: 'end', id: 'a', time: 30}\n    ]\n \u2026",
+      "path": "defect.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 16,
+     "tool": "run_command",
+     "callId": "call_mq2njebj",
+     "arguments": {
+      "args": [
+       "defect.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": "process exited with code 1"
+    },
+    {
+     "sequence": 18,
+     "tool": "write_file",
+     "callId": "call_qi6zn6ed",
+     "arguments": {
+      "content": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\n\ntest('regression tests', () => {\n  // Test 1: Consume pending state after end\n  const input1 = {\n    events: [\n      {kind: 'start', id: 'a', time: 10},\n      {kind: 'end', id: 'a', time: 20},\n\u2026",
+      "path": "regression.test.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 20,
+     "tool": "run_command",
+     "callId": "call_lqc1aw5j",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": "process exited with code 1"
+    },
+    {
+     "sequence": 22,
+     "tool": "edit_file",
+     "callId": "call_3x8t0f69",
+     "arguments": {
+      "expectedHash": "aaac134e64cc437dfeee479dcfb82cbfcca4d9c60b1631e55b6adb6dce393d58",
+      "newText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id)){const s=pending.get(e.id);pending.delete(e.id);if(e.time>=s)out.push({id:e.id,elapsed:elapsed(s\u2026",
+      "oldText": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});}return out;}",
+      "path": "logic.mjs"
+     },
+     "error": null
+    },
+    {
+     "sequence": 24,
+     "tool": "run_command",
+     "callId": "call_44u88r0u",
+     "arguments": {
+      "args": [
+       "regression.test.mjs"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 26,
+     "tool": "run_command",
+     "callId": "call_a3pn332a",
+     "arguments": {
+      "args": [
+       "--test"
+      ],
+      "executable": "node"
+     },
+     "error": null
+    },
+    {
+     "sequence": 28,
+     "tool": "verify_task",
+     "callId": "tool_0c81c5fdb04f28e20afc7bab",
+     "arguments": {},
+     "error": null
+    }
+   ]
+  }
+ ]
+}

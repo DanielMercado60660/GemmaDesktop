@@ -1,0 +1,4 @@
+{
+  "logic.mjs": "export function solve(x){const counts=new Map();for(const k of x.items)counts.set(k,(counts.get(k)||0)+1);return [...counts.keys()].sort((a,b)=>counts.get(b)-counts.get(a));}\n",
+  "regression.test.mjs": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\ntest('contract boundaries',()=>{for(const [value,expected] of [[{\"items\": [\"z\", \"a\", \"z\", \"a\"]}, [\"z\", \"a\"]], [{\"items\": [\"__proto__\", \"x\", \"__proto__\"]}, [\"__proto__\", \"x\"]], [{\"items\": [\"b\", \"a\", \"c\"]}, [\"b\", \"a\", \"c\"]]])assert.deepEqual(solve(value),expected);});\n"
+}

@@ -61,12 +61,13 @@ type Metrics struct {
 
 type ChatChunk struct {
 	// Set by the decoder from explicit JSON member presence, not nonzero values.
-	TokenCountsPresent bool    `json:"-"`
-	Model              string  `json:"model"`
-	Message            Message `json:"message"`
-	Done               bool    `json:"done"`
-	DoneReason         string  `json:"done_reason,omitempty"`
-	Error              string  `json:"error,omitempty"`
+	TokenCountsPresent bool         `json:"-"`
+	Model              string       `json:"model"`
+	Message            Message      `json:"message"`
+	Done               bool         `json:"done"`
+	DoneReason         string       `json:"done_reason,omitempty"`
+	Error              string       `json:"error,omitempty"`
+	UsageDetails       UsageDetails `json:"-"`
 	Metrics
 }
 

@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n stack=[];pairs={')':'(',']':'[','}':'{'}\n for c in x['text']:\n  if c in '([{':stack.append(c)\n  elif c in pairs:\n   if not stack or stack.pop()!=pairs[c]:return False\n return not stack\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass ContractRegression(unittest.TestCase):\n def test_contract_boundaries(self):\n  for value,expected in [({'text': '([)]'}, False), ({'text': 'a{[()]}b'}, True), ({'text': ')('}, False), ({'text': '(()'}, False)]:\n   with self.subTest(value=value):self.assertEqual(solve(value),expected)\n"
+}

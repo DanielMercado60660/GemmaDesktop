@@ -1,0 +1,12 @@
+{
+  "category": "debugging from logs",
+  "prompt": "Last night's billing job crashed — the traceback is in logs/nightly.log. Figure out what went wrong and fix it so that case is handled sensibly (an invoice with no line items should just total 0.00). Add a regression test that reproduces the crash in a new file under tests/ (leave the existing tests as they are), then run the test suite and tell me what caused it.",
+  "protectedPaths": ["tests/test_invoice.py", "logs/nightly.log"],
+  "verificationContract": {
+    "command": ["python3", "-m", "unittest", "discover", "-s", "tests", "-v"],
+    "workingDirectory": "",
+    "protectedPaths": ["tests/test_invoice.py", "logs/nightly.log"],
+    "requireRegressionTest": false
+  },
+  "notes": "The log shows decimal.InvalidOperation (DivisionUndefined, i.e. Decimal 0/0), not ZeroDivisionError, raised from Invoice.tax() via total() for an invoice with 0 items; a fix that only catches ZeroDivisionError does not help. Graded on outcomes only: protected files unchanged; trusted original tests pass; hidden probe that four empty-invoice variants (defaults, taxed, with credit, items cleared) total numeric 0; hidden probe that subtotal/discount/tax/total of ten non-empty invoices match the original module exactly (includes sub-$1 subtotals, so a max(subtotal, 1) style guard fails); a new tests/**/test*.py exists, the full discover suite passes with more than the original 5 tests, and the same suite run against the original billing package fails with real failures/errors (not import errors). The final answer is recorded but not graded."
+}

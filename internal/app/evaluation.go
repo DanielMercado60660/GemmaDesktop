@@ -52,6 +52,9 @@ func (c *Core) startEval(p Doc) (any, error) {
 	frozenAgents := make(map[string]FrozenAgent, 2)
 	frozenRequests := make(map[string]engine.Request, 2)
 	for _, config := range []Doc{baseline, candidate} {
+		if c.runtimeID(config) != ollamaRuntimeID {
+			return nil, errors.New("legacy answer comparisons use Ollama; use versioned Harness diagnostics for managed MLX")
+		}
 		value, err := agentGenerationControls(config)
 		if err != nil {
 			return nil, err
@@ -64,7 +67,7 @@ func (c *Core) startEval(p Doc) (any, error) {
 		if err != nil {
 			return nil, err
 		}
-		request := engine.Request{Instructions: defaultInstructions + "\n\n" + str(config, "instructions")}
+		request := engine.Request{Instructions: agentInstructions(config)}
 		frozen.Configure(&request)
 		binding, err := c.applyHarnessBinding(str(w, "id"), config, &request, &frozen)
 		if err != nil {

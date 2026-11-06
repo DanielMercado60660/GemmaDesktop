@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "python": {
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261026/cpython-3.12.16%2B20261026-aarch64-apple-darwin-install_only.tar.gz",
+    "sha256": "fbf4afef53c2a6b72bb741bc06d5671a9dfaf87bd84e5aa73ac9b3d0d589f14e",
+    "size": 25172086
+  },
+  "omlx": {
+    "sourceSha": "4213c3284abc7b3746a91464a7af7ccc3732b759",
+    "url": "https://github.com/jundot/omlx/releases/download/v0.7.4.dev1/omlx-0.7.4.dev1-cp312-cp312-macosx_15_0_universal2.whl",
+    "sha256": "4434d3e0eb3d3f7081bd26a3e93571f4732ae72de5333ca2ae39f00fb92ea46d",
+    "size": 40883796
+  },
+  "mlxServe": {
+    "sourceSha": "ac00f9213214db94b96f1837282c1ce4ad9debc8",
+    "url": "https://github.com/ddalcu/mlx-serve/releases/download/v26.11.1/mlx-serve-bin-macos-arm64.tar.gz",
+    "sha256": "9acaa7a21b294536c3db9f2683d85079727b4e8db725d34260020499523dc267",
+    "size": 89646887
+  },
+  "models": [
+    {"id": "gemma4-e4b-4bit", "repository": "mlx-community/gemma-4-e4b-it-4bit", "revision": "475b9088d29754a3379866cf5aeb6b41acd313c2", "templateSha256": "2f1b4d75d067bae3fe44e676721c7f077d243bc007156cb9c2f8b5836613d082"},
+    {"id": "gemma4-12b-4bit", "repository": "mlx-community/gemma-4-12B-it-4bit", "revision": "73bcf09092aa277861d5a191b989b666f7f32e8f", "templateSha256": "36e3a42e5cf14cd0020e72d92e1fdd9970f59b82170e421f0cbe1bb42bead3f0"},
+    {"id": "gemma4-26b-4bit", "repository": "mlx-community/gemma-4-26b-a4b-it-4bit", "revision": "0d77464eeb233a2da68ebf9d7dc4edaac7db956d", "templateSha256": "36e3a42e5cf14cd0020e72d92e1fdd9970f59b82170e421f0cbe1bb42bead3f0"}
+  ]
+}

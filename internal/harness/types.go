@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-const UpstreamRevision = "1cfe254e8d25b15f37048c3730134686abe60335"
+const LegacyUpstreamRevision = "1cfe254e8d25b15f37048c3730134686abe60335"
+const UpstreamRevision = "6868817518876de8fd170c6a8354daca273b6191"
 const MethodVersion = "gemma-harness-v1"
 
 type Doc = store.Doc
@@ -66,21 +67,38 @@ type Spec struct {
 	BudgetSeconds       int                        `json:"budgetSeconds"`
 	CreatedAt           string                     `json:"createdAt"`
 	Hash                string                     `json:"hash"`
+	// RuntimeIdentity is absent in legacy records. New comparisons bind the
+	// backend, artifact/template/tokenizer and serving configuration here.
+	RuntimeIdentity    Doc    `json:"runtimeIdentity,omitempty"`
+	FixturePackID      string `json:"fixturePackId,omitempty"`
+	AuthorityHash      string `json:"authorityHash,omitempty"`
+	ProfileBindingHash string `json:"profileBindingHash,omitempty"`
+	UpstreamRevision   string `json:"upstreamRevision,omitempty"`
+	CachePolicy        string `json:"cachePolicy,omitempty"`
+	// Development carry-forward never activates a product binding. The source
+	// experiment and exact prior revision remain part of the new frozen spec.
+	DevelopmentBaseRevisionID     string `json:"developmentBaseRevisionId,omitempty"`
+	DevelopmentSourceExperimentID string `json:"developmentSourceExperimentId,omitempty"`
 }
 type Task struct {
-	ID             string            `json:"id"`
-	Name           string            `json:"name"`
-	Stack          string            `json:"stack"`
-	Split          string            `json:"split"`
-	Prompt         string            `json:"prompt"`
-	Public         map[string]string `json:"public,omitempty"`
-	PublicHash     string            `json:"publicHash"`
-	Command        []string          `json:"command"`
-	GradeCommand   []string          `json:"gradeCommand"`
-	Cases          []Case            `json:"-"`
-	GraderHash     string            `json:"graderHash"`
-	Probe          *Probe            `json:"-"`
-	ProtectedFiles []string          `json:"protectedFiles"`
+	ID                  string            `json:"id"`
+	Name                string            `json:"name"`
+	Stack               string            `json:"stack"`
+	Split               string            `json:"split"`
+	Prompt              string            `json:"prompt"`
+	Public              map[string]string `json:"public,omitempty"`
+	PublicHash          string            `json:"publicHash"`
+	Command             []string          `json:"command"`
+	GradeCommand        []string          `json:"gradeCommand"`
+	Cases               []Case            `json:"-"`
+	GraderHash          string            `json:"graderHash"`
+	Probe               *Probe            `json:"-"`
+	ProtectedFiles      []string          `json:"protectedFiles"`
+	ExposureFamily      string            `json:"exposureFamily,omitempty"`
+	Contract            string            `json:"contract,omitempty"`
+	RegressionTestGlobs []string          `json:"regressionTestGlobs,omitempty"`
+	DiscoveryCommand    []string          `json:"discoveryCommand,omitempty"`
+	ExpectedAnswer      json.RawMessage   `json:"-"`
 }
 type Probe struct {
 	Files    map[string]string `json:"files"`
@@ -128,20 +146,25 @@ type SolveResult struct {
 	DurationMS      int64                      `json:"durationMs"`
 }
 type Trial struct {
-	ID           string      `json:"id"`
-	ExperimentID string      `json:"experimentId"`
-	TaskID       string      `json:"taskId"`
-	Label        string      `json:"label"`
-	RevisionID   string      `json:"revisionId"`
-	InputHash    string      `json:"inputHash"`
-	Status       string      `json:"status"`
-	Root         string      `json:"-"`
-	OutputHash   string      `json:"outputHash,omitempty"`
-	CreatedAt    string      `json:"createdAt"`
-	FinishedAt   string      `json:"finishedAt,omitempty"`
-	Result       SolveResult `json:"result"`
-	Error        string      `json:"error,omitempty"`
-	Progress     Doc         `json:"progress,omitempty"`
+	ID                  string      `json:"id"`
+	ExperimentID        string      `json:"experimentId"`
+	TaskID              string      `json:"taskId"`
+	Label               string      `json:"label"`
+	RevisionID          string      `json:"revisionId"`
+	InputHash           string      `json:"inputHash"`
+	Status              string      `json:"status"`
+	Root                string      `json:"-"`
+	OutputHash          string      `json:"outputHash,omitempty"`
+	CreatedAt           string      `json:"createdAt"`
+	FinishedAt          string      `json:"finishedAt,omitempty"`
+	Result              SolveResult `json:"result"`
+	Error               string      `json:"error,omitempty"`
+	Progress            Doc         `json:"progress,omitempty"`
+	OwnerKind           string      `json:"ownerKind,omitempty"`
+	OwnerID             string      `json:"ownerId,omitempty"`
+	InfrastructureError string      `json:"infrastructureError,omitempty"`
+	PreparationMS       int64       `json:"preparationMs,omitempty"`
+	ReleaseMS           int64       `json:"releaseMs,omitempty"`
 }
 type Packet struct {
 	ID             string            `json:"id"`
@@ -278,13 +301,18 @@ type Repository interface {
 	List(string) ([]Doc, error)
 }
 type Config struct {
-	Root                string
-	Store               Repository
-	Tasks               []Task
-	Solve               func(context.Context, SolveRequest, func(Event)) (SolveResult, error)
-	Grade               func(context.Context, Task, Trial) (Grade, error)
-	ValidateEnvironment func(context.Context, Spec) error
-	Activate            func(context.Context, string, string, string, string) error
-	Upstream            func(context.Context, *Manager, Experiment) error
-	Now                 func() time.Time
+	Root                     string
+	Store                    Repository
+	Tasks                    []Task
+	Packs                    []FixturePack
+	Solve                    func(context.Context, SolveRequest, func(Event)) (SolveResult, error)
+	Grade                    func(context.Context, Task, Trial) (Grade, error)
+	GradeWithSpec            func(context.Context, GradeRequest) (Grade, error)
+	ValidateEnvironment      func(context.Context, Spec) error
+	ValidateDevelopmentGrade func(context.Context) error
+	PrepareAttempt           func(context.Context, Spec) error
+	ReleaseRuntime           func(context.Context, Spec) error
+	Activate                 func(context.Context, string, string, string, string) error
+	Upstream                 func(context.Context, *Manager, Experiment) error
+	Now                      func() time.Time
 }

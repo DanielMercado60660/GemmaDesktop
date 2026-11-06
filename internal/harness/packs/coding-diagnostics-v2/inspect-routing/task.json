@@ -1,0 +1,77 @@
+{
+  "id": "inspect-routing",
+  "name": "Inspect a routing rule without edits",
+  "stack": "node",
+  "split": "development",
+  "exposureFamily": "gemma-v2-original-inspect-routing",
+  "contract": "read_only",
+  "prompt": "Inspect routes.mjs without editing any file. Return exactly JSON with keys unauthenticatedApi, health, authenticatedApi and authenticatedOther giving the actual route strings for /api/x while signed out, /health while signed out, /api/x while signed in, and /other while signed in. No Markdown, tests, or additional text.",
+  "command": [
+    "node",
+    "--test"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.mjs"
+  ],
+  "public": {
+    "routes.mjs": "export function route(path,signedIn){if(path==='/health')return 'health';if(!signedIn)return 'login';if(path.startsWith('/api/'))return 'api';return 'page';}\n",
+    "logic.mjs": "import {route} from './routes.mjs';\nexport function solve(x){return route(x.path,x.signedIn);}\n",
+    "main.mjs": "import {solve} from './logic.mjs';\nconsole.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "public.test.mjs": "import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"path\": \"/api/x\", \"signedIn\": false}, \"login\"], [{\"path\": \"/health\", \"signedIn\": false}, \"health\"]];test('public contract',()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});\n",
+    "README.md": "# Inspect routing\nRead the implementation and answer the requested routing questions. All files are read-only; do not create tests or edit any file.\n"
+  },
+  "protectedFiles": [
+    "routes.mjs",
+    "logic.mjs",
+    "main.mjs",
+    "public.test.mjs",
+    "README.md"
+  ],
+  "regressionTestGlobs": [],
+  "discoveryCommand": [],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "path": "/api/x",
+        "signedIn": false
+      },
+      "expected": "login",
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "path": "/health",
+        "signedIn": false
+      },
+      "expected": "health",
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "path": "/api/x",
+        "signedIn": true
+      },
+      "expected": "api",
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "path": "/other",
+        "signedIn": true
+      },
+      "expected": "page",
+      "critical": false
+    }
+  ],
+  "expectedAnswer": {
+    "unauthenticatedApi": "login",
+    "health": "health",
+    "authenticatedApi": "api",
+    "authenticatedOther": "page"
+  }
+}

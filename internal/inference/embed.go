@@ -158,12 +158,11 @@ func (c *Client) Embed(ctx context.Context, req EmbedRequest) (EmbedResponse, er
 	}
 	ctx, cancel := context.WithTimeout(ctx, maxEmbedDuration)
 	defer cancel()
-	select {
-	case c.admission <- struct{}{}:
-		defer func() { <-c.admission }()
-	case <-ctx.Done():
-		return EmbedResponse{}, ctx.Err()
+	release, err := c.gate.acquire(ctx)
+	if err != nil {
+		return EmbedResponse{}, err
 	}
+	defer release()
 	identity, err := c.ModelIdentity(ctx, req.Model, required...)
 	if err != nil {
 		return EmbedResponse{}, err

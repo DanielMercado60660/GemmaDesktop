@@ -85,7 +85,7 @@ func (m *Manager) lessonLibrary(x Experiment, taskID string) ([]Lesson, error) {
 		return nil, e
 	}
 	out := []Lesson{}
-	task := m.tasks[taskID]
+	task, _ := m.taskForSpec(x.Spec, taskID)
 	for _, d := range rows {
 		l, e := decode[Lesson](d)
 		if e != nil {

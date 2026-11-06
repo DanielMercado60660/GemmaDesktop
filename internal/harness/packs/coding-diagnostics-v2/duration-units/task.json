@@ -1,0 +1,100 @@
+{
+  "id": "duration-units",
+  "name": "Repair duration parsing",
+  "stack": "python",
+  "split": "development",
+  "exposureFamily": "gemma-v2-original-duration-units",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "python3",
+    "public_test.py"
+  ],
+  "gradeCommand": [
+    "python3",
+    "main.py"
+  ],
+  "public": {
+    "logic.py": "def solve(x):\n total=0\n for part in x['text'].split():\n  if part.endswith('s'):total+=int(part[:-1])*1000\n  else:return None\n return total\n",
+    "main.py": "import json,sys\nfrom logic import solve\nprint(json.dumps([solve(x) for x in json.loads(sys.argv[1])]))\n",
+    "public_test.py": "import json,subprocess,sys,unittest\ncases=[{'text': '2s'}, {'text': ''}]\nexpected=[2000, 0]\np=subprocess.run([sys.executable,'main.py',json.dumps(cases)],capture_output=True,text=True,check=True)\nassert json.loads(p.stdout)==expected,(p.stdout,expected)\nsuite=unittest.defaultTestLoader.discover('.',pattern='test_*.py')\nif not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():raise SystemExit(1)\n",
+    "README.md": "# Repair duration parsing\n\nParse a duration made of whitespace-separated nonnegative integer terms suffixed ms, s, or m. Sum milliseconds. An empty string is zero. Reject any malformed term or unknown unit by returning null. Never partially accept input.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `python3 public_test.py`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.py",
+    "public_test.py",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "test_*.py"
+  ],
+  "discoveryCommand": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    ".",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "text": "2s"
+      },
+      "expected": 2000,
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "text": ""
+      },
+      "expected": 0,
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "text": "1m 250ms"
+      },
+      "expected": 60250,
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "text": "3ms 2s 1m"
+      },
+      "expected": 62003,
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "text": "2h"
+      },
+      "expected": null,
+      "critical": false
+    },
+    {
+      "name": "contract-case-6",
+      "input": {
+        "text": "-1s"
+      },
+      "expected": null,
+      "critical": false
+    },
+    {
+      "name": "contract-case-7",
+      "input": {
+        "text": "2sx"
+      },
+      "expected": null,
+      "critical": false
+    }
+  ]
+}

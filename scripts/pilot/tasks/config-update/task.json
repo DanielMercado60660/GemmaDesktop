@@ -1,0 +1,6 @@
+{
+  "category": "configuration editing",
+  "prompt": "In config/app.json, switch the UI to dark mode, set logging to debug, add staging to the allowed environments, and raise the upload limit to 50 MB. Don't change anything else, and keep it valid JSON.",
+  "protectedPaths": [],
+  "notes": "Four targeted edits to a 64-line nested JSON config. Graded on parsed values, not formatting: strict JSON (no NaN/Infinity, no duplicate keys); ui.theme == dark and logging.level == debug (case-insensitive); deploy.allowedEnvironments == the original items in their original relative order plus exactly one 'staging' anywhere; uploads.maxUploadMB is the number 50; every other value deep-equal to the trusted original with strict types (true is not 1, 50 is not \"50\"); no other file changed, added or removed. Realistic pitfalls: several unrelated 10s (maxFilesPerRequest, poolSize, a job timeout) that a blind find/replace would clobber, and per-logger 'warning' overrides that 'set logging to debug' should not touch. Key order, indentation and \\u-escaping are free."
+}

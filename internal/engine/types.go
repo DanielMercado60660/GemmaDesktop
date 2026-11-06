@@ -39,37 +39,43 @@ type Event struct {
 }
 
 const (
-	DefaultMaxOutputTokens = 8192
-	MinMaxOutputTokens     = 256
-	MaxMaxOutputTokens     = 32768
+	DefaultMaxOutputTokens  = 8192
+	MinMaxOutputTokens      = 256
+	MaxMaxOutputTokens      = 32768
+	MaxFinishReserveSeconds = 120
 )
 
 type Request struct {
-	Model           string           `json:"model"`
-	Instructions    string           `json:"instructions"`
-	ReadOnly        bool             `json:"readOnly,omitempty"`
-	History         []Message        `json:"history,omitempty"`
-	Prompt          string           `json:"prompt"`
-	Images          []string         `json:"images,omitempty"`
-	Tools           []ToolDefinition `json:"tools,omitempty"`
-	Skills          []string         `json:"skills,omitempty"`
-	SkillPackages   []SkillPackage   `json:"skillPackages,omitempty"`
-	CapabilityID    string           `json:"capabilityId,omitempty"`
-	Deadline        time.Time        `json:"deadline,omitempty"`
-	ContextSources  []ContextSource  `json:"contextSources,omitempty"`
-	MaxSteps        int              `json:"maxSteps,omitempty"`
-	MaxToolCalls    int              `json:"maxToolCalls,omitempty"`
-	MaxOutputTokens int              `json:"maxOutputTokens,omitempty"`
-	ContextSize     int              `json:"contextSize,omitempty"`
-	Temperature     float64          `json:"temperature"`
-	Think           any              `json:"think,omitempty"`
+	Model         string           `json:"model"`
+	Instructions  string           `json:"instructions"`
+	ReadOnly      bool             `json:"readOnly,omitempty"`
+	History       []Message        `json:"history,omitempty"`
+	Prompt        string           `json:"prompt"`
+	Images        []string         `json:"images,omitempty"`
+	Tools         []ToolDefinition `json:"tools,omitempty"`
+	Skills        []string         `json:"skills,omitempty"`
+	SkillPackages []SkillPackage   `json:"skillPackages,omitempty"`
+	CapabilityID  string           `json:"capabilityId,omitempty"`
+	Deadline      time.Time        `json:"deadline,omitempty"`
+	// Optional boundary-only closing window, never an extension of Deadline.
+	FinishReserveSeconds int             `json:"finishReserveSeconds,omitempty"`
+	ContextSources       []ContextSource `json:"contextSources,omitempty"`
+	MaxSteps             int             `json:"maxSteps,omitempty"`
+	MaxToolCalls         int             `json:"maxToolCalls,omitempty"`
+	MaxOutputTokens      int             `json:"maxOutputTokens,omitempty"`
+	ContextSize          int             `json:"contextSize,omitempty"`
+	Temperature          float64         `json:"temperature"`
+	Think                any             `json:"think,omitempty"`
 	// ToolProtocol is experimental and opt-in. Empty keeps the native protocol.
-	ToolProtocol  string          `json:"toolProtocol,omitempty"`
-	Timeout       time.Duration   `json:"-"`
-	NodeID        string          `json:"nodeId,omitempty"`
-	Snapshot      json.RawMessage `json:"snapshot,omitempty"`
-	Resume        map[string]any  `json:"resume,omitempty"`
-	ContextPolicy *ContextPolicy  `json:"contextPolicy,omitempty"`
+	ToolProtocol         string            `json:"toolProtocol,omitempty"`
+	Timeout              time.Duration     `json:"-"`
+	NodeID               string            `json:"nodeId,omitempty"`
+	Snapshot             json.RawMessage   `json:"snapshot,omitempty"`
+	Resume               map[string]any    `json:"resume,omitempty"`
+	ContextPolicy        *ContextPolicy    `json:"contextPolicy,omitempty"`
+	VerificationRequired bool              `json:"verificationRequired,omitempty"`
+	VerificationFeedback bool              `json:"verificationFeedback,omitempty"`
+	HarnessMechanisms    HarnessMechanisms `json:"harnessMechanisms,omitempty"`
 }
 
 // ContextPolicy enables ADK's append-only rolling summary. Nil remains off
@@ -80,6 +86,8 @@ type ContextPolicy struct {
 	RetainEvents    int  `json:"retainEvents,omitempty"`
 }
 type Result struct {
+	// Content is the final answer. With ErrBudgetExceeded it may instead hold
+	// the model's complete, tools-free status report (see reportStatus).
 	Content         string                     `json:"content"`
 	Incomplete      bool                       `json:"incomplete,omitempty"`
 	Steps           int                        `json:"steps"`
@@ -87,6 +95,7 @@ type Result struct {
 	TokenAccounting *inference.TokenAccounting `json:"tokenAccounting,omitempty"`
 	Snapshot        json.RawMessage            `json:"snapshot,omitempty"`
 	Pending         []PendingInput             `json:"pending,omitempty"`
+	Verification    string                     `json:"verification,omitempty"`
 }
 type PendingInput struct {
 	ID      string `json:"id"`

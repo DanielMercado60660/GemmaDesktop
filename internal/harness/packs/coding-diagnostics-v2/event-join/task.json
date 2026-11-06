@@ -1,0 +1,166 @@
+{
+  "id": "event-join",
+  "name": "Repair event correlation",
+  "stack": "node",
+  "split": "development",
+  "exposureFamily": "gemma-v2-original-event-join",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "node",
+    "--test"
+  ],
+  "gradeCommand": [
+    "node",
+    "main.mjs"
+  ],
+  "public": {
+    "time.mjs": "export function elapsed(start,end){return end-start;}\n",
+    "logic.mjs": "import {elapsed} from './time.mjs';\nexport function solve(x){const pending=new Map(),out=[];for(const e of x.events){if(e.kind==='start')pending.set(e.id,e.time);else if(e.kind==='end'&&pending.has(e.id))out.push({id:e.id,elapsed:elapsed(pending.get(e.id),e.time)});}return out;}\n",
+    "main.mjs": "import {solve} from './logic.mjs';\nconsole.log(JSON.stringify(JSON.parse(process.argv[2]).map(solve)));\n",
+    "public.test.mjs": "import test from 'node:test';import assert from 'node:assert/strict';import {solve} from './logic.mjs';\nconst cases=[[{\"events\": []}, []], [{\"events\": [{\"kind\": \"start\", \"id\": \"a\", \"time\": 2}, {\"kind\": \"end\", \"id\": \"a\", \"time\": 5}]}, [{\"id\": \"a\", \"elapsed\": 3}]]];test('public contract',()=>{for(const [input,expected] of cases)assert.deepEqual(solve(input),expected)});\n",
+    "README.md": "# Repair event correlation\n\nJoin ordered start/end events by id. Each start replaces the previous pending start for that id. An end emits {id,elapsed} only when pending and time>=start; any end consumes pending state. Return emissions in end-event order. Ignore unrelated event kinds.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `node --test`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.mjs",
+    "public.test.mjs",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "*.test.mjs"
+  ],
+  "discoveryCommand": [
+    "node",
+    "--test"
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "events": []
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "events": [
+          {
+            "kind": "start",
+            "id": "a",
+            "time": 2
+          },
+          {
+            "kind": "end",
+            "id": "a",
+            "time": 5
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "a",
+          "elapsed": 3
+        }
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "events": [
+          {
+            "kind": "end",
+            "id": "x",
+            "time": 1
+          }
+        ]
+      },
+      "expected": [],
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "events": [
+          {
+            "kind": "start",
+            "id": "x",
+            "time": 0
+          },
+          {
+            "kind": "start",
+            "id": "x",
+            "time": 3
+          },
+          {
+            "kind": "end",
+            "id": "x",
+            "time": 7
+          },
+          {
+            "kind": "end",
+            "id": "x",
+            "time": 9
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "x",
+          "elapsed": 4
+        }
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "events": [
+          {
+            "kind": "start",
+            "id": "__proto__",
+            "time": 0
+          },
+          {
+            "kind": "end",
+            "id": "__proto__",
+            "time": 4
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "__proto__",
+          "elapsed": 4
+        }
+      ],
+      "critical": false
+    },
+    {
+      "name": "contract-case-6",
+      "input": {
+        "events": [
+          {
+            "kind": "start",
+            "id": "x",
+            "time": 4
+          },
+          {
+            "kind": "end",
+            "id": "x",
+            "time": 2
+          },
+          {
+            "kind": "end",
+            "id": "x",
+            "time": 9
+          }
+        ]
+      },
+      "expected": [],
+      "critical": false
+    }
+  ]
+}

@@ -9,6 +9,13 @@ import {
   Square,
 } from "lucide-react";
 import { api } from "./bridge";
+import TabList from "./components/TabList";
+import ReliabilityWorkbench from "./components/ReliabilityWorkbench";
+import {
+  completionMetadataReadiness,
+  completionProfile,
+} from "./lib/readiness";
+import type { FixturePackV2 } from "./lib/harnessV2";
 import type { PageProps } from "./Management";
 import { parsePacketResponse } from "./lib/harnessPacket";
 import {
@@ -90,12 +97,13 @@ interface Promotion {
   previousId: string;
   createdAt: string;
 }
-type Tab = "compare" | "optimize" | "lessons" | "revisions";
+type Tab = "compare" | "optimize" | "lessons" | "revisions" | "reliability";
 
 export default function HarnessWorkbench({
   state,
   action,
   workspaceId,
+  sessionId,
   compare,
 }: PageProps & { compare: ReactNode }) {
   const [tab, setTab] = useState<Tab>("optimize");
@@ -106,6 +114,8 @@ export default function HarnessWorkbench({
     [revisions, setRevisions] = useState<Revision[]>([]),
     [evaluations, setEvaluations] = useState<Evaluation[]>([]),
     [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [fixturePacks, setFixturePacks] = useState<FixturePackV2[]>([]);
+  const [fixturePackId, setFixturePackId] = useState("coding-diagnostics-v2");
   const [agentId, setAgentId] = useState(""),
     [mode, setMode] = useState("native"),
     [contextSize, setContextSize] = useState(65536),
@@ -124,7 +134,7 @@ export default function HarnessWorkbench({
       if (running) return;
       running = true;
       try {
-        const [t, e, p, l, r, v, a] = await Promise.all([
+        const [t, e, p, l, r, v, a, packs] = await Promise.all([
           api<{ items: Task[] }>("harness.fixtures.list"),
           api<{ items: Experiment[] }>("harness.experiments.list"),
           api<{ items: Packet[] }>("harness.packets.list"),
@@ -132,6 +142,7 @@ export default function HarnessWorkbench({
           api<{ items: Revision[] }>("harness.revisions.list"),
           api<{ items: Evaluation[] }>("harness.evaluations.list"),
           api<{ items: Promotion[] }>("harness.promotions.list"),
+          api<{ items: FixturePackV2[] }>("harness.packs.list"),
         ]);
         if (valid) {
           setTasks(t.items);
@@ -141,6 +152,7 @@ export default function HarnessWorkbench({
           setRevisions(r.items);
           setEvaluations(v.items);
           setPromotions(a.items);
+          setFixturePacks(packs.items);
           setError("");
         }
       } catch (e) {
@@ -177,6 +189,27 @@ export default function HarnessWorkbench({
     }
   }
   const pending = packets.filter((p) => p.status === "awaiting_codex");
+  const selectedProfile = completionProfile(
+    state,
+    workspaceId,
+    agentId || "default",
+  );
+  const availableTasks = fixturePackId
+    ? fixturePacks.find((pack) => pack.id === fixturePackId)?.tasks || []
+    : tasks;
+  const legacyNative =
+    !fixturePackId && selectedProfile.runtimeId !== "ollama-default";
+  const readiness = selectedProfile.effective?.error
+    ? {
+        ready: false,
+        reason: `Workspace profile needs attention: ${selectedProfile.effective.error}`,
+      }
+    : completionMetadataReadiness(
+        state,
+        selectedProfile.model,
+        selectedProfile.runtimeId,
+        contextSize,
+      );
   const experimentTarget = (e?: Experiment) =>
     e
       ? `${state.agents.find((a) => a.id === e.spec?.agentId)?.name || "Recorded agent"} · ${state.workspaces.find((w) => w.id === e.spec?.workspaceId)?.name || "Recorded workspace"}`
@@ -194,26 +227,38 @@ export default function HarnessWorkbench({
           </Button>
         }
       />
-      <div className="phase-tabs" role="tablist" aria-label="Harness Lab views">
-        {(["compare", "optimize", "lessons", "revisions"] as const).map(
-          (name) => (
-            <button
-              role="tab"
-              aria-selected={tab === name}
-              key={name}
-              onClick={() => setTab(name)}
-            >
-              {name[0].toUpperCase() + name.slice(1)}
-            </button>
-          ),
-        )}
-      </div>
+      <TabList
+        className="phase-tabs"
+        label="Harness Lab views"
+        value={tab}
+        onChange={setTab}
+        items={(
+          [
+            "reliability",
+            "compare",
+            "optimize",
+            "lessons",
+            "revisions",
+          ] as const
+        ).map((name) => ({
+          id: name,
+          label: name[0].toUpperCase() + name.slice(1),
+        }))}
+      />
       {error && (
         <p className="inline-error" role="alert">
           {error}
         </p>
       )}
       {tab === "compare" && <div className="legacy-comparison">{compare}</div>}
+      {tab === "reliability" && (
+        <ReliabilityWorkbench
+          state={state}
+          action={action}
+          workspaceId={workspaceId}
+          sessionId={sessionId}
+        />
+      )}
       {tab === "optimize" && (
         <>
           <div className="lab-layout">
@@ -221,6 +266,7 @@ export default function HarnessWorkbench({
               className="panel form-stack"
               onSubmit={async (e) => {
                 e.preventDefault();
+                if (!readiness.ready || legacyNative) return;
                 await mutate("harness.experiments.start", {
                   workspaceId,
                   agentId,
@@ -228,6 +274,7 @@ export default function HarnessWorkbench({
                   taskIds,
                   contextSize,
                   workflowIds,
+                  ...(fixturePackId ? { fixturePackId } : {}),
                 });
               }}
             >
@@ -247,6 +294,26 @@ export default function HarnessWorkbench({
                       {a.name}
                     </option>
                   ))}
+                </select>
+              </Field>
+              <Field label="Fixture collection">
+                <select
+                  value={fixturePackId}
+                  onChange={(event) => {
+                    setFixturePackId(event.target.value);
+                    setTaskIds([]);
+                  }}
+                >
+                  <option value="">Legacy development fixtures · Ollama</option>
+                  {fixturePacks
+                    .filter((pack) =>
+                      pack.tasks.some((task) => task.split === "development"),
+                    )
+                    .map((pack) => (
+                      <option key={pack.id} value={pack.id}>
+                        {pack.id} · {pack.version}
+                      </option>
+                    ))}
                 </select>
               </Field>
               <Field label="Implementation">
@@ -272,7 +339,7 @@ export default function HarnessWorkbench({
               </Field>
               <fieldset className="capability-options">
                 <legend>Development tasks</legend>
-                {tasks
+                {availableTasks
                   .filter((t) => t.split === "development")
                   .map((t) => (
                     <label className="checkbox-label" key={t.id}>
@@ -329,11 +396,34 @@ export default function HarnessWorkbench({
                 variant="default"
                 type="submit"
                 loading={busy}
-                disabled={!workspaceId || !agentId || !taskIds.length}
+                disabled={
+                  !workspaceId ||
+                  !agentId ||
+                  !taskIds.length ||
+                  !readiness.ready ||
+                  legacyNative
+                }
               >
                 <Play size={15} />
                 Freeze experiment
               </Button>
+              {!readiness.ready && (
+                <p className="notice" role="status">
+                  {readiness.reason}
+                </p>
+              )}
+              {state.managedRuntime?.inferenceBlocked && (
+                <p className="notice" role="status">
+                  Profiles can be frozen, but inference is blocked:{" "}
+                  {state.managedRuntime.inferenceBlocked}
+                </p>
+              )}
+              {legacyNative && (
+                <p className="notice" role="status">
+                  Select a versioned fixture collection to use a managed MLX
+                  runtime.
+                </p>
+              )}
               {!workspaceId && (
                 <p className="small muted">
                   Select a workspace to scope the experiment and its revisions.
@@ -366,9 +456,7 @@ export default function HarnessWorkbench({
                         </strong>
                         <span className="tag">{friendlyStatus(e.status)}</span>
                       </button>
-                      <p className="small muted">
-                        {experimentTarget(e)}
-                      </p>
+                      <p className="small muted">{experimentTarget(e)}</p>
                       <p className="small muted">
                         {e.spec?.mode || "Recorded mode"} · {e.rollouts ?? 0}{" "}
                         rollouts · {e.improvementStages ?? 0} improvement stages
@@ -535,11 +623,17 @@ export default function HarnessWorkbench({
                       <span className="tag">{friendlyStatus(v.status)}</span>
                     </div>
                     <p className="small muted">
-                      {experimentTarget(experiments.find((e) => e.id === v.experimentId))}
+                      {experimentTarget(
+                        experiments.find((e) => e.id === v.experimentId),
+                      )}
                     </p>
                     {v.recordedResults !== undefined && (
                       <p className="small muted">
-                        {v.recordedResults}{v.expectedResults !== undefined ? ` / ${v.expectedResults}` : ""} paired trials recorded, including failures
+                        {v.recordedResults}
+                        {v.expectedResults !== undefined
+                          ? ` / ${v.expectedResults}`
+                          : ""}{" "}
+                        paired trials recorded, including failures
                       </p>
                     )}
                     {v.status === "completed" && v.gate && (
@@ -596,17 +690,19 @@ export default function HarnessWorkbench({
                           Resume qualification
                         </Button>
                       )}
-                      {v.status === "completed" && v.gate?.eligible && hasQualifiedCostComparison(v.gate) && (
-                        <Button
-                          size="small"
-                          disabled={busy}
-                          onClick={() =>
-                            mutate("harness.promote", { evaluationId: v.id })
-                          }
-                        >
-                          Activate reviewed revision
-                        </Button>
-                      )}
+                      {v.status === "completed" &&
+                        v.gate?.eligible &&
+                        hasQualifiedCostComparison(v.gate) && (
+                          <Button
+                            size="small"
+                            disabled={busy}
+                            onClick={() =>
+                              mutate("harness.promote", { evaluationId: v.id })
+                            }
+                          >
+                            Activate reviewed revision
+                          </Button>
+                        )}
                     </div>
                   </article>
                 ))}

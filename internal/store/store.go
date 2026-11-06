@@ -68,7 +68,7 @@ func Open(path string) (*Store, error) {
 		db.Close()
 		return nil, err
 	}
-	if version > 1 {
+	if version > 2 {
 		db.Close()
 		return nil, fmt.Errorf("database schema %d is newer than this application", version)
 	}
@@ -91,6 +91,18 @@ func Open(path string) (*Store, error) {
 		if e = tx.Commit(); e != nil {
 			db.Close()
 			return nil, e
+		}
+	}
+	if version < 2 {
+		if version == 1 {
+			if err = s.Backup(path + ".pre-v2-" + ID() + ".bak"); err != nil {
+				db.Close()
+				return nil, fmt.Errorf("back up schema v1: %w", err)
+			}
+		}
+		if err = s.migrateV2(); err != nil {
+			db.Close()
+			return nil, err
 		}
 	}
 	if err = os.Chmod(path, 0600); err != nil {

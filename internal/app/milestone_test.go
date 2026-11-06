@@ -95,7 +95,7 @@ func TestHierarchicalContextAndPlanCAS(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if len(manifest.Sources) != 2 || manifest.Sources[0].Path != "AGENTS.md" || !strings.HasPrefix(manifest.Sources[1].Scope, "src/**") || manifest.EstimatedTokens == 0 {
+	if len(manifest.Sources) != 1 || manifest.Sources[0].Path != "AGENTS.md" || manifest.EstimatedTokens == 0 {
 		t.Fatalf("manifest: %+v", manifest)
 	}
 	_ = c.Store.Put("run", Doc{"id": "r"})

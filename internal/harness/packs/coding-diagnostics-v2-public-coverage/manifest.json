@@ -1,0 +1,5 @@
+{
+  "id": "coding-diagnostics-v2-public-coverage",
+  "version": "2.2.0",
+  "graderPolicy": "task-contract-v3"
+}

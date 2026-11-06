@@ -1,0 +1,15 @@
+On October 15 the endpoint with the most 5xx errors was **`/api/checkout`**, with **13** server errors once the query strings are grouped together:
+
+- `/api/checkout?step=payment`: 5
+- `/api/checkout?step=shipping`: 3
+- `/api/checkout?step=review`: 2
+- `/api/checkout` (no query string): 2
+- `/api/checkout?step=payment&retry=1`: 1
+
+Most of them came in a burst between 11:18 and 11:47 (502/504 timeouts on the payment step).
+
+**Total 5xx responses on October 15: 31.**
+
+Next highest was `/api/inventory` with 8 (all 503s). A few things I left out on purpose: the 16 failed `POST /login` attempts were 401s (4xx, not 5xx), the `/api/search` outage was on October 14, and `/api/checkout/status` is a separate endpoint (2 errors). I counted the status code field only, not the response size.
+
+I didn't change or create any files.

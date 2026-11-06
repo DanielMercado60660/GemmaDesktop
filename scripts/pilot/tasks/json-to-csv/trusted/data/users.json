@@ -1,0 +1,416 @@
+[
+  {
+    "id": 12,
+    "name": "Amara Okafor",
+    "email": "amara.okafor@example.com",
+    "phone": "+234 801 555 0142",
+    "address": {
+      "street": "14 Admiralty Way",
+      "city": "Lagos",
+      "postal_code": "106104",
+      "country": "NG"
+    },
+    "plan": "pro",
+    "tags": [
+      "vip",
+      "newsletter"
+    ],
+    "active": true,
+    "signed_up_at": "2023-02-14T09:12:44Z"
+  },
+  {
+    "id": 3,
+    "name": "José Álvarez",
+    "email": "jose.alvarez@example.es",
+    "address": {
+      "street": "Calle Feria 22",
+      "city": "Sevilla",
+      "postal_code": "41003",
+      "country": "ES"
+    },
+    "plan": "free",
+    "tags": [
+      "beta"
+    ],
+    "active": true,
+    "signed_up_at": "2023-03-02T11:05:00+01:00"
+  },
+  {
+    "id": 104,
+    "name": "Grace Whitfield, PhD",
+    "email": "grace.whitfield@example.org",
+    "phone": "+1 617 555 0199",
+    "address": {
+      "street": "200 Beacon St",
+      "city": "Boston",
+      "postal_code": "02116",
+      "country": "US"
+    },
+    "plan": "team",
+    "tags": [
+      "enterprise",
+      "newsletter",
+      "vip"
+    ],
+    "active": true,
+    "signed_up_at": "2023-04-18T13:40:09.512Z"
+  },
+  {
+    "id": 28,
+    "name": "李娜",
+    "email": "li.na@example.cn",
+    "address": {
+      "street": "南京西路 1266号",
+      "city": "上海",
+      "postal_code": "200040",
+      "country": "CN"
+    },
+    "plan": "pro",
+    "tags": [
+      "beta",
+      "early-adopter"
+    ],
+    "active": true,
+    "signed_up_at": "2023-05-06T18:30:00+08:00"
+  },
+  {
+    "id": 7,
+    "name": "Søren Madsen",
+    "email": "soren.madsen@example.dk",
+    "phone": "+45 20 55 01 77",
+    "plan": "free",
+    "tags": [],
+    "active": false,
+    "signed_up_at": "2023-06-21T10:10:10Z"
+  },
+  {
+    "id": 142,
+    "name": "Thomas \"Tommy\" Reyes",
+    "email": "tommy.reyes@example.com",
+    "phone": "+1 210 555 0123",
+    "address": {
+      "street": "815 Commerce St",
+      "city": "San Antonio",
+      "postal_code": "78205",
+      "country": "US"
+    },
+    "plan": "pro",
+    "tags": [
+      "churn-risk"
+    ],
+    "active": true,
+    "signed_up_at": "2023-07-30T08:22:00-05:00"
+  },
+  {
+    "id": 40,
+    "name": "Zoë Lambert",
+    "address": {
+      "street": "1450 Rue Peel",
+      "city": "Montréal",
+      "postal_code": "H3A 1S8",
+      "country": "CA"
+    },
+    "plan": "free",
+    "tags": [
+      "newsletter"
+    ],
+    "active": true,
+    "signed_up_at": "2023-08-09T08:45:31Z"
+  },
+  {
+    "id": 9,
+    "name": "Дмитрий Соколов",
+    "email": "dmitry.sokolov@example.ru",
+    "phone": "+7 812 555-01-09",
+    "address": {
+      "street": "Невский проспект 28",
+      "city": "Санкт-Петербург",
+      "postal_code": "191186",
+      "country": "RU"
+    },
+    "plan": "free",
+    "active": true,
+    "signed_up_at": "2023-09-12T12:00:00+03:00"
+  },
+  {
+    "id": 85,
+    "name": "Priya Raman",
+    "email": "priya.raman@example.in",
+    "phone": "+91 98450 55501",
+    "address": {
+      "street": "12 MG Road",
+      "postal_code": "560001",
+      "country": "IN"
+    },
+    "plan": "team",
+    "tags": [
+      "vip"
+    ],
+    "active": true,
+    "signed_up_at": "2023-10-01T16:15:00+05:30"
+  },
+  {
+    "id": 21,
+    "name": "Mårten Ekström",
+    "email": "marten.ekstrom@example.se",
+    "address": {
+      "street": "Södergatan 9",
+      "city": "Malmö",
+      "postal_code": "211 34",
+      "country": "SE"
+    },
+    "plan": "pro",
+    "tags": [
+      "beta",
+      "newsletter"
+    ],
+    "active": true,
+    "signed_up_at": "2023-11-23T09:30:00.000+01:00"
+  },
+  {
+    "id": 117,
+    "name": "Nguyễn Thị Lan",
+    "email": "lan.nguyen@example.vn",
+    "address": {
+      "street": "36 Hàng Bạc",
+      "city": "Hà Nội",
+      "postal_code": "100000",
+      "country": "VN"
+    },
+    "plan": "free",
+    "tags": [
+      "early-adopter"
+    ],
+    "active": true,
+    "signed_up_at": "2023-12-05T18:00:00+07:00"
+  },
+  {
+    "id": 64,
+    "name": "Liam O'Connor",
+    "email": "liam.oconnor@example.ie",
+    "phone": "+353 21 555 0164",
+    "address": {
+      "street": "3 Oliver Plunkett St",
+      "city": "Cork",
+      "postal_code": "T12 X2C4",
+      "country": "IE"
+    },
+    "plan": "free",
+    "tags": [
+      "newsletter"
+    ],
+    "active": false,
+    "signed_up_at": "2024-01-08T12:00:00"
+  },
+  {
+    "id": 33,
+    "name": "Ayşe Yılmaz",
+    "email": "ayse.yilmaz@example.com.tr",
+    "address": {
+      "street": "İstiklal Cd. 101",
+      "city": null,
+      "postal_code": "34430",
+      "country": "TR"
+    },
+    "plan": "pro",
+    "tags": [
+      "beta"
+    ],
+    "active": true,
+    "signed_up_at": "2024-02-29T14:03:11Z"
+  },
+  {
+    "id": 98,
+    "name": "Chloé Dubois",
+    "email": null,
+    "phone": "+33 4 72 55 01 98",
+    "address": {
+      "street": "8 Rue de la République",
+      "city": "Lyon",
+      "postal_code": "69002",
+      "country": "FR"
+    },
+    "plan": "team",
+    "tags": [
+      "vip",
+      "enterprise"
+    ],
+    "active": true,
+    "signed_up_at": "2024-03-17 08:20:00+00:00"
+  },
+  {
+    "id": 15,
+    "name": "Kofi Mensah",
+    "email": "kofi.mensah@example.com",
+    "address": {
+      "street": "5 Oxford St",
+      "city": "Accra",
+      "postal_code": "GA-123",
+      "country": "GH"
+    },
+    "plan": "free",
+    "active": true,
+    "signed_up_at": "2024-04-04T11:11:11.111111Z"
+  },
+  {
+    "id": 130,
+    "name": "Hannah Schmidt",
+    "email": "hannah.schmidt@example.de",
+    "phone": "+41 44 555 01 30",
+    "address": {
+      "street": "Bahnhofstrasse 40",
+      "city": "Zürich",
+      "postal_code": "8001",
+      "country": "CH"
+    },
+    "plan": "pro",
+    "tags": [
+      "newsletter",
+      "churn-risk"
+    ],
+    "active": true
+  },
+  {
+    "id": 52,
+    "name": "Mateus Oliveira",
+    "email": "mateus.oliveira@example.com.br",
+    "address": {
+      "street": "Av. Paulista 1578",
+      "city": "São Paulo",
+      "postal_code": "01310-200",
+      "country": "BR"
+    },
+    "plan": "team",
+    "tags": [
+      "enterprise"
+    ],
+    "active": true,
+    "signed_up_at": "2024-05-19T10:30:00-03:00"
+  },
+  {
+    "id": 77,
+    "name": "Fatima Zahra Benali",
+    "email": "fatima.benali@example.ma",
+    "phone": "+212 522 55 01 77",
+    "plan": "free",
+    "tags": [
+      "beta",
+      "vip"
+    ],
+    "active": true,
+    "signed_up_at": "2024-06-02T09:05:00Z"
+  },
+  {
+    "id": 101,
+    "name": "Ólafur Sigurðsson",
+    "email": "olafur.sigurdsson@example.is",
+    "address": {
+      "street": "Laugavegur 18",
+      "city": "Reykjavík",
+      "postal_code": "101",
+      "country": "IS"
+    },
+    "plan": "free",
+    "tags": [],
+    "active": true,
+    "signed_up_at": "2024-07-04T09:00:00.250Z"
+  },
+  {
+    "id": 46,
+    "name": "Emily Carter",
+    "email": "emily.carter@example.com",
+    "phone": "+1 202 555 0146",
+    "address": {
+      "street": "1100 13th St NW",
+      "city": "Washington, D.C.",
+      "postal_code": "20005",
+      "country": "US"
+    },
+    "plan": "pro",
+    "tags": [
+      "newsletter"
+    ],
+    "active": true,
+    "signed_up_at": "2024-08-15T09:45:00-04:00"
+  },
+  {
+    "id": 90,
+    "name": "Łukasz Nowak",
+    "email": "lukasz.nowak@example.pl",
+    "address": {
+      "street": "ul. Floriańska 15",
+      "city": "Kraków",
+      "postal_code": "31-019",
+      "country": "PL"
+    },
+    "plan": "free",
+    "tags": [
+      "early-adopter",
+      "beta"
+    ],
+    "active": true,
+    "signed_up_at": "2024-09-09T12:08:08+02:00"
+  },
+  {
+    "id": 58,
+    "name": "Sarah Kim",
+    "email": "sarah.kim@example.com",
+    "phone": "+1 206 555 0158",
+    "address": {
+      "street": "400 Pine St",
+      "city": "Seattle",
+      "postal_code": "98101",
+      "country": "US"
+    },
+    "plan": "pro",
+    "tags": [
+      "vip"
+    ],
+    "active": true,
+    "signed_up_at": "2024-10-15T06:30:00-07:00"
+  },
+  {
+    "id": 123,
+    "name": "Noah Fischer",
+    "plan": "free",
+    "active": false,
+    "signed_up_at": "2024-11-11T10:00:00Z"
+  },
+  {
+    "id": 71,
+    "name": "Ana María Peña",
+    "email": "ana.pena@example.mx",
+    "address": {
+      "street": "Av. Insurgentes Sur 1235",
+      "city": "Ciudad de México",
+      "postal_code": "03100",
+      "country": "MX"
+    },
+    "plan": "team",
+    "tags": [
+      "newsletter",
+      "beta",
+      "vip"
+    ],
+    "active": true,
+    "signed_up_at": "2024-12-01T07:15:00-06:00"
+  },
+  {
+    "id": 110,
+    "name": "Yuki Tanaka",
+    "email": "yuki.tanaka@example.jp",
+    "phone": "+81 3 5555 0110",
+    "address": {
+      "street": "渋谷2-21-1",
+      "city": "東京",
+      "postal_code": "150-0002",
+      "country": "JP"
+    },
+    "plan": "pro",
+    "tags": [
+      "enterprise"
+    ],
+    "active": true,
+    "signed_up_at": "2025-01-20T19:00:00+09:00"
+  }
+]

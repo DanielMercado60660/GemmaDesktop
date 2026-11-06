@@ -14,5 +14,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["src", "vite.config.ts"]
+  "include": [
+    "src",
+    "tests/ui",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "tests/bench",
+    "vitest.history.config.ts"
+  ]
 }

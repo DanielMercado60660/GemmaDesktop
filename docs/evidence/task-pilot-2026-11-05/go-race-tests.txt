@@ -1,0 +1,24 @@
+ok  	gemmadesktop.local/app/internal/app	38.126s
+ok  	gemmadesktop.local/app/internal/browser	(cached)
+?   	gemmadesktop.local/app/internal/desktop	[no test files]
+ok  	gemmadesktop.local/app/internal/engine	4.117s
+ok  	gemmadesktop.local/app/internal/execution	2.439s
+ok  	gemmadesktop.local/app/internal/harness	(cached)
+ok  	gemmadesktop.local/app/internal/inference	(cached)
+ok  	gemmadesktop.local/app/internal/mcp	1.453s
+--- FAIL: TestRealMediaImportIndexAnswerAndScopedAssets (0.27s)
+    media_test.go:128: import: {ID:0b5ad5d332b7bad9d79a84c12981d5d3 WorkspaceID:workspace ClipID:04d2985429d0f9371ffd00d281e682f6 AnswerID: Kind:import Status:failed Stage:probing Completed:0 Total:1 Error:unqualified ffprobe version: require 8.1 CreatedAt:2026-11-05T06:20:53.736181Z FinishedAt:2026-11-05T06:20:53.8528Z}
+--- FAIL: TestIndexCancellationNeverPublishesPartialFrames (0.22s)
+    media_test.go:266: {e1828452ae98ad4a2a5b969c905e08c1 workspace 05a75810d40f3829a2a4498e91805e5d  import failed probing 0 1 unqualified ffprobe version: require 8.1 2026-11-05T06:20:54.053336Z 2026-11-05T06:20:54.157707Z}
+--- FAIL: TestAnswerModelDriftFailsWithoutValidatedCitations (0.24s)
+    media_test.go:308: {c6ebfbda3d00b6a1384d39f639300409 workspace e2802f0eefc662611ab99463cf4c72fc  import failed probing 0 1 unqualified ffprobe version: require 8.1 2026-11-05T06:20:54.276455Z 2026-11-05T06:20:54.394061Z}
+--- FAIL: TestVideoWithAudioTrackImportsAsVisualOnly (0.24s)
+    media_test.go:347: visual import of audio-bearing clip: {ID:80843f502de572444609b58ea7d180ba WorkspaceID:workspace ClipID:2c273a0c52daa2b7ed13a301bbda8bab AnswerID: Kind:import Status:failed Stage:probing Completed:0 Total:1 Error:unqualified ffprobe version: require 8.1 CreatedAt:2026-11-05T06:20:54.551756Z FinishedAt:2026-11-05T06:20:54.644445Z}
+FAIL
+FAIL	gemmadesktop.local/app/internal/media	1.416s
+ok  	gemmadesktop.local/app/internal/runtimes	(cached)
+ok  	gemmadesktop.local/app/internal/store	(cached)
+ok  	gemmadesktop.local/app/internal/tools	3.682s
+ok  	gemmadesktop.local/app/internal/workflow	1.369s
+ok  	gemmadesktop.local/app/internal/workspace	2.055s
+FAIL

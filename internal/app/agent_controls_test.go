@@ -25,7 +25,7 @@ func TestAgentGenerationControlsValidateBeforePersisting(t *testing.T) {
 		t.Fatal(err)
 	}
 	saved, err := s.Get("agent", "profile")
-	if err != nil || saved["thinking"] != "auto" || number(saved, "maxOutputTokens", 0) != 8192 || saved["temperature"] != 0.2 || saved["toolProtocol"] != "native" {
+	if err != nil || saved["thinking"] != "auto" || number(saved, "maxOutputTokens", 0) != 8192 || saved["temperature"] != 1.0 || saved["toolProtocol"] != "native" {
 		t.Fatalf("missing field defaults: %+v %v", saved, err)
 	}
 	before, _ := json.Marshal(saved)
@@ -71,7 +71,7 @@ func TestAgentGenerationControlsValidateBeforePersisting(t *testing.T) {
 			t.Fatalf("valid fields lost: %+v", got)
 		}
 	}
-	for _, temperature := range []any{0, 1.0, json.Number("2.0")} {
+	for _, temperature := range []any{0, 0.2, 1.0, json.Number("0.2"), json.Number("2.0")} {
 		p := base()
 		p["temperature"] = temperature
 		if _, err := c.saveAgent(p); err != nil {
@@ -105,11 +105,12 @@ func TestIntegrationAgentGenerationControlsReachPlainChat(t *testing.T) {
 		temperature float64
 		protocol    string
 	}{
-		{"legacy", Doc{}, nil, 8192, 0.2, "native"},
+		{"legacy", Doc{}, nil, 8192, 1.0, "native"},
+		{"explicit-low", Doc{"temperature": 0.2}, nil, 8192, 0.2, "native"},
 		{"auto", Doc{"thinking": "auto", "maxOutputTokens": 512, "temperature": 0}, nil, 512, 0, "native"},
 		{"on", Doc{"thinking": "on", "maxOutputTokens": 256, "temperature": 1}, true, 256, 1, "native"},
 		{"off", Doc{"thinking": "off", "maxOutputTokens": 32768, "temperature": 2}, false, 32768, 2, "native"},
-		{"structured", Doc{"toolProtocol": "structured_json"}, nil, 8192, 0.2, "structured_json"},
+		{"structured", Doc{"toolProtocol": "structured_json"}, nil, 8192, 1.0, "structured_json"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			received := make(chan inference.ChatRequest, 1)
@@ -142,6 +143,15 @@ func TestIntegrationAgentGenerationControlsReachPlainChat(t *testing.T) {
 			if req.Think != tc.think || req.Options["num_predict"] != tc.limit || req.Options["temperature"] != tc.temperature {
 				t.Fatalf("wire controls: think=%v options=%+v", req.Think, req.Options)
 			}
+			stored, err := h.core.Store.Get("agent", "default")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, present := stored["temperature"]; tc.name == "legacy" && present {
+				t.Fatal("admission rewrote a missing legacy field")
+			} else if tc.name != "legacy" && stored["temperature"] != tc.temperature {
+				t.Fatalf("admission changed a saved temperature: %+v", stored)
+			}
 			if (req.Format != nil) != (tc.protocol == "structured_json") || (req.Format != nil && len(req.Tools) != 0) {
 				t.Fatalf("tool protocol not applied to wire request: %+v", req)
 			}
@@ -152,6 +162,19 @@ func TestIntegrationAgentGenerationControlsReachPlainChat(t *testing.T) {
 			frozen := obj(cp["request"])
 			if frozen["think"] != tc.think || number(frozen, "maxOutputTokens", 0) != int(tc.limit) || frozen["temperature"] != tc.temperature || frozen["toolProtocol"] != tc.protocol {
 				t.Fatalf("request controls not frozen: %+v", frozen)
+			}
+			if tc.name == "explicit-low" {
+				before, _ := json.Marshal(cp["request"])
+				p["temperature"] = 1.0
+				callIntegration(t, h.core, "agent.save", p)
+				after, err := h.core.Store.Get("checkpoint", str(run, "id"))
+				if err != nil {
+					t.Fatal(err)
+				}
+				encoded, _ := json.Marshal(after["request"])
+				if string(encoded) != string(before) {
+					t.Fatal("editing a profile changed its historical frozen request")
+				}
 			}
 		})
 	}

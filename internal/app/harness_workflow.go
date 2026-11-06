@@ -77,8 +77,12 @@ func harnessSelectedAgents(spec harness.Spec, content harness.Content, parent Fr
 		}
 		// The campaign's model and generation controls are fixed across all arms.
 		f.Agent = clone(f.Agent)
-		for _, key := range []string{"thinking", "temperature", "maxOutputTokens", "toolProtocol"} {
-			f.Agent[key] = spec.Agent[key]
+		for _, key := range []string{"thinking", "temperature", "maxOutputTokens", "toolProtocol", "harnessMechanisms", "verificationFeedback"} {
+			if value, ok := spec.Agent[key]; ok {
+				f.Agent[key] = value
+			} else {
+				delete(f.Agent, key)
+			}
 		}
 		f.Agent["model"] = spec.Model
 		originalDelegates := f.Profile.DelegateAgentIDs
@@ -103,7 +107,7 @@ func harnessWorkflowResolver(req engine.Request, parent FrozenAgent, agents map[
 		for _, f := range agents {
 			if str(f.Agent, "id") == id {
 				r := req
-				childInstructions := defaultInstructions + "\n\n" + str(f.Agent, "instructions")
+				childInstructions := agentInstructions(f.Agent)
 				if f.HarnessInstructions != "" {
 					childInstructions = f.HarnessInstructions
 				}

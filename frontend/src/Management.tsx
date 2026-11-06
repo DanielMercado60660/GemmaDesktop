@@ -32,8 +32,17 @@ import {
 } from "./lib/artifactPreview";
 import { useConfirmation } from "./components/Confirmation";
 import { modelMemoryGuidance } from "./lib/runtimeMetrics";
-import { agentProfileDraft, agentSavePayload } from "./lib/agentProfile";
+import { pullJobState, pullJobFinished } from "./lib/modelDownloads";
+import {
+  DEFAULT_AGENT_TEMPERATURE,
+  agentProfileDraft,
+  agentSavePayload,
+} from "./lib/agentProfile";
 import { isCompletionModel } from "./lib/modelCapabilities";
+import { completionModels, modelReadiness } from "./lib/readiness";
+import { providerName } from "./lib/managedRuntime";
+import ManagedRuntimePanel from "./components/ManagedRuntimePanel";
+import HarnessControls from "./components/HarnessControls";
 import ExecutionSettings from "./components/ExecutionSettings";
 import HarnessWorkbench from "./HarnessWorkbench";
 import Capabilities, { CapabilitySelector } from "./Capabilities";
@@ -72,6 +81,12 @@ export function AgentsPage({ state, action }: PageProps) {
     setFormError("");
     setEditing(agentProfileDraft(agent));
   }
+  const agentModels = completionModels(
+    state,
+    editing?.runtimeId ||
+      state.settings.defaultCompletionRuntimeId ||
+      "ollama-default",
+  );
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!editing) return;
@@ -80,13 +95,28 @@ export function AgentsPage({ state, action }: PageProps) {
     try {
       if (
         !isCompletionModel(
-          state.models.find((m) => m.name === editing.model) || {
+          agentModels.find((m) => m.name === editing.model) || {
             name: editing.model || state.settings.defaultModel,
           },
         )
       )
         throw new Error(
           "Choose a local completion model for this agent. Embedding models build indexes and cannot answer chat requests.",
+        );
+      const runtimeId =
+        editing.runtimeId ||
+        state.settings.defaultCompletionRuntimeId ||
+        "ollama-default";
+      if (
+        runtimeId !== "ollama-default" &&
+        !agentModels.some(
+          (model) =>
+            model.name === (editing.model || state.settings.defaultModel) &&
+            isCompletionModel(model),
+        )
+      )
+        throw new Error(
+          "Choose an installed completion model for this managed runtime.",
         );
       const r = await action("agent.save", agentSavePayload(editing));
       if (r !== undefined) setEditing(null);
@@ -112,7 +142,7 @@ export function AgentsPage({ state, action }: PageProps) {
                 name: "",
                 instructions: "",
                 model: state.settings.defaultModel,
-                maxSteps: 24,
+                maxSteps: 40,
                 mode: "approval",
               })
             }
@@ -186,7 +216,7 @@ export function AgentsPage({ state, action }: PageProps) {
                   name: "",
                   instructions: "",
                   model: state.settings.defaultModel,
-                  maxSteps: 24,
+                  maxSteps: 40,
                   mode: "approval",
                 })
               }
@@ -226,6 +256,45 @@ export function AgentsPage({ state, action }: PageProps) {
             />
           </Field>
           <div className="form-grid">
+            <Field label="Completion runtime">
+              <select
+                value={editing?.runtimeId || ""}
+                onChange={(event) =>
+                  setEditing({
+                    ...editing,
+                    runtimeId: event.target.value,
+                    model: event.target.value
+                      ? completionModels(state, event.target.value).filter(
+                          isCompletionModel,
+                        )[0]?.name || ""
+                      : "",
+                  })
+                }
+              >
+                <option value="">Application default</option>
+                <option value="ollama-default">External Ollama</option>
+                {state.managedRuntime?.catalog
+                  .filter((build) =>
+                    state.managedRuntime?.installed.some(
+                      (item) => item.id === build.id,
+                    ),
+                  )
+                  .map((build) => (
+                    <option value={build.id} key={build.id}>
+                      {providerName(build.provider)} · {build.id}
+                    </option>
+                  ))}
+                {editing?.runtimeId &&
+                  editing.runtimeId !== "ollama-default" &&
+                  !state.managedRuntime?.catalog.some(
+                    (build) => build.id === editing.runtimeId,
+                  ) && (
+                    <option value={editing.runtimeId}>
+                      {editing.runtimeId} (unavailable)
+                    </option>
+                  )}
+              </select>
+            </Field>
             <Field label="Model">
               <select
                 value={editing?.model || ""}
@@ -234,15 +303,15 @@ export function AgentsPage({ state, action }: PageProps) {
                 }
               >
                 <option value="">Application default</option>
-                {state.models.filter(isCompletionModel).map((m) => (
+                {agentModels.filter(isCompletionModel).map((m) => (
                   <option key={m.name}>{m.name}</option>
                 ))}
                 {editing?.model &&
-                  !state.models.some(
+                  !agentModels.some(
                     (m) => m.name === editing.model && isCompletionModel(m),
                   ) && (
                     <option
-                      disabled={state.models.some(
+                      disabled={agentModels.some(
                         (m) =>
                           m.name === editing.model && !isCompletionModel(m),
                       )}
@@ -321,7 +390,7 @@ export function AgentsPage({ state, action }: PageProps) {
                 value={
                   Number.isNaN(editing?.temperature)
                     ? ""
-                    : (editing?.temperature ?? 0.2)
+                    : (editing?.temperature ?? DEFAULT_AGENT_TEMPERATURE)
                 }
                 onChange={(e) =>
                   setEditing({
@@ -350,6 +419,7 @@ export function AgentsPage({ state, action }: PageProps) {
             }
             refreshKey={editing ? 1 : 0}
           />
+          <HarnessControls agent={editing || {}} onChange={setEditing} />
           {formError && <p role="alert">{formError}</p>}
           <div className="modal-actions">
             <Button type="button" onClick={() => setEditing(null)}>
@@ -365,7 +435,7 @@ export function AgentsPage({ state, action }: PageProps) {
   );
 }
 
-export function ModelsPage({ state, action }: PageProps) {
+export function ModelsPage({ state, action, workspaceId }: PageProps) {
   const confirmAction = useConfirmation();
   const [name, setName] = useState("gemma4:12b-mlx"),
     [busy, setBusy] = useState("");
@@ -376,7 +446,10 @@ export function ModelsPage({ state, action }: PageProps) {
   }
   const pulls = (
     Array.isArray(state.runtime.pulls) ? state.runtime.pulls : []
-  ).filter((p) => p.status !== "success");
+  ).filter((p) => pullJobState(p) !== "success");
+  const externalDefault =
+    !state.settings.defaultCompletionRuntimeId ||
+    state.settings.defaultCompletionRuntimeId === "ollama-default";
   return (
     <div className="page-scroll">
       <SectionHeader
@@ -393,9 +466,14 @@ export function ModelsPage({ state, action }: PageProps) {
           </Button>
         }
       />
+      <ManagedRuntimePanel
+        state={state}
+        action={action}
+        workspaceId={workspaceId}
+      />
       <div className="stats-grid">
         <Stat
-          label="Runtime"
+          label="External runtime"
           value={state.runtime.available ? "Ollama" : "Unavailable"}
           detail={
             state.runtime.version
@@ -406,7 +484,10 @@ export function ModelsPage({ state, action }: PageProps) {
         <Stat
           label="Installed models"
           value={state.models.length}
-          detail="Discovered from your runtime"
+          detail={
+            state.runtime.modelStore ||
+            "Managed by your external Ollama installation"
+          }
         />
         <Stat
           label="Host memory capacity"
@@ -430,7 +511,7 @@ export function ModelsPage({ state, action }: PageProps) {
         <div>
           <div className="row-title">
             <ArrowDownToLine size={18} />
-            <h3>Add a model</h3>
+            <h3>Add an Ollama model</h3>
           </div>
           <p>
             Download a model by its Ollama tag. Storage and memory needs depend
@@ -478,7 +559,11 @@ export function ModelsPage({ state, action }: PageProps) {
         <div className="pull-row" key={p.name || p.model || i}>
           <div>
             <strong>{p.name || p.model || "Model download"}</strong>
-            <span>{p.error || p.status || "Downloading"}</span>
+            <span role="status">
+              {pullJobFinished(p)
+                ? `${friendlyStatus(pullJobState(p))}${p.error ? `: ${p.error}` : ""}`
+                : p.status || "Downloading"}
+            </span>
           </div>
           {p.total ? (
             <>
@@ -487,24 +572,34 @@ export function ModelsPage({ state, action }: PageProps) {
                 {formatBytes(p.completed)} / {formatBytes(p.total)}
               </small>
             </>
-          ) : p.error ? null : (
+          ) : p.error || pullJobFinished(p) ? null : (
             <span className="muted">Preparing download</span>
           )}
-          <Button
-            size="small"
-            disabled={
-              !!p.error || ["failed", "cancelled"].includes(p.status || "")
-            }
-            onClick={() =>
-              perform("model.cancelPull", { name: p.name || p.model })
-            }
-          >
-            Cancel
-          </Button>
+          {pullJobFinished(p) ? (
+            <Button
+              size="small"
+              disabled={
+                !!busy || !state.runtime.available || !(p.name || p.model)
+              }
+              onClick={() => perform("model.pull", { name: p.name || p.model })}
+            >
+              Retry download
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              disabled={!!busy}
+              onClick={() =>
+                perform("model.cancelPull", { name: p.name || p.model })
+              }
+            >
+              Cancel
+            </Button>
+          )}
         </div>
       ))}
       <div className="list-heading">
-        <h2>Your library</h2>
+        <h2>Your Ollama library</h2>
         <span>{state.models.length} models</span>
       </div>
       {state.models.length ? (
@@ -517,9 +612,10 @@ export function ModelsPage({ state, action }: PageProps) {
               <div className="model-info">
                 <div className="row-title">
                   <h3>{m.name}</h3>
-                  {m.name === state.settings.defaultModel && (
-                    <span className="tag accent">Default</span>
-                  )}
+                  {externalDefault &&
+                    m.name === state.settings.defaultModel && (
+                      <span className="tag accent">Default</span>
+                    )}
                   {m.loaded && <span className="tag">Loaded</span>}
                   {m.remote && <span className="tag">Remote</span>}
                 </div>
@@ -548,7 +644,8 @@ export function ModelsPage({ state, action }: PageProps) {
                 <Button
                   size="small"
                   disabled={
-                    m.name === state.settings.defaultModel ||
+                    (externalDefault &&
+                      m.name === state.settings.defaultModel) ||
                     !isCompletionModel(m)
                   }
                   title={
@@ -557,10 +654,13 @@ export function ModelsPage({ state, action }: PageProps) {
                       : undefined
                   }
                   onClick={() =>
-                    perform("settings.save", { defaultModel: m.name })
+                    perform("settings.save", {
+                      defaultModel: m.name,
+                      defaultCompletionRuntimeId: "ollama-default",
+                    })
                   }
                 >
-                  {m.name === state.settings.defaultModel ? (
+                  {externalDefault && m.name === state.settings.defaultModel ? (
                     <Check size={13} />
                   ) : null}
                   {isCompletionModel(m)
@@ -1210,24 +1310,41 @@ export function ArtifactsPage({ state, action, workspaceId }: PageProps) {
   );
 }
 
-export function SettingsPage({ state, action }: PageProps) {
+export function SettingsPage({ state, action, workspaceId }: PageProps) {
   const [draft, setDraft] = useState(state.settings),
     [saving, setSaving] = useState(false),
     [modelError, setModelError] = useState(""),
     [diagnosticsPath, setDiagnosticsPath] = useState("");
   useEffect(() => setDraft(state.settings), [JSON.stringify(state.settings)]);
+  const settingsModels = completionModels(
+    state,
+    draft.defaultCompletionRuntimeId || "ollama-default",
+  );
   async function submit(e: FormEvent) {
     e.preventDefault();
     setModelError("");
     if (
       !isCompletionModel(
-        state.models.find((m) => m.name === draft.defaultModel) || {
+        settingsModels.find((m) => m.name === draft.defaultModel) || {
           name: draft.defaultModel,
         },
       )
     ) {
       setModelError(
         "The default must be a local completion model. Embedding models are used for indexing.",
+      );
+      return;
+    }
+    if (
+      draft.defaultCompletionRuntimeId &&
+      draft.defaultCompletionRuntimeId !== "ollama-default" &&
+      !settingsModels.some(
+        (model) =>
+          model.name === draft.defaultModel && isCompletionModel(model),
+      )
+    ) {
+      setModelError(
+        "Choose an installed completion model for this managed runtime.",
       );
       return;
     }
@@ -1247,9 +1364,50 @@ export function SettingsPage({ state, action }: PageProps) {
           <div className="settings-label">
             <Server size={20} />
             <h3>Model runtime</h3>
-            <p>Connect to your Ollama installation.</p>
+            <p>
+              Choose a completion runtime. Ollama continues to handle video and
+              embeddings.
+            </p>
           </div>
           <div className="form-stack">
+            <Field label="Default completion runtime">
+              <select
+                value={draft.defaultCompletionRuntimeId || "ollama-default"}
+                onChange={(event) => {
+                  const runtimeId = event.target.value;
+                  setDraft({
+                    ...draft,
+                    defaultCompletionRuntimeId: runtimeId,
+                    defaultModel:
+                      completionModels(state, runtimeId).filter(
+                        isCompletionModel,
+                      )[0]?.name || "",
+                  });
+                }}
+              >
+                <option value="ollama-default">External Ollama</option>
+                {state.managedRuntime?.catalog
+                  .filter((build) =>
+                    state.managedRuntime?.installed.some(
+                      (item) => item.id === build.id,
+                    ),
+                  )
+                  .map((build) => (
+                    <option value={build.id} key={build.id}>
+                      {providerName(build.provider)} · {build.id}
+                    </option>
+                  ))}
+                {draft.defaultCompletionRuntimeId &&
+                  draft.defaultCompletionRuntimeId !== "ollama-default" &&
+                  !state.managedRuntime?.catalog.some(
+                    (build) => build.id === draft.defaultCompletionRuntimeId,
+                  ) && (
+                    <option value={draft.defaultCompletionRuntimeId}>
+                      {draft.defaultCompletionRuntimeId} (unavailable)
+                    </option>
+                  )}
+              </select>
+            </Field>
             <Field label="Ollama address">
               <input
                 required
@@ -1270,7 +1428,7 @@ export function SettingsPage({ state, action }: PageProps) {
                 list="installed-models"
               />
               <datalist id="installed-models">
-                {state.models.filter(isCompletionModel).map((m) => (
+                {settingsModels.filter(isCompletionModel).map((m) => (
                   <option key={m.name}>{m.name}</option>
                 ))}
               </datalist>
@@ -1370,6 +1528,12 @@ export function SettingsPage({ state, action }: PageProps) {
           </Button>
         </div>
       </form>
+      <ManagedRuntimePanel
+        state={state}
+        action={action}
+        workspaceId={workspaceId}
+        models={false}
+      />
       {diagnosticsPath && (
         <p className="notice">
           Diagnostics saved to{" "}
@@ -1397,8 +1561,27 @@ function ComparisonPage({ state, action, workspaceId }: PageProps) {
     [tasks, setTasks] = useState(""),
     [busy, setBusy] = useState(false),
     [selected, setSelected] = useState("");
+  const selectedAgents = [baseline, candidate].map((id) =>
+    state.agents.find((agent) => agent.id === id),
+  );
+  const nativeSelected = selectedAgents.some(
+    (agent) =>
+      (agent?.runtimeId ||
+        state.settings.defaultCompletionRuntimeId ||
+        "ollama-default") !== "ollama-default",
+  );
+  const readiness = selectedAgents
+    .map((agent) =>
+      modelReadiness(
+        state.runtime,
+        state.models,
+        agent?.model || state.settings.defaultModel,
+      ),
+    )
+    .find((result) => !result.ready);
   async function start(e: FormEvent) {
     e.preventDefault();
+    if (nativeSelected || readiness) return;
     setBusy(true);
     await action("eval.start", {
       workspaceId,
@@ -1482,13 +1665,27 @@ function ComparisonPage({ state, action, workspaceId }: PageProps) {
               !baseline ||
               !candidate ||
               baseline === candidate ||
-              !tasks.trim()
+              !tasks.trim() ||
+              nativeSelected ||
+              !!readiness
             }
             loading={busy}
           >
             <Play size={15} />
             Run comparison
           </Button>
+          {nativeSelected ? (
+            <p className="notice" role="status">
+              Legacy read-only comparisons use external Ollama. Use Reliability
+              for managed MLX comparisons.
+            </p>
+          ) : (
+            readiness && (
+              <p className="notice" role="status">
+                {readiness.reason}
+              </p>
+            )
+          )}
           {!workspaceId && (
             <p className="small muted">
               Select a workspace before starting an evaluation.

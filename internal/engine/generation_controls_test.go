@@ -87,7 +87,8 @@ func TestThinkingAtOutputLimitCannotExecuteTools(t *testing.T) {
 	client, _ := inference.NewClient(srv.URL)
 	calls := 0
 	result, err := New(client).Run(t.Context(), Request{Model: "fixture", Prompt: "A bounded thinking run", Think: true, MaxOutputTokens: 256, Tools: []ToolDefinition{{Name: "edit"}}}, nil, func(context.Context, ToolCall) (ToolResult, error) { calls++; return ToolResult{}, nil })
-	if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || calls != 0 || result.Usage.EvalCount != 256 || result.Content != "" {
+	// The original and both retries stop at the limit.
+	if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || calls != 0 || result.Usage.EvalCount != 768 || result.Content != "" {
 		t.Fatalf("thinking-only limit became successful or executed a tool: %+v %v calls=%d", result, err, calls)
 	}
 	if strings.Contains(string(result.Snapshot), "Unfinished private reasoning") || strings.Contains(string(result.Snapshot), "partial_call") {

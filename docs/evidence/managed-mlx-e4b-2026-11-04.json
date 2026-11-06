@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "scope": "4096-context compatibility smoke only; not coding or large-context qualification",
+  "checkpoint": {
+    "artifactDigest": "sha256:0054730125f5f34619657baecdb79723e986ded42b6e117359a7260c4191f4dd",
+    "automaticNextBatch": false,
+    "buildId": "omlx-4213c328-gemma1",
+    "contextTokens": 4096,
+    "cursor": "checkpoint",
+    "deadline": "2026-11-05T00:48:00Z",
+    "modelId": "gemma4-e4b-4bit",
+    "modelManifestDigest": "sha256:8cdba19e56600563268559c767060cef4475d769a6d05fb242e269f997a0a9cf",
+    "processAfterCleanup": {
+      "buildId": "omlx-4213c328-gemma1",
+      "modelId": "gemma4-e4b-4bit",
+      "contextTokens": 4096,
+      "status": "stopped"
+    },
+    "receipt": {
+      "protocolVersion": 2,
+      "buildId": "omlx-4213c328-gemma1",
+      "modelId": "gemma4-e4b-4bit",
+      "contextTokens": 4096,
+      "runtimeManifestDigest": "cc2519fce77f1369d382ffe389978ecdfd2058abd6c72aeb8ca385d219a0f460",
+      "modelManifestDigest": "8cdba19e56600563268559c767060cef4475d769a6d05fb242e269f997a0a9cf",
+      "artifactDigest": "sha256:0054730125f5f34619657baecdb79723e986ded42b6e117359a7260c4191f4dd",
+      "templateDigest": "sha256:2f1b4d75d067bae3fe44e676721c7f077d243bc007156cb9c2f8b5836613d082",
+      "checkedAt": "2026-11-04T23:01:18.22637Z",
+      "status": "qualified",
+      "coding": "experimental",
+      "checks": [
+        "owned authenticated loopback process",
+        "verified runtime and complete model inventory",
+        "bounded thinking-on tool call",
+        "stable tool ID and synthetic result continuation",
+        "thinking-off control",
+        "complete provider token receipts",
+        "active stream cancellation reaps owned process before admission release",
+        "owned process teardown"
+      ]
+    },
+    "runtimeManifestDigest": "sha256:cc2519fce77f1369d382ffe389978ecdfd2058abd6c72aeb8ca385d219a0f460",
+    "schedule": [
+      "install",
+      "download",
+      "activate",
+      "protocol-smoke",
+      "checkpoint"
+    ],
+    "scope": "4096-context compatibility smoke only; not coding or large-context qualification",
+    "startedAt": "2026-11-04T22:48:00Z",
+    "status": "checkpointed",
+    "templateDigest": "sha256:2f1b4d75d067bae3fe44e676721c7f077d243bc007156cb9c2f8b5836613d082",
+    "updatedAt": "2026-11-04T23:01:18.256987Z",
+    "version": 1,
+    "outcome": {
+      "protocolPassed": true
+    }
+  },
+  "runtime": {
+    "id": "omlx-4213c328-gemma1",
+    "provider": "omlx",
+    "sourceSha": "4213c3284abc7b3746a91464a7af7ccc3732b759",
+    "patchSha256": "329ff7f794f46d30247130dc9c1127a3834fba88e89159f4a5a71f4a927d609a",
+    "architecture": "arm64",
+    "minimumOs": "15.0",
+    "bundle": {
+      "bundledPath": "omlx-4213c328-gemma1.tar.gz",
+      "sha256": "ae5188b5308555bcf8fca327dd2e8c45c8ab4b9c30f0a71053ace0ffc96fc784",
+      "size": 405663812
+    }
+  },
+  "model": {
+    "id": "gemma4-e4b-4bit",
+    "repository": "mlx-community/gemma-4-e4b-it-4bit",
+    "revision": "475b9088d29754a3379866cf5aeb6b41acd313c2",
+    "serveName": "gemma4-e4b-4bit",
+    "license": "gemma",
+    "model": {
+      "name": "gemma4-e4b-4bit",
+      "artifactDigest": "sha256:0054730125f5f34619657baecdb79723e986ded42b6e117359a7260c4191f4dd",
+      "tokenizerDigest": "sha256:cc8d3a0ce36466ccc1278bf987df5f71db1719b9ca6b4118264f45cb627bfe0f",
+      "templateDigest": "sha256:2f1b4d75d067bae3fe44e676721c7f077d243bc007156cb9c2f8b5836613d082",
+      "architecture": "gemma4",
+      "contextTokens": 131072,
+      "capabilities": {
+        "completion": true,
+        "tools": true,
+        "thinking": true,
+        "vision": false,
+        "structuredOutput": false
+      }
+    }
+  },
+  "host": {
+    "os": "macOS",
+    "version": "27.0.1",
+    "build": "26A434",
+    "architecture": "arm64",
+    "hardwareModel": "Mac16,11",
+    "processor": "Apple M4 Pro",
+    "memoryBytes": 68719476736
+  },
+  "applicationSource": {
+    "state": "uncommitted working tree",
+    "protocolVersion": 2,
+    "exactProbeSourceInventory": null,
+    "limitation": "The first helper recorded exact runtime/model/template identities but did not hash the Go probe source before launch. Future checkpoints capture that source inventory. Later offline edits added startup admission and descendant-process cleanup hardening; those changes have fixture evidence, not another live inference result."
+  },
+  "measurements": {
+    "providerHourlyAggregate": [
+      {
+        "timestamp_hour": 1793833200,
+        "model_id": "gemma4-e4b-4bit",
+        "requests": 3,
+        "prompt_tokens": 415,
+        "completion_tokens": 106,
+        "cached_tokens": 139,
+        "prefill_seconds": 2.043384041986428,
+        "generation_seconds": 1.9309137910604477,
+        "request_seconds": 3.974297833046876,
+        "timed_requests": 3
+      }
+    ],
+    "aggregateSource": "owned oMLX usage.sqlite3 model_usage_hourly (three completed synthetic requests; cancellation request excluded by provider)",
+    "individualGenerationMetrics": null,
+    "timeToFirstToken": null,
+    "peakMemory": null,
+    "coldWarmCacheControlled": false,
+    "comparison": null
+  },
+  "capabilityEvidence": {
+    "textCompletion": "observed in bounded smoke",
+    "tools": "synthetic echo call and matching result continuation observed",
+    "thinking": "on/off observed; current-cycle template rendering separately checked offline",
+    "cancellation": "active stream interrupted and owned server reaped",
+    "vision": "unverified",
+    "structuredOutput": "unverified",
+    "codingQuality": "experimental; no coding campaign"
+  },
+  "limits": [
+    "Only this exact E4B/oMLX artifact pair and 4096-token context was exercised.",
+    "12B, 26B, mlx-serve, larger context and coding-quality gates remain unqualified.",
+    "No speed comparison or performance ranking follows from three short requests.",
+    "No further inference batch started after this checkpoint."
+  ]
+}

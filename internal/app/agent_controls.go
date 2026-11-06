@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,13 +11,18 @@ import (
 )
 
 type generationControls struct {
-	thinking        string
-	maxOutputTokens int
-	temperature     float64
-	toolProtocol    string
+	thinking             string
+	maxOutputTokens      int
+	temperature          float64
+	toolProtocol         string
+	harnessMechanisms    engine.HarnessMechanisms
+	verificationFeedback bool
+	finishReserveSeconds int
 }
 
-const defaultAgentTemperature = 0.2
+// Gemma 4 publisher starting point, not a proven optimum for every model/task.
+// Only absent fields use this default; explicit saved values stay authoritative.
+const defaultAgentTemperature = 1.0
 
 // Missing legacy fields have explicit defaults. Invalid supplied fields never
 // fall back silently, and automatic thinking is represented by an absent wire
@@ -50,6 +56,34 @@ func agentGenerationControls(config Doc) (generationControls, error) {
 			return controls, errors.New("toolProtocol must be native or structured_json")
 		}
 		controls.toolProtocol = protocol
+	}
+	if value, present := config["harnessMechanisms"]; present {
+		b, err := json.Marshal(value)
+		if err != nil || string(b) == "null" {
+			return controls, errors.New("harnessMechanisms must be an object")
+		}
+		decoder := json.NewDecoder(bytes.NewReader(b))
+		decoder.DisallowUnknownFields()
+		if err = decoder.Decode(&controls.harnessMechanisms); err != nil {
+			return controls, fmt.Errorf("harnessMechanisms: %w", err)
+		}
+		if err = controls.harnessMechanisms.Validate(); err != nil {
+			return controls, err
+		}
+	}
+	if value, present := config["verificationFeedback"]; present {
+		b, ok := value.(bool)
+		if !ok {
+			return controls, errors.New("verificationFeedback must be boolean")
+		}
+		controls.verificationFeedback = b
+	}
+	if value, present := config["finishReserveSeconds"]; present {
+		seconds, ok := finiteNumber(value)
+		if !ok || math.Trunc(seconds) != seconds || seconds < 0 || seconds > engine.MaxFinishReserveSeconds {
+			return controls, fmt.Errorf("finishReserveSeconds must be an integer from 0 to %d", engine.MaxFinishReserveSeconds)
+		}
+		controls.finishReserveSeconds = int(seconds)
 	}
 	return controls, nil
 }
@@ -89,4 +123,7 @@ func (c generationControls) apply(req *engine.Request) {
 	req.MaxOutputTokens = c.maxOutputTokens
 	req.Temperature = c.temperature
 	req.ToolProtocol = c.toolProtocol
+	req.HarnessMechanisms = c.harnessMechanisms
+	req.VerificationFeedback = c.verificationFeedback
+	req.FinishReserveSeconds = c.finishReserveSeconds
 }

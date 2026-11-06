@@ -25,7 +25,9 @@ func toolResponseText(name string, response map[string]any) (string, error) {
 		case "run_command", "git_diff", "git_status", "git_history", "git_branches":
 			if _, stdout := data["stdout"].(string); stdout {
 				rawKeys = []string{"stdout", "stderr"}
-				metadataKeys = []string{"receiptId", "exitCode", "signal", "cancelled", "truncated", "workingDirectory", "readOnly", "durationMs", "environment"}
+				// readOnlyNote tells the model the host forced readOnly, so it
+				// edits through file tools instead of retrying a writing command.
+				metadataKeys = []string{"receiptId", "exitCode", "signal", "cancelled", "truncated", "workingDirectory", "readOnly", "readOnlyNote", "durationMs", "environment"}
 			}
 		}
 	}

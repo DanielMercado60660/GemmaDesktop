@@ -27,6 +27,8 @@ func (c *Core) milestoneCall(ctx context.Context, method string, p Doc) (any, er
 		return c.updateTaskPlan(str(p, "runId"), p)
 	case "context.get":
 		return c.contextManifest(str(p, "runId"))
+	case "context.focus":
+		return c.focusContinuation(p)
 	case "delegation.get":
 		return c.Store.Get("delegation", str(p, "id"))
 	}

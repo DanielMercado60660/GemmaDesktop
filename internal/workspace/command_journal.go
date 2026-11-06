@@ -68,8 +68,15 @@ func saveCommandJournal(dir string, j commandJournal) error {
 // Each before/after image is durable before the journal enters applying state.
 // External editors cannot be globally locked; changes are optimistic and each
 // destination is checked again immediately before its individual mutation.
-func PublishCommand(ctx context.Context, root, snapshot, journalDir string, base CommandManifest, private []string) (Publication, error) {
+func PublishCommand(ctx context.Context, root, snapshot, journalDir string, base CommandManifest, private []string, taskProtected ...[]string) (Publication, error) {
 	out := Publication{Status: "not_applied", Changes: []CommandChange{}, JournalPath: filepath.Join(journalDir, "journal.json")}
+	var protected []string
+	if len(taskProtected) > 0 {
+		protected = taskProtected[0]
+	}
+	if err := ValidateProtectedPaths(protected); err != nil {
+		return out, err
+	}
 	ctx, release, e := AcquireOperation(ctx, root)
 	if e != nil {
 		return out, e
@@ -86,6 +93,19 @@ func PublishCommand(ctx context.Context, root, snapshot, journalDir string, base
 	after, e := ScanCommandTree(ctx, snapshot, "", private)
 	if e != nil {
 		return out, e
+	}
+	// Reject the entire publication before creating or applying its journal.
+	for name, before := range base.Files {
+		if TaskProtected(name, protected) && after.Files[name] != before {
+			out.Status = "discarded_task_protection"
+			return out, fmt.Errorf("command changed task-protected path %q", name)
+		}
+	}
+	for name, entry := range after.Files {
+		if TaskProtected(name, protected) && base.Files[name] != entry {
+			out.Status = "discarded_task_protection"
+			return out, fmt.Errorf("command changed task-protected path %q", name)
+		}
 	}
 	w, e := Open(root)
 	if e != nil {

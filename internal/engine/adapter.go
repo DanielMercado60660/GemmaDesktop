@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"iter"
 	"strings"
+	"sync/atomic"
+	"time"
 	"unicode/utf8"
 
 	"gemmadesktop.local/app/internal/inference"
@@ -21,23 +23,55 @@ var ErrIncompleteResponse = errors.New("model response is incomplete")
 var ErrEmptyResponse = errors.New("model stopped without an answer or tool call")
 var ErrInvalidStructuredAction = errors.New("model returned an invalid structured action")
 
+// errModelCallLimit is the per-call budget check. It, an empty turn without a
+// retry slot, or an explicit deadline reserve may use the single closing status
+// allowance. Output/tool-call failures do not independently earn that allowance.
+var errModelCallLimit = fmt.Errorf("%w: maximum model calls reached", ErrBudgetExceeded)
+var errFinishReserve = fmt.Errorf("%w: run entered its final-answer reserve", ErrBudgetExceeded)
+
+type deadlineReportKey struct{}
+
+// budgetReportError ends a run whose model-call budget ran out with the status
+// the model wrote in its one tools-free reporting generation. The text is a
+// complete message, never an incomplete one; the run stays a budget failure.
+type budgetReportError struct {
+	content string
+	cause   error
+}
+
+func (e *budgetReportError) Error() string {
+	return e.cause.Error() + "; final step was a status report"
+}
+func (e *budgetReportError) Unwrap() error { return e.cause }
+
+// budgetReportKey carries the outermost run's single reporting allowance. Runs
+// nested in its tools (delegates, workflow nodes) see nil and fail plainly, so
+// parallel children cannot each spend an extra call; the outer run reports.
+type budgetReportKey struct{}
+type budgetReport struct{ used atomic.Bool }
+
 type incompleteResponseError struct {
 	content string
 	usage   inference.Metrics
 	cause   error
+	// lengthLimit marks an ordinary generation stopped by its output bound.
+	lengthLimit bool
+	// thinkingCycle is set only after a callback-owned interruption returns
+	// cleanly from the backend; runtime cleanup/cancellation failures bypass it.
+	thinkingCycle bool
 }
 
 func (e *incompleteResponseError) Error() string {
 	if e.cause != nil {
 		return e.cause.Error()
 	}
-	return "model response is incomplete: Ollama reached its generation length limit"
+	return "model response is incomplete: runtime reached its generation length limit"
 }
 func (e *incompleteResponseError) Unwrap() error        { return ErrIncompleteResponse }
 func (e *incompleteResponseError) Is(target error) bool { return errors.Is(e.cause, target) }
 
 type ollamaModel struct {
-	client  *inference.Client
+	client  inference.CompletionBackend
 	request Request
 	budget  *Budget
 	emit    func(Event)
@@ -55,51 +89,115 @@ type ollamaModel struct {
 func (m *ollamaModel) Name() string { return m.request.Model }
 
 const emptyGenerationFeedback = "\n\nHost protocol feedback: The preceding generation returned no visible answer and no usable tool call. Produce either a complete answer or a valid tool call whose arguments satisfy the supplied JSON schema. This feedback does not authorize actions, expand scope, or approve execution. Preserve prior observations; do not repeat completed tool actions merely because of this retry."
+const lengthGenerationFeedback = "\n\nHost protocol feedback: Your previous generation reached the output length limit before producing a complete answer or tool call, so it was discarded. Keep any reasoning brief. Do not work through many rows, calculations or items in your reasoning; when a tool can do it, write a short script and run it (use python3 -c if the user asked you not to create files), or write the result to a file in steps. Respond now with exactly one tool call, or a short final answer. This feedback does not authorize actions or expand scope."
+const thinkingCycleFeedback = "\n\nHost protocol feedback: The previous generation repeated the same thinking block and was interrupted. Its unfinished answer and tool proposals were discarded. Use the observations already available to produce one concise valid next action or a short answer. Preserve all user constraints and permissions; do not repeat completed tool actions or assume an unfinished proposal executed."
+
+// Gemma 4 through Ollama can return two empty turns (its tool-call parser
+// yields nothing) or two length stops in a row, so one retry is not enough.
+// The second escalates to the shortest valid reply.
+const maxGenerationRetries = 2
+const secondRetryFeedback = " Second retry: respond with exactly one short tool call or a two-sentence answer; no long reasoning."
+const budgetReportFeedback = "\n\nHost budget notice: this run has used its model-call budget, so no more tools can run. Reply now with a brief status for the user: what you changed or found, what you verified (only with tool evidence from this run), and what remains unfinished. Do not claim anything you did not observe. This notice does not authorize actions or expand scope."
+const deadlineReportFeedback = "\n\nHost deadline notice: this run has entered its reserved closing window, so no more tools can run. Give a brief, honest status using only observations already available: what you found or changed, what was verified, and what remains unfinished or uncertain. The run remains incomplete because its time budget is ending. Do not invent results or claim that an unfinished task is complete. This notice grants no permissions."
 
 func (m *ollamaModel) GenerateContent(ctx context.Context, req *model.LLMRequest, stream bool) iter.Seq2[*model.LLMResponse, error] {
 	return func(yield func(*model.LLMResponse, error) bool) {
 		current := req
 		var discarded *inference.Metrics
-		for attempt := 0; attempt < 2; attempt++ {
+		for attempt := 0; attempt <= maxGenerationRetries; attempt++ {
 			retry := false
-			for response, err := range m.generateAttempt(ctx, current, stream, attempt+1) {
-				if err != nil {
-					var incomplete *incompleteResponseError
-					if attempt == 0 && m.outputTokenLimit == 0 && errors.Is(err, ErrEmptyResponse) && errors.As(err, &incomplete) {
-						usage := incomplete.usage
-						discarded = &usage
-						if err := ctx.Err(); err != nil {
-							yield(nil, err)
-							return
-						}
-						m.budget.mu.Lock()
-						exhausted := m.budget.ModelCalls >= m.budget.MaxModelCalls || m.calls >= m.request.MaxSteps
-						m.budget.mu.Unlock()
-						if exhausted {
-							yield(nil, fmt.Errorf("%w: no model call remains for an empty-response retry", ErrBudgetExceeded))
-							return
-						}
-						if m.emit != nil {
-							m.emit(Event{Type: "generation_retry", Title: "Retrying empty generation", NodeID: m.request.NodeID, Detail: "No answer or usable tool call was returned. One retry will use the same history and existing permissions.", Data: map[string]any{"model": m.Name(), "reason": "empty_response", "attempt": 2, "maxRetries": 1}})
-						}
-						current = requestWithEmptyFeedback(req)
-						retry = true
-						break
+			var limit error
+			if err := ctx.Err(); err != nil {
+				yield(nil, err)
+				return
+			}
+			if m.outputTokenLimit == 0 && m.request.FinishReserveSeconds > 0 {
+				if deadline, present := ctx.Deadline(); present {
+					remaining := time.Until(deadline)
+					if remaining <= 0 {
+						yield(nil, context.DeadlineExceeded)
+						return
 					}
-					yield(nil, err)
+					if remaining <= time.Duration(m.request.FinishReserveSeconds)*time.Second {
+						limit = errFinishReserve
+					}
+				}
+			}
+			if limit == nil {
+				for response, err := range m.generateAttempt(ctx, current, stream, attempt+1, false) {
+					if err != nil {
+						var incomplete *incompleteResponseError
+						empty := errors.Is(err, ErrEmptyResponse)
+						if m.outputTokenLimit == 0 && errors.Is(err, errModelCallLimit) {
+							limit = err
+							break
+						}
+						if attempt < maxGenerationRetries && m.outputTokenLimit == 0 && errors.As(err, &incomplete) && (empty || incomplete.lengthLimit || incomplete.thinkingCycle) {
+							usage := incomplete.usage
+							if discarded != nil {
+								usage = addGenerationUsage(*discarded, usage)
+							}
+							discarded = &usage
+							if err := ctx.Err(); err != nil {
+								yield(nil, err)
+								return
+							}
+							if !m.canGenerate() {
+								if !empty {
+									// Without a retry a truncated generation keeps its
+									// incomplete classification and partial text.
+									yield(nil, err)
+									return
+								}
+								// The budget ran out on a turn with nothing to show, which
+								// leaves the user exactly the bare budget error the report
+								// exists to replace (Gemma 4's empty tool-call parse can
+								// land on any step, including the last).
+								limit = fmt.Errorf("%w: no model call remains for an empty-response retry", ErrBudgetExceeded)
+								break
+							}
+							title, detail, reason, feedback := "Retrying empty generation", "No answer or usable tool call was returned.", "empty_response", emptyGenerationFeedback
+							if !empty {
+								title, detail, reason, feedback = "Retrying truncated generation", "The generation reached its output length limit and was discarded.", "length", lengthGenerationFeedback
+							}
+							if incomplete.thinkingCycle {
+								title, detail, reason, feedback = "Retrying interrupted thinking", "The experimental guard interrupted an exact thinking cycle and discarded the unfinished generation.", "thinking_cycle", thinkingCycleFeedback
+							}
+							if attempt > 0 {
+								feedback += secondRetryFeedback
+							}
+							detail += fmt.Sprintf(" Retry %d of %d will use the same history and existing permissions.", attempt+1, maxGenerationRetries)
+							if m.emit != nil {
+								m.emit(Event{Type: "generation_retry", Title: title, NodeID: m.request.NodeID, Detail: detail, Data: map[string]any{"model": m.Name(), "reason": reason, "attempt": attempt + 2, "maxRetries": maxGenerationRetries}})
+							}
+							// Feedback replaces, never stacks on, the previous retry's.
+							current = requestWithRetryFeedback(req, feedback)
+							retry = true
+							break
+						}
+						yield(nil, err)
+						return
+					}
+					if response != nil && !response.Partial && discarded != nil {
+						// Keep the successful response's actual prompt count intact for
+						// ADK compaction. Discarded-attempt cost is separate audit metadata.
+						if response.CustomMetadata == nil {
+							response.CustomMetadata = map[string]any{}
+						}
+						response.CustomMetadata["discarded_generation_usage"] = *discarded
+					}
+					if !yield(response, nil) {
+						return
+					}
+				}
+			}
+			if limit != nil {
+				if report, _ := ctx.Value(budgetReportKey{}).(*budgetReport); report != nil && (!errors.Is(limit, errFinishReserve) || m.reportHasOutputBudget()) && report.used.CompareAndSwap(false, true) {
+					m.reportStatus(ctx, req, stream, limit, yield)
 					return
 				}
-				if response != nil && !response.Partial && discarded != nil {
-					// Keep the successful response's actual prompt count intact for
-					// ADK compaction. Discarded-attempt cost is separate audit metadata.
-					if response.CustomMetadata == nil {
-						response.CustomMetadata = map[string]any{}
-					}
-					response.CustomMetadata["discarded_generation_usage"] = *discarded
-				}
-				if !yield(response, nil) {
-					return
-				}
+				yield(nil, limit)
+				return
 			}
 			if !retry {
 				return
@@ -108,7 +206,80 @@ func (m *ollamaModel) GenerateContent(ctx context.Context, req *model.LLMRequest
 	}
 }
 
-func requestWithEmptyFeedback(req *model.LLMRequest) *model.LLMRequest {
+// reportStatus spends a run's one reporting generation after model-call
+// exhaustion or entry into its optional deadline reserve. The user receives
+// the model's own status instead of a bare budget error. It sends the same history with no tools and a host
+// notice; tool calls are dropped, never executed. Its text ends the run as a
+// budget failure. A report that fails, is empty or is cut off fails exactly as
+// the budget check would have, without retries.
+func (m *ollamaModel) reportStatus(ctx context.Context, req *model.LLMRequest, stream bool, limit error, yield func(*model.LLMResponse, error) bool) {
+	feedback, title, reason := budgetReportFeedback, "Writing budget status report", "model_calls"
+	if errors.Is(limit, errFinishReserve) {
+		feedback, title, reason = deadlineReportFeedback, "Writing deadline status report", "deadline_reserve"
+		ctx = context.WithValue(ctx, deadlineReportKey{}, true)
+	}
+	if m.emit != nil {
+		m.budget.mu.Lock()
+		data := map[string]any{"model": m.Name(), "maxSteps": m.request.MaxSteps, "maxModelCalls": m.budget.MaxModelCalls, "reason": reason, "finishReserveSeconds": m.request.FinishReserveSeconds}
+		m.budget.mu.Unlock()
+		m.emit(Event{Type: "budget_report", Title: title, NodeID: m.request.NodeID, Detail: "One final generation without tools will report observed status; the run still ends as a budget failure.", Data: data})
+	}
+	for response, err := range m.generateAttempt(ctx, requestWithFeedback(req, feedback), stream, 1, true) {
+		if err != nil {
+			if ctxErr := ctx.Err(); ctxErr != nil {
+				yield(nil, fmt.Errorf("%w; the status report was interrupted: %w", limit, ctxErr))
+				return
+			}
+			// %v: a cut-off report must not become an incomplete answer.
+			yield(nil, fmt.Errorf("%w; the status report failed: %v", limit, err))
+			return
+		}
+		if response.Partial {
+			if !yield(response, nil) {
+				return
+			}
+			continue
+		}
+		var text strings.Builder
+		for _, part := range response.Content.Parts {
+			if part != nil && !part.Thought {
+				text.WriteString(part.Text)
+			}
+		}
+		yield(nil, &budgetReportError{content: text.String(), cause: limit})
+		return
+	}
+}
+
+// remainingCalls is how many model calls this agent may still make under both
+// its own step bound and the shared run budget.
+func (m *ollamaModel) remainingCalls() int {
+	m.budget.mu.Lock()
+	defer m.budget.mu.Unlock()
+	return min(m.budget.MaxModelCalls-m.budget.ModelCalls, m.request.MaxSteps-m.calls)
+}
+func (m *ollamaModel) canGenerate() bool { return m.remainingCalls() > 0 }
+
+func (m *ollamaModel) reportHasOutputBudget() bool {
+	m.budget.mu.Lock()
+	defer m.budget.mu.Unlock()
+	return m.budget.OutputBytes < m.budget.MaxOutputBytes
+}
+
+// Retry feedback is request-local protocol context, appended after the complete
+// existing conversation. Keeping the original system instruction and message
+// prefix byte-for-byte retains complete tool pairs and leaves that prefix
+// available for provider reuse; actual template/cache behavior is runtime-owned.
+// The fresh slice also avoids mutating ADK's history or an earlier retry, and the
+// synthetic message never enters the session or the original-user archive.
+func requestWithRetryFeedback(req *model.LLMRequest, feedback string) *model.LLMRequest {
+	copy := *req
+	copy.Contents = append(make([]*genai.Content, 0, len(req.Contents)+1), req.Contents...)
+	copy.Contents = append(copy.Contents, genai.NewContentFromText(feedback, genai.RoleUser))
+	return &copy
+}
+
+func requestWithFeedback(req *model.LLMRequest, feedback string) *model.LLMRequest {
 	copy := *req
 	config := genai.GenerateContentConfig{}
 	if req.Config != nil {
@@ -119,7 +290,7 @@ func requestWithEmptyFeedback(req *model.LLMRequest) *model.LLMRequest {
 		instruction = *config.SystemInstruction
 		instruction.Parts = append([]*genai.Part(nil), instruction.Parts...)
 	}
-	instruction.Parts = append(instruction.Parts, &genai.Part{Text: emptyGenerationFeedback})
+	instruction.Parts = append(instruction.Parts, &genai.Part{Text: feedback})
 	config.SystemInstruction = &instruction
 	copy.Config = &config
 	return &copy
@@ -135,16 +306,19 @@ func addGenerationUsage(a, b inference.Metrics) inference.Metrics {
 	return a
 }
 
-func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest, stream bool, attempt int) iter.Seq2[*model.LLMResponse, error] {
+// generateAttempt makes one provider call. A report call is the run's single
+// tools-free status generation after the budget check failed: it is counted
+// like any call, so steps and usage stay complete, but is not refused by it.
+func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest, stream bool, attempt int, report bool) iter.Seq2[*model.LLMResponse, error] {
 	return func(yield func(*model.LLMResponse, error) bool) {
 		if err := ctx.Err(); err != nil {
 			yield(nil, err)
 			return
 		}
 		m.budget.mu.Lock()
-		if m.budget.ModelCalls >= m.budget.MaxModelCalls || m.calls >= m.request.MaxSteps {
+		if !report && (m.budget.ModelCalls >= m.budget.MaxModelCalls || m.calls >= m.request.MaxSteps) {
 			m.budget.mu.Unlock()
-			yield(nil, fmt.Errorf("%w: maximum model calls reached (agent %d, run %d)", ErrBudgetExceeded, m.request.MaxSteps, m.budget.MaxModelCalls))
+			yield(nil, fmt.Errorf("%w (agent %d, run %d)", errModelCallLimit, m.request.MaxSteps, m.budget.MaxModelCalls))
 			return
 		}
 		m.budget.ModelCalls++
@@ -162,8 +336,15 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 		if m.outputTokenLimit > 0 {
 			chat.Options["num_predict"] = m.outputTokenLimit
 		}
+		if report {
+			// No declared tools and no action protocol: the report is prose only.
+			chat.Tools = nil
+			if ctx.Value(deadlineReportKey{}) == true {
+				chat.Options["num_predict"] = min(chat.Options["num_predict"].(int), 1024)
+			}
+		}
 		var protocol *StructuredActionProtocol
-		if m.outputTokenLimit == 0 && m.request.ToolProtocol == ToolProtocolStructuredJSON {
+		if m.outputTokenLimit == 0 && m.request.ToolProtocol == ToolProtocolStructuredJSON && !report {
 			chat, protocol, err = PrepareStructuredActions(chat)
 			if err != nil {
 				yield(nil, err)
@@ -184,8 +365,14 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 			m.emit(Event{Type: "context_prepared", Title: "Generation context prepared", NodeID: m.request.NodeID, Data: generationContextAudit(chat, step, attempt, m.outputTokenLimit > 0)})
 		}
 		var text, thinking strings.Builder
+		var contentGuard, thinkingGuard proseRepetitionGuard
+		var cycleGuard thinkingCycleGuard
+		var cycleStop *thinkingCycleStop
+		attemptStarted := time.Now()
 		var calls []inference.ToolCall
+		dropped := 0
 		var metric inference.Metrics
+		var usageDetails inference.UsageDetails
 		var reason string
 		stopped := errors.New("stream consumer stopped")
 		terminal, measured := false, false
@@ -208,7 +395,23 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 				m.emit(Event{Type: "token_accounting", Title: "Token measurement", NodeID: m.request.NodeID, Data: map[string]any{"step": step, "attempt": attempt, "summary": m.outputTokenLimit > 0, "tokenAccounting": inference.NewTokenAccounting(1, t, n)}})
 			}
 		}()
-		err = m.client.Chat(ctx, chat, func(chunk inference.ChatChunk) error {
+		completion, err := inference.CompletionFromChat(chat)
+		if err != nil {
+			yield(nil, err)
+			return
+		}
+		err = m.client.Generate(ctx, completion, func(chunk inference.ChatChunk) error {
+			if cycleStop != nil {
+				return cycleStop
+			}
+			if m.request.HarnessMechanisms.StreamRepetitionGuard && m.outputTokenLimit == 0 {
+				if err := contentGuard.Add(chunk.Message.Content); err != nil {
+					return err
+				}
+				if err := thinkingGuard.Add(chunk.Message.Thinking); err != nil {
+					return err
+				}
+			}
 			m.budget.mu.Lock()
 			m.budget.OutputBytes += len(chunk.Message.Content) + len(chunk.Message.Thinking)
 			tooLarge := m.budget.OutputBytes > m.budget.MaxOutputBytes
@@ -229,11 +432,11 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 				}
 			}
 			for _, call := range chunk.Message.ToolCalls {
-				if len(calls) >= 64 {
+				if len(calls)+dropped >= 64 {
 					return fmt.Errorf("%w: maximum tool calls in one response", ErrBudgetExceeded)
 				}
 				if call.Function.Name == "" {
-					return errors.New("Ollama returned a tool call without a name")
+					return errors.New("runtime returned a tool call without a name")
 				}
 				if call.Function.Arguments == nil {
 					call.Function.Arguments = map[string]any{}
@@ -249,16 +452,65 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 				if tooLarge {
 					return fmt.Errorf("%w: model output limit", ErrBudgetExceeded)
 				}
+				if report {
+					// Its output is counted, but a report never reaches a tool.
+					dropped++
+					continue
+				}
 				calls = append(calls, call)
+			}
+			// Count and journal the observed chunk before interruption. Calls
+			// remain local proposals until a complete response is accepted below.
+			if m.request.HarnessMechanisms.ThinkingCycleGuard && m.outputTokenLimit == 0 && !report {
+				if match := cycleGuard.Add(chunk.Message.Thinking); match != nil {
+					cycleStop = &thinkingCycleStop{match: *match}
+					return cycleStop
+				}
 			}
 			return nil
 		}, func(receipt inference.ChatChunk) {
 			metric, reason = receipt.Metrics, receipt.DoneReason
+			usageDetails = receipt.UsageDetails
 			terminal, measured = true, receipt.TokenCountsPresent
 			recordReceipt(metric, terminal, measured)
 		})
 		if errors.Is(err, stopped) {
 			return
+		}
+		if cycleStop != nil {
+			clean := err == cycleStop && ctx.Err() == nil
+			if m.emit != nil {
+				// Measured after Generate returns: elapsedMs includes backend
+				// cleanup, and observed thinking can extend past the trigger
+				// prefix when one provider chunk contains multiple lines.
+				m.emit(Event{Type: "thinking_cycle_interrupted", Title: "Repeated thinking interrupted", NodeID: m.request.NodeID, Detail: "The experimental thinking-only guard interrupted an unfinished provider attempt; no proposed tools from this attempt executed.", Data: map[string]any{
+					"model": m.Name(), "step": step, "attempt": attempt, "guard": cycleStop.match,
+					"elapsedMs": time.Since(attemptStarted).Milliseconds(), "backend": m.client.Descriptor(),
+					"cleanInterruption": clean, "terminalReceipt": terminal, "tokenCountsPresent": measured,
+					"thinkingBytesObserved": thinking.Len(), "thinkingCharactersObserved": utf8.RuneCountInString(thinking.String()),
+					"stagedToolCallsDiscarded": len(calls), "visibleCharactersDiscarded": utf8.RuneCountInString(text.String()),
+				}})
+			}
+			if ctxErr := ctx.Err(); ctxErr != nil {
+				yield(nil, ctxErr)
+				return
+			}
+			if clean {
+				m.budget.mu.Lock()
+				exhausted := m.budget.OutputBytes >= m.budget.MaxOutputBytes
+				m.budget.mu.Unlock()
+				if exhausted {
+					yield(nil, fmt.Errorf("%w: no output allowance remains after thinking-cycle interruption", ErrBudgetExceeded))
+					return
+				}
+				yield(nil, &incompleteResponseError{usage: metric, cause: cycleStop, thinkingCycle: true})
+				return
+			}
+			// Do not retry a joined cleanup failure, wrapped transport error, or
+			// a backend that ignored the callback's stop request.
+			if err == nil {
+				err = errors.New("backend ignored the thinking-cycle interruption")
+			}
 		}
 		if err != nil {
 			yield(nil, err)
@@ -293,7 +545,9 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 				"promptTokens": metric.PromptEvalCount, "outputTokens": metric.EvalCount, "doneReason": reason,
 				"visibleCharacters": utf8.RuneCountInString(text.String()), "thinkingCharacters": utf8.RuneCountInString(thinking.String()), "toolCalls": len(calls),
 				"summary":      m.outputTokenLimit > 0,
+				"budgetReport": report, "droppedToolCalls": dropped,
 				"toolProtocol": m.request.ToolProtocol, "rawResponseCharacters": rawCharacters,
+				"backend": m.client.Descriptor(), "usageDetails": usageDetails,
 			}})
 		}
 		// Do not publish a complete ADK turn or execute tool calls from a
@@ -301,7 +555,7 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 		// incomplete result. The summary adapter instead returns MAX_TOKENS to
 		// ADK's summarizer, which rejects the summary without replacing history.
 		if reason == "length" && m.outputTokenLimit == 0 {
-			yield(nil, &incompleteResponseError{content: text.String(), usage: metric})
+			yield(nil, &incompleteResponseError{content: text.String(), usage: metric, lengthLimit: true})
 			return
 		}
 		if protocolErr != nil {
@@ -337,7 +591,11 @@ func (m *ollamaModel) generateAttempt(ctx context.Context, req *model.LLMRequest
 		if reason == "length" {
 			finish = genai.FinishReasonMaxTokens
 		}
-		yield(&model.LLMResponse{Content: &genai.Content{Role: genai.RoleModel, Parts: parts}, TurnComplete: true, FinishReason: finish, UsageMetadata: &genai.GenerateContentResponseUsageMetadata{PromptTokenCount: int32(metric.PromptEvalCount), CandidatesTokenCount: int32(metric.EvalCount), TotalTokenCount: int32(metric.PromptEvalCount + metric.EvalCount)}, CustomMetadata: map[string]any{"ollama_metrics": metric, "done_reason": reason}}, nil)
+		metadata := map[string]any{"provider_metrics": metric, "backend": m.client.Descriptor(), "usage_details": usageDetails, "done_reason": reason}
+		if m.client.Descriptor().Provider == inference.ProviderOllama {
+			metadata["ollama_metrics"] = metric
+		}
+		yield(&model.LLMResponse{Content: &genai.Content{Role: genai.RoleModel, Parts: parts}, TurnComplete: true, FinishReason: finish, UsageMetadata: &genai.GenerateContentResponseUsageMetadata{PromptTokenCount: int32(metric.PromptEvalCount), CandidatesTokenCount: int32(metric.EvalCount), TotalTokenCount: int32(metric.PromptEvalCount + metric.EvalCount)}, CustomMetadata: metadata}, nil)
 	}
 }
 

@@ -30,16 +30,18 @@ func TestIncompleteGenerationRecordsLimitsAndObservedUsageWithoutContent(t *test
 			metrics = append(metrics, ev.Data.(map[string]any))
 		}
 	}, nil)
-	if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || len(metrics) != 1 {
+	// The original and both length retries each record their own attempt.
+	if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || len(metrics) != 3 {
 		t.Fatalf("incomplete result or final metrics lost: result=%+v err=%v metrics=%v", result, err, metrics)
 	}
-	m := metrics[0]
-	if m["contextSize"] != 65536 || m["maxOutputTokens"] != 8192 || m["promptTokens"] != 21217 || m["outputTokens"] != 8192 || m["doneReason"] != "length" || m["thinkingCharacters"] != 15 {
-		t.Fatalf("generation limits/usage ambiguous: %+v", m)
-	}
-	encoded, _ := json.Marshal(m)
-	if strings.Contains(string(encoded), "private thought") || strings.Contains(string(encoded), "unfinished") {
-		t.Fatal("metrics captured model content")
+	for i, m := range metrics {
+		if m["contextSize"] != 65536 || m["maxOutputTokens"] != 8192 || m["promptTokens"] != 21217 || m["outputTokens"] != 8192 || m["doneReason"] != "length" || m["thinkingCharacters"] != 15 || m["attempt"] != i+1 {
+			t.Fatalf("generation limits/usage ambiguous: %+v", m)
+		}
+		encoded, _ := json.Marshal(m)
+		if strings.Contains(string(encoded), "private thought") || strings.Contains(string(encoded), "unfinished") {
+			t.Fatal("metrics captured model content")
+		}
 	}
 }
 

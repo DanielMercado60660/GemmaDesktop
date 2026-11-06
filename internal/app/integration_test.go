@@ -32,10 +32,12 @@ func newIntegrationHarness(t *testing.T, chat func(http.ResponseWriter, *http.Re
 		switch r.URL.Path {
 		case "/api/version":
 			fmt.Fprint(w, `{"version":"test-fixture"}`)
-		case "/api/tags", "/api/ps":
+		case "/api/ps":
 			fmt.Fprint(w, `{"models":[]}`)
+		case "/api/tags":
+			fmt.Fprint(w, `{"models":[{"name":"fixture","digest":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","details":{"quantization_level":"fixture"}}]}`)
 		case "/api/show":
-			fmt.Fprint(w, `{"capabilities":["completion","tools"]}`)
+			fmt.Fprint(w, `{"capabilities":["completion","tools","thinking"],"template":"fixture chat template","details":{"quantization_level":"fixture"}}`)
 		case "/api/chat":
 			var req inference.ChatRequest
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

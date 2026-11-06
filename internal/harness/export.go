@@ -23,6 +23,19 @@ func (m *Manager) Export(id string) (Doc, error) {
 		return nil, e
 	}
 	out := Doc{"format": "gemma-harness-export-v1", "createdAt": m.now(), "experiment": asDoc(x), "upstreamRevision": UpstreamRevision, "limitations": []string{"Hidden grader sources and assertions are intentionally excluded; grader hashes identify the trusted policy.", "Credential records and raw thinking are never loaded. Known private metadata keys and the app data root are redacted from metadata/traces; candidate artifact bytes remain exact and should be reviewed before sharing."}}
+	if x.Spec.UpstreamRevision == "" {
+		out["upstreamRevision"] = LegacyUpstreamRevision
+	} else {
+		out["upstreamRevision"] = x.Spec.UpstreamRevision
+	}
+	if x.Spec.FixturePackID != "" {
+		batches, err := m.OptimizationBatchesV2(x.ID)
+		if err != nil {
+			return nil, err
+		}
+		out["optimizationBatches"] = batches
+		out["format"] = "gemma-harness-development-export-v2"
+	}
 	taskIDs := map[string]bool{}
 	for _, id := range x.Spec.TaskIDs {
 		taskIDs[id] = true
@@ -178,7 +191,7 @@ func (m *Manager) Export(id string) (Doc, error) {
 	out["revisions"] = rs
 	ts := []Task{}
 	for tid := range taskIDs {
-		t := m.tasks[tid]
+		t, _ := m.taskForSpec(x.Spec, tid)
 		t.Cases = nil
 		t.Probe = nil
 		ts = append(ts, t)

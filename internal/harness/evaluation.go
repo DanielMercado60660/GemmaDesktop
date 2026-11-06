@@ -26,6 +26,9 @@ func (m *Manager) StartEvaluation(experimentID string) (Evaluation, error) {
 	if x.Status != "completed" || x.CandidateID == "" {
 		return Evaluation{}, errors.New("complete and freeze the optimization candidate first")
 	}
+	if x.Spec.FixturePackID != "" {
+		return Evaluation{}, errors.New("versioned packs require two-arm reliability-v2 qualification")
+	}
 	if x.Spec.FixtureDigest != m.fixtureDigest() {
 		return Evaluation{}, errors.New("fixture policy changed since experiment admission")
 	}

@@ -1,0 +1,82 @@
+{
+  "id": "v-line-endings",
+  "name": "Repair line ending normalization",
+  "stack": "go",
+  "split": "validation",
+  "exposureFamily": "gemma-v2-original-v-line-endings",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport(\"strings\";\"strconv\")\nvar _=strings.Compare\nvar _=strconv.Itoa\nfunc solve(x map[string]any)any{return strings.ReplaceAll(x[\"text\"].(string),\"\\r\\n\",\"\\n\")}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/v-line-endings\n\ngo 1.23\n",
+    "public_test.go": "package main\nimport(\"encoding/json\";\"testing\";\"reflect\")\nfunc TestPublicContract(t *testing.T){var cases []struct{Input map[string]any;Expected any};_ = cases;var rows [][]json.RawMessage;if e:=json.Unmarshal([]byte(`[[{\"text\": \"abc\"}, \"abc\"], [{\"text\": \"a\\r\\nb\"}, \"a\\nb\"]]`),&rows);e!=nil{t.Fatal(e)};for _,row:=range rows{var input map[string]any;var expected,actual any;json.Unmarshal(row[0],&input);json.Unmarshal(row[1],&expected);b,e:=json.Marshal(solve(input));if e!=nil{t.Fatal(e)};json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected){t.Fatalf(\"got %v expected %v\",actual,expected)}}}\n",
+    "README.md": "# Repair line ending normalization\n\nConvert CRLF and lone CR into LF. Leave existing LF and all other characters unchanged.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `go test ./...`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.go",
+    "public_test.go",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "*_test.go"
+  ],
+  "discoveryCommand": [
+    "go",
+    "test",
+    "-json",
+    "./..."
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "text": "abc"
+      },
+      "expected": "abc",
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "text": "a\r\nb"
+      },
+      "expected": "a\nb",
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "text": "a\rb"
+      },
+      "expected": "a\nb",
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "text": "\r\r\n"
+      },
+      "expected": "\n\n",
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "text": ""
+      },
+      "expected": "",
+      "critical": false
+    }
+  ]
+}

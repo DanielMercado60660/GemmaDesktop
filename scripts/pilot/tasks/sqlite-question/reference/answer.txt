@@ -1,0 +1,5 @@
+**Lucia Romero** (customer 9) spent the most in 2025: **$3,316.63** across 9 orders, with cancelled orders excluded.
+
+How it's computed: sum of `quantity * unit_price` from `order_items`, joined to `orders`, keeping orders dated in 2025 whose status isn't `cancelled`. `order_date` stores a timestamp (`YYYY-MM-DD HH:MM:SS`), so I filtered with `>= '2025-01-01' AND < '2026-01-01'`; that keeps her $1,197.88 order placed on the evening of Dec 31. The runner-up is Marcus Lindqvist at $2,861.62.
+
+The SQL is in `query.sql`. I didn't modify `data/shop.db`.

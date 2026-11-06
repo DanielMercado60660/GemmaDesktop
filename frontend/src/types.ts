@@ -1,3 +1,5 @@
+import type { ManagedRuntimeSnapshot } from "./lib/managedRuntime";
+
 export interface Workspace {
   id: string;
   name: string;
@@ -26,6 +28,13 @@ export interface Run {
   workspaceId: string;
   status: string;
   model: string;
+  runtimeBinding?: {
+    runtimeId: string;
+    backend: string;
+    revision?: string;
+    contextTokens?: number;
+    artifactDigest?: string;
+  };
   prompt: string;
   startedAt: string;
   finishedAt?: string;
@@ -36,6 +45,7 @@ export interface Run {
   incomplete?: boolean;
   resumable?: boolean;
   receipt?: RunReceipt;
+  verification?: "passed" | "unverified";
   usage?: {
     eval_count?: number;
     eval_duration?: number;
@@ -44,8 +54,16 @@ export interface Run {
     total_duration?: number;
   };
 }
+// Matches the host's run.start contract, which rejects unknown fields.
+export interface VerificationContract {
+  command: string[];
+  workingDirectory: string;
+  protectedPaths: string[];
+  requireRegressionTest: boolean;
+}
 export interface ReceiptCommand {
   callId: string;
+  tool?: string;
   status: string;
   executable: string;
   args?: string[];
@@ -66,6 +84,14 @@ export interface ReceiptCommand {
   lockHash?: string;
   publication?: string;
   workspaceChanged?: boolean;
+  verificationPassed?: boolean;
+  sourceDigest?: string;
+  sourceDigestAfter?: string;
+  contractDigest?: string;
+  /** verify_task only: the host ran this completion check, not the model. */
+  hostInitiated?: boolean;
+  /** verify_task only: the journal no longer shows who started this check. */
+  initiatorUnrecorded?: boolean;
   changes?: Array<{ path: string; beforeHash?: string; afterHash?: string }>;
 }
 export interface RunReceipt {
@@ -123,6 +149,18 @@ export interface Agent {
   name: string;
   instructions: string;
   model: string;
+  runtimeId?: string;
+  verificationFeedback?: boolean;
+  harnessMechanisms?: {
+    toolSet?: "all" | "inspect" | "coding" | "research";
+    repeatedFailureFeedback?: boolean;
+    streamRepetitionGuard?: boolean;
+    thinkingCycleGuard?: boolean;
+    explorationReminder?: boolean;
+    residentReadReuse?: boolean;
+    duplicateResultProjection?: boolean;
+    deferredToolDiscovery?: boolean;
+  };
   maxSteps: number;
   mode: string;
   thinking?: "auto" | "on" | "off";
@@ -148,6 +186,7 @@ export interface WorkflowEdge {
 }
 export interface Workflow {
   id: string;
+  revision?: string;
   name: string;
   description: string;
   nodes: WorkflowNode[];
@@ -168,6 +207,7 @@ export interface Model {
   runner?: string;
 }
 export interface Pull {
+  state?: string;
   name?: string;
   model?: string;
   status?: string;
@@ -176,6 +216,8 @@ export interface Pull {
   error?: string;
 }
 export interface Runtime {
+  ownership?: string;
+  modelStore?: string;
   available: boolean;
   version: string;
   error?: string;
@@ -192,6 +234,7 @@ export interface Runtime {
 export interface Settings {
   ollamaUrl: string;
   defaultModel: string;
+  defaultCompletionRuntimeId?: string;
   contextSize: number;
   maxSteps: number;
   mode: string;
@@ -250,6 +293,23 @@ export interface Experiment {
   [key: string]: unknown;
 }
 export interface State {
+  entityCursor?: number;
+  liveCursor?: string;
+  effectiveProfiles?: Array<{
+    workspaceId: string;
+    agentId: string;
+    armId?: string;
+    revisionId?: string;
+    promotionId?: string;
+    name?: string;
+    model?: string;
+    runtimeId?: string;
+    contextSize?: number;
+    status?: string;
+    error?: string;
+    generation?: Record<string, unknown>;
+  }>;
+  managedRuntime?: ManagedRuntimeSnapshot;
   workspaces: Workspace[];
   sessions: Session[];
   runs: Run[];
@@ -282,7 +342,7 @@ export const emptyState: State = {
     ollamaUrl: "http://127.0.0.1:11434",
     defaultModel: "gemma4:12b-mlx",
     contextSize: 32768,
-    maxSteps: 24,
+    maxSteps: 40,
     mode: "approval",
     theme: "dark",
   },

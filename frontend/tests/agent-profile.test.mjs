@@ -17,12 +17,12 @@ test("legacy profiles retain model-default thinking and persist displayed defaul
   const draft = agentProfileDraft(legacy);
   assert.equal(draft.thinking, "auto");
   assert.equal(draft.maxOutputTokens, 8192);
-  assert.equal(draft.temperature, 0.2);
+  assert.equal(draft.temperature, 1);
   assert.deepEqual(agentSavePayload(draft), {
     ...legacy,
     thinking: "auto",
     maxOutputTokens: 8192,
-    temperature: 0.2,
+    temperature: 1,
   });
   assert.equal(Object.hasOwn(legacy, "thinking"), false);
   assert.equal(Object.hasOwn(legacy, "temperature"), false);
@@ -45,12 +45,12 @@ test("explicit saved choices survive reopen/save without switching thinking off"
     name: "New",
     thinking: "auto",
     maxOutputTokens: 8192,
-    temperature: 0.2,
+    temperature: 1,
   });
 });
 
 test("explicit zero and saved temperature choices round-trip without changing thinking", () => {
-  for (const temperature of [0, 0.1, 1, 2]) {
+  for (const temperature of [0, 0.1, 0.2, 1, 2]) {
     const saved = {
       id: "agent",
       thinking: "auto",

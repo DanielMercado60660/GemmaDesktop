@@ -15,6 +15,15 @@ func (c *Core) runReceipt(id string) (Doc, error) {
 	}
 	commands, changes := []Doc{}, []Doc{}
 	detailsLimited := false
+	var starters map[string]string
+	for _, call := range summary.Records {
+		if str(call, "tool") == "verify_task" {
+			if starters, err = c.verificationStarters(id); err != nil {
+				return nil, err
+			}
+			break
+		}
+	}
 	for i := len(summary.Records) - 1; i >= 0; i-- {
 		call := summary.Records[i]
 		status := str(call, "status")
@@ -22,11 +31,30 @@ func (c *Core) runReceipt(id string) (Doc, error) {
 		result := obj(call["result"])
 		data := obj(result["data"])
 		switch str(call, "tool") {
-		case "run_command", "setup_dependencies":
+		case "run_command", "setup_dependencies", "verify_task":
 			if len(commands) >= 100 {
 				continue
 			}
 			d := Doc{"callId": call["callId"], "status": status, "executable": args["executable"], "args": args["args"], "workingDirectory": args["workingDirectory"], "readOnly": args["readOnly"]}
+			if str(call, "tool") == "verify_task" {
+				d["tool"] = "verify_task"
+				if command, ok := data["command"].([]any); ok && len(command) > 0 {
+					d["executable"], d["args"] = command[0], command[1:]
+				} else {
+					d["executable"] = "verify_task"
+				}
+				for _, key := range []string{"verificationPassed", "sourceDigest", "sourceDigestAfter", "contractDigest"} {
+					d[key] = data[key]
+				}
+				// "Run by the model" needs the model's own start event too: a
+				// host check whose start fell outside the event window must not
+				// be attributed to the model by default.
+				if starter := starters[str(call, "id")]; starter == "host" {
+					d["hostInitiated"] = true
+				} else if starter == "" {
+					d["initiatorUnrecorded"] = true
+				}
+			}
 			if str(call, "tool") == "setup_dependencies" {
 				d["executable"] = "setup_dependencies"
 				d["args"] = []string{str(args, "packageManager")}
@@ -72,6 +100,59 @@ func (c *Core) runReceipt(id string) (Doc, error) {
 		}
 	}
 	return Doc{"source": "durable tool journal", "toolCalls": summary.ToolCalls, "failedTools": summary.FailedTools, "unresolvedTools": summary.UnresolvedTools, "commands": commands, "changes": changes, "entriesLimited": summary.ReceiptEntries > len(commands)+len(changes) || detailsLimited, "note": "Observed actions only. Limited receipts omit older entries or argument detail. An exit code of zero does not independently verify the model's claims or task correctness."}, nil
+}
+
+// verificationStarters returns who started each verify_task, "host" or
+// "model", keyed by journal identity (run:node:call). The tool journal records
+// no provenance, so it comes from the durable tool_started event the run's
+// journal writes synchronously before the executor creates the intent. Events
+// returns the newest 3000; a check whose start is older than that is absent
+// here and stays unattributed rather than defaulting to either starter.
+func (c *Core) verificationStarters(runID string) (map[string]string, error) {
+	out := map[string]string{}
+	if runID == "" {
+		return out, nil // Events("") would read every run's journal.
+	}
+	events, err := c.Store.Events(runID, 0)
+	if err != nil {
+		return nil, err
+	}
+	for _, event := range events {
+		key, host, ok := verificationStart(str(event, "type"), str(event, "tool"), event["data"])
+		if ok && host {
+			out[runID+":"+key] = "host"
+		} else if ok && out[runID+":"+key] == "" {
+			out[runID+":"+key] = "model"
+		}
+	}
+	return out, nil
+}
+
+// verificationStart recognizes a verify_task tool_started event and keys it
+// node:call, as the journal does; host is true only for the engine host
+// verifier's own event. Call IDs are not evidence: providers may choose them,
+// and the engine also gives an unnamed model call a "tool_" ID. A model call's
+// event data is the fixed ToolCall shape (id, name, arguments, nodeId), so its
+// arguments sit below the top level and cannot supply the marker.
+func verificationStart(eventType, tool string, data any) (key string, host, ok bool) {
+	var d map[string]any
+	switch v := data.(type) {
+	case map[string]any:
+		d = v
+	case Doc:
+		d = v
+	}
+	if eventType != "tool_started" || tool != "verify_task" {
+		return "", false, false
+	}
+	nodeID, _ := d["nodeId"].(string)
+	if d["hostInitiated"] == true {
+		callID, _ := d["callId"].(string)
+		return nodeID + ":" + callID, true, callID != ""
+	}
+	// A journal-bounded payload (omittedBytes) has no id and proves nothing.
+	id, _ := d["id"].(string)
+	return nodeID + ":" + id, false, id != ""
 }
 
 // A new user turn after cancellation/failure gets observations, not an ADK

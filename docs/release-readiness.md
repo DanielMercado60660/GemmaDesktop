@@ -1,5 +1,7 @@
 # GitHub release preparation
 
+> Historical snapshot — 29 October 2026. The implementation, test counts, runtime identities and delivery statements below describe that dated checkpoint. The current calculation/delivery work, opt-in campaign outcome and publication verification are recorded in [the current source-build and results record](implementation/RELIABILITY_PUBLICATION_2026-11-05.md).
+
 29 October 2026 · experimental source release · MIT licensed
 
 The release presents Gemma Desktop as a local Gemma/ADK desktop project for

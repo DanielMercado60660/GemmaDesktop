@@ -1,5 +1,7 @@
 # Gemma Desktop — delivery and verification
 
+> Historical snapshot — 28 October 2026. The implementation, test counts, runtime identities and delivery statements below describe that dated checkpoint. The current calculation/delivery work, opt-in campaign outcome and publication verification are recorded in [the November publication follow-up](RELIABILITY_PUBLICATION_2026-11-05.md).
+
 28 October 2026 · local release 0.2.1 (build 3) · Apple Silicon
 
 **Capability and Harness² phase delivered; baseline retained.** Milestones A–D, native demonstrations, independent review and the packaged correction release are complete. The frozen 0.2.0 campaign recorded all 72 paired attempts: baseline **0/36** automated passes and candidate **3/36**, including **0/18 versus 1/18** on held-out tasks. Integrity failures, incomplete historical cost accounting and independently reproduced defects prevent promotion. No candidate was activated; no failure was erased.

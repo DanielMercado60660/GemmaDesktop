@@ -252,12 +252,18 @@ func TestParallelTerminalsRejectedBeforeExecution(t *testing.T) {
 }
 
 func TestAgentConfigurationRetainsReadOnlyToolAndSkillPolicy(t *testing.T) {
-	base := engine.Request{Tools: []engine.ToolDefinition{{Name: "write_file"}}, Skills: []string{"base"}, ToolProtocol: engine.ToolProtocolStructuredJSON}
+	base := engine.Request{Tools: []engine.ToolDefinition{{Name: "write_file"}}, Skills: []string{"base"}, ToolProtocol: engine.ToolProtocolStructuredJSON, FinishReserveSeconds: 60}
 	req, err := nodeRequest(base, Node{ID: "reviewer", AgentID: "reviewer"}, func(string) (engine.Request, error) {
 		return engine.Request{ReadOnly: true, Tools: []engine.ToolDefinition{}, Skills: []string{"reviewer"}}, nil
 	})
-	if err != nil || !req.ReadOnly || len(req.Tools) != 0 || req.Skills[0] != "reviewer" || req.NodeID != "reviewer" || req.ToolProtocol != "" {
+	if err != nil || !req.ReadOnly || len(req.Tools) != 0 || req.Skills[0] != "reviewer" || req.NodeID != "reviewer" || req.ToolProtocol != "" || req.FinishReserveSeconds != 0 {
 		t.Fatalf("lost node policy: %+v %v", req, err)
+	}
+	req, err = nodeRequest(engine.Request{}, Node{ID: "bounded", AgentID: "bounded"}, func(string) (engine.Request, error) {
+		return engine.Request{FinishReserveSeconds: 45}, nil
+	})
+	if err != nil || req.FinishReserveSeconds != 45 {
+		t.Fatalf("lost selected node reserve: %+v %v", req, err)
 	}
 }
 
@@ -280,5 +286,73 @@ func TestSeparateRepliesToParallelApprovalsResumeJoin(t *testing.T) {
 	third, err := r.Run(t.Context(), d, req, nil, nil, nil)
 	if err != nil || len(third.Pending) != 0 || !strings.Contains(third.Content, `"first":"seed"`) || !strings.Contains(third.Content, `"second":"seed"`) {
 		t.Fatalf("join completion: content=%q pending=%d err=%v", third.Content, len(third.Pending), err)
+	}
+}
+
+// Workflow nodes never run host completion checks or reminders, even when the
+// run asked for feedback and grants verify_task: fan-out siblings share one
+// workspace, so a check could see a sibling's half-finished edit, prompt once
+// per node, and fail the graph with a bare error.
+func TestWorkflowNodesNeverRunCompletionChecks(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/show" {
+			fmt.Fprint(w, `{}`)
+			return
+		}
+		var req inference.ChatRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			t.Error(err)
+		}
+		for _, m := range req.Messages {
+			if m.Role == "tool" {
+				fmt.Fprintln(w, `{"done":true,"message":{"content":"edited"}}`)
+				return
+			}
+		}
+		fmt.Fprintln(w, `{"done":true,"message":{"tool_calls":[{"function":{"name":"write_file","arguments":{"path":"calc.go"}}}]}}`)
+	}))
+	defer srv.Close()
+	c, _ := inference.NewClient(srv.URL)
+	for _, tc := range []struct {
+		name  string
+		nodes []Node
+		edges []Edge
+		runs  int // node conversations: the agent, or each fan-out child
+	}{
+		{"agent", []Node{{ID: "worker", Type: "agent"}}, nil, 1},
+		{"fanout", []Node{{ID: "fan", Type: "fanout", Items: []string{"a", "b"}}, {ID: "done", Type: "output"}}, []Edge{{Source: "fan", Target: "done"}}, 2},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var mu sync.Mutex
+			var hostInitiated, feedback int
+			var checks, writes atomic.Int32
+			req := engine.Request{Model: "fixture", Prompt: "repair", MaxSteps: 12, VerificationRequired: true, VerificationFeedback: true, Tools: []engine.ToolDefinition{{Name: "write_file"}, {Name: "verify_task"}}}
+			result, err := New(engine.New(c)).Run(t.Context(), Definition{Nodes: tc.nodes, Edges: tc.edges}, req, func(e engine.Event) {
+				mu.Lock()
+				defer mu.Unlock()
+				if data, ok := e.Data.(map[string]any); ok && data["hostInitiated"] == true {
+					hostInitiated++
+				}
+				if e.Type == "verification_feedback" {
+					feedback++
+				}
+			}, func(_ context.Context, call engine.ToolCall) (engine.ToolResult, error) {
+				if call.Name == "verify_task" {
+					checks.Add(1)
+					return engine.ToolResult{IsError: true, Data: map[string]any{"verificationPassed": false, "checkOutcome": "failed", "readOnly": true, "sourceDigest": "a", "sourceDigestAfter": "a", "exitCode": float64(1)}}, errors.New("verification failed")
+				}
+				writes.Add(1)
+				return engine.ToolResult{Content: "written"}, nil
+			}, nil)
+			mu.Lock()
+			defer mu.Unlock()
+			if err != nil || int(writes.Load()) != tc.runs || checks.Load() != 0 || hostInitiated != 0 || feedback != 0 || result.Steps != 2*tc.runs || !strings.Contains(result.Content, "edited") {
+				t.Fatalf("content=%q steps=%d err=%v writes=%d checks=%d hostInitiated=%d feedback=%d", result.Content, result.Steps, err, writes.Load(), checks.Load(), hostInitiated, feedback)
+			}
+		})
+	}
+	// Both node kinds build their request here, so clearing it covers them.
+	if req, err := nodeRequest(engine.Request{VerificationRequired: true, VerificationFeedback: true}, Node{ID: "n"}, nil); err != nil || req.VerificationFeedback || !req.VerificationRequired {
+		t.Fatalf("node request kept completion feedback: %+v %v", req, err)
 	}
 }

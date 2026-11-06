@@ -1,0 +1,13 @@
+The port is decided in `service/settings_loader.py`.
+
+- Default port: **8085** (`DEFAULT_PORT = 8085`).
+- Override: the `NOTES_PORT` environment variable. `_port()` returns `DEFAULT_PORT` when `NOTES_PORT` is unset or blank; otherwise it uses `int(NOTES_PORT)` and raises a `ValueError` if the value isn't between 1 and 65535.
+- `load_settings()` builds the `Settings` object, and `service/server.py` binds to `settings.port` in `main()`.
+
+Two things that look like the port but aren't:
+- The README's "Deployment notes (2023)" section says port 8000. That's out of date, and the README's environment-variable table doesn't list `NOTES_PORT` at all.
+- `legacy/old_server.py` has `PORT = 5000`, but that's the old v1 prototype. Nothing in `service/` imports it.
+
+So running `python3 -m service.server` listens on 8085 unless you set something like `NOTES_PORT=9000`.
+
+I didn't change any files.

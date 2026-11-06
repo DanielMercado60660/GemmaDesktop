@@ -34,7 +34,7 @@ func (s *Store) ToolSummary(runID string) (ToolRunSummary, error) {
 	err = tx.QueryRow(`SELECT COUNT(*),
 		COALESCE(SUM(CASE WHEN json_extract(body,'$.status')='failed' THEN 1 ELSE 0 END),0),
 		COALESCE(SUM(CASE WHEN COALESCE(json_extract(body,'$.status'),'') NOT IN ('failed','completed') OR json_extract(body,'$.result.data.outcomeUnknown')=1 OR json_extract(body,'$.result.data.publication')='recovery_required' THEN 1 ELSE 0 END),0),
-		COALESCE(SUM(CASE WHEN json_extract(body,'$.tool') IN ('run_command','setup_dependencies') OR (json_extract(body,'$.status')='completed' AND json_extract(body,'$.tool') IN ('write_file','edit_file','move_file','delete_file','skill_materialize')) THEN 1 ELSE 0 END),0),
+		COALESCE(SUM(CASE WHEN json_extract(body,'$.tool') IN ('run_command','setup_dependencies','verify_task') OR (json_extract(body,'$.status')='completed' AND json_extract(body,'$.tool') IN ('write_file','edit_file','move_file','delete_file','skill_materialize')) THEN 1 ELSE 0 END),0),
 		COALESCE(SUM(CASE WHEN `+actionPredicate+` THEN 1 ELSE 0 END),0)
 		FROM entities WHERE kind='toolcall' AND json_extract(body,'$.runId')=?`, runID).Scan(&summary.ToolCalls, &summary.FailedTools, &summary.UnresolvedTools, &summary.ReceiptEntries, &summary.RecoveryActions)
 	if err != nil {
@@ -96,22 +96,24 @@ func toolSummaryProjection() string {
 		"'tool'," + short("tool", 200), "'status'," + short("status", 32),
 		"'arguments',json(CASE WHEN " + argsTooLarge + " THEN " + fallback + " ELSE " + args + " END)",
 		"'error'," + short("error", 1024),
-		"'detailsLimited',json(CASE WHEN " + argsTooLarge + " OR length(" + value("error") + ")>1024 OR length(" + value("result.data.changes") + ")>8192 THEN 'true' ELSE 'false' END)",
+		"'detailsLimited',json(CASE WHEN " + argsTooLarge + " OR length(" + value("error") + ")>1024 OR length(" + value("result.data.changes") + ")>8192 OR length(" + value("result.data.command") + ")>4096 THEN 'true' ELSE 'false' END)",
 	}
 	data := []string{}
 	for _, key := range []string{"path", "source", "workingDirectory", "image", "packageManager"} {
 		data = append(data, "'"+key+"',"+short("result.data."+key, 1024))
 	}
-	for _, key := range []string{"beforeHash", "afterHash", "signal", "commandId", "snapshotDigest", "dependencyDigest", "publication", "lockHash"} {
+	for _, key := range []string{"beforeHash", "afterHash", "signal", "commandId", "snapshotDigest", "dependencyDigest", "publication", "lockHash", "sourceDigest", "sourceDigestAfter", "contractDigest"} {
 		data = append(data, "'"+key+"',"+short("result.data."+key, 128))
 	}
 	for _, key := range []string{"exitCode", "durationMs", "packageCount", "downloadedBytes"} {
 		data = append(data, "'"+key+"',"+value("result.data."+key))
 	}
-	for _, key := range []string{"readOnly", "cancelled", "truncated", "outcomeUnknown", "workspaceChanged"} {
+	for _, key := range []string{"readOnly", "cancelled", "truncated", "outcomeUnknown", "workspaceChanged", "verificationPassed"} {
 		data = append(data, "'"+key+"',"+boolValue("result.data."+key))
 	}
 	changes := value("result.data.changes")
+	command := value("result.data.command")
+	data = append(data, "'command',json(CASE WHEN length("+command+")<=4096 THEN "+command+" ELSE NULL END)")
 	data = append(data, "'changes',json(CASE WHEN length("+changes+")<=8192 THEN "+changes+" ELSE NULL END)")
 	for _, key := range []string{"stdout", "stderr"} {
 		v := value("result.data." + key)

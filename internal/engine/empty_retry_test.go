@@ -91,8 +91,9 @@ func TestEmptyRetryPreservesHistoryAndExecutesOnlyNewTool(t *testing.T) {
 	system1, history1 := split(first)
 	system2, history2 := split(second)
 	system3, _ := split(third)
-	if system2 != system1+emptyGenerationFeedback || system3 != system1 || !reflect.DeepEqual(history1, history2) || !reflect.DeepEqual(first.Options, second.Options) {
-		t.Fatal("retry changed completed history/options, fabricated a turn, or persisted its feedback")
+	assertRetryMessageSuffix(t, first, second, emptyGenerationFeedback)
+	if system2 != system1 || system3 != system1 || !reflect.DeepEqual(history1, history2[:len(history1)]) || !reflect.DeepEqual(first.Options, second.Options) {
+		t.Fatal("retry changed completed history/options or persisted its feedback")
 	}
 	oldCall, oldResult, oldReasoning, completedCall, completedResult := false, false, false, false, false
 	for _, message := range history2 {
@@ -149,20 +150,20 @@ func TestEmptyRetryPreservesHistoryAndExecutesOnlyNewTool(t *testing.T) {
 	}
 }
 
-func TestEmptyRetrySecondFailurePreservesAllObservedUsage(t *testing.T) {
+func TestEmptyRetryThirdFailurePreservesAllObservedUsage(t *testing.T) {
 	for _, kind := range []string{"empty", "length", "transport", "cancel"} {
 		t.Run(kind, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 			var calls atomic.Int32
 			client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) {
-				if calls.Add(1) == 1 {
+				if calls.Add(1) <= 2 {
 					fmt.Fprintln(w, `{"done":true,"done_reason":"stop","prompt_eval_count":100,"eval_count":7}`)
 					return
 				}
 				switch kind {
 				case "empty":
-					fmt.Fprintln(w, `{"message":{"thinking":"second discarded thought"},"done":true,"done_reason":"stop","prompt_eval_count":110,"eval_count":9}`)
+					fmt.Fprintln(w, `{"message":{"thinking":"third discarded thought"},"done":true,"done_reason":"stop","prompt_eval_count":110,"eval_count":9}`)
 				case "length":
 					fmt.Fprintln(w, `{"message":{"content":"partial"},"done":true,"done_reason":"length","prompt_eval_count":110,"eval_count":9}`)
 				case "transport":
@@ -180,9 +181,9 @@ func TestEmptyRetrySecondFailurePreservesAllObservedUsage(t *testing.T) {
 					metrics++
 				}
 			}, nil)
-			wantPrompt, wantOutput, wantMetrics := 100, 7, 1
+			wantPrompt, wantOutput, wantMetrics := 200, 14, 2
 			if kind == "empty" || kind == "length" {
-				wantPrompt, wantOutput, wantMetrics = 210, 16, 2
+				wantPrompt, wantOutput, wantMetrics = 310, 23, 3
 				if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete {
 					t.Fatalf("incomplete error identity lost: %v", err)
 				}
@@ -192,31 +193,42 @@ func TestEmptyRetrySecondFailurePreservesAllObservedUsage(t *testing.T) {
 			if kind == "cancel" && !errors.Is(err, context.Canceled) || kind == "empty" && !errors.Is(err, ErrEmptyResponse) {
 				t.Fatalf("underlying error identity lost: %v", err)
 			}
-			if err == nil || calls.Load() != 2 || retries != 1 || metrics != wantMetrics || result.Usage.PromptEvalCount != wantPrompt || result.Usage.EvalCount != wantOutput {
+			if err == nil || calls.Load() != 3 || retries != 2 || metrics != wantMetrics || result.Usage.PromptEvalCount != wantPrompt || result.Usage.EvalCount != wantOutput {
 				t.Fatalf("unbounded retry or discarded usage lost: err=%v calls=%d retries=%d metrics=%d usage=%+v", err, calls.Load(), retries, metrics, result.Usage)
 			}
-			if strings.Contains(string(result.Snapshot), "second discarded thought") {
+			if strings.Contains(string(result.Snapshot), "third discarded thought") {
 				t.Fatal("discarded thinking persisted")
 			}
 		})
 	}
 }
 
+// With no call left to retry an empty turn, the run spends its one status
+// report instead of a retry; a report that is empty too fails as before.
 func TestEmptyRetryHonorsSharedModelBudget(t *testing.T) {
-	var calls atomic.Int32
-	client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) {
-		calls.Add(1)
+	var requests []inference.ChatRequest
+	client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, chat inference.ChatRequest) {
+		requests = append(requests, chat)
 		fmt.Fprintln(w, `{"done":true,"done_reason":"stop","prompt_eval_count":100,"eval_count":7}`)
 	})
 	budget := &Budget{MaxModelCalls: 1, MaxToolCalls: 4, MaxOutputBytes: 1 << 20}
-	retries := 0
+	retries, notices := 0, 0
 	result, err := New(client).Run(WithBudget(t.Context(), budget), Request{Model: "fixture", Prompt: "Respond", MaxSteps: 4}, func(event Event) {
-		if event.Type == "generation_retry" {
+		switch event.Type {
+		case "generation_retry":
 			retries++
+		case "budget_report":
+			notices++
 		}
 	}, nil)
-	if !errors.Is(err, ErrBudgetExceeded) || errors.Is(err, ErrIncompleteResponse) || calls.Load() != 1 || retries != 0 || result.Steps != 1 || result.Usage.PromptEvalCount != 100 || result.Usage.EvalCount != 7 {
-		t.Fatalf("shared budget or empty usage lost: err=%v calls=%d retries=%d result=%+v", err, calls.Load(), retries, result)
+	if !errors.Is(err, ErrBudgetExceeded) || errors.Is(err, ErrIncompleteResponse) || !strings.Contains(err.Error(), "no model call remains for an empty-response retry; the status report failed") || result.Content != "" || result.Incomplete {
+		t.Fatalf("empty report changed the budget failure: err=%v result=%+v", err, result)
+	}
+	if len(requests) != 2 || retries != 0 || notices != 1 || result.Steps != 2 || result.Usage.PromptEvalCount != 200 || result.Usage.EvalCount != 14 {
+		t.Fatalf("shared budget, report or empty usage lost: requests=%d retries=%d notices=%d result=%+v", len(requests), retries, notices, result)
+	}
+	if strings.Contains(systemText(requests[1]), "Host protocol feedback") || !strings.Contains(systemText(requests[1]), "Host budget notice") {
+		t.Fatalf("the extra call was a retry, not the report: %q", systemText(requests[1]))
 	}
 }
 
@@ -238,7 +250,8 @@ func TestEmptyRetryHonorsSharedOutputBudget(t *testing.T) {
 }
 
 func TestNonemptyFailureAndSummaryNeverRetry(t *testing.T) {
-	for _, kind := range []string{"length", "transport", "cancel", "summary"} {
+	// An ordinary length stop is retried; see length_retry_test.go.
+	for _, kind := range []string{"transport", "cancel", "summary"} {
 		t.Run(kind, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
@@ -246,8 +259,6 @@ func TestNonemptyFailureAndSummaryNeverRetry(t *testing.T) {
 			client := emptyRetryClient(t, func(w http.ResponseWriter, _ *http.Request, _ inference.ChatRequest) {
 				calls.Add(1)
 				switch kind {
-				case "length":
-					fmt.Fprintln(w, `{"message":{"content":"partial"},"done":true,"done_reason":"length","eval_count":9}`)
 				case "transport":
 					http.Error(w, "fixture failure", http.StatusServiceUnavailable)
 				case "cancel":

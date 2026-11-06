@@ -1,0 +1,6 @@
+{
+  "category": "file organization",
+  "prompt": "Please organize my notes/ folder: move each dated note (files named like 2025-03-04-title.md) into a subfolder for its year, e.g. notes/2025/2025-03-04-title.md. Leave all other files where they are and don't change any file contents.",
+  "protectedPaths": [],
+  "notes": "Ten dated notes across 2024-2026 must move to notes/<year>/ byte-for-byte. Pitfall: notes/2025-summary.md starts with a year but is not a YYYY-MM-DD- dated note and must stay put, as must README.txt, todo.txt and draft-ideas.md. Graded only on final files: exact placement, identical bytes, old locations gone, no extra files anywhere. The final chat answer is not graded."
+}

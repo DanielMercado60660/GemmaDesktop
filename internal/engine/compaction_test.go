@@ -149,7 +149,8 @@ func TestCompactionUsesTheRunModelBudget(t *testing.T) {
 		var req inference.ChatRequest
 		_ = json.NewDecoder(r.Body).Decode(&req)
 		calls++
-		if !isSummaryRequest(req) {
+		// Only the run's tools-free status report may follow the exhausted budget.
+		if !isSummaryRequest(req) && (calls != 2 || len(req.Tools) != 0 || !strings.Contains(req.Messages[0].Content, "Host budget notice")) {
 			t.Error("main model call bypassed the exhausted shared budget")
 		}
 		fmt.Fprintln(w, `{"message":{"content":"Useful summary"},"done":true,"eval_count":5}`)
@@ -157,7 +158,7 @@ func TestCompactionUsesTheRunModelBudget(t *testing.T) {
 	defer srv.Close()
 	c, _ := inference.NewClient(srv.URL)
 	result, err := New(c).Run(t.Context(), Request{Model: "fixture", Prompt: "continue", MaxSteps: 1, History: compactionHistory(), ContextSize: 4096, ContextPolicy: &ContextPolicy{Enabled: true, ThresholdTokens: 100, RetainEvents: 1}}, nil, nil)
-	if !errors.Is(err, ErrBudgetExceeded) || calls != 1 || result.Steps != 1 || result.Usage.EvalCount != 5 || len(result.Snapshot) == 0 {
+	if !errors.Is(err, ErrBudgetExceeded) || calls != 2 || result.Steps != 2 || result.Usage.EvalCount != 10 || len(result.Snapshot) == 0 {
 		t.Fatalf("summary escaped budget or snapshot: err=%v calls=%d steps=%d tokens=%d", err, calls, result.Steps, result.Usage.EvalCount)
 	}
 }

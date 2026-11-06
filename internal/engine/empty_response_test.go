@@ -29,7 +29,7 @@ func TestEmptyOrThinkingOnlyStopIsNotCompleted(t *testing.T) {
 			defer srv.Close()
 			client, _ := inference.NewClient(srv.URL)
 			result, err := New(client).Run(t.Context(), Request{Model: "fixture", Prompt: "Finish and report the observed result"}, nil, nil)
-			if !errors.Is(err, ErrEmptyResponse) || !result.Incomplete || result.Usage.EvalCount != 2292 || calls.Load() != 2 {
+			if !errors.Is(err, ErrEmptyResponse) || !result.Incomplete || result.Usage.EvalCount != 3438 || calls.Load() != 3 {
 				t.Fatalf("empty stop treated as complete or lost usage: %+v %v", result, err)
 			}
 			if strings.Contains(string(result.Snapshot), "private reasoning without an answer") {

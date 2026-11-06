@@ -1,0 +1,116 @@
+{
+  "schema": "gemma-publication-redactions-v1",
+  "date": "2026-11-05",
+  "scope": "Publication derivatives only; raw records preserved separately outside version control. Historical internal hashes refer to the original raw records, not these redacted derivative bytes.",
+  "redaction": "macOS per-user temporary-directory root replaced with <HOST_TMP>/; all remaining bytes unchanged.",
+  "records": [
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/final-rc3-26b-focus.json",
+      "rawSHA256": "0ba8e0e4f3499f08a4c903ae4f2af8f0928ee51c6886a2dc4e569e8c1962636a",
+      "publicSHA256": "f790540ca4e3d6cf5e9ae0776bfa83d64f7eb70a18fb558f274cadd656100b9e",
+      "replacementCount": 5
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/new-baseline-12b.json",
+      "rawSHA256": "8e833d25a8d81713d740ccad393468b9ebe3818628a273a25a1fadfc474b3d65",
+      "publicSHA256": "2ebaf1be858bd6a65eb775b2a0b68e3f4b0582c0a644812d3c4e5df5de293236",
+      "replacementCount": 2
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-baseline-12b.json",
+      "rawSHA256": "3be1f9d8076fc9f85f9649baf17931685336f5aa00a7e250f08314193deb3a18",
+      "publicSHA256": "577e9e2f70d29cf584a9b7e3192fc876096c2d6f555552847c704de7e6ef1ef2",
+      "replacementCount": 11
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-baseline-26b-r2.json",
+      "rawSHA256": "4b8bae8d762f502ee70220ce37c5175d149925e7922a99282ceb9819e6083795",
+      "publicSHA256": "53d27ed92defd723e460a65ead536fcacb2f6d896d383c3a46111c1704516e21",
+      "replacementCount": 6
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-baseline-26b.json",
+      "rawSHA256": "14e2a7bd8dc9d941deb28aefa2c93cf61472ad5b2a664b2916b33494423aa4d2",
+      "publicSHA256": "4c2b564dcbc82d27290ada5b6e814ddf8f995dcb3d915159ad872d1f8c016103",
+      "replacementCount": 9
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-final-12b.json",
+      "rawSHA256": "2d220013a3443f3c4b11f3ab67a176b72f8c53ca7b7657afe69ef72c573fde14",
+      "publicSHA256": "5f7c87c177da022eb0f81a30b9b23b7a233858333d52b792440d400a347c954f",
+      "replacementCount": 5
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-final-26b.json",
+      "rawSHA256": "2f3bafc58a8cf6f48e8c1ff0ed33746b8f33c39070c06fdfebfff2856978469b",
+      "publicSHA256": "6a9da6d4be25dce1e07d4d2b4cadc019c3d8746dd6c35656f0578ffb01133ced",
+      "replacementCount": 7
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-final2-12b-steps40.json",
+      "rawSHA256": "3017366f037eb33c783582f87d2460d57d72aace19acb49957a02bb696cb1ad8",
+      "publicSHA256": "a7ba9c1cbfbad0e6317baf1fe1c47fa3ba514aa1f5c63da3e0ef16a814e7dd6f",
+      "replacementCount": 9
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-final2-26b-steps40.json",
+      "rawSHA256": "425176b3c6922c28338d1946e0c5dc975a27e3dc4ff2472d6662ab0f32ac2706",
+      "publicSHA256": "0ac6efeff2ab12846d430c1ee2a96ea6d0c74d4009a9c5748f668b62986f4692",
+      "replacementCount": 7
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-fixed-26b.json",
+      "rawSHA256": "f5eafd06a3ea6f5a2e7481d5af245598e707ee69f247ab7cb5163c54ea58794f",
+      "publicSHA256": "9627ad977e167f7319c7275052474de2e44df02d532de06192bce02cd0ea3a2c",
+      "replacementCount": 7
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-rc1-12b-r2.json",
+      "rawSHA256": "e584af953a945b61d48d33fb9b8ec108063e16abd47f66a584b872e08e5c19f3",
+      "publicSHA256": "ccd9c52cbf249aaf92dd2cbe7e801df2b5c300b07364f6c3c01567c7db3e6867",
+      "replacementCount": 8
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-04/suite-rc1-26b-r2.json",
+      "rawSHA256": "d0a73c7bfa46c5214cae4ee5d555dcb7b85f74eda84f29e2c05464ab336f3ef0",
+      "publicSHA256": "3ac69acc0b70648b1799f0190812733570e04a336646b980dfa124ed7e620ec6",
+      "replacementCount": 7
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-05/baseline-20261105-r1.json",
+      "rawSHA256": "7aed0e20faf6bf2461cb93aecf39bb798ffc8b2d2da161e7e186ce782041b659",
+      "publicSHA256": "77475eb7344796412237e07f452398c2dfe2ebc5d6cdf333891dfe288bde3003",
+      "replacementCount": 8
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-05/candidate-20261105-r1.json",
+      "rawSHA256": "b86bfc11cff79564f39f8bbd5ca1059f7b8f6c91204693a7684135f5ee6c4b55",
+      "publicSHA256": "79d577bd1eebf009301eee43b797b2df8541b188f8c3e442e5c5071626192ade",
+      "replacementCount": 8
+    },
+    {
+      "path": "docs/evidence/task-pilot-2026-11-05/candidate-final-20261105-r1.json",
+      "rawSHA256": "7c7970aefed2a0a80755b93c462eb26236b9c7a3ec6a333bae9e4cb888d5c466",
+      "publicSHA256": "1d7139dda5b968c16b2ee43f0f3913d275471ee60833e9e8c53742f613c5d4f1",
+      "replacementCount": 8
+    },
+    {
+      "path": "docs/evidence/task-pilot-round2-2026-11-05/python-tests.txt",
+      "rawSHA256": "4afdf1a6c0d235b4fceee8517e7df400da8edcb33caad41fb60c455d6b85b3b1",
+      "publicSHA256": "7f1eac0648f9ca23c5138b0809328d37321fc12c181676335e316b7d7ef4e626",
+      "replacementCount": 4
+    },
+    {
+      "path": "docs/evidence/task-pilot-round2-2026-11-05/round2-control-20261105-r1.json",
+      "rawSHA256": "4c32930b96ee1f62f60391490625c3331be2473d426129e3ea3376f741e36247",
+      "publicSHA256": "eb3271b54954682cd5f7b0646a10c51d990be52331b21ee871d06682c7f5d794",
+      "replacementCount": 6
+    },
+    {
+      "path": "docs/evidence/task-pilot-round2-2026-11-05/round2-cycle-20261105-r1.json",
+      "rawSHA256": "12a7e4bc316967535d4e9dff9c18d974cccba7f0cc26a71f2aa1b5d3eb81c1fb",
+      "publicSHA256": "6aba48d68a3a7306ede41ca61dcb920b8a337f84c49a636a4f5d0d825c2ab561",
+      "replacementCount": 6
+    }
+  ]
+}

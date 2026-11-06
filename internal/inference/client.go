@@ -17,9 +17,9 @@ import (
 	"time"
 )
 
-var ErrIncompleteStream = errors.New("Ollama stream ended without a completion marker")
+var ErrIncompleteStream = errors.New("inference stream ended without a completion marker")
 var ErrRemoteModel = errors.New("cloud inference is disabled; select an installed local model")
-var ErrTextRequestTooLarge = errors.New("Ollama text request exceeds the 512 KiB host limit; compact context or reduce attached text")
+var ErrTextRequestTooLarge = errors.New("inference text request exceeds the 512 KiB host limit; compact context or reduce attached text")
 
 const maxResponseBytes = 16 << 20
 const maxStreamLine = 8 << 20
@@ -34,11 +34,18 @@ type Client struct {
 	http          *http.Client
 	inferenceHTTP *http.Client
 	admission     chan struct{}
+	gate          *AdmissionGate
 }
 
 // NewClient requires an explicit loopback origin. Proxy environment variables
 // and redirects cannot turn a local request into remote traffic.
 func NewClient(baseURL string) (*Client, error) {
+	return NewClientWithGate(baseURL, nil)
+}
+
+// NewClientWithGate shares admission with other local inference providers.
+// A nil gate creates an independent gate, preserving NewClient's behavior.
+func NewClientWithGate(baseURL string, gate *AdmissionGate) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://127.0.0.1:11434"
 	}
@@ -75,7 +82,10 @@ func NewClient(baseURL string) (*Client, error) {
 	inferenceTransport := transport.Clone()
 	inferenceTransport.ResponseHeaderTimeout = 0
 	rejectRedirect := func(*http.Request, []*http.Request) error { return errors.New("Ollama redirects are disabled") }
-	return &Client{base: u.String(), http: &http.Client{Transport: transport, CheckRedirect: rejectRedirect}, inferenceHTTP: &http.Client{Transport: inferenceTransport, CheckRedirect: rejectRedirect}, admission: make(chan struct{}, 1)}, nil
+	if gate == nil {
+		gate = NewAdmissionGate()
+	}
+	return &Client{base: u.String(), http: &http.Client{Transport: transport, CheckRedirect: rejectRedirect}, inferenceHTTP: &http.Client{Transport: inferenceTransport, CheckRedirect: rejectRedirect}, admission: gate.slot, gate: gate}, nil
 }
 
 func (c *Client) BaseURL() string { return c.base }
@@ -230,12 +240,11 @@ func (c *Client) Chat(ctx context.Context, req ChatRequest, emit func(ChatChunk)
 	if err := validateTextRequestSize(req); err != nil {
 		return err
 	}
-	select {
-	case c.admission <- struct{}{}:
-		defer func() { <-c.admission }()
-	case <-ctx.Done():
-		return ctx.Err()
+	release, err := c.gate.acquire(ctx)
+	if err != nil {
+		return err
 	}
+	defer release()
 	info, err := c.localInfo(ctx, req.Model)
 	if err != nil {
 		return err
@@ -401,12 +410,11 @@ func (c *Client) residency(ctx context.Context, name string, keepAlive any, opti
 	if err := validName(name); err != nil {
 		return err
 	}
-	select {
-	case c.admission <- struct{}{}:
-		defer func() { <-c.admission }()
-	case <-ctx.Done():
-		return ctx.Err()
+	release, err := c.gate.acquire(ctx)
+	if err != nil {
+		return err
 	}
+	defer release()
 	info, err := c.localInfo(ctx, name)
 	if err != nil {
 		return err

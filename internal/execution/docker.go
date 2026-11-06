@@ -193,6 +193,9 @@ func (d *DockerExecutor) RecoveryStatus() (string, error) {
 func (d *DockerExecutor) Run(ctx context.Context, req Request) (result Result, err error) {
 	start := time.Now()
 	result = Result{ExitCode: -1, Environment: "docker-linux", ReadOnly: req.ReadOnly, Image: d.config.Image, Publication: "not_applied"}
+	if err = workspace.ValidateProtectedPaths(req.ProtectedPaths); err != nil {
+		return result, err
+	}
 	defer func() {
 		result.DurationMS = time.Since(start).Milliseconds()
 		if ctx.Err() != nil {
@@ -425,7 +428,7 @@ func (d *DockerExecutor) Run(ctx context.Context, req Request) (result Result, e
 		result.Publication = "read_only"
 		return result, nil
 	}
-	pub, e := workspace.PublishCommand(ctx, req.Workspace, source, filepath.Join(dir, "publication"), base, d.config.PrivatePaths)
+	pub, e := workspace.PublishCommand(ctx, req.Workspace, source, filepath.Join(dir, "publication"), base, d.config.PrivatePaths, req.ProtectedPaths)
 	result.Publication = pub.Status
 	result.Changes = pub.Changes
 	result.JournalPath = pub.JournalPath

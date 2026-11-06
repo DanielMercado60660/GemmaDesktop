@@ -1,0 +1,4 @@
+{
+  "logic.py": "import re\ndef solve(x):\n total=0\n for part in x['text'].split():\n  match=re.fullmatch(r'(\\d+)(ms|s|m)',part)\n  if not match:return None\n  total+=int(match[1])*{'ms':1,'s':1000,'m':60000}[match[2]]\n return total\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass ContractRegression(unittest.TestCase):\n def test_contract_boundaries(self):\n  for value,expected in [({'text': '1m 250ms'}, 60250), ({'text': '3ms 2s 1m'}, 62003), ({'text': '2h'}, None), ({'text': '-1s'}, None), ({'text': '2sx'}, None)]:\n   with self.subTest(value=value):\n    try:actual=solve(value)\n    except Exception as error:self.fail(f\"contract raised {type(error).__name__}: {error}\")\n    else:self.assertEqual(actual,expected)\n"
+}

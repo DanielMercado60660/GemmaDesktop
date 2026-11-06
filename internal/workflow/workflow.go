@@ -93,6 +93,19 @@ func Validate(d Definition) error {
 		}
 		nodes[n.ID] = n
 	}
+	// Fan-out children run as <fanout>_item_<index>, and the host keys each
+	// conversation's revision memory by NodeID, so a node with a child's name
+	// would see revisions only that child read. No node may take such a name.
+	for _, n := range d.Nodes {
+		if n.Type != "fanout" {
+			continue
+		}
+		for id := range nodes {
+			if index, ok := strings.CutPrefix(id, n.ID+"_item_"); ok && index != "" && strings.Trim(index, "0123456789") == "" {
+				return fmt.Errorf("node %s reuses the identity of a %s fanout item", id, n.ID)
+			}
+		}
+	}
 	edgeKeys := map[string]bool{}
 	for _, e := range d.Edges {
 		source, ok := nodes[e.Source]
@@ -618,6 +631,8 @@ func nodeRequest(base engine.Request, n Node, resolve AgentResolver) (engine.Req
 		if specific.MaxOutputTokens > 0 {
 			base.MaxOutputTokens = specific.MaxOutputTokens
 		}
+		// A selected agent's zero explicitly disables a parent reserve.
+		base.FinishReserveSeconds = specific.FinishReserveSeconds
 		if specific.ContextSize > 0 {
 			base.ContextSize = specific.ContextSize
 		}
@@ -649,6 +664,10 @@ func nodeRequest(base engine.Request, n Node, resolve AgentResolver) (engine.Req
 	base.Snapshot = nil
 	base.Resume = nil
 	base.History = nil
+	// Nodes never run host completion checks or reminders: fan-out siblings
+	// share one workspace and would check each other's half-finished edits,
+	// prompt for each check, and turn a node into a bare graph failure.
+	base.VerificationFeedback = false
 	return base, nil
 }
 func nodePrompt(n Node, input any) string {

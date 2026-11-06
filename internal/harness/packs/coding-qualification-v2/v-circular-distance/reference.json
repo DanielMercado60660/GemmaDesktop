@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n d=abs(x[\"a\"]%x[\"n\"]-x[\"b\"]%x[\"n\"]);return min(d,x[\"n\"]-d)\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass ContractRegression(unittest.TestCase):\n def test_contract_boundaries(self):\n  for value,expected in [({'n': 8, 'a': 7, 'b': 0}, 1), ({'n': 8, 'a': -1, 'b': 17}, 2), ({'n': 1, 'a': 99, 'b': -7}, 0)]:\n   with self.subTest(value=value):self.assertEqual(solve(value),expected)\n"
+}

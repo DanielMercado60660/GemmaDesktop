@@ -1,0 +1,87 @@
+{
+  "id": "h-suffix-trim",
+  "name": "Repair exact suffix removal",
+  "stack": "go",
+  "split": "heldout",
+  "exposureFamily": "gemma-v2-original-h-suffix-trim",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport(\"strings\";\"strconv\")\nvar _=strings.Compare\nvar _=strconv.Itoa\nfunc solve(x map[string]any)any{return strings.TrimRight(x[\"text\"].(string),x[\"suffix\"].(string))}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/h-suffix-trim\n\ngo 1.23\n",
+    "public_test.go": "package main\nimport(\"encoding/json\";\"testing\";\"reflect\")\nfunc TestPublicContract(t *testing.T){var cases []struct{Input map[string]any;Expected any};_ = cases;var rows [][]json.RawMessage;if e:=json.Unmarshal([]byte(`[[{\"text\": \"hello.txt\", \"suffix\": \".txt\"}, \"hello\"], [{\"text\": \"abc\", \"suffix\": \"x\"}, \"abc\"]]`),&rows);e!=nil{t.Fatal(e)};for _,row:=range rows{var input map[string]any;var expected,actual any;json.Unmarshal(row[0],&input);json.Unmarshal(row[1],&expected);b,e:=json.Marshal(solve(input));if e!=nil{t.Fatal(e)};json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected){t.Fatalf(\"got %v expected %v\",actual,expected)}}}\n",
+    "README.md": "# Repair exact suffix removal\n\nRemove a requested suffix at most once, only when the full suffix matches the end. An empty suffix leaves text unchanged. Do not treat suffix characters as a cutset.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `go test ./...`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.go",
+    "public_test.go",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "*_test.go"
+  ],
+  "discoveryCommand": [
+    "go",
+    "test",
+    "-json",
+    "./..."
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "text": "hello.txt",
+        "suffix": ".txt"
+      },
+      "expected": "hello",
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "text": "abc",
+        "suffix": "x"
+      },
+      "expected": "abc",
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "text": "foott",
+        "suffix": "tt"
+      },
+      "expected": "foo",
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "text": "file.tx",
+        "suffix": ".txt"
+      },
+      "expected": "file.tx",
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "text": "abc",
+        "suffix": ""
+      },
+      "expected": "abc",
+      "critical": false
+    }
+  ]
+}

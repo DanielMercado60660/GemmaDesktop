@@ -50,24 +50,38 @@ func copyHarnessTree(source, dest string) error {
 		return os.WriteFile(filepath.Join(dest, rel), b, 0600)
 	})
 }
-func (c *Core) gradeHarnessTrial(ctx context.Context, task harness.Task, trial harness.Trial) (grade harness.Grade, retErr error) {
+func (c *Core) gradeHarnessTrial(ctx context.Context, task harness.Task, trial harness.Trial) (harness.Grade, error) {
+	if strings.Contains(trial.Error, "disposable Harness cache cleanup failed") {
+		return c.gradeHarnessWithSpec(ctx, harness.Spec{}, task, trial)
+	}
+	if c.harness == nil {
+		return harness.Grade{}, errors.New("Harness services are unavailable")
+	}
+	experiment, err := c.harness.Get("experiment", trial.ExperimentID)
+	if err != nil {
+		return harness.Grade{}, err
+	}
+	var x harness.Experiment
+	b, _ := json.Marshal(experiment)
+	if err = json.Unmarshal(b, &x); err != nil {
+		return harness.Grade{}, err
+	}
+	return c.gradeHarnessWithSpec(ctx, x.Spec, task, trial)
+}
+
+func (c *Core) gradeHarnessRequest(ctx context.Context, request harness.GradeRequest) (harness.Grade, error) {
+	return c.gradeHarnessWithSpec(ctx, request.Spec, request.Task, request.Trial)
+}
+
+func (c *Core) gradeHarnessWithSpec(ctx context.Context, spec harness.Spec, task harness.Task, trial harness.Trial) (grade harness.Grade, retErr error) {
 	grade = harness.Grade{TrialID: trial.ID, GraderHash: task.GraderHash, Checks: []harness.Check{}}
 	if strings.Contains(trial.Error, "disposable Harness cache cleanup failed") {
 		grade.Checks = append(grade.Checks, harness.Check{Name: "infrastructure: disposable cache released", Passed: false, Critical: true, Error: trial.Error})
 		return grade, errors.New(trial.Error)
 	}
-	experiment, e := c.harness.Get("experiment", trial.ExperimentID)
-	if e != nil {
-		return grade, e
-	}
-	var x harness.Experiment
-	b, _ := json.Marshal(experiment)
-	if e = json.Unmarshal(b, &x); e != nil {
-		return grade, e
-	}
 	var frozen FrozenAgent
-	_ = json.Unmarshal(x.Spec.FrozenCapability, &frozen)
-	runner, e := c.executorForConfig("docker", x.Spec.ExecutorIdentity, frozen.ExecutionPrivatePaths)
+	_ = json.Unmarshal(spec.FrozenCapability, &frozen)
+	runner, e := c.executorForConfig("docker", spec.ExecutorIdentity, frozen.ExecutionPrivatePaths)
 	if e != nil {
 		return grade, e
 	}
@@ -78,7 +92,7 @@ func (c *Core) gradeHarnessTrial(ctx context.Context, task harness.Task, trial h
 	if trial.Status != "completed" && trial.Status != "failed" && trial.Status != "interrupted" {
 		return grade, errors.New("only a stopped immutable trial can be graded")
 	}
-	trialCleanup, e := c.beginHarnessCache("trial", trial.ID, root, x.Spec.ExecutorIdentity)
+	trialCleanup, e := c.beginHarnessCache("trial", trial.ID, root, spec.ExecutorIdentity)
 	if e != nil {
 		return grade, e
 	}
@@ -87,7 +101,7 @@ func (c *Core) gradeHarnessTrial(ctx context.Context, task harness.Task, trial h
 	if e != nil {
 		return grade, e
 	}
-	cleanup, e := c.beginHarnessCache("grader", trial.ID, gradeRoot, x.Spec.ExecutorIdentity)
+	cleanup, e := c.beginHarnessCache("grader", trial.ID, gradeRoot, spec.ExecutorIdentity)
 	if e != nil {
 		_ = os.RemoveAll(gradeRoot)
 		return grade, e
@@ -95,6 +109,9 @@ func (c *Core) gradeHarnessTrial(ctx context.Context, task harness.Task, trial h
 	defer c.finishHarnessGradeCache(ctx, runner, cleanup, &grade, &retErr)
 	if e = copyHarnessTree(root, gradeRoot); e != nil {
 		return grade, e
+	}
+	if task.Contract == "read_only" {
+		return gradeReadOnlyHarness(task, trial, gradeRoot), nil
 	}
 	// The trusted checker keeps expected values in the host controller and sends
 	// only inputs to a separate isolated candidate process. No host imports occur.
@@ -153,7 +170,15 @@ func (c *Core) gradeHarnessTrial(ctx context.Context, task harness.Task, trial h
 		}
 		return nil
 	})
-	grade.Checks = append(grade.Checks, harness.Check{Name: "new regression test artifact present (meaningfulness requires independent review)", Passed: freshTest})
+	if task.Contract == "coding" {
+		checks, err := c.gradeHarnessRegression(ctx, spec, task, gradeRoot, trial.ID, runner)
+		if err != nil {
+			return grade, err
+		}
+		grade.Checks = append(grade.Checks, checks...)
+	} else {
+		grade.Checks = append(grade.Checks, harness.Check{Name: "new regression test artifact present (meaningfulness requires independent review)", Passed: freshTest})
+	}
 	grade.Checks = append(grade.Checks, harness.Check{Name: "prescribed verification after final edit", Passed: harnessVerificationAfterEdits(task.Command, trial.Result.ToolCalls)})
 	verification, e := runner.Run(ctx, execution.Request{Workspace: gradeRoot, Executable: task.Command[0], Args: task.Command[1:], ReadOnly: true, Timeout: 2 * time.Minute, MaxOutput: 128 << 10})
 	if e != nil && !candidateProcessFailure(ctx, verification, e) {
@@ -212,6 +237,15 @@ func harnessVerificationAfterEdits(prescribed []string, calls []harness.ToolObse
 				if call.Error == "" && number(call.Data, "exitCode", -1) == 0 && call.Arguments["readOnly"] == true {
 					lastCommand = call.StartSequence
 				}
+			}
+		}
+		if call.Tool == "verify_task" {
+			var command []string
+			b, _ := json.Marshal(call.Data["command"])
+			_ = json.Unmarshal(b, &command)
+			lastCommand = 0
+			if reflect.DeepEqual(command, prescribed) && call.Error == "" && call.Data["verificationPassed"] == true && call.Data["readOnly"] == true && str(call.Data, "sourceDigest") != "" && call.Data["sourceDigest"] == call.Data["sourceDigestAfter"] {
+				lastCommand = call.StartSequence
 			}
 		}
 	}

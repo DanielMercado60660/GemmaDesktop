@@ -18,6 +18,12 @@ func (c *Core) applyHarnessBinding(workspaceID string, agent Doc, req *engine.Re
 	if e != nil {
 		return nil, e
 	}
+	if expected := str(agent, "qualifiedProfileBindingHash"); expected != "" && expected != harness.Hash(bindingSelectionV2(binding)) {
+		return nil, errors.New("qualified profile changed while admitting the run")
+	}
+	if str(binding, "revisionId") == "" {
+		return nil, nil
+	}
 	if c.harness == nil {
 		return nil, errors.New("active harness revision cannot be resolved")
 	}
@@ -45,7 +51,7 @@ func (c *Core) applyHarnessBinding(workspaceID string, agent Doc, req *engine.Re
 		}
 		selected = append(selected, p)
 	}
-	original := defaultInstructions + "\n\n" + str(agent, "instructions")
+	original := agentInstructions(agent)
 	replacement := defaultInstructions + "\n\n" + revision.Content.Instructions + "\n" + revision.Content.ToolGuidance + "\n" + strings.Join(revision.Content.Lessons, "\n")
 	if strings.HasPrefix(req.Instructions, original) {
 		req.Instructions = replacement + strings.TrimPrefix(req.Instructions, original)
@@ -75,6 +81,9 @@ func (c *Core) harnessSelectedWorkflow(workspaceID, agentID string) (Doc, error)
 	}
 	if e != nil {
 		return nil, e
+	}
+	if str(binding, "revisionId") == "" {
+		return nil, nil
 	}
 	raw, e := c.harness.Get("revision", str(binding, "revisionId"))
 	if e != nil {

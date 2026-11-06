@@ -1,0 +1,4 @@
+{
+  "logic.py": "def solve(x):\n last={r['id']:i for i,r in enumerate(x['records'])};return [r for i,r in enumerate(x['records']) if last[r['id']]==i]\n",
+  "test_regression.py": "import unittest\nfrom logic import solve\nclass ContractRegression(unittest.TestCase):\n def test_contract_boundaries(self):\n  for value,expected in [({'records': [{'id': 'a', 'v': 1}, {'id': 'b', 'v': 2}, {'id': 'a', 'v': 3}]}, [{'id': 'b', 'v': 2}, {'id': 'a', 'v': 3}]), ({'records': [{'id': '', 'v': 0}, {'id': 'x', 'v': 1}, {'id': '', 'v': 2}]}, [{'id': 'x', 'v': 1}, {'id': '', 'v': 2}]), ({'records': [{'id': 'a'}, {'id': 'a'}]}, [{'id': 'a'}])]:\n   with self.subTest(value=value):self.assertEqual(solve(value),expected)\n"
+}

@@ -100,7 +100,12 @@ func TestStructuredAdapterNeverDispatchesInvalidOrTruncatedActions(t *testing.T)
 			defer srv.Close()
 			client, _ := inference.NewClient(srv.URL)
 			result, err := New(client).Run(t.Context(), Request{Model: "fixture", Prompt: "do task", ToolProtocol: ToolProtocolStructuredJSON, Tools: []ToolDefinition{{Name: "effect", Parameters: map[string]any{"type": "object", "properties": map[string]any{}}}}}, nil, func(context.Context, ToolCall) (ToolResult, error) { effects.Add(1); return ToolResult{}, nil })
-			if !errors.Is(err, tc.want) || !result.Incomplete || effects.Load() != 0 || requests.Load() != 1 || result.Content != "" || result.Usage.EvalCount != 7 {
+			// A length stop is retried twice; invalid actions are never retried.
+			attempts := int32(1)
+			if tc.reason == "length" {
+				attempts = 3
+			}
+			if !errors.Is(err, tc.want) || !result.Incomplete || effects.Load() != 0 || requests.Load() != attempts || result.Content != "" || result.Usage.EvalCount != 7*int(attempts) {
 				t.Fatalf("result=%+v err=%v effects=%d requests=%d", result, err, effects.Load(), requests.Load())
 			}
 			if strings.Contains(string(result.Snapshot), tc.content) {

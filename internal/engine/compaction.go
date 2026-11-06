@@ -58,11 +58,28 @@ type observedSummarizer struct {
 }
 
 func (s *observedSummarizer) SummarizeEvents(ctx context.Context, events []*session.Event) (compaction.SummarizeResult, error) {
-	s.emit(Event{Type: "context_compacting", Title: "Summarizing earlier context", NodeID: s.nodeID, Data: map[string]any{"events": len(events)}})
-	result, err := s.inner.SummarizeEvents(ctx, events)
-	if err != nil {
-		s.emit(Event{Type: "context_compaction_failed", Title: "Context summary was not applied", NodeID: s.nodeID, Detail: err.Error(), Data: map[string]any{"historyPreserved": true}})
+	input := observeCompactionInput(events)
+	if s.emit != nil {
+		s.emit(Event{Type: "context_compacting", Title: "Summarizing earlier context", NodeID: s.nodeID, Data: map[string]any{"events": len(events), "input": input}})
 	}
+	started := time.Now()
+	result, err := s.inner.SummarizeEvents(ctx, events)
+	elapsed := time.Since(started).Milliseconds()
+	if s.emit == nil {
+		return result, err
+	}
+	status := "generated"
+	if err != nil {
+		status = "failed"
+		s.emit(Event{Type: "context_compaction_failed", Title: "Context summary was not applied", NodeID: s.nodeID, Detail: err.Error(), Data: map[string]any{"historyPreserved": true}})
+	} else if result.Content == nil {
+		status = "declined"
+	}
+	s.emit(Event{Type: "context_compaction_metrics", Title: "Context summary attempt measured", NodeID: s.nodeID, Data: map[string]any{
+		"input": input, "elapsedMilliseconds": elapsed, "status": status,
+		"summaryTextCharacters": summaryTextCharacters(result.Content), "usage": result.Usage,
+		"scope": "Supplied event content and returned summary; not rendered prompt tokens or net context savings. A generated summary is committed only when context_compacted is recorded.",
+	}})
 	return result, err
 }
 

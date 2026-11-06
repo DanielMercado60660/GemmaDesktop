@@ -193,7 +193,8 @@ func TestLengthLimitedResponseIsIncompleteAndCannotExecuteTools(t *testing.T) {
 					draftEvents++
 				}
 			}, func(context.Context, ToolCall) (ToolResult, error) { calls++; return ToolResult{}, nil })
-			if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || calls != 0 || draftEvents == 0 || result.Content != "Unfinished draft before limit" || result.Usage.EvalCount != 17 {
+			// The original and both retries stop at the limit.
+			if !errors.Is(err, ErrIncompleteResponse) || !result.Incomplete || calls != 0 || draftEvents == 0 || result.Content != "Unfinished draft before limit" || result.Usage.EvalCount != 51 {
 				t.Fatalf("truncation treated as success: err=%v result=%+v calls=%d drafts=%d", err, result, calls, draftEvents)
 			}
 			if strings.Contains(string(result.Snapshot), "Unfinished draft") || strings.Contains(string(result.Snapshot), "unsafe_partial") {

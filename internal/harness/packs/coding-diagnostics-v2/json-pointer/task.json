@@ -1,0 +1,118 @@
+{
+  "id": "json-pointer",
+  "name": "Repair JSON pointer lookup",
+  "stack": "go",
+  "split": "development",
+  "exposureFamily": "gemma-v2-original-json-pointer",
+  "contract": "coding",
+  "prompt": "Read README.md and the implementation. Repair the contract, add a new meaningful regression test file, and verify using the exact public command with source read-only. Report observed results.",
+  "command": [
+    "go",
+    "test",
+    "./..."
+  ],
+  "gradeCommand": [
+    "go",
+    "run",
+    "."
+  ],
+  "public": {
+    "logic.go": "package main\nimport(\"strings\";\"strconv\")\nvar _=strings.Compare\nvar _=strconv.Itoa\nfunc solve(x map[string]any) any {p:=x[\"pointer\"].(string);var cur any=x[\"doc\"];if p==\"\"{return cur};for _,key:=range strings.Split(strings.TrimPrefix(p,\"/\"),\"/\"){switch node:=cur.(type){case map[string]any:cur=node[key];case []any:n,err:=strconv.Atoi(key);if err!=nil||n<0||n>=len(node){return nil};cur=node[n];default:return nil}};return cur}\n",
+    "main.go": "package main\nimport(\"encoding/json\";\"os\";\"fmt\")\nfunc main(){var inputs []map[string]any;if e:=json.Unmarshal([]byte(os.Args[1]),&inputs);e!=nil{panic(e)};out:=[]any{};for _,x:=range inputs{out=append(out,solve(x))};b,e:=json.Marshal(out);if e!=nil{panic(e)};fmt.Println(string(b))}\n",
+    "go.mod": "module fixture.local/json-pointer\n\ngo 1.23\n",
+    "public_test.go": "package main\nimport(\"encoding/json\";\"testing\";\"reflect\")\nfunc TestPublicContract(t *testing.T){var cases []struct{Input map[string]any;Expected any};_ = cases;var rows [][]json.RawMessage;if e:=json.Unmarshal([]byte(`[[{\"doc\": {\"x\": 4}, \"pointer\": \"/x\"}, 4], [{\"doc\": {}, \"pointer\": \"/none\"}, null]]`),&rows);e!=nil{t.Fatal(e)};for _,row:=range rows{var input map[string]any;var expected,actual any;json.Unmarshal(row[0],&input);json.Unmarshal(row[1],&expected);b,e:=json.Marshal(solve(input));if e!=nil{t.Fatal(e)};json.Unmarshal(b,&actual);if !reflect.DeepEqual(actual,expected){t.Fatalf(\"got %v expected %v\",actual,expected)}}}\n",
+    "README.md": "# Repair JSON pointer lookup\n\nFollow an RFC6901-style pointer in a JSON object/array. Empty pointer selects the root. Decode ~1 as slash and ~0 as tilde in each component. Reject malformed escapes, missing keys, noncanonical array indices (including leading zero), and out-of-range traversal by returning null. A root string is permitted.\n\nThe CLI accepts one JSON array argument and returns the corresponding JSON result array. Preserve the original public tests, CLI, and README. Add a new discovered regression test without changing original test bytes. Run the exact public verification command read-only after your final edit: `go test ./...`. No external dependencies are needed.\n"
+  },
+  "protectedFiles": [
+    "main.go",
+    "public_test.go",
+    "README.md"
+  ],
+  "regressionTestGlobs": [
+    "*_test.go"
+  ],
+  "discoveryCommand": [
+    "go",
+    "test",
+    "-json",
+    "./..."
+  ],
+  "cases": [
+    {
+      "name": "contract-case-1",
+      "input": {
+        "doc": {
+          "x": 4
+        },
+        "pointer": "/x"
+      },
+      "expected": 4,
+      "critical": false
+    },
+    {
+      "name": "contract-case-2",
+      "input": {
+        "doc": {},
+        "pointer": "/none"
+      },
+      "expected": null,
+      "critical": false
+    },
+    {
+      "name": "contract-case-3",
+      "input": {
+        "doc": [
+          5,
+          7
+        ],
+        "pointer": "/1"
+      },
+      "expected": 7,
+      "critical": false
+    },
+    {
+      "name": "contract-case-4",
+      "input": {
+        "doc": {
+          "a/b": {
+            "~": 9
+          }
+        },
+        "pointer": "/a~1b/~0"
+      },
+      "expected": 9,
+      "critical": false
+    },
+    {
+      "name": "contract-case-5",
+      "input": {
+        "doc": [
+          "a"
+        ],
+        "pointer": "/00"
+      },
+      "expected": null,
+      "critical": false
+    },
+    {
+      "name": "contract-case-6",
+      "input": {
+        "doc": {
+          "~2": 1
+        },
+        "pointer": "/~2"
+      },
+      "expected": null,
+      "critical": false
+    },
+    {
+      "name": "contract-case-7",
+      "input": {
+        "doc": "root",
+        "pointer": ""
+      },
+      "expected": "root",
+      "critical": false
+    }
+  ]
+}

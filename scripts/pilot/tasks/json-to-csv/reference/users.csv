@@ -1,0 +1,26 @@
+id,name,email,city,tags,signup_date
+3,José Álvarez,jose.alvarez@example.es,Sevilla,beta,2023-03-02
+7,Søren Madsen,soren.madsen@example.dk,,,2023-06-21
+9,Дмитрий Соколов,dmitry.sokolov@example.ru,Санкт-Петербург,,2023-09-12
+12,Amara Okafor,amara.okafor@example.com,Lagos,vip;newsletter,2023-02-14
+15,Kofi Mensah,kofi.mensah@example.com,Accra,,2024-04-04
+21,Mårten Ekström,marten.ekstrom@example.se,Malmö,beta;newsletter,2023-11-23
+28,李娜,li.na@example.cn,上海,beta;early-adopter,2023-05-06
+33,Ayşe Yılmaz,ayse.yilmaz@example.com.tr,,beta,2024-02-29
+40,Zoë Lambert,,Montréal,newsletter,2023-08-09
+46,Emily Carter,emily.carter@example.com,"Washington, D.C.",newsletter,2024-08-15
+52,Mateus Oliveira,mateus.oliveira@example.com.br,São Paulo,enterprise,2024-05-19
+58,Sarah Kim,sarah.kim@example.com,Seattle,vip,2024-10-15
+64,Liam O'Connor,liam.oconnor@example.ie,Cork,newsletter,2024-01-08
+71,Ana María Peña,ana.pena@example.mx,Ciudad de México,newsletter;beta;vip,2024-12-01
+77,Fatima Zahra Benali,fatima.benali@example.ma,,beta;vip,2024-06-02
+85,Priya Raman,priya.raman@example.in,,vip,2023-10-01
+90,Łukasz Nowak,lukasz.nowak@example.pl,Kraków,early-adopter;beta,2024-09-09
+98,Chloé Dubois,,Lyon,vip;enterprise,2024-03-17
+101,Ólafur Sigurðsson,olafur.sigurdsson@example.is,Reykjavík,,2024-07-04
+104,"Grace Whitfield, PhD",grace.whitfield@example.org,Boston,enterprise;newsletter;vip,2023-04-18
+110,Yuki Tanaka,yuki.tanaka@example.jp,東京,enterprise,2025-01-20
+117,Nguyễn Thị Lan,lan.nguyen@example.vn,Hà Nội,early-adopter,2023-12-05
+123,Noah Fischer,,,,2024-11-11
+130,Hannah Schmidt,hannah.schmidt@example.de,Zürich,newsletter;churn-risk,
+142,"Thomas ""Tommy"" Reyes",tommy.reyes@example.com,San Antonio,churn-risk,2023-07-30

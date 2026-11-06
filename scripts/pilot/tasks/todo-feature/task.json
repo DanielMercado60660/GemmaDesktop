@@ -1,0 +1,7 @@
+{
+  "category": "feature implementation",
+  "prompt": "Can you implement the priorities feature described in the \"Requested feature\" section of README.md? Everything that works today should keep working. Please don't change the existing tests; put tests for the new feature in a new file under tests/. When you're done, run the whole test suite and tell me how it went.",
+  "verificationContract": {"command": ["python3", "-m", "unittest", "discover", "-s", "tests", "-v"], "workingDirectory": "", "protectedPaths": ["tests/test_todo.py", "README.md"], "requireRegressionTest": false},
+  "protectedPaths": ["tests/test_todo.py", "README.md"],
+  "notes": "Stdlib argparse todo CLI (add/list/done, JSON file from --file or TODO_FILE). Feature: add --priority high|medium|low (default medium), list shows priority, list --sort priority (high>medium>low, stable by creation order), invalid priority rejected non-zero without saving, old JSON files lacking a priority field keep working as medium. Realistic pitfalls: sorting priority names alphabetically or tie-breaking by text; KeyError on legacy items; changing list line format so '[ ] 1. Buy milk' no longer appears (breaks protected tests). Checker: protected files unchanged; trusted original tests pass; full suite passes; new discoverable test file mentions priority; new tests fail against the pre-feature todo.py; hidden in-process acceptance probe (add/list/sort/invalid/done/legacy-file) via main(argv) in the read-only sandbox."
+}

@@ -1,0 +1,967 @@
+{
+  "schema": "gemma-reliability-round-audit-v1",
+  "notes": [
+    "Final v3, one attempt per development task, not held-out qualification.",
+    "Raw deltas include cache files and directory names omitted by pilot driver.",
+    "Permission/timestamp metadata is not compared.",
+    "Cancelled generation cost may be absent.",
+    "Timing is observational, not a speed benchmark."
+  ],
+  "batches": [
+    {
+      "label": "candidate-final-20261105-r1",
+      "binarySHA256": "f39d16b235b5345cb938bf33fb4a450dcb7c3cf67e45da2f2a73288acf2d812c",
+      "model": {
+        "capabilities": [
+          "completion",
+          "vision",
+          "audio",
+          "tools",
+          "thinking"
+        ],
+        "contextLength": 262144,
+        "digest": "ded7a27350032202d9e9b2a6071e8aa89959ab156771b5228f30863c741c4970",
+        "family": "",
+        "loaded": true,
+        "loadedContextLength": 32768,
+        "memoryBytes": 16729866180,
+        "name": "gemma4:12b-mlx",
+        "parameterSize": "",
+        "quantization": "",
+        "remote": false,
+        "size": 7714091504
+      },
+      "config": {
+        "agentId": "default",
+        "agent": {
+          "id": "default",
+          "name": "Gemma",
+          "instructions": "",
+          "model": "gemma4:12b-mlx",
+          "maxSteps": 40,
+          "mode": "approval",
+          "thinking": "auto",
+          "maxOutputTokens": 8192,
+          "temperature": 0.2,
+          "toolProtocol": "native",
+          "capabilityProfileId": "legacy"
+        },
+        "settings": {
+          "contextSize": 32768,
+          "defaultModel": "gemma4:12b-mlx"
+        },
+        "model": "gemma4:12b-mlx",
+        "deadlineSeconds": 600,
+        "useContract": true
+      },
+      "startedAt": "2026-11-05T07:14:25.929871+00:00",
+      "finishedAt": "2026-11-05T07:53:41.410000+00:00",
+      "tasks": [
+        {
+          "task": "log-question",
+          "status": "cancelled",
+          "driverError": null,
+          "driverCancelled": "deadline 600s",
+          "outcomes": {
+            "modelCompleted": false,
+            "hostVerification": "",
+            "independentlyCorrect": false,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 601.3,
+          "sourceChangesReportedByDriver": [],
+          "rawAddedFiles": [],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 8,
+            "context_prepared": 8,
+            "thinking": 2306,
+            "generation_metrics": 7,
+            "adk_event": 11,
+            "tool_started": 5,
+            "tool_completed": 4,
+            "token_accounting": 8,
+            "generation_retry": 1,
+            "approval": 3,
+            "tool_failed": 1,
+            "context_compacting": 1,
+            "context_compacted": 1,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [],
+          "approvals": 3,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 1690,
+              "outputTokens": 188,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 2017,
+              "outputTokens": 62,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 17867,
+              "outputTokens": 8192,
+              "doneReason": "length",
+              "toolCalls": 0
+            },
+            {
+              "step": 4,
+              "attempt": 2,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 17765,
+              "outputTokens": 1011,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 19297,
+              "outputTokens": 1410,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 21067,
+              "outputTokens": 605,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": true,
+              "budgetReport": false,
+              "promptTokens": 482,
+              "outputTokens": 167,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ]
+        },
+        {
+          "task": "explain-failure",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 225.3,
+          "sourceChangesReportedByDriver": [],
+          "rawAddedFiles": [
+            ".pytest_cache/.gitignore",
+            ".pytest_cache/CACHEDIR.TAG",
+            ".pytest_cache/README.md",
+            ".pytest_cache/v/cache/lastfailed",
+            ".pytest_cache/v/cache/nodeids"
+          ],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [],
+          "rawAddedDirectories": [
+            ".pytest_cache",
+            ".pytest_cache/v",
+            ".pytest_cache/v/cache"
+          ],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 7,
+            "context_prepared": 7,
+            "thinking": 896,
+            "generation_metrics": 7,
+            "adk_event": 13,
+            "tool_started": 6,
+            "tool_completed": 5,
+            "token_accounting": 7,
+            "approval": 1,
+            "tool_failed": 1,
+            "text": 51,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [],
+          "approvals": 1,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 2849,
+              "outputTokens": 80,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3175,
+              "outputTokens": 45,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3557,
+              "outputTokens": 112,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4628,
+              "outputTokens": 290,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5899,
+              "outputTokens": 168,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6393,
+              "outputTokens": 42,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7184,
+              "outputTokens": 4279,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ]
+        },
+        {
+          "task": "todo-feature",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "passed",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 555.9,
+          "sourceChangesReportedByDriver": [
+            "tests/test_priorities.py",
+            "todo.py"
+          ],
+          "rawAddedFiles": [
+            "tests/test_priorities.py"
+          ],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [
+            "todo.py"
+          ],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 17,
+            "context_prepared": 17,
+            "thinking": 1274,
+            "generation_metrics": 17,
+            "adk_event": 32,
+            "tool_started": 16,
+            "tool_completed": 14,
+            "token_accounting": 17,
+            "approval": 11,
+            "tool_failed": 2,
+            "context_compacting": 1,
+            "context_compacted": 1,
+            "text": 100,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [],
+          "approvals": 11,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3049,
+              "outputTokens": 134,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3435,
+              "outputTokens": 44,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4033,
+              "outputTokens": 161,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5225,
+              "outputTokens": 4130,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 9725,
+              "outputTokens": 251,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 10276,
+              "outputTokens": 846,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11462,
+              "outputTokens": 572,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 12471,
+              "outputTokens": 102,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 12708,
+              "outputTokens": 42,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 10,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 13847,
+              "outputTokens": 1020,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 15082,
+              "outputTokens": 82,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 17797,
+              "outputTokens": 763,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 18835,
+              "outputTokens": 55,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": true,
+              "budgetReport": false,
+              "promptTokens": 11251,
+              "outputTokens": 453,
+              "doneReason": "stop",
+              "toolCalls": 0
+            },
+            {
+              "step": 15,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11171,
+              "outputTokens": 677,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 16,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 12143,
+              "outputTokens": 52,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 17,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 12886,
+              "outputTokens": 663,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ]
+        },
+        {
+          "task": "crash-from-log",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "passed",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 408.7,
+          "sourceChangesReportedByDriver": [
+            "billing/invoice.py",
+            "tests/test_empty_invoice.py"
+          ],
+          "rawAddedFiles": [
+            "tests/test_empty_invoice.py"
+          ],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [
+            "billing/invoice.py"
+          ],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 19,
+            "context_prepared": 19,
+            "thinking": 1483,
+            "generation_metrics": 19,
+            "adk_event": 35,
+            "tool_started": 13,
+            "tool_completed": 12,
+            "token_accounting": 19,
+            "approval": 7,
+            "tool_validation_failed": 5,
+            "generation_retry": 1,
+            "tool_failed": 1,
+            "text": 59,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [
+            "validating root: validating /properties/args: type: [\"-m\", \"unittest\", \"-v\", \"tests/test_empty_invoice.py\"] has type \"string\", want \"array\"",
+            "validating root: validating /properties/args: type: [\"-m\", \"unittest\", \"discover\", \"-s\", \"tests\", \"-v\"] has type \"string\", want \"array\"",
+            "validating root: validating /properties/args: type: [\"unittest\", \"tests/test_empty_invoice.py\"] has type \"string\", want \"array\"",
+            "validating root: validating /properties/args: type: [\"-m\", \"unittest\", \"tests/test_empty_invoice.py\"] has type \"string\", want \"array\"",
+            "validating root: validating /properties/args: type: [\"-m\", \"unittest\", \"tests/test_empty_invoice.py\"] has type \"string\", want \"array\""
+          ],
+          "approvals": 7,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3070,
+              "outputTokens": 167,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3481,
+              "outputTokens": 58,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4665,
+              "outputTokens": 207,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 4,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5137,
+              "outputTokens": 44,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5875,
+              "outputTokens": 339,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6417,
+              "outputTokens": 80,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7202,
+              "outputTokens": 279,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7699,
+              "outputTokens": 54,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7817,
+              "outputTokens": 240,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 10,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 8120,
+              "outputTokens": 189,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 8365,
+              "outputTokens": 96,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 8813,
+              "outputTokens": 71,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 8944,
+              "outputTokens": 345,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 9349,
+              "outputTokens": 8192,
+              "doneReason": "length",
+              "toolCalls": 0
+            },
+            {
+              "step": 15,
+              "attempt": 2,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7665,
+              "outputTokens": 453,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 16,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 10572,
+              "outputTokens": 600,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 17,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11434,
+              "outputTokens": 52,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 18,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11858,
+              "outputTokens": 69,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 19,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 12512,
+              "outputTokens": 217,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ]
+        },
+        {
+          "task": "wordfreq-repair",
+          "status": "completed",
+          "driverError": null,
+          "driverCancelled": null,
+          "outcomes": {
+            "modelCompleted": true,
+            "hostVerification": "passed",
+            "independentlyCorrect": true,
+            "protectedInputsPreserved": true
+          },
+          "elapsedSeconds": 562.7,
+          "sourceChangesReportedByDriver": [
+            "tests/test_regressions.py",
+            "textkit/stats.py",
+            "textkit/tokens.py"
+          ],
+          "rawAddedFiles": [
+            "tests/test_regressions.py"
+          ],
+          "rawDeletedFiles": [],
+          "rawModifiedFiles": [
+            "textkit/stats.py",
+            "textkit/tokens.py"
+          ],
+          "rawAddedDirectories": [],
+          "rawDeletedDirectories": [],
+          "eventCounts": {
+            "status": 17,
+            "context_prepared": 17,
+            "thinking": 1608,
+            "generation_metrics": 17,
+            "adk_event": 31,
+            "tool_started": 15,
+            "tool_completed": 14,
+            "token_accounting": 17,
+            "tool_validation_failed": 1,
+            "generation_retry": 1,
+            "approval": 6,
+            "tool_failed": 1,
+            "text": 95,
+            "run_completed": 1
+          },
+          "toolValidationFailures": [
+            "validating root: validating /properties/args: type: [\"-m\",\"unittest\",\"discover\",\"tests\",\"-v\"] has type \"string\", want \"array\""
+          ],
+          "approvals": 6,
+          "completedGenerationMetrics": [
+            {
+              "step": 1,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3050,
+              "outputTokens": 68,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 2,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3493,
+              "outputTokens": 67,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 3,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3614,
+              "outputTokens": 8192,
+              "doneReason": "length",
+              "toolCalls": 0
+            },
+            {
+              "step": 4,
+              "attempt": 2,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 3638,
+              "outputTokens": 121,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 5,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 4957,
+              "outputTokens": 110,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 6,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 5333,
+              "outputTokens": 49,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 7,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6019,
+              "outputTokens": 65,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 8,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 6495,
+              "outputTokens": 415,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 9,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7167,
+              "outputTokens": 57,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 10,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 7637,
+              "outputTokens": 3267,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 11,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 11314,
+              "outputTokens": 1602,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 12,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 13127,
+              "outputTokens": 73,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 13,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 13613,
+              "outputTokens": 736,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 14,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 14631,
+              "outputTokens": 65,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 15,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 14838,
+              "outputTokens": 477,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 16,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 15532,
+              "outputTokens": 70,
+              "doneReason": "stop",
+              "toolCalls": 1
+            },
+            {
+              "step": 17,
+              "attempt": 1,
+              "summary": false,
+              "budgetReport": false,
+              "promptTokens": 16297,
+              "outputTokens": 639,
+              "doneReason": "stop",
+              "toolCalls": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

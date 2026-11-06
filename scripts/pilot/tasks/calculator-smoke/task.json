@@ -1,0 +1,7 @@
+{
+  "category": "code-repair (exposed smoke)",
+  "prompt": "Inspect calculator.py and test_calculator.py. Fix the addition function without changing the tests. Run python3 -m unittest -v and report the observed result.",
+  "verificationContract": {"command": ["python3", "-m", "unittest", "-v"], "workingDirectory": "", "protectedPaths": ["test_calculator.py"], "requireRegressionTest": false},
+  "protectedPaths": ["test_calculator.py"],
+  "notes": "README demo task. Already exposed development material; an end-to-end smoke, not fresh evidence."
+}

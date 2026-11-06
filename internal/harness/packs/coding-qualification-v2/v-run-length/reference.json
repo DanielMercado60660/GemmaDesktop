@@ -1,0 +1,4 @@
+{
+  "logic.mjs": "export function solve(x){const out=[];for(const c of x.text){if(out.length&&out.at(-1)[0]===c)out.at(-1)[1]++;else out.push([c,1]);}return out;}\n",
+  "regression.test.mjs": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport {solve} from './logic.mjs';\ntest('contract boundaries',()=>{for(const [value,expected] of [[{\"text\": \"aab\"}, [[\"a\", 2], [\"b\", 1]]], [{\"text\": \"😀😀x\"}, [[\"😀\", 2], [\"x\", 1]]], [{\"text\": \"aba\"}, [[\"a\", 1], [\"b\", 1], [\"a\", 1]]]])assert.deepEqual(solve(value),expected);});\n"
+}

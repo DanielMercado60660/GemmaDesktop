@@ -1,0 +1,7 @@
+{
+  "category": "test writing",
+  "prompt": "Write unit tests for slugify() in text_utils.py — put them in test_text_utils.py and cover normal text, punctuation, repeated separators, leading/trailing spaces, accented characters, a custom separator, and empty input. Don't modify text_utils.py. Run the tests when you're done.",
+  "protectedPaths": ["text_utils.py"],
+  "verificationContract": {"command": ["python3", "-m", "unittest", "-v", "test_text_utils"], "workingDirectory": "", "protectedPaths": ["text_utils.py"], "requireRegressionTest": false},
+  "notes": "Graded by execution only. The candidate's test_text_utils.py must pass against the trusted text_utils.py (>=6 passing cases; subTests count individually), must accept a behaviour-identical refactor (mutants/equivalent_refactor.py), and must fail against at least 4 of the 6 single-bug mutants in mutants/ (no lowercase, accents kept, separators not collapsed, edges not trimmed, sep ignored, empty input -> None). text_utils.py and posts.py must be unchanged. Realistic pitfalls: characters NFKD cannot decompose (e.g. 'ß') are dropped rather than transliterated, and '_' counts as a separator, so tests guessing other behaviour fail until corrected against the real output; pytest-style bare functions are not collected by unittest."
+}

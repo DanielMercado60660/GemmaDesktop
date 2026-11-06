@@ -150,3 +150,36 @@ test("deleting a different conversation cannot change the current selection", ()
   assert.equal(store.selection().sessionId, "current");
   assert.equal(store.read().text, "keep me");
 });
+
+test("a captured check contract reaches run.start but never a focused continuation", async () => {
+  const contract = {
+    command: ["python3", "-m", "unittest"],
+    workingDirectory: "",
+    protectedPaths: [],
+    requireRegressionTest: false,
+  };
+  const store = createComposerStore(owner("a", "one"));
+  store.update({ text: "fix the calculator" });
+  const submission = store.begin({ verificationContract: contract });
+  contract.command.push("changed-after-capture");
+  const sent = [];
+  const api = {
+    createSession: async () => ({ id: "unused" }),
+    startRun: async (input) => {
+      sent.push(input);
+      return { id: "run" };
+    },
+  };
+  await submitDraft(store, submission, api);
+  store.finish(submission);
+  assert.deepEqual(sent[0].verificationContract, {
+    command: ["python3", "-m", "unittest"],
+    workingDirectory: "",
+    protectedPaths: [],
+    requireRegressionTest: false,
+  });
+  store.update({ text: "continue", focusedRunId: "source" });
+  const focused = store.begin({ verificationContract: contract });
+  await submitDraft(store, focused, api);
+  assert.equal("verificationContract" in sent[1], false);
+});

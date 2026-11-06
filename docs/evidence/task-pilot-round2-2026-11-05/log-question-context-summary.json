@@ -1,0 +1,729 @@
+{
+  "note": "Observed saved runs only; no new inference. Content JSON chars are an audit size surrogate, not a rendered-token count.",
+  "runs": [
+    {
+      "batch": ".runtime/pilot-baseline-20261105-r1-20261105-001232",
+      "result": "cancelled",
+      "correct": false,
+      "elapsedSeconds": 602.0,
+      "generations": [
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:33.232618Z",
+          "step": 1,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 1748,
+          "estimatedTextTokens": 437,
+          "messages": 2,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:12:48.331226Z",
+          "step": 1,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 2859,
+          "outputTokens": 175,
+          "doneReason": "stop",
+          "thinkingCharacters": 575,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:48.336743Z",
+          "step": 2,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2548,
+          "estimatedTextTokens": 637,
+          "messages": 4,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:12:50.815214Z",
+          "step": 2,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3172,
+          "outputTokens": 49,
+          "doneReason": "stop",
+          "thinkingCharacters": 94,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:50.819619Z",
+          "step": 3,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2739,
+          "estimatedTextTokens": 685,
+          "messages": 6,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:12:52.648559Z",
+          "step": 3,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3271,
+          "outputTokens": 51,
+          "doneReason": "stop",
+          "thinkingCharacters": 56,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:52.650421Z",
+          "step": 4,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2892,
+          "estimatedTextTokens": 723,
+          "messages": 8,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:12:54.628378Z",
+          "step": 4,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3371,
+          "outputTokens": 82,
+          "doneReason": "stop",
+          "thinkingCharacters": 135,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:54.633113Z",
+          "step": 5,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 3124,
+          "estimatedTextTokens": 781,
+          "messages": 10,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:12:56.938783Z",
+          "step": 5,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3502,
+          "outputTokens": 88,
+          "doneReason": "stop",
+          "thinkingCharacters": 167,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:56.944057Z",
+          "step": 6,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 3388,
+          "estimatedTextTokens": 847,
+          "messages": 12,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:12:58.342801Z",
+          "step": 6,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3639,
+          "outputTokens": 50,
+          "doneReason": "stop",
+          "thinkingCharacters": 51,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:12:58.344462Z",
+          "step": 7,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 3536,
+          "estimatedTextTokens": 884,
+          "messages": 14,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:13:01.469057Z",
+          "step": 7,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3738,
+          "outputTokens": 124,
+          "doneReason": "stop",
+          "thinkingCharacters": 260,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:13:01.473289Z",
+          "step": 8,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 3893,
+          "estimatedTextTokens": 973,
+          "messages": 16,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:13:14.875798Z",
+          "step": 8,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 3911,
+          "outputTokens": 60,
+          "doneReason": "stop",
+          "thinkingCharacters": 80,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:13:14.879844Z",
+          "step": 9,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 5514,
+          "estimatedTextTokens": 1378,
+          "messages": 18,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:13:24.19654Z",
+          "step": 9,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 4928,
+          "outputTokens": 171,
+          "doneReason": "stop",
+          "thinkingCharacters": 406,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:13:24.2009Z",
+          "step": 10,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 6017,
+          "estimatedTextTokens": 1504,
+          "messages": 20,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:13:27.559757Z",
+          "step": 10,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 5148,
+          "outputTokens": 136,
+          "doneReason": "stop",
+          "thinkingCharacters": 293,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:13:27.564042Z",
+          "step": 11,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 6415,
+          "estimatedTextTokens": 1604,
+          "messages": 22,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:13:30.654668Z",
+          "step": 11,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 5338,
+          "outputTokens": 134,
+          "doneReason": "stop",
+          "thinkingCharacters": 263,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:13:30.658766Z",
+          "step": 12,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 6775,
+          "estimatedTextTokens": 1694,
+          "messages": 24,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:13:44.727249Z",
+          "step": 12,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 5521,
+          "outputTokens": 304,
+          "doneReason": "stop",
+          "thinkingCharacters": 691,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:13:44.737961Z",
+          "step": 13,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 37354,
+          "estimatedTextTokens": 9338,
+          "messages": 26,
+          "toolDeclarationBytes": 12201
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:17:21.830954Z",
+          "step": 13,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 26391,
+          "outputTokens": 4773,
+          "doneReason": "stop",
+          "thinkingCharacters": 7766,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:17:22.042633Z",
+          "step": 14,
+          "attempt": 1,
+          "summary": true,
+          "messageTextBytes": 5996,
+          "estimatedTextTokens": 1499,
+          "messages": 1,
+          "toolDeclarationBytes": 4
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:17:42.358911Z",
+          "step": 14,
+          "attempt": 1,
+          "summary": true,
+          "promptTokens": 2382,
+          "outputTokens": 436,
+          "doneReason": "stop",
+          "thinkingCharacters": 0,
+          "toolCalls": 0
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:17:42.361537Z",
+          "step": 15,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 43086,
+          "estimatedTextTokens": 10771,
+          "messages": 11,
+          "toolDeclarationBytes": 12201
+        }
+      ],
+      "compactions": [
+        {
+          "at": "2026-11-05T06:17:42.359842Z",
+          "end": "2026-11-05T00:13:24.197868-06:00",
+          "eventId": "577e9fae-3cfb-44be-a502-71d4626fb306",
+          "start": "2026-11-05T00:12:48.331626-06:00",
+          "summaryCharacters": 1464,
+          "usage": {
+            "candidatesTokenCount": 436,
+            "promptTokenCount": 2382,
+            "totalTokenCount": 2818
+          },
+          "coveredTools": [
+            "list_files",
+            "list_files",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file",
+            "read_file"
+          ],
+          "coveredThoughtChars": 1824,
+          "coveredContentJSONChars": 6595
+        }
+      ]
+    },
+    {
+      "batch": ".runtime/pilot-candidate-20261105-r1-20261105-004732",
+      "result": "completed",
+      "correct": true,
+      "elapsedSeconds": 378.5,
+      "generations": [
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:47:33.382366Z",
+          "step": 1,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2137,
+          "estimatedTextTokens": 534,
+          "messages": 2,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:47:43.085058Z",
+          "step": 1,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 1690,
+          "outputTokens": 167,
+          "doneReason": "stop",
+          "thinkingCharacters": 517,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:47:43.091463Z",
+          "step": 2,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2879,
+          "estimatedTextTokens": 720,
+          "messages": 4,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:47:45.330138Z",
+          "step": 2,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 1997,
+          "outputTokens": 44,
+          "doneReason": "stop",
+          "thinkingCharacters": 94,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:47:45.339658Z",
+          "step": 3,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 25941,
+          "estimatedTextTokens": 6485,
+          "messages": 6,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:49:40.553307Z",
+          "step": 3,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 17830,
+          "outputTokens": 2138,
+          "doneReason": "stop",
+          "thinkingCharacters": 4746,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:49:41.337415Z",
+          "step": 4,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 31456,
+          "estimatedTextTokens": 7863,
+          "messages": 8,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:50:01.527823Z",
+          "step": 4,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 20324,
+          "outputTokens": 392,
+          "doneReason": "stop",
+          "thinkingCharacters": 487,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:50:02.477861Z",
+          "step": 5,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 32808,
+          "estimatedTextTokens": 8201,
+          "messages": 10,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:52:32.404609Z",
+          "step": 5,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 21120,
+          "outputTokens": 8192,
+          "doneReason": "length",
+          "thinkingCharacters": 13644,
+          "toolCalls": 0
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T06:52:32.406636Z",
+          "step": 6,
+          "attempt": 2,
+          "summary": false,
+          "messageTextBytes": 33336,
+          "estimatedTextTokens": 8333,
+          "messages": 11,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T06:53:51.31872Z",
+          "step": 6,
+          "attempt": 2,
+          "summary": false,
+          "promptTokens": 19098,
+          "outputTokens": 284,
+          "doneReason": "stop",
+          "thinkingCharacters": 690,
+          "toolCalls": 0
+        }
+      ],
+      "compactions": []
+    },
+    {
+      "batch": ".runtime/pilot-candidate-final-20261105-r1-20261105-011425",
+      "result": "cancelled",
+      "correct": false,
+      "elapsedSeconds": 601.3,
+      "generations": [
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:14:26.035285Z",
+          "step": 1,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2137,
+          "estimatedTextTokens": 534,
+          "messages": 2,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:14:37.674241Z",
+          "step": 1,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 1690,
+          "outputTokens": 188,
+          "doneReason": "stop",
+          "thinkingCharacters": 613,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:14:37.681682Z",
+          "step": 2,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 2975,
+          "estimatedTextTokens": 744,
+          "messages": 4,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:14:40.556249Z",
+          "step": 2,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 2017,
+          "outputTokens": 62,
+          "doneReason": "stop",
+          "thinkingCharacters": 136,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:14:40.565951Z",
+          "step": 3,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 26079,
+          "estimatedTextTokens": 6520,
+          "messages": 6,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:18:59.599753Z",
+          "step": 3,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 17867,
+          "outputTokens": 8192,
+          "doneReason": "length",
+          "thinkingCharacters": 12174,
+          "toolCalls": 0
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:18:59.602109Z",
+          "step": 4,
+          "attempt": 2,
+          "summary": false,
+          "messageTextBytes": 26607,
+          "estimatedTextTokens": 6652,
+          "messages": 7,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:21:03.224532Z",
+          "step": 4,
+          "attempt": 2,
+          "summary": false,
+          "promptTokens": 17765,
+          "outputTokens": 1011,
+          "doneReason": "stop",
+          "thinkingCharacters": 1413,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:21:03.781223Z",
+          "step": 5,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 28515,
+          "estimatedTextTokens": 7128,
+          "messages": 8,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:22:46.160702Z",
+          "step": 5,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 19297,
+          "outputTokens": 1410,
+          "doneReason": "stop",
+          "thinkingCharacters": 2192,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:22:47.083729Z",
+          "step": 6,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 31514,
+          "estimatedTextTokens": 7877,
+          "messages": 10,
+          "toolDeclarationBytes": 6150
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:23:16.620567Z",
+          "step": 6,
+          "attempt": 1,
+          "summary": false,
+          "promptTokens": 21067,
+          "outputTokens": 605,
+          "doneReason": "stop",
+          "thinkingCharacters": 791,
+          "toolCalls": 1
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:23:17.452604Z",
+          "step": 7,
+          "attempt": 1,
+          "summary": true,
+          "messageTextBytes": 1741,
+          "estimatedTextTokens": 436,
+          "messages": 1,
+          "toolDeclarationBytes": 4
+        },
+        {
+          "type": "generation_metrics",
+          "at": "2026-11-05T07:23:43.884625Z",
+          "step": 7,
+          "attempt": 1,
+          "summary": true,
+          "promptTokens": 482,
+          "outputTokens": 167,
+          "doneReason": "stop",
+          "thinkingCharacters": 0,
+          "toolCalls": 0
+        },
+        {
+          "type": "context_prepared",
+          "at": "2026-11-05T07:23:43.887233Z",
+          "step": 8,
+          "attempt": 1,
+          "summary": false,
+          "messageTextBytes": 32968,
+          "estimatedTextTokens": 8240,
+          "messages": 11,
+          "toolDeclarationBytes": 6150
+        }
+      ],
+      "compactions": [
+        {
+          "at": "2026-11-05T07:23:43.885487Z",
+          "end": "2026-11-05T01:14:37.679787-06:00",
+          "eventId": "299c1068-01b6-46c0-a80f-a8abc04345bd",
+          "start": "2026-11-05T01:14:37.67463-06:00",
+          "summaryCharacters": 610,
+          "usage": {
+            "candidatesTokenCount": 167,
+            "promptTokenCount": 482,
+            "totalTokenCount": 649
+          },
+          "coveredTools": [
+            "list_files",
+            "list_files"
+          ],
+          "coveredThoughtChars": 613,
+          "coveredContentJSONChars": 1085
+        }
+      ]
+    }
+  ]
+}

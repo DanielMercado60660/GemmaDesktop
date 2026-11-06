@@ -13,12 +13,19 @@ import (
 	"time"
 
 	"gemmadesktop.local/app/internal/engine"
+	"gemmadesktop.local/app/internal/execution"
+	"gemmadesktop.local/app/internal/harness"
 	"gemmadesktop.local/app/internal/store"
 	"gemmadesktop.local/app/internal/tools"
 	"gemmadesktop.local/app/internal/workflow"
 )
 
 func (c *Core) startRun(p Doc, workflowID string) (any, error) {
+	c.runtimeGuard.Lock()
+	defer c.runtimeGuard.Unlock()
+	if c.harnessBusy() {
+		return nil, errors.New("Wait for active Harness work before starting a chat")
+	}
 	session, e := c.Store.Get("session", str(p, "sessionId"))
 	if e != nil {
 		return nil, e
@@ -43,8 +50,25 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 	if e != nil {
 		return nil, e
 	}
+	agent, qualifiedContext, qualifiedProfile, e := c.applyQualifiedProfile(str(w, "id"), agent)
+	if e != nil {
+		return nil, e
+	}
+	var qualifiedArm harness.ArmV2
+	if qualifiedProfile != nil {
+		b, _ := json.Marshal(qualifiedProfile["arm"])
+		if e = json.Unmarshal(b, &qualifiedArm); e != nil {
+			return nil, e
+		}
+		if override := str(p, "model"); override != "" && override != qualifiedArm.Spec.Model {
+			return nil, errors.New("the active qualified profile fixes the model; roll back the profile before overriding it")
+		}
+		if workflowID != "" && workflowID != qualifiedArm.Revision.Content.WorkflowID {
+			return nil, errors.New("the active qualified profile fixes its workflow selection")
+		}
+	}
 	var promotedWorkflow Doc
-	if workflowID == "" {
+	if workflowID == "" || qualifiedProfile != nil {
 		promotedWorkflow, e = c.harnessSelectedWorkflow(str(w, "id"), agentID)
 		if e != nil {
 			return nil, e
@@ -60,21 +84,41 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 	if model == "" {
 		model = str(settings, "defaultModel")
 	}
-	if e = c.checkCompletionSelection(model); e != nil {
+	runtimeID := c.runtimeID(agent)
+	if e = c.validateCompletionChoice(runtimeID, model); e != nil {
 		return nil, e
 	}
-	req := engine.Request{Model: model, Instructions: defaultInstructions + "\n\n" + str(agent, "instructions"), Prompt: prompt, MaxSteps: number(agent, "maxSteps", number(settings, "maxSteps", 24)), ContextSize: number(settings, "contextSize", 32768), Timeout: 20 * time.Minute}
+	req := engine.Request{Model: model, Instructions: agentInstructions(agent), Prompt: prompt, MaxSteps: number(agent, "maxSteps", number(settings, "maxSteps", defaultMaxSteps)), ContextSize: number(settings, "contextSize", 32768), Timeout: 20 * time.Minute}
+	if qualifiedContext > 0 {
+		req.ContextSize = qualifiedContext
+		req.Timeout = time.Duration(qualifiedArm.Spec.BudgetSeconds) * time.Second
+	}
+	req.Timeout, e = narrowedRunTimeout(p, req.Timeout)
+	if e != nil {
+		return nil, e
+	}
 	controls, e := agentGenerationControls(agent)
 	if e != nil {
 		return nil, e
 	}
 	controls.apply(&req)
+	if time.Duration(req.FinishReserveSeconds)*time.Second >= req.Timeout {
+		return nil, errors.New("finishReserveSeconds must be less than the admitted run budget")
+	}
 	req.ContextPolicy = &engine.ContextPolicy{Enabled: true}
-	msgs, e := c.Store.List("message")
+	focus, e := c.prepareFocusedContinuation(p, session, agentID, workflowID)
 	if e != nil {
 		return nil, e
 	}
-	previous, e := c.Store.List("run")
+	if focus != nil {
+		p = clone(p)
+		p["verificationContract"] = focus["verificationContract"]
+	}
+	msgs, e := c.Store.ListScoped("message", "sessionId", str(session, "id"))
+	if e != nil {
+		return nil, e
+	}
+	previous, e := c.Store.ListScoped("run", "sessionId", str(session, "id"))
 	if e != nil {
 		return nil, e
 	}
@@ -98,6 +142,9 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 		}
 	}
 	for _, m := range msgs {
+		if focus != nil {
+			break
+		}
 		// Partial replies remain visible in the audit/UI, but are not complete
 		// assistant turns and must not become normal conversation history when
 		// a failed run falls back from its snapshot to persisted messages.
@@ -105,7 +152,10 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 			req.History = append(req.History, engine.Message{Role: str(m, "role"), Content: str(m, "content")})
 		}
 	}
-	if workflowID == "" {
+	// Recovery guidance is appended after the agent/Harness instructions and the
+	// task check, so Configure still sees the stored instructions as a prefix.
+	recovery := ""
+	if workflowID == "" && focus == nil {
 		for i := len(previous) - 1; i >= 0; i-- {
 			r := previous[i]
 			if r["sessionId"] == session["id"] {
@@ -117,11 +167,9 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 					req.Snapshot = conversationSnapshot(r, cp)
 				}
 				if r["status"] != "completed" {
-					recovery, err := c.recoveryContext(r)
-					if err != nil {
+					if recovery, err = c.recoveryContext(r); err != nil {
 						return nil, err
 					}
-					req.Instructions += recovery
 				}
 				break
 			}
@@ -131,9 +179,58 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 	if settings["mode"] == "read-only" {
 		mode = "read-only"
 	}
+	constraint, e := c.workspaceReadOnlyConstraint(prompt, previous, focus != nil)
+	if e != nil {
+		return nil, e
+	}
+	allowReadOnlyCommands := constraint != "" && mode != "read-only"
+	if constraint != "" {
+		mode = "read-only"
+		req.Instructions += workspaceReadOnlyInstructions(constraint, allowReadOnlyCommands)
+	}
 	req.ReadOnly = mode == "read-only"
-	req.Deadline = time.Now().Add(20 * time.Minute)
+	req.Deadline = time.Now().Add(req.Timeout)
 	snapshot := Doc{"id": "", "workspace": w, "mode": mode, "agents": []Doc{}}
+	if constraint != "" {
+		snapshot["workspaceReadOnly"] = Doc{"constraint": constraint, "allowCommands": allowReadOnlyCommands}
+	}
+	if qualifiedProfile != nil {
+		if runtimeID != ollamaRuntimeID {
+			c.mu.Lock()
+			otherActive := len(c.runs) > 0 || len(c.evals) > 0
+			c.mu.Unlock()
+			if otherActive || c.videoBusy() {
+				return nil, errors.New("wait for active work before admitting a managed-runtime chat")
+			}
+		}
+		identity, err := c.completionIdentity(c.ctx, runtimeID, model, req.ContextSize)
+		if err != nil {
+			return nil, err
+		}
+		if contentDigest(obj(identity)) != contentDigest(obj(qualifiedArm.Spec.RuntimeIdentity)) {
+			return nil, errors.New("qualified completion runtime changed after evaluation")
+		}
+		snapshot["runtimeBinding"] = identity
+		snapshot["qualifiedProfile"] = qualifiedProfile
+	} else if runtimeID == ollamaRuntimeID {
+		identity, err := c.completionIdentity(c.ctx, runtimeID, model, req.ContextSize)
+		if err != nil {
+			return nil, err
+		}
+		snapshot["runtimeBinding"] = identity
+	} else {
+		c.mu.Lock()
+		otherActive := len(c.runs) > 0 || len(c.evals) > 0
+		c.mu.Unlock()
+		if otherActive || c.videoBusy() {
+			return nil, errors.New("wait for active work before admitting a managed-runtime chat")
+		}
+		identity, err := c.completionIdentity(c.ctx, runtimeID, model, req.ContextSize)
+		if err != nil {
+			return nil, err
+		}
+		snapshot["runtimeBinding"] = identity
+	}
 	var frozenWorkflow Doc
 
 	if workflowID != "" {
@@ -144,6 +241,10 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 				return nil, e
 			}
 		}
+		wf["revision"] = workflowRevision(wf)
+		if expected := str(p, "expectedRevision"); expected != "" && expected != str(wf, "revision") {
+			return nil, errors.New("workflow revision conflict; reload the saved workflow before running")
+		}
 		snapshot["workflow"] = wf
 		frozenWorkflow = wf
 		all, e := c.Store.List("agent")
@@ -152,26 +253,78 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 		}
 		snapshot["agents"] = all
 	}
-	frozen, e := c.freezeRunAgents(agent, frozenWorkflow, str(w, "id"))
+	var frozen map[string]FrozenAgent
+	if qualifiedProfile != nil {
+		frozen, e = c.qualifiedRunAgentsV2(str(w, "id"), agent, qualifiedArm)
+	} else {
+		frozen, e = c.freezeRunAgents(agent, frozenWorkflow, str(w, "id"))
+	}
 	if e != nil {
 		return nil, e
 	}
 	var primary FrozenAgent
 	for _, f := range frozen {
+		if selected := str(f.Agent, "runtimeId"); selected != "" && selected != runtimeID {
+			return nil, errors.New("all workflow and delegate agents must use the run's frozen runtime")
+		}
 		if str(f.Agent, "id") == agentID {
 			primary = f
-			break
 		}
 	}
 	if primary.Digest == "" {
 		return nil, errors.New("primary capability is unavailable")
 	}
+	modelBindings := Doc{model: snapshot["runtimeBinding"]}
+	for _, f := range frozen {
+		selected := str(f.Agent, "model")
+		if selected == "" || modelBindings[selected] != nil {
+			continue
+		}
+		if runtimeID != ollamaRuntimeID && selected != model {
+			return nil, errors.New("managed runs currently require one frozen model across nodes and delegates")
+		}
+		identity, err := c.completionIdentity(c.ctx, runtimeID, selected, req.ContextSize)
+		if err != nil {
+			return nil, err
+		}
+		modelBindings[selected] = identity
+	}
+	snapshot["modelBindings"] = modelBindings
 	primary.Configure(&req)
+	if focus != nil && str(focus, "authorityHash") != harnessAuthorityHash(primary) {
+		return nil, errors.New("focused continuation authority changed; start a new explicitly configured run")
+	}
+	contract, e := decodeVerificationContract(p["verificationContract"])
+	if e != nil {
+		return nil, e
+	}
+	if contract != nil {
+		if !contains(primary.Profile.Tools, "run_command") {
+			return nil, errors.New("task verification requires an authorized command executor")
+		}
+		admitTaskCheck(&req, contract, qualifiedProfile != nil, workflowID != "")
+		snapshot["verificationContract"] = contract
+	}
+	req.Instructions += recovery
 	manifest, e := c.freezeContext(w, primary.Profile, p["attachments"])
 	if e != nil {
 		return nil, e
 	}
 	req.ContextSources = manifest.Sources
+	if focus != nil {
+		source, err := focusedContextSource(focus)
+		if err != nil {
+			return nil, err
+		}
+		req.ContextSources = append(req.ContextSources, source)
+		if err = engine.ValidateContextSources(req.ContextSources); err != nil {
+			return nil, err
+		}
+		manifest.Sources = append(manifest.Sources, source)
+		manifest.Bytes += len(source.Content)
+		manifest.EstimatedTokens += (len([]rune(source.Content)) + 3) / 4
+		snapshot["focusedContinuation"] = focus
+	}
 	snapshot["capabilities"] = frozen
 	snapshot["contextManifest"] = frozenContextAudit(manifest, req, primary)
 	snapshot["request"] = req
@@ -197,7 +350,10 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 		delete(c.workspaceRuns, str(w, "id"))
 		c.mu.Unlock()
 	}
-	run := Doc{"id": id, "sessionId": session["id"], "workspaceId": w["id"], "status": "queued", "model": model, "prompt": prompt, "agentId": agentID, "workflowId": workflowID, "startedAt": store.Now()}
+	run := Doc{"id": id, "sessionId": session["id"], "workspaceId": w["id"], "status": "queued", "model": model, "prompt": prompt, "agentId": agentID, "workflowId": workflowID, "runtimeBinding": snapshot["runtimeBinding"], "startedAt": store.Now(), "deadline": req.Deadline, "budgetSeconds": int(req.Timeout / time.Second)}
+	if qualifiedProfile != nil {
+		run["qualifiedProfile"] = Doc{"armId": qualifiedArm.ID, "revisionId": qualifiedArm.Revision.ID, "contextSize": req.ContextSize, "binding": qualifiedProfile["binding"]}
+	}
 	if e = c.Store.Put("checkpoint", snapshot); e != nil {
 		cleanup()
 		return nil, e
@@ -221,6 +377,21 @@ func (c *Core) startRun(p Doc, workflowID string) (any, error) {
 	if e = c.Store.Put("session", session); e != nil {
 		cleanup()
 		return nil, e
+	}
+	if _, supplied := p["draftRevision"]; supplied {
+		source := str(p, "draftSessionId")
+		if _, explicit := p["draftSessionId"]; !explicit {
+			source = str(session, "id")
+		}
+		if source == "" || source == str(session, "id") {
+			d, cleared, err := c.clearSubmittedDraft(str(w, "id"), source, number(p, "draftRevision", -1))
+			if err == nil {
+				run["draftRevision"] = number(d, "revision", 0)
+				if cleared {
+					run["clearedDraftRevision"] = number(d, "revision", 0)
+				}
+			}
+		}
 	}
 	c.wg.Add(1)
 	go func() { defer c.wg.Done(); defer cleanup(); c.executeRun(ctx, run, snapshot, req) }()
@@ -277,6 +448,12 @@ func (c *Core) cancelRun(id string) (any, error) {
 	return r, nil
 }
 func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Request) {
+	bound, bindErr := c.completionForSnapshot(ctx, snapshot)
+	if bindErr != nil {
+		c.finishRun(run, engine.Result{}, bindErr)
+		return
+	}
+	ctx = bound
 	id := str(run, "id")
 	w := obj(snapshot["workspace"])
 	deadline := req.Deadline
@@ -287,7 +464,7 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 	defer cancel()
 	var fatal error
 	var fatalMu sync.Mutex
-	emit := func(ev engine.Event) {
+	journal := newDisplayJournal(func(ev engine.Event) {
 		d := obj(ev)
 		d["runId"] = id
 		if _, e := c.Store.Event(d); e != nil {
@@ -296,7 +473,10 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 			fatalMu.Unlock()
 			cancel()
 		}
-	}
+	})
+	defer journal.Close()
+	guidanceRegistry := &guidanceRegistry{}
+	emit := func(event engine.Event) { guidanceRegistry.observe(event); journal.Emit(event) }
 	if _, e := c.Store.Update("run", id, func(r Doc) error { r["status"] = "running"; return nil }); e != nil {
 		return
 	}
@@ -317,17 +497,29 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 		profile = primary.Profile.ExecutionProfile
 		image = primary.ExecutionImage
 	}
-	config := runToolConfig{Profile: profile, Image: image}
+	contract, e := decodeVerificationContract(snapshot["verificationContract"])
+	if e != nil {
+		c.finishRun(run, engine.Result{}, e)
+		return
+	}
+	if req.VerificationRequired && contract == nil {
+		c.finishRun(run, engine.Result{}, errors.New("verification contract missing from checkpoint"))
+		return
+	}
+	readOnlyPolicy := obj(snapshot["workspaceReadOnly"])
+	config := runToolConfig{Profile: profile, Image: image, Verification: contract, AllowReadOnlyCommands: req.ReadOnly && readOnlyPolicy["allowCommands"] == true}
 	if hasFrozen {
 		config.PrivatePaths = primary.ExecutionPrivatePaths
 	}
+	config.BeforeAccess = c.newGuidanceGuard(id, str(w, "path"), hasFrozen && primary.Profile.ProjectGuidance, req.ContextSources, config.PrivatePaths)
+	guidanceRegistry.add(config.BeforeAccess)
 	mgr, e := c.runTools(ctx, id, w, str(snapshot, "mode"), config)
 	if e != nil {
 		c.finishRun(run, engine.Result{}, e)
 		return
 	}
 	defer mgr.Close()
-	readOnlyMgr, e := c.runTools(ctx, id, w, "read-only")
+	readOnlyMgr, e := c.runTools(ctx, id, w, "read-only", config)
 	if e != nil {
 		c.finishRun(run, engine.Result{}, e)
 		return
@@ -335,10 +527,20 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 	defer readOnlyMgr.Close()
 	req.Tools = nil
 	for _, d := range mgr.List() {
+		if d.Name == "verify_task" {
+			continue
+		} // Add once, through the frozen command grant below.
 		req.Tools = append(req.Tools, engine.ToolDefinition{Name: d.Name, Description: d.Description, Parameters: d.Parameters})
 	}
 	if hasFrozen {
 		req.Tools = primary.FilterTools(req.Tools)
+		if contract != nil && contains(primary.Profile.Tools, "run_command") {
+			for _, d := range mgr.List() {
+				if d.Name == "verify_task" {
+					req.Tools = append(req.Tools, engine.ToolDefinition{Name: d.Name, Description: d.Description, Parameters: d.Parameters})
+				}
+			}
+		}
 		for _, d := range []engine.ToolDefinition{planTool(), delegateTool(), skillResourceTool(), skillMaterializeTool()} {
 			if contains(primary.Profile.Tools, d.Name) && !(req.ReadOnly && d.Name == "skill_materialize") {
 				req.Tools = append(req.Tools, d)
@@ -351,19 +553,46 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 		return
 	}
 	managers := map[string]*tools.Manager{}
+	guidanceGuards := map[string]func(context.Context, string, map[string]any) (tools.Result, error){}
 	if hasFrozen {
 		managers[primary.Digest] = mgr
+		managers["read-only:"+primary.Digest] = readOnlyMgr
+		guidanceGuards[primary.Digest] = config.BeforeAccess
 	}
 	defer func() {
 		for _, m := range managers {
-			if m != mgr {
+			if m != mgr && m != readOnlyMgr {
 				m.Close()
 			}
 		}
 	}()
 	var executionMu sync.Mutex
+	// Called while executionMu is held. A read-only workflow child retains its
+	// own frozen executor, private paths and scoped guidance; narrowing write
+	// authority must not accidentally substitute the primary agent's profile.
+	managerFor := func(toolCtx context.Context, selectedProfile FrozenAgent, readOnly bool) (*tools.Manager, error) {
+		key, mode := selectedProfile.Digest, str(snapshot, "mode")
+		if readOnly {
+			key, mode = "read-only:"+key, "read-only"
+		}
+		if selected := managers[key]; selected != nil {
+			return selected, nil
+		}
+		if guidanceGuards[selectedProfile.Digest] == nil {
+			guidanceGuards[selectedProfile.Digest] = c.newGuidanceGuard(id, str(w, "path"), selectedProfile.Profile.ProjectGuidance, req.ContextSources, selectedProfile.ExecutionPrivatePaths)
+			guidanceRegistry.add(guidanceGuards[selectedProfile.Digest])
+		}
+		selected, err := c.runTools(toolCtx, id, w, mode, runToolConfig{Profile: selectedProfile.Profile.ExecutionProfile, Image: selectedProfile.ExecutionImage, PrivatePaths: selectedProfile.ExecutionPrivatePaths, Verification: contract, BeforeAccess: guidanceGuards[selectedProfile.Digest], AllowReadOnlyCommands: config.AllowReadOnlyCommands && selectedProfile.Agent["mode"] != "read-only"})
+		if err == nil {
+			managers[key] = selected
+		}
+		return selected, err
+	}
 	var executor engine.ToolExecutor
 	executor = func(toolCtx context.Context, call engine.ToolCall) (engine.ToolResult, error) {
+		// Workflow nodes and resumed checkpoints cannot widen the run's
+		// frozen authority by omitting their own read-only flag.
+		call.ReadOnly = call.ReadOnly || req.ReadOnly
 		selectedProfile, scoped := frozen[call.CapabilityID]
 		if strings.HasPrefix(call.NodeID, "delegate_") && !readonlyTool(call.Name) {
 			return engine.ToolResult{}, errors.New("delegates have read-only tool authority")
@@ -372,13 +601,20 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 			if !scoped {
 				return engine.ToolResult{}, errors.New("unknown frozen capability identity")
 			}
+			if call.Name == "run_command" && selectedProfile.Agent["mode"] == "read-only" {
+				return engine.ToolResult{}, errors.New("this read-only agent does not have command authority")
+			}
 			var authErr error
-			toolCtx, authErr = selectedProfile.Authorize(toolCtx, call)
+			authorityCall := call
+			if call.Name == "verify_task" && contract != nil {
+				authorityCall.Name = "run_command"
+			}
+			toolCtx, authErr = selectedProfile.Authorize(toolCtx, authorityCall)
 			if authErr != nil {
 				return engine.ToolResult{}, authErr
 			}
 			if call.CapabilityID != primary.Digest {
-				parentCall := call
+				parentCall := authorityCall
 				parentCall.CapabilityID = primary.Digest
 				if _, authErr = primary.Authorize(toolCtx, parentCall); authErr != nil {
 					return engine.ToolResult{}, authErr
@@ -386,7 +622,7 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 			}
 
 			if call.Name == "delegate_readonly" {
-				return c.delegateReadonly(toolCtx, id, call, selectedProfile, frozen, req, emit, executor)
+				return c.delegateReadonly(toolCtx, id, call, selectedProfile, frozen, req, emit, executor, str(readOnlyPolicy, "constraint"))
 			}
 			if call.Name == "plan_update" {
 				d, err := c.updateTaskPlan(id, call.Arguments)
@@ -410,18 +646,14 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 		executionMu.Lock()
 		defer executionMu.Unlock()
 		selected := mgr
-		if call.ReadOnly {
-			selected = readOnlyMgr
-		} else if scoped {
-			selected = managers[selectedProfile.Digest]
-			if selected == nil {
-				var err error
-				selected, err = c.runTools(toolCtx, id, w, str(snapshot, "mode"), runToolConfig{Profile: selectedProfile.Profile.ExecutionProfile, Image: selectedProfile.ExecutionImage, PrivatePaths: selectedProfile.ExecutionPrivatePaths})
-				if err != nil {
-					return engine.ToolResult{}, err
-				}
-				managers[selectedProfile.Digest] = selected
+		if scoped {
+			var err error
+			selected, err = managerFor(toolCtx, selectedProfile, call.ReadOnly)
+			if err != nil {
+				return engine.ToolResult{}, err
 			}
+		} else if call.ReadOnly {
+			selected = readOnlyMgr
 		}
 		// The intent is durable before any external effect is possible.
 		intentID := id + ":" + call.NodeID + ":" + call.ID
@@ -454,9 +686,14 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 		var result tools.Result
 		var e error
 		if call.Name == "skill_materialize" {
-			result, e = c.materializeSkill(toolCtx, id, call, selectedProfile, w)
+			if guard := guidanceGuards[selectedProfile.Digest]; guard != nil {
+				result, e = guard(toolCtx, "write_file", Doc{"path": call.Arguments["targetPath"]})
+			}
+			if e == nil {
+				result, e = c.materializeSkill(toolCtx, id, call, selectedProfile, w)
+			}
 		} else {
-			result, e = selected.Execute(toolCtx, call.Name, call.Arguments)
+			result, e = selected.Execute(conversationScoped(toolCtx, call), call.Name, call.Arguments)
 		}
 		intent["finishedAt"] = store.Now()
 		intent["status"] = "completed"
@@ -489,7 +726,7 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 		}
 		return toolResultWithReceipt(result, intentID, e), e
 	}
-	eng := engine.New(c.Client())
+	eng := engine.New(c.completionFromContext(ctx))
 	var result engine.Result
 	if raw, ok := snapshot["workflow"]; ok {
 		var def workflow.Definition
@@ -510,7 +747,7 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 						return engine.Request{}, err
 					}
 					controls.apply(&ar)
-					ar.Instructions = defaultInstructions + "\n\n" + str(a, "instructions")
+					ar.Instructions = agentInstructions(a)
 					if str(a, "model") != "" {
 						ar.Model = str(a, "model")
 					}
@@ -519,6 +756,9 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 					if ar.ReadOnly {
 						ar.Tools = []engine.ToolDefinition{}
 						for _, d := range readOnlyMgr.List() {
+							if d.Name == "run_command" && a["mode"] == "read-only" {
+								continue
+							}
 							ar.Tools = append(ar.Tools, engine.ToolDefinition{Name: d.Name, Description: d.Description, Parameters: d.Parameters})
 						}
 					}
@@ -527,6 +767,18 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 						for _, f := range frozen {
 							if str(f.Agent, "id") == id {
 								f.Configure(&ar)
+								if ar.ReadOnly {
+									executionMu.Lock()
+									selected, err := managerFor(ctx, f, true)
+									executionMu.Unlock()
+									if err != nil {
+										return engine.Request{}, err
+									}
+									ar.Tools = nil
+									for _, d := range selected.List() {
+										ar.Tools = append(ar.Tools, engine.ToolDefinition{Name: d.Name, Description: d.Description, Parameters: d.Parameters})
+									}
+								}
 								ar.Tools = f.FilterTools(ar.Tools)
 								// Workflow profiles cannot expand the parent run's
 								// tool authority, including read-only catalogue paths.
@@ -552,6 +804,7 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 							return engine.Request{}, errors.New("workflow capability is missing from frozen manifest")
 						}
 					}
+					ar.Instructions += workspaceReadOnlyInstructions(str(readOnlyPolicy, "constraint"), config.AllowReadOnlyCommands && a["mode"] != "read-only")
 					return ar, nil
 				}
 			}
@@ -600,6 +853,7 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 	} else {
 		result, e = eng.Run(ctx, req, emit, executor)
 	}
+	journal.Close()
 	fatalMu.Lock()
 	if fatal != nil {
 		e = fatal
@@ -614,6 +868,16 @@ func (c *Core) executeRun(ctx context.Context, run, snapshot Doc, req engine.Req
 		e = errors.Join(e, dbErr)
 	}
 	c.finishRun(run, result, e)
+}
+
+// conversationScoped gives each model conversation its own revision memory in
+// a Manager shared by a run. Every workflow agent node (its node ID), fan-out
+// child (<node>_item_<index>) and delegate (delegate_<id>) is a separate
+// engine.Run under a distinct NodeID; an ordinary run is the one "" conversation.
+// Without it, a revision one node read would fill in or repair another's
+// expectedHash although that model never saw the file.
+func conversationScoped(ctx context.Context, call engine.ToolCall) context.Context {
+	return tools.WithRevisionScope(ctx, call.NodeID)
 }
 
 // Add a host-owned journal identity to a copy, preserving the durable tool
@@ -670,6 +934,7 @@ func (c *Core) finishRun(run Doc, result engine.Result, err error) {
 		r["incomplete"] = result.Incomplete
 		r["usage"] = result.Usage
 		r["receipt"] = receipt
+		r["verification"] = result.Verification
 		r["resumable"] = false
 		if err != nil {
 			r["error"] = err.Error()
@@ -681,6 +946,7 @@ func (c *Core) finishRun(run Doc, result engine.Result, err error) {
 	}
 }
 func (c *Core) saveWorkflow(p Doc) (any, error) {
+	p = clone(p)
 	if _, e := required(p, "name"); e != nil {
 		return nil, e
 	}
@@ -695,12 +961,34 @@ func (c *Core) saveWorkflow(p Doc) (any, error) {
 	if e := workflow.Validate(def); e != nil {
 		return nil, e
 	}
-	return p, c.Store.Put("workflow", p)
+	expected := str(p, "expectedRevision")
+	delete(p, "expectedRevision")
+	delete(p, "revision")
+	p["revision"] = workflowRevision(p)
+	return c.Store.Mutate("workflow", str(p, "id"), func(old Doc) (Doc, error) {
+		if old != nil && (expected == "" || expected != workflowRevision(old)) {
+			return nil, errors.New("workflow revision conflict; reload before saving")
+		}
+		if old == nil && expected != "" {
+			return nil, errors.New("workflow was deleted; save as a new workflow")
+		}
+		return p, nil
+	})
+}
+
+func workflowRevision(d Doc) string {
+	copy := clone(d)
+	delete(copy, "revision")
+	delete(copy, "expectedRevision")
+	return contentDigest(copy)
 }
 
 type runToolConfig struct {
-	Profile, Image string
-	PrivatePaths   []string
+	Profile, Image        string
+	PrivatePaths          []string
+	Verification          *execution.VerificationContract
+	BeforeAccess          func(context.Context, string, map[string]any) (tools.Result, error)
+	AllowReadOnlyCommands bool
 }
 
 func (c *Core) runTools(ctx context.Context, id string, w Doc, mode string, configs ...runToolConfig) (*tools.Manager, error) {
@@ -712,7 +1000,7 @@ func (c *Core) runTools(ctx context.Context, id string, w Doc, mode string, conf
 	if e != nil {
 		return nil, e
 	}
-	return tools.New(str(w, "path"), tools.Options{Executor: executor, Mode: mode, Approve: func(ctx context.Context, a tools.Approval) error {
+	return tools.New(str(w, "path"), tools.Options{Executor: executor, Mode: mode, AllowReadOnlyCommands: config.AllowReadOnlyCommands, Verification: config.Verification, BeforeAccess: config.BeforeAccess, Approve: func(ctx context.Context, a tools.Approval) error {
 		return c.approve(ctx, id, a.Tool, a.Arguments, a.Reason)
 	}, MCP: c.extension.mcp, ArtifactDir: filepath.Join(c.DataDir, "artifacts", id)})
 }

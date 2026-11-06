@@ -66,7 +66,7 @@ func (c *Core) freezeRunAgents(primary Doc, wf Doc, workspaceIDs ...string) (map
 	if len(workspaceIDs) > 0 {
 		resolved := map[string]FrozenAgent{}
 		for _, f := range out {
-			req := engine.Request{Instructions: defaultInstructions + "\n\n" + str(f.Agent, "instructions")}
+			req := engine.Request{Instructions: agentInstructions(f.Agent)}
 			f.Configure(&req)
 			binding, e := c.applyHarnessBinding(workspaceIDs[0], f.Agent, &req, &f)
 			if e != nil {
@@ -115,7 +115,7 @@ func decodeFrozenAgents(snapshot Doc) (map[string]FrozenAgent, error) {
 	}
 	return out, nil
 }
-func (c *Core) delegateReadonly(ctx context.Context, runID string, call engine.ToolCall, parent FrozenAgent, agents map[string]FrozenAgent, base engine.Request, emit func(engine.Event), execute engine.ToolExecutor) (engine.ToolResult, error) {
+func (c *Core) delegateReadonly(ctx context.Context, runID string, call engine.ToolCall, parent FrozenAgent, agents map[string]FrozenAgent, base engine.Request, emit func(engine.Event), execute engine.ToolExecutor, workspaceConstraints ...string) (engine.ToolResult, error) {
 	if call.NodeID != "" && len(call.NodeID) >= 9 && call.NodeID[:9] == "delegate_" {
 		return engine.ToolResult{}, errors.New("recursive delegation is disabled")
 	}
@@ -153,7 +153,7 @@ func (c *Core) delegateReadonly(ctx context.Context, runID string, call engine.T
 	req.NodeID = "delegate_" + store.ID()
 	req.MaxSteps = min(number(selected.Agent, "maxSteps", 6), 8)
 	req.MaxToolCalls = 16
-	req.Instructions = defaultInstructions + "\n\n" + str(selected.Agent, "instructions")
+	req.Instructions = agentInstructions(selected.Agent)
 	if model := str(selected.Agent, "model"); model != "" {
 		req.Model = model
 	}
@@ -163,6 +163,9 @@ func (c *Core) delegateReadonly(ctx context.Context, runID string, call engine.T
 	}
 	controls.apply(&req)
 	selected.Configure(&req)
+	if len(workspaceConstraints) > 0 {
+		req.Instructions += workspaceReadOnlyInstructions(workspaceConstraints[0], false)
+	}
 	req.SkillPackages = nil
 	for _, childSkill := range selected.Skills {
 		for _, parentSkill := range parent.Skills {
@@ -180,7 +183,7 @@ func (c *Core) delegateReadonly(ctx context.Context, runID string, call engine.T
 	}
 	req.Tools = defs
 	emit(engine.Event{Type: "node_started", NodeID: req.NodeID, Title: "Read-only delegate", Data: Doc{"parentNodeId": call.NodeID, "delegationId": key}})
-	result, e := engine.New(c.Client()).Run(ctx, req, emit, execute)
+	result, e := engine.New(c.completionFromContext(ctx)).Run(ctx, req, emit, execute)
 	engine.AccountNestedUsage(ctx, result.Usage, result.TokenAccounting)
 	d["status"] = "completed"
 	if e != nil {

@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "scope": "Local ad-hoc signed Apple Silicon app; native Wails bridge and runtime-only installation. No model inference.",
+  "dataIsolation": ".runtime/native-mlx-smoke-20261104",
+  "initialBuild": {
+    "builtAt": "2026-11-04T23:11:41.838103+00:00",
+    "binarySHA256": "7314d3f8305e59544079ddbbde46548c25aa6b5451c280d1e5c5cf9489bc0f7d"
+  },
+  "observations": [
+    "Opened native Gemma Desktop.app with a new isolated private data directory.",
+    "Chat empty state, Models, Settings, and Harness Lab rendered through the native Wails bridge.",
+    "Installed mlx-serve-26.11.1 entirely in Models; durable job visibly advanced through extracting to complete without a terminal or model download.",
+    "Installed runtime remained inactive; Check model, Start runtime, and Use for chat remained disabled without an installed compatible model.",
+    "Settings continued to show External Ollama; personal model defaults were not promoted.",
+    "Harness Reliability showed frozen-arm, development-screen and fresh-qualification controls; inference controls were disabled without the required workspace and agent.",
+    "Right arrow moved focus from Reliability to Compare; Return activated the focused tab.",
+    "App remained running after window close, reopened with the same Harness view, and stopped after Quit.",
+    "Installed mlx-serve and completed installation job persisted across the final app rebuild and restart.",
+    "Final oMLX preview showed bundled package/no network transfer, private destination, 386.9 MB temporary space, 10.0 GB reserve, and 11.6 GB required free space.",
+    "Final E4B preview showed network download, private model destination, 4.8 GB temporary space, 10.0 GB reserve, and 19.6 GB required free space; preview was cancelled without downloading.",
+    "Final rebuilt app exited after Quit; no additional inference was run."
+  ],
+  "foundAndCorrected": [
+    {
+      "issue": "Install preview omitted the exact destination and temporary storage requirement, and described the bundled archive as a download.",
+      "status": "fixed; host preview and rendered tests passed; corrected runtime and model dialogs verified in rebuilt native app"
+    }
+  ],
+  "limits": [
+    "This is an existing development Mac using an isolated fresh app profile, not a clean physical machine.",
+    "UI model acquisition and runtime inference were not exercised; the separate oMLX/E4B manager probe supplies bounded live evidence.",
+    "No Developer ID signing, notarization, public distribution, coding-quality comparison or default promotion is claimed."
+  ],
+  "finalBuild": {
+    "builtAt": "2026-11-04T23:17:11.744999+00:00",
+    "binarySHA256": "d62a838f750a16a86b6a73968a5f769c32d4da95ede7ed689753aaed51b11cfd",
+    "sourceFingerprint": "2a7b9deceb1835b63dff8d3507372421127a763f05f20313c76d052980dbe82e",
+    "inputsVerifiedUnchanged": true,
+    "runtimeResourcesVerified": true
+  }
+}
